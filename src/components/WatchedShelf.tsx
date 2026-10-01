@@ -1,21 +1,15 @@
 /**
  * =============================================================================
- * "Watched" Shelf — Archive with Ratings & Reviews
+ * "Watched" Shelf — Cinematic Archive with Warm Ratings & Reviews
  * =============================================================================
  *
- * Displays the user's completed movies/shows in a grid with:
- *  - Star ratings (1-10)
- *  - Personal notes
- *  - Tags
- *  - Date completed
- *  - Inline editing of reviews
- *
- * DESIGN CHOICE: Grid vs Table
- * ────────────────────────────
- * We use a card grid instead of a data table because:
- *  1. Posters are central to the cinema journal experience
- *  2. Cards look better on mobile (tables are notoriously bad on small screens)
- *  3. Users scan visually by poster, not by reading text rows
+ * Redesigned with the warm cinematic aesthetic:
+ *  - Glassmorphism cards with warm border accents
+ *  - Amber/gold star ratings and warm tag colors
+ *  - Poster-lift hover effect on cards
+ *  - Warm gradient sort controls
+ *  - Staggered entrance animations
+ *  - Cinematic inline edit mode with warm focus states
  */
 
 "use client";
@@ -31,6 +25,7 @@ import {
   X,
   Tag,
   Play,
+  Award,
 } from "lucide-react";
 import type { MovieEntry, UserReview } from "@/lib/types";
 import { useJournal } from "@/lib/journal-context";
@@ -100,13 +95,16 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
         {Array.from({ length: 10 }, (_, i) => (
           <Star
             key={i}
-            className={`w-3.5 h-3.5 ${
+            className={`w-3.5 h-3.5 transition-colors ${
               i < rating
                 ? "text-amber-400 fill-amber-400"
-                : "text-zinc-600"
+                : "text-zinc-700"
             }`}
           />
         ))}
+        <span className="ml-1.5 text-xs text-amber-400/80 font-medium">
+          {rating}/10
+        </span>
       </div>
     );
   }
@@ -114,13 +112,16 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
   if (entries.length === 0) {
     return (
       <div className="text-center py-20">
-        <Star className="w-14 h-14 mx-auto text-zinc-600 mb-4" />
-        <h3 className="text-xl font-semibold text-zinc-400">
+        <div className="relative inline-block">
+          <Award className="w-16 h-16 mx-auto text-amber-500/20 mb-4 animate-float" />
+          <div className="absolute inset-0 w-16 h-16 mx-auto rounded-full bg-amber-500/5 blur-xl" />
+        </div>
+        <h3 className="text-xl font-semibold text-zinc-300">
           No movies watched yet
         </h3>
-        <p className="text-zinc-500 mt-2 text-sm max-w-sm mx-auto">
+        <p className="text-zinc-500 mt-2 text-sm max-w-sm mx-auto leading-relaxed">
           Complete a movie from your &ldquo;Watching&rdquo; shelf or mark one
-          as watched to start building your archive.
+          as watched to start building your cinematic archive.
         </p>
       </div>
     );
@@ -128,12 +129,13 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
 
   return (
     <div className="space-y-5">
-      {/* ── Sort Controls ───────────────────────────────────── */}
+      {/* ── Sort Controls (glassmorphism) ─────────────────── */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-zinc-400">
-          {entries.length} {entries.length === 1 ? "movie" : "movies"} watched
+          <span className="text-amber-400 font-semibold">{entries.length}</span>{" "}
+          {entries.length === 1 ? "movie" : "movies"} in your archive
         </p>
-        <div className="flex gap-1 bg-zinc-800/50 rounded-lg p-0.5 border border-zinc-700/30">
+        <div className="flex gap-1 glass-card p-0.5">
           {(
             [
               { key: "recent", label: "Recent" },
@@ -144,10 +146,10 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
             <button
               key={key}
               onClick={() => setSortBy(key)}
-              className={`px-3 py-1.5 text-xs rounded-md transition-colors ${
+              className={`px-3 py-1.5 text-xs rounded-lg transition-all duration-200 ${
                 sortBy === key
-                  ? "bg-zinc-700 text-white"
-                  : "text-zinc-400 hover:text-white"
+                  ? "bg-amber-500/15 text-amber-300 shadow-sm"
+                  : "text-zinc-400 hover:text-zinc-200 hover:bg-white/5"
               }`}
             >
               {label}
@@ -158,22 +160,27 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
 
       {/* ── Watched Grid ────────────────────────────────────── */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {sortedEntries.map((entry) => (
+        {sortedEntries.map((entry, idx) => (
           <div
             key={entry.id}
-            className="rounded-xl border border-zinc-700/30 bg-zinc-800/30 overflow-hidden hover:border-zinc-600/50 transition-all duration-200"
+            className="glass-card glass-card-hover overflow-hidden poster-lift stagger-item"
+            style={{ animationDelay: `${idx * 50}ms` }}
           >
             <div className="flex gap-3 p-4">
               {/* Poster */}
               {entry.tmdb.posterUrl ? (
-                <img
-                  src={entry.tmdb.posterUrl}
-                  alt={entry.tmdb.title}
-                  className="w-20 h-28 rounded-lg object-cover shrink-0"
-                />
+                <div className="relative shrink-0 group/poster">
+                  <img
+                    src={entry.tmdb.posterUrl}
+                    alt={entry.tmdb.title}
+                    className="w-20 h-28 rounded-lg object-cover"
+                  />
+                  {/* Warm glow overlay on poster hover */}
+                  <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-amber-500/10 to-transparent opacity-0 group-hover/poster:opacity-100 transition-opacity duration-300" />
+                </div>
               ) : (
-                <div className="w-20 h-28 rounded-lg bg-zinc-700 flex items-center justify-center shrink-0">
-                  <Film className="w-8 h-8 text-zinc-500" />
+                <div className="w-20 h-28 rounded-lg bg-zinc-800 flex items-center justify-center shrink-0 border border-zinc-700/30">
+                  <Film className="w-8 h-8 text-zinc-600" />
                 </div>
               )}
 
@@ -182,7 +189,7 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
                 <h4 className="font-semibold text-white truncate">
                   {entry.tmdb.title}
                 </h4>
-                <p className="text-xs text-zinc-400 mt-0.5">
+                <p className="text-xs text-zinc-500 mt-0.5">
                   {entry.tmdb.releaseYear} · {entry.tmdb.director}
                 </p>
 
@@ -191,7 +198,7 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
                   {entry.review?.rating ? (
                     renderStars(entry.review.rating)
                   ) : (
-                    <span className="text-xs text-zinc-500 italic">
+                    <span className="text-xs text-zinc-600 italic">
                       Not rated
                     </span>
                   )}
@@ -200,7 +207,7 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
                 {/* Date completed */}
                 {entry.review?.dateCompleted && (
                   <p className="flex items-center gap-1 text-xs text-zinc-500 mt-1.5">
-                    <Calendar className="w-3 h-3" />
+                    <Calendar className="w-3 h-3 text-amber-500/40" />
                     {new Date(entry.review.dateCompleted).toLocaleDateString(
                       "en-US",
                       { month: "short", day: "numeric", year: "numeric" }
@@ -208,13 +215,13 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
                   </p>
                 )}
 
-                {/* Tags */}
+                {/* Tags — warm amber tint */}
                 {entry.review?.tags && entry.review.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-2">
                     {entry.review.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="flex items-center gap-0.5 text-[10px] bg-indigo-500/15 text-indigo-300 px-1.5 py-0.5 rounded-md"
+                        className="flex items-center gap-0.5 text-[10px] bg-amber-500/10 text-amber-300/80 px-1.5 py-0.5 rounded-md border border-amber-500/10"
                       >
                         <Tag className="w-2.5 h-2.5" />
                         {tag}
@@ -228,21 +235,21 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
               <div className="flex flex-col gap-1.5 shrink-0">
                 <button
                   onClick={() => startEditing(entry)}
-                  className="p-1.5 rounded-lg text-zinc-500 hover:text-white hover:bg-zinc-700 transition-colors"
+                  className="p-1.5 rounded-lg text-zinc-600 hover:text-amber-400 hover:bg-amber-500/10 transition-all duration-200"
                   title="Edit review"
                 >
                   <Edit3 className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={() => moveToShelf(entry.id, "watching")}
-                  className="p-1.5 rounded-lg text-zinc-500 hover:text-indigo-400 hover:bg-zinc-700 transition-colors"
+                  className="p-1.5 rounded-lg text-zinc-600 hover:text-amber-300 hover:bg-amber-500/10 transition-all duration-200"
                   title="Re-watch"
                 >
                   <Play className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={() => removeEntry(entry.id)}
-                  className="p-1.5 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-zinc-700 transition-colors"
+                  className="p-1.5 rounded-lg text-zinc-600 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200"
                   title="Remove"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -253,18 +260,18 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
             {/* Notes */}
             {entry.review?.notes && (
               <div className="px-4 pb-3">
-                <p className="text-xs text-zinc-400 italic leading-relaxed border-t border-zinc-700/30 pt-3">
+                <p className="text-xs text-zinc-400 italic leading-relaxed border-t border-amber-500/8 pt-3">
                   &ldquo;{entry.review.notes}&rdquo;
                 </p>
               </div>
             )}
 
-            {/* ── Inline Edit Mode ──────────────────────────── */}
+            {/* ── Inline Edit Mode (warm cinema style) ───────── */}
             {editingId === entry.id && (
-              <div className="border-t border-zinc-700/30 p-4 space-y-3 bg-zinc-800/50 animate-in slide-in-from-top-2 duration-200">
+              <div className="border-t border-amber-500/10 p-4 space-y-3 bg-amber-500/[0.03] animate-in slide-in-from-top-2 duration-200">
                 {/* Rating editor */}
                 <div>
-                  <label className="text-xs text-zinc-500 uppercase tracking-wider">
+                  <label className="text-xs text-amber-400/60 uppercase tracking-wider font-medium">
                     Rating
                   </label>
                   <div className="flex gap-1 mt-1">
@@ -272,16 +279,16 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
                       <button
                         key={i}
                         onClick={() => setEditRating(i + 1)}
-                        className={`text-lg transition-colors ${
+                        className={`text-lg transition-all duration-150 hover:scale-110 ${
                           i < editRating
                             ? "text-amber-400"
-                            : "text-zinc-600 hover:text-zinc-400"
+                            : "text-zinc-700 hover:text-zinc-500"
                         }`}
                       >
                         ★
                       </button>
                     ))}
-                    <span className="ml-2 text-sm text-zinc-400 self-center">
+                    <span className="ml-2 text-sm text-amber-400/70 self-center font-medium">
                       {editRating}/10
                     </span>
                   </div>
@@ -289,20 +296,20 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
 
                 {/* Notes */}
                 <div>
-                  <label className="text-xs text-zinc-500 uppercase tracking-wider">
+                  <label className="text-xs text-amber-400/60 uppercase tracking-wider font-medium">
                     Personal takeaways
                   </label>
                   <textarea
                     value={editNotes}
                     onChange={(e) => setEditNotes(e.target.value)}
                     placeholder="What stuck with you? What would you tell a friend?"
-                    className="w-full mt-1 bg-zinc-900 border border-zinc-700 rounded-lg p-2.5 text-sm text-white placeholder-zinc-500 resize-none h-20 outline-none focus:border-indigo-500"
+                    className="w-full mt-1 bg-zinc-900/50 border border-amber-500/10 rounded-lg p-2.5 text-sm text-white placeholder-zinc-600 resize-none h-20 outline-none focus:border-amber-500/30 focus:ring-1 focus:ring-amber-500/20 transition-all"
                   />
                 </div>
 
                 {/* Tags */}
                 <div>
-                  <label className="text-xs text-zinc-500 uppercase tracking-wider">
+                  <label className="text-xs text-amber-400/60 uppercase tracking-wider font-medium">
                     Tags (comma-separated)
                   </label>
                   <input
@@ -310,7 +317,7 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
                     value={editTags}
                     onChange={(e) => setEditTags(e.target.value)}
                     placeholder="mind-bending, comfort-watch, masterpiece"
-                    className="w-full mt-1 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white placeholder-zinc-500 outline-none focus:border-indigo-500"
+                    className="w-full mt-1 bg-zinc-900/50 border border-amber-500/10 rounded-lg px-3 py-2 text-sm text-white placeholder-zinc-600 outline-none focus:border-amber-500/30 focus:ring-1 focus:ring-amber-500/20 transition-all"
                   />
                 </div>
 
@@ -318,14 +325,14 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
                 <div className="flex gap-2 justify-end">
                   <button
                     onClick={() => setEditingId(null)}
-                    className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white px-3 py-2 rounded-lg hover:bg-zinc-700 transition-colors"
+                    className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white px-3 py-2 rounded-lg hover:bg-white/5 transition-all"
                   >
                     <X className="w-3 h-3" />
                     Cancel
                   </button>
                   <button
                     onClick={() => saveEdit(entry.id, entry.review)}
-                    className="flex items-center gap-1.5 text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 rounded-lg transition-colors"
+                    className="flex items-center gap-1.5 text-xs bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 px-3 py-2 rounded-lg transition-all border border-amber-500/20"
                   >
                     <Save className="w-3 h-3" />
                     Save Review

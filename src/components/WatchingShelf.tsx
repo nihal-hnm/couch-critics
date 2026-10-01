@@ -1,15 +1,11 @@
 /**
  * =============================================================================
- * "Watching" Shelf — Hero Card Layout
+ * "Watching" Shelf — Cinematic Hero Cards
  * =============================================================================
  *
- * Shows currently-watching movies/shows as large hero cards with progress bars.
- * These are the user's "active" items, so they get the most visual real estate.
- *
- * KEY UI PATTERN: "Hero Card"
- * ──────────────────────────
- * A hero card uses the poster as a background with a gradient overlay for text.
- * This creates a cinematic feel that matches the movie-tracking theme.
+ * Large, immersive cards with poster backgrounds, warm gradient overlays,
+ * and progress tracking. The poster-as-background hero card pattern creates
+ * a cinematic feel matching the reference UI's premium aesthetic.
  */
 
 "use client";
@@ -78,11 +74,13 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
   if (entries.length === 0) {
     return (
       <div className="text-center py-20">
-        <Play className="w-14 h-14 mx-auto text-zinc-600 mb-4" />
-        <h3 className="text-xl font-semibold text-zinc-400">
+        <div className="inline-flex p-4 rounded-2xl bg-amber-500/8 mb-4">
+          <Play className="w-10 h-10 text-amber-500/40" />
+        </div>
+        <h3 className="text-xl font-semibold text-stone-300">
           Nothing playing right now
         </h3>
-        <p className="text-zinc-500 mt-2 text-sm max-w-sm mx-auto">
+        <p className="text-stone-500 mt-2 text-sm max-w-sm mx-auto">
           Search for a movie or show and add it to your &ldquo;Watching&rdquo;
           shelf to track your progress.
         </p>
@@ -92,7 +90,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
 
   return (
     <div className="grid gap-6 md:grid-cols-2">
-      {entries.map((entry) => {
+      {entries.map((entry, index) => {
         const progress = entry.progress;
         const isMovie = entry.tmdb.mediaType === "movie";
         const progressPercent = isMovie
@@ -110,36 +108,45 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
         return (
           <div
             key={entry.id}
-            className="relative rounded-2xl overflow-hidden border border-zinc-700/30 bg-zinc-800/50 group"
+            className="relative rounded-2xl overflow-hidden border border-stone-800/50 group poster-lift"
+            style={{ animationDelay: `${index * 80}ms` }}
           >
             {/* ── Background Poster ──────────────────────────── */}
-            <div className="relative h-56 overflow-hidden">
+            <div className="relative h-60 overflow-hidden">
               {entry.tmdb.posterUrl ? (
                 <img
                   src={entry.tmdb.posterUrl}
                   alt={entry.tmdb.title}
-                  className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                  className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-110"
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-zinc-700 to-zinc-800 flex items-center justify-center">
-                  <Film className="w-16 h-16 text-zinc-600" />
+                <div className="w-full h-full bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center">
+                  <Film className="w-16 h-16 text-stone-700" />
                 </div>
               )}
-              {/* Gradient overlay so text is readable on any poster */}
-              <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/60 to-transparent" />
+              {/* Warm cinematic gradient overlay */}
+              <div className="absolute inset-0 cinema-gradient-strong" />
+
+              {/* Currently watching badge */}
+              <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-500/30 backdrop-blur-sm">
+                <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                <span className="text-[10px] font-medium text-amber-200 uppercase tracking-wider">
+                  Now Playing
+                </span>
+              </div>
 
               {/* Floating action buttons */}
-              <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                 <button
                   onClick={() => setCompletingId(entry.id)}
-                  className="p-2 bg-emerald-600/90 rounded-lg text-white hover:bg-emerald-500 transition-colors backdrop-blur-sm"
+                  className="p-2 bg-emerald-600/80 rounded-lg text-white hover:bg-emerald-500 transition-colors backdrop-blur-sm"
                   title="Mark as watched"
                 >
                   <CheckCircle2 className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => removeEntry(entry.id)}
-                  className="p-2 bg-red-600/90 rounded-lg text-white hover:bg-red-500 transition-colors backdrop-blur-sm"
+                  className="p-2 bg-red-600/80 rounded-lg text-white hover:bg-red-500 transition-colors backdrop-blur-sm"
                   title="Remove"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -151,13 +158,13 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                 <h3 className="text-xl font-bold text-white leading-tight">
                   {entry.tmdb.title}
                 </h3>
-                <div className="flex items-center gap-2 mt-1.5 text-sm text-zinc-300">
+                <div className="flex items-center gap-2 mt-1.5 text-sm text-stone-300">
                   <span>{entry.tmdb.releaseYear}</span>
-                  <ChevronRight className="w-3 h-3 text-zinc-500" />
+                  <ChevronRight className="w-3 h-3 text-stone-600" />
                   <span>{entry.tmdb.genres.slice(0, 2).join(", ")}</span>
                   {entry.tmdb.runtime > 0 && (
                     <>
-                      <ChevronRight className="w-3 h-3 text-zinc-500" />
+                      <ChevronRight className="w-3 h-3 text-stone-600" />
                       <span className="flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         {entry.tmdb.runtime}m
@@ -169,18 +176,18 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
             </div>
 
             {/* ── Progress Section ───────────────────────────── */}
-            <div className="p-4 space-y-3">
-              {/* Progress bar */}
-              <div className="w-full bg-zinc-700/50 rounded-full h-2 overflow-hidden">
+            <div className="p-4 space-y-3 bg-[#141210]">
+              {/* Warm amber progress bar */}
+              <div className="w-full bg-stone-800/80 rounded-full h-1.5 overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-indigo-600 to-purple-500 rounded-full transition-all duration-300"
+                  className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full transition-all duration-500"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
 
               {/* Progress controls */}
               <div className="flex items-center justify-between">
-                <span className="text-sm text-zinc-400">
+                <span className="text-sm text-stone-400">
                   {isMovie
                     ? `${progress?.minutesWatched ?? 0} / ${progress?.totalMinutes ?? entry.tmdb.runtime ?? "?"} min`
                     : `Episode ${progress?.currentEpisode ?? 1} / ${progress?.totalEpisodes ?? "?"}`}
@@ -193,11 +200,11 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                         ? handleProgressChange(entry, -15)
                         : handleEpisodeChange(entry, -1)
                     }
-                    className="p-1.5 rounded-lg bg-zinc-700/50 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors"
+                    className="p-1.5 rounded-lg bg-stone-800/80 text-stone-400 hover:text-white hover:bg-stone-700 transition-colors"
                   >
                     <Minus className="w-3.5 h-3.5" />
                   </button>
-                  <span className="text-sm font-semibold text-indigo-400 min-w-[3rem] text-center">
+                  <span className="text-sm font-semibold text-amber-400 min-w-[3rem] text-center">
                     {progressPercent}%
                   </span>
                   <button
@@ -206,7 +213,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                         ? handleProgressChange(entry, 15)
                         : handleEpisodeChange(entry, 1)
                     }
-                    className="p-1.5 rounded-lg bg-zinc-700/50 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors"
+                    className="p-1.5 rounded-lg bg-stone-800/80 text-stone-400 hover:text-white hover:bg-stone-700 transition-colors"
                   >
                     <Plus className="w-3.5 h-3.5" />
                   </button>
@@ -216,7 +223,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
 
             {/* ── Quick Complete Modal ───────────────────────── */}
             {completingId === entry.id && (
-              <div className="absolute inset-0 bg-zinc-900/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 z-10 animate-in fade-in duration-200">
+              <div className="absolute inset-0 bg-[#0a0a0a]/95 backdrop-blur-md flex flex-col items-center justify-center p-6 z-10 animate-in fade-in duration-200">
                 <CheckCircle2 className="w-8 h-8 text-emerald-400 mb-3" />
                 <p className="text-white font-semibold mb-4">
                   Rate &ldquo;{entry.tmdb.title}&rdquo;
@@ -231,7 +238,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                       className={`text-lg transition-colors ${
                         i < rating
                           ? "text-amber-400"
-                          : "text-zinc-600 hover:text-zinc-400"
+                          : "text-stone-700 hover:text-stone-500"
                       }`}
                     >
                       ★
@@ -243,13 +250,13 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                   placeholder="Quick thoughts (optional)..."
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="w-full max-w-xs bg-zinc-800 border border-zinc-700 rounded-lg p-2.5 text-sm text-white placeholder-zinc-500 resize-none h-20 outline-none focus:border-indigo-500"
+                  className="w-full max-w-xs bg-stone-900 border border-stone-700 rounded-xl p-3 text-sm text-white placeholder-stone-500 resize-none h-20 outline-none focus:border-amber-500/50 transition-colors"
                 />
 
                 <div className="flex gap-3 mt-4">
                   <button
                     onClick={() => setCompletingId(null)}
-                    className="px-4 py-2 text-sm text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-colors"
+                    className="px-4 py-2 text-sm text-stone-400 hover:text-white rounded-lg hover:bg-stone-800 transition-colors"
                   >
                     Cancel
                   </button>

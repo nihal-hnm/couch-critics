@@ -1,10 +1,14 @@
 /**
  * =============================================================================
- * Movie Search Modal
+ * Movie Search Modal — Cinematic TMDB Search
  * =============================================================================
  *
- * A slide-up modal that lets the user search TMDB for movies/shows
- * and add them to any shelf.
+ * Redesigned with the warm cinematic aesthetic:
+ *  - Glassmorphism modal with warm backdrop
+ *  - Amber-tinted search bar with cinematic glow
+ *  - Warm hover effects on search results
+ *  - Gold accent buttons for adding movies
+ *  - Poster-forward result cards
  *
  * ARCHITECTURAL NOTE: "Controlled" vs "Uncontrolled" Components
  * ─────────────────────────────────────────────────────────────
@@ -24,6 +28,7 @@ import {
   Tv,
   Loader2,
   CircleAlert,
+  Sparkles,
 } from "lucide-react";
 import type { TMDBMovieData, Shelf } from "@/lib/types";
 import { searchMovies, getMovieDetails, TMDBError } from "@/lib/tmdb";
@@ -165,16 +170,19 @@ export default function SearchModal({
      * itself — clicks inside it don't bubble up to close the backdrop.
      */
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-md animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-2xl max-h-[85vh] bg-zinc-900 rounded-t-2xl sm:rounded-2xl border border-zinc-700/50 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300"
+        className="w-full max-w-2xl max-h-[85vh] rounded-t-2xl sm:rounded-2xl glass-card shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300"
+        style={{
+          boxShadow: "0 0 80px rgba(245, 158, 11, 0.06), 0 20px 60px rgba(0, 0, 0, 0.5)",
+        }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* ── Header ─────────────────────────────────────────── */}
-        <div className="flex items-center gap-3 p-4 border-b border-zinc-800">
-          <Search className="w-5 h-5 text-zinc-400" />
+        {/* ── Header (warm search bar) ──────────────────────── */}
+        <div className="flex items-center gap-3 p-4 border-b border-amber-500/10">
+          <Search className="w-5 h-5 text-amber-400/60" />
           <input
             ref={inputRef}
             type="text"
@@ -184,9 +192,18 @@ export default function SearchModal({
             className="flex-1 bg-transparent text-white placeholder-zinc-500 outline-none text-lg"
             id="search-input"
           />
+          {query && (
+            <button
+              onClick={() => setQuery("")}
+              className="p-1 rounded-md text-zinc-500 hover:text-zinc-300 hover:bg-white/5 transition-colors"
+              aria-label="Clear search"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
+            className="p-1.5 rounded-lg hover:bg-white/5 text-zinc-500 hover:text-white transition-colors"
             aria-label="Close search"
           >
             <X className="w-5 h-5" />
@@ -196,21 +213,21 @@ export default function SearchModal({
         {/* ── Results ────────────────────────────────────────── */}
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {isLoading && (
-            <div className="flex items-center justify-center py-12 text-zinc-400">
+            <div className="flex items-center justify-center py-12 text-amber-400/60">
               <Loader2 className="w-6 h-6 animate-spin mr-2" />
-              Searching TMDB...
+              <span className="text-zinc-400">Searching TMDB...</span>
             </div>
           )}
 
           {error && (
-            <div className="flex items-center gap-2 py-4 px-3 rounded-lg bg-red-500/10 text-red-400 text-sm">
+            <div className="flex items-center gap-2 py-4 px-3 rounded-lg bg-red-500/8 border border-red-500/15 text-red-400 text-sm">
               <CircleAlert className="w-4 h-4 shrink-0" />
               {error}
             </div>
           )}
 
           {!isLoading &&
-            results.map((movie) => {
+            results.map((movie, idx) => {
               const isAlreadyAdded = entries.some(
                 (e) => e.tmdb.tmdbId === movie.tmdbId
               );
@@ -218,18 +235,19 @@ export default function SearchModal({
               return (
                 <div
                   key={movie.tmdbId}
-                  className="flex gap-3 p-3 rounded-xl bg-zinc-800/50 hover:bg-zinc-800 border border-zinc-700/30 transition-all duration-200 group"
+                  className="flex gap-3 p-3 rounded-xl glass-card glass-card-hover transition-all duration-200 group stagger-item"
+                  style={{ animationDelay: `${idx * 40}ms` }}
                 >
                   {/* Poster thumbnail */}
                   {movie.posterUrl ? (
                     <img
                       src={movie.posterUrl}
                       alt={`${movie.title} poster`}
-                      className="w-16 h-24 rounded-lg object-cover shrink-0"
+                      className="w-16 h-24 rounded-lg object-cover shrink-0 group-hover:shadow-lg group-hover:shadow-amber-500/10 transition-shadow"
                     />
                   ) : (
-                    <div className="w-16 h-24 rounded-lg bg-zinc-700 flex items-center justify-center shrink-0">
-                      <Film className="w-6 h-6 text-zinc-500" />
+                    <div className="w-16 h-24 rounded-lg bg-zinc-800 flex items-center justify-center shrink-0 border border-zinc-700/30">
+                      <Film className="w-6 h-6 text-zinc-600" />
                     </div>
                   )}
 
@@ -240,9 +258,9 @@ export default function SearchModal({
                         {movie.title}
                       </h3>
                       {movie.mediaType === "tv" ? (
-                        <Tv className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                        <Tv className="w-3.5 h-3.5 text-amber-300/60 shrink-0" />
                       ) : (
-                        <Film className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                        <Film className="w-3.5 h-3.5 text-amber-400/60 shrink-0" />
                       )}
                     </div>
                     <p className="text-sm text-zinc-400">
@@ -250,7 +268,7 @@ export default function SearchModal({
                       {movie.genres.length > 0 &&
                         ` · ${movie.genres.slice(0, 3).join(", ")}`}
                     </p>
-                    <p className="text-xs text-zinc-500 line-clamp-2 mt-1">
+                    <p className="text-xs text-zinc-600 line-clamp-2 mt-1">
                       {movie.overview}
                     </p>
                   </div>
@@ -258,7 +276,7 @@ export default function SearchModal({
                   {/* Add buttons */}
                   <div className="flex flex-col gap-1.5 shrink-0">
                     {isAlreadyAdded ? (
-                      <span className="text-xs text-emerald-400 bg-emerald-400/10 px-2.5 py-1.5 rounded-lg">
+                      <span className="text-xs text-amber-400 bg-amber-400/10 px-2.5 py-1.5 rounded-lg border border-amber-400/15">
                         Added ✓
                       </span>
                     ) : (
@@ -266,7 +284,7 @@ export default function SearchModal({
                         <button
                           onClick={() => handleAddMovie(movie, defaultShelf)}
                           disabled={addingId === movie.tmdbId}
-                          className="flex items-center gap-1 text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+                          className="flex items-center gap-1 text-xs bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 px-2.5 py-1.5 rounded-lg transition-all border border-amber-500/20 disabled:opacity-50"
                         >
                           {addingId === movie.tmdbId ? (
                             <Loader2 className="w-3 h-3 animate-spin" />
@@ -283,7 +301,7 @@ export default function SearchModal({
                           <button
                             onClick={() => handleAddMovie(movie, "watching")}
                             disabled={addingId === movie.tmdbId}
-                            className="text-xs text-zinc-400 hover:text-white px-2.5 py-1 rounded-lg hover:bg-zinc-700 transition-colors"
+                            className="text-xs text-zinc-500 hover:text-amber-300 px-2.5 py-1 rounded-lg hover:bg-amber-500/10 transition-all"
                           >
                             + Watching
                           </button>
@@ -297,9 +315,12 @@ export default function SearchModal({
 
           {!isLoading && !error && results.length === 0 && query === "" && (
             <div className="text-center py-16 text-zinc-500">
-              <Search className="w-10 h-10 mx-auto mb-3 opacity-50" />
-              <p className="text-lg">Search for a movie or TV show</p>
-              <p className="text-sm mt-1">
+              <div className="relative inline-block mb-4">
+                <Sparkles className="w-12 h-12 mx-auto text-amber-500/20 animate-float" />
+                <div className="absolute inset-0 w-12 h-12 mx-auto rounded-full bg-amber-500/5 blur-xl" />
+              </div>
+              <p className="text-lg text-zinc-400">Search for a movie or TV show</p>
+              <p className="text-sm mt-1 text-zinc-600">
                 Results from The Movie Database (TMDB)
               </p>
             </div>

@@ -1,27 +1,18 @@
 /**
  * =============================================================================
- * Main Dashboard Page — The "Root" UI Component
+ * Main Dashboard — Cinematic Layout with Hero Section
  * =============================================================================
  *
- * This is the primary page of Cinema Journal. It orchestrates:
- *   1. Tab-based navigation between the three shelves + stats
- *   2. The search modal trigger
- *   3. Data flow from JournalContext → shelf components
+ * Redesigned to match the warm, cinematic reference UI:
+ *  - Hero section with dynamic poster backgrounds
+ *  - Glassmorphism navigation
+ *  - Warm amber/gold accent color palette
+ *  - Stats summary in the hero footer
  *
  * WHY "use client"?
  * ─────────────────
- * Next.js App Router defaults to Server Components (rendered on the server).
- * But we need browser-only features:
- *   - useState for tab switching and modal state
- *   - useContext for the journal data (which reads localStorage)
- *   - Event handlers (onClick)
- *
- * So we mark this as a Client Component. The layout.tsx (server component)
- * wraps this in <JournalProvider>, which is also a client component.
- *
- * RULE OF THUMB:
- *   Server Components → data fetching, SEO, static content
- *   Client Components → interactivity, state, browser APIs
+ * Needs useState for tab switching, useContext for journal data,
+ * and event handlers — all browser-only features.
  */
 
 "use client";
@@ -33,8 +24,11 @@ import {
   CheckCircle2,
   BarChart3,
   Plus,
-  Clapperboard,
+  Film as FilmIcon,
   Sparkles,
+  Clock,
+  Star,
+  Tv,
 } from "lucide-react";
 import { useJournal } from "@/lib/journal-context";
 import type { Shelf } from "@/lib/types";
@@ -43,24 +37,14 @@ import WatchingShelf from "@/components/WatchingShelf";
 import ToWatchShelf from "@/components/ToWatchShelf";
 import WatchedShelf from "@/components/WatchedShelf";
 import StatsDashboard from "@/components/StatsDashboard";
+import { computeStats, formatWatchTime } from "@/lib/stats";
 
-/**
- * Tab definitions.
- *
- * WHY AN ARRAY OF OBJECTS?
- * ────────────────────────
- * Instead of hardcoding tabs in JSX, we define them as data. This means:
- *  1. Adding a new tab is just adding an object (Open/Closed Principle)
- *  2. The tab rendering logic is written once, not duplicated 4 times (DRY)
- *  3. We can easily reorder or conditionally show/hide tabs
- */
 type TabKey = "watching" | "toWatch" | "watched" | "stats";
 
 interface TabDef {
   key: TabKey;
   label: string;
   icon: React.ReactNode;
-  /** Which shelf this tab shows (undefined for "stats" which isn't a shelf) */
   shelf?: Shelf;
 }
 
@@ -95,12 +79,6 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<TabKey>("watching");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  /**
-   * FILTER ENTRIES BY SHELF
-   * ───────────────────────
-   * useMemo prevents filtering on every render. The dependency array
-   * `[entries]` means it only re-filters when entries actually change.
-   */
   const watching = useMemo(
     () => entries.filter((e) => e.shelf === "watching"),
     [entries]
@@ -114,7 +92,8 @@ export default function Dashboard() {
     [entries]
   );
 
-  // Count badges for each tab
+  const stats = useMemo(() => computeStats(entries), [entries]);
+
   const counts: Record<TabKey, number> = {
     watching: watching.length,
     toWatch: toWatch.length,
@@ -122,99 +101,166 @@ export default function Dashboard() {
     stats: entries.length,
   };
 
+  // Pick a random backdrop from existing posters for the hero
+  const heroBackdrop = useMemo(() => {
+    const withPosters = entries.filter((e) => e.tmdb.posterUrl);
+    if (withPosters.length === 0) return null;
+    return withPosters[Math.floor(Math.random() * withPosters.length)].tmdb
+      .posterUrl;
+  }, [entries]);
+
   if (!isLoaded) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3 text-zinc-400">
-          <Clapperboard className="w-10 h-10 animate-pulse" />
-          <p className="text-sm">Loading your journal...</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="p-4 rounded-2xl bg-amber-500/10 animate-glow">
+            <FilmIcon className="w-8 h-8 text-amber-400 animate-pulse" />
+          </div>
+          <p className="text-sm text-stone-500">Loading your journal...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950">
-      {/* ── Header ─────────────────────────────────────────── */}
-      <header className="sticky top-0 z-40 border-b border-zinc-800/50 bg-zinc-950/80 backdrop-blur-xl">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 shadow-lg shadow-indigo-500/20">
-              <Clapperboard className="w-5 h-5 text-white" />
+    <div className="min-h-screen">
+      {/* ══ HERO SECTION ═══════════════════════════════════════════ */}
+      <div className="relative overflow-hidden">
+        {/* Dynamic backdrop from user's posters */}
+        {heroBackdrop && (
+          <div className="absolute inset-0">
+            <img
+              src={heroBackdrop}
+              alt=""
+              className="w-full h-full object-cover object-center opacity-20 blur-2xl scale-110"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/40 via-[#0a0a0a]/70 to-[#0a0a0a]" />
+          </div>
+        )}
+
+        {/* Ambient warm glow behind hero */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-amber-500/5 rounded-full blur-[120px] pointer-events-none" />
+
+        {/* ── Header ─────────────────────────────────────────── */}
+        <header className="relative z-10">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-600/10 border border-amber-500/20 shadow-lg shadow-amber-500/5">
+                <FilmIcon className="w-5 h-5 text-amber-400" />
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-white tracking-tight">
+                  My Cinema
+                </h1>
+                <p className="text-[11px] text-stone-500 -mt-0.5">
+                  A collection of stories I&apos;ve lived through
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-lg font-bold text-white tracking-tight">
-                Cinema Journal
-              </h1>
-              <p className="text-[11px] text-zinc-500 -mt-0.5">
-                Your personal movie portfolio
-              </p>
-            </div>
+
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-sm rounded-xl transition-all shadow-lg shadow-amber-500/15 hover:shadow-amber-500/25 font-medium"
+              id="add-movie-button"
+            >
+              <Plus className="w-4 h-4" />
+              <span className="hidden sm:inline">Add Movie</span>
+            </button>
           </div>
 
-          <button
-            onClick={() => setIsSearchOpen(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm rounded-xl transition-all shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 font-medium"
-            id="add-movie-button"
-          >
-            <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">Add Movie</span>
-          </button>
-        </div>
-
-        {/* ── Tab Navigation ───────────────────────────────── */}
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <nav className="flex gap-1 -mb-px" role="tablist">
-            {TABS.map((tab) => (
-              <button
-                key={tab.key}
-                role="tab"
-                aria-selected={activeTab === tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`
-                  flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2
-                  transition-all duration-200
-                  ${
-                    activeTab === tab.key
-                      ? "border-indigo-500 text-white"
-                      : "border-transparent text-zinc-500 hover:text-zinc-300 hover:border-zinc-700"
-                  }
-                `}
-              >
-                {tab.icon}
-                <span className="hidden sm:inline">{tab.label}</span>
-                {counts[tab.key] > 0 && (
-                  <span
-                    className={`
-                      text-[10px] font-semibold px-1.5 py-0.5 rounded-full
-                      ${
-                        activeTab === tab.key
-                          ? "bg-indigo-500/20 text-indigo-300"
-                          : "bg-zinc-800 text-zinc-500"
-                      }
-                    `}
-                  >
-                    {counts[tab.key]}
+          {/* ── Quick Stats Row (when user has entries) ────────── */}
+          {entries.length > 0 && (
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-5">
+              <div className="flex flex-wrap gap-5 text-sm">
+                <div className="flex items-center gap-2 text-stone-400">
+                  <FilmIcon className="w-3.5 h-3.5 text-amber-500/70" />
+                  <span className="text-white font-semibold">{watched.length + watching.length}</span>
+                  <span>Movies</span>
+                </div>
+                <div className="flex items-center gap-2 text-stone-400">
+                  <Tv className="w-3.5 h-3.5 text-amber-500/70" />
+                  <span className="text-white font-semibold">{toWatch.length}</span>
+                  <span>Queued</span>
+                </div>
+                <div className="flex items-center gap-2 text-stone-400">
+                  <Clock className="w-3.5 h-3.5 text-amber-500/70" />
+                  <span className="text-white font-semibold">
+                    {formatWatchTime(stats.totalWatchTimeMins)}
                   </span>
+                  <span>Watched</span>
+                </div>
+                {stats.averageRating > 0 && (
+                  <div className="flex items-center gap-2 text-stone-400">
+                    <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                    <span className="text-white font-semibold">
+                      {stats.averageRating.toFixed(1)}
+                    </span>
+                    <span>Avg</span>
+                  </div>
                 )}
-              </button>
-            ))}
-          </nav>
-        </div>
-      </header>
+              </div>
+            </div>
+          )}
 
-      {/* ── Main Content ───────────────────────────────────── */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-        {activeTab === "watching" && <WatchingShelf entries={watching} />}
-        {activeTab === "toWatch" && <ToWatchShelf entries={toWatch} />}
-        {activeTab === "watched" && <WatchedShelf entries={watched} />}
-        {activeTab === "stats" && <StatsDashboard entries={entries} />}
-      </main>
+          {/* ── Tab Navigation ───────────────────────────────── */}
+          <div className="max-w-6xl mx-auto px-4 sm:px-6">
+            <nav
+              className="flex gap-1 border-b border-stone-800/50"
+              role="tablist"
+            >
+              {TABS.map((tab) => (
+                <button
+                  key={tab.key}
+                  role="tab"
+                  aria-selected={activeTab === tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`
+                    flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2
+                    transition-all duration-200
+                    ${
+                      activeTab === tab.key
+                        ? "border-amber-500 text-amber-100"
+                        : "border-transparent text-stone-500 hover:text-stone-300 hover:border-stone-700"
+                    }
+                  `}
+                >
+                  {tab.icon}
+                  <span className="hidden sm:inline">{tab.label}</span>
+                  {counts[tab.key] > 0 && (
+                    <span
+                      className={`
+                        text-[10px] font-semibold px-1.5 py-0.5 rounded-full
+                        ${
+                          activeTab === tab.key
+                            ? "bg-amber-500/15 text-amber-300"
+                            : "bg-stone-800 text-stone-500"
+                        }
+                      `}
+                    >
+                      {counts[tab.key]}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </nav>
+          </div>
+        </header>
+      </div>
 
-      {/* ── Floating Action — visible on mobile ────────────── */}
+      {/* ── Main Content (hidden when empty — the global CTA takes over) */}
+      {entries.length > 0 && (
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+          {activeTab === "watching" && <WatchingShelf entries={watching} />}
+          {activeTab === "toWatch" && <ToWatchShelf entries={toWatch} />}
+          {activeTab === "watched" && <WatchedShelf entries={watched} />}
+          {activeTab === "stats" && <StatsDashboard entries={entries} />}
+        </main>
+      )}
+
+      {/* ── Floating Action — mobile ────────────────────────── */}
       <button
         onClick={() => setIsSearchOpen(true)}
-        className="fixed bottom-6 right-6 sm:hidden p-4 bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-full shadow-2xl shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-all z-30"
+        className="fixed bottom-6 right-6 sm:hidden p-4 bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-full shadow-2xl shadow-amber-500/20 hover:shadow-amber-500/40 transition-all z-30 animate-glow"
         aria-label="Add movie"
       >
         <Plus className="w-6 h-6" />
@@ -227,21 +273,26 @@ export default function Dashboard() {
         defaultShelf={activeTab === "stats" ? "toWatch" : (activeTab as Shelf)}
       />
 
-      {/* ── Empty State CTA (only when no entries at all) ─── */}
+      {/* ── Empty State CTA ─────────────────────────────────── */}
       {entries.length === 0 && (
-        <div className="fixed inset-0 z-20 flex items-center justify-center bg-zinc-950/50 backdrop-blur-sm pointer-events-none">
-          <div className="text-center pointer-events-auto">
-            <Sparkles className="w-16 h-16 mx-auto text-indigo-400/50 mb-4" />
-            <h2 className="text-2xl font-bold text-white mb-2">
-              Welcome to Cinema Journal
+        <div className="fixed inset-0 z-20 flex items-center justify-center pointer-events-none">
+          {/* Ambient glow */}
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-amber-500/8 rounded-full blur-[100px]" />
+
+          <div className="text-center pointer-events-auto relative">
+            <div className="inline-flex p-5 rounded-2xl bg-amber-500/10 mb-6 animate-float">
+              <Sparkles className="w-12 h-12 text-amber-400/60" />
+            </div>
+            <h2 className="text-3xl font-bold text-white mb-3 text-glow">
+              Welcome to My Cinema
             </h2>
-            <p className="text-zinc-400 max-w-md mx-auto mb-6">
+            <p className="text-stone-400 max-w-md mx-auto mb-8 leading-relaxed">
               Track what you&apos;re watching, build your backlog, and keep a
               personal archive of every movie and show you experience.
             </p>
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium shadow-xl shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-all"
+              className="inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl font-semibold shadow-xl shadow-amber-500/20 hover:shadow-amber-500/35 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               <Plus className="w-5 h-5" />
               Add Your First Movie
