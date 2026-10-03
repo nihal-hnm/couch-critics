@@ -225,12 +225,16 @@ export function JournalProvider({ children }: { children: ReactNode }) {
         .get<ApiEntry[]>("/api/entries")
         .then((data) => {
           const entries = data.map(apiEntryToMovieEntry);
-          dispatch({ type: "ENTRIES_LOADED", payload: entries });
+          const localEntries = getEntries();
+          // If server has data, use it; otherwise fallback to local entries
+          const resolved = entries.length > 0 ? entries : localEntries;
+          dispatch({ type: "ENTRIES_LOADED", payload: resolved });
         })
         .catch((err) => {
-          console.error("Failed to fetch entries from API:", err);
-          // Fallback to empty state
-          dispatch({ type: "ENTRIES_LOADED", payload: [] });
+          console.warn("Entries API unavailable, falling back to local storage:", err);
+          // Fallback to local storage so user data is never lost
+          const stored = getEntries();
+          dispatch({ type: "ENTRIES_LOADED", payload: stored });
         });
     } else {
       // Guest mode — load from localStorage
@@ -240,27 +244,26 @@ export function JournalProvider({ children }: { children: ReactNode }) {
   }, [isAuthenticated, authLoading]);
 
   /**
-   * Auto-save to localStorage in guest mode.
-   * In authenticated mode, mutations go through the API directly.
+   * Always sync to localStorage as a reliable offline cache and safety net.
    */
   useEffect(() => {
-    if (state.isLoaded && !isAuthenticated) {
+    if (state.isLoaded) {
       saveEntries(state.entries);
     }
-  }, [state.entries, state.isLoaded, isAuthenticated]);
+  }, [state.entries, state.isLoaded]);
 
   // ─── Actions ────────────────────────────────────────────────────────────
 
   const addEntry = useCallback(
     (entry: MovieEntry) => {
-      // Optimistic update
+      // Optimistic update — immediate UI response
       dispatch({ type: "ENTRY_ADDED", payload: entry });
 
       if (isAuthenticated) {
         apiClient
           .post<ApiEntry>("/api/entries", movieEntryToApiPayload(entry))
           .then((created) => {
-            // Replace the optimistic entry with the server-generated one (has real ID)
+            // Replace the optimistic entry with the server-generated one
             dispatch({ type: "ENTRY_REMOVED", payload: entry.id });
             dispatch({
               type: "ENTRY_ADDED",
@@ -268,11 +271,8 @@ export function JournalProvider({ children }: { children: ReactNode }) {
             });
           })
           .catch((err) => {
-            console.error("Failed to create entry:", err);
-            // Revert optimistic update on duplicate
-            if (err instanceof ApiClientError && err.statusCode === 409) {
-              dispatch({ type: "ENTRY_REMOVED", payload: entry.id });
-            }
+            console.warn("Failed to sync entry to cloud database:", err);
+            // Retain the optimistic entry in local state so the movie is never lost
           });
       }
     },
