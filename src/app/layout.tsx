@@ -6,17 +6,17 @@
  * This is a SERVER component (no "use client" directive).
  * It runs once on the server and provides:
  *   1. HTML <head> metadata (title, description, fonts)
- *   2. The <JournalProvider> that wraps all pages
+ *   2. The <AuthProvider> and <JournalProvider> that wrap all pages
  *
- * WHY WRAP PROVIDER HERE INSTEAD OF IN page.tsx?
- * ──────────────────────────────────────────────
- * The layout persists across page navigations. If you put the provider
- * in page.tsx, it would remount (and lose state) on every route change.
- * Layout is the correct place for app-wide providers.
+ * PROVIDER ORDER:
+ * ──────────────
+ * AuthProvider must wrap JournalProvider because JournalProvider needs
+ * to call useAuth() to know whether to use localStorage or the API.
  */
 
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { AuthProvider } from "@/lib/auth-context";
 import { JournalProvider } from "@/lib/journal-context";
 import "./globals.css";
 
@@ -45,12 +45,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${inter.variable} antialiased`}>
       <body className="min-h-screen bg-zinc-950 text-white font-sans">
         {/**
-         * JournalProvider is a Client Component being used inside a
-         * Server Component. This is perfectly fine — Next.js handles
-         * the boundary automatically. The children (page.tsx content)
-         * will be rendered inside the provider.
+         * AuthProvider → JournalProvider → children
+         * Auth must come first because JournalProvider reads auth state
+         * to decide whether to use localStorage or the cloud API.
          */}
-        <JournalProvider>{children}</JournalProvider>
+        <AuthProvider>
+          <JournalProvider>{children}</JournalProvider>
+        </AuthProvider>
       </body>
     </html>
   );

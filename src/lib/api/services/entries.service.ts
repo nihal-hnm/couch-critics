@@ -15,8 +15,8 @@
  */
 
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "./database.types";
-import { AppError } from "./errors";
+import type { Database } from "../database.types";
+import { AppError } from "../errors";
 
 type EntryRow = Database["public"]["Tables"]["entries"]["Row"];
 type EntryInsert = Database["public"]["Tables"]["entries"]["Insert"];

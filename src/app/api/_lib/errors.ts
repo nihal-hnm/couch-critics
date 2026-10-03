@@ -13,6 +13,7 @@ export class AppError extends Error {
   constructor(message: string, statusCode: number, isOperational = true) {
     super(message);
     this.statusCode = statusCode;
+    this.isOperational = isOperational;
     Object.setPrototypeOf(this, AppError.prototype);
   }
 

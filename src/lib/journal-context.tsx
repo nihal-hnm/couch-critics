@@ -1,22 +1,18 @@
 /**
  * =============================================================================
- * Journal Context — Global State Management
+ * Journal Context — Global State Management (Hybrid: Local + Cloud)
  * =============================================================================
  *
- * WHY REACT CONTEXT INSTEAD OF REDUX / ZUSTAND?
- * ──────────────────────────────────────────────
- * For an app of this size (~3 shelves, ~1 data type), Context + useReducer
- * is the right tool. Redux/Zustand add boilerplate without benefit here.
+ * This context supports two modes:
+ *   1. GUEST MODE (no auth): Works exactly as before — localStorage only.
+ *   2. AUTHENTICATED MODE: Fetches from and dispatches mutations to /api/*.
+ *      localStorage is used as a fast cache, and the API is the source of truth.
  *
- * RULE OF THUMB:
- *   - <5 actions, <3 data types → Context + useReducer
- *   - 5-15 actions, complex async → Zustand
- *   - Large team, huge app → Redux Toolkit
- *
- * The reducer pattern gives us:
- *   1. Predictable state transitions (action → new state, always)
- *   2. Easy debugging (log every action to see what happened)
- *   3. A clean migration path to server-side state management
+ * MIGRATION STRATEGY:
+ * ──────────────────
+ * When a guest user logs in, their localStorage entries are NOT automatically
+ * synced to the cloud. They start fresh with an empty cloud journal. If you
+ * want to add a "merge" feature later, you can POST each local entry to the API.
  */
 
 "use client";
@@ -31,15 +27,89 @@ import {
 } from "react";
 import type { MovieEntry, Shelf, UserReview, WatchProgress } from "./types";
 import { getEntries, saveEntries } from "./storage";
+import { useAuth } from "./auth-context";
+import { apiClient, ApiClientError } from "./api-client";
+
+// ─── API Response Types ─────────────────────────────────────────────────────
+// The API stores data in a flat, snake_case format. We need to map it to
+// our camelCase MovieEntry type for the frontend.
+
+interface ApiEntry {
+  id: string;
+  shelf: string;
+  tmdb_id: number;
+  title: string;
+  poster_url: string | null;
+  release_year: string | null;
+  runtime: number;
+  genres: string[];
+  director: string;
+  overview: string;
+  media_type: string;
+  current_episode: number | null;
+  total_episodes: number | null;
+  minutes_watched: number | null;
+  total_minutes: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** Map an API entry (flat, snake_case) to our frontend MovieEntry (nested, camelCase) */
+function apiEntryToMovieEntry(e: ApiEntry): MovieEntry {
+  return {
+    id: e.id,
+    shelf: e.shelf as Shelf,
+    tmdb: {
+      tmdbId: e.tmdb_id,
+      title: e.title,
+      posterUrl: e.poster_url,
+      releaseYear: e.release_year ?? "",
+      runtime: e.runtime,
+      genres: e.genres,
+      director: e.director,
+      overview: e.overview,
+      mediaType: e.media_type as "movie" | "tv",
+    },
+    progress:
+      e.current_episode != null || e.minutes_watched != null
+        ? {
+            currentEpisode: e.current_episode ?? undefined,
+            totalEpisodes: e.total_episodes ?? undefined,
+            minutesWatched: e.minutes_watched ?? undefined,
+            totalMinutes: e.total_minutes ?? undefined,
+          }
+        : undefined,
+    addedAt: e.created_at,
+    updatedAt: e.updated_at,
+  };
+}
+
+/** Map a frontend MovieEntry to the API create payload */
+function movieEntryToApiPayload(entry: MovieEntry) {
+  return {
+    shelf: entry.shelf,
+    tmdb_id: entry.tmdb.tmdbId,
+    title: entry.tmdb.title,
+    poster_url: entry.tmdb.posterUrl,
+    release_year: entry.tmdb.releaseYear || null,
+    runtime: entry.tmdb.runtime,
+    genres: entry.tmdb.genres,
+    director: entry.tmdb.director,
+    overview: entry.tmdb.overview,
+    media_type: entry.tmdb.mediaType,
+    current_episode: entry.progress?.currentEpisode ?? null,
+    total_episodes: entry.progress?.totalEpisodes ?? null,
+    minutes_watched: entry.progress?.minutesWatched ?? null,
+    total_minutes: entry.progress?.totalMinutes ?? null,
+  };
+}
 
 // ─── Action Types ───────────────────────────────────────────────────────────
-// Each action represents something the user CAN DO. Naming them as past-tense
-// events ("ENTRY_ADDED") is a common convention — it reads like a log.
 
 type JournalAction =
   | { type: "ENTRIES_LOADED"; payload: MovieEntry[] }
   | { type: "ENTRY_ADDED"; payload: MovieEntry }
-  | { type: "ENTRY_REMOVED"; payload: string } // id
+  | { type: "ENTRY_REMOVED"; payload: string }
   | { type: "ENTRY_MOVED"; payload: { id: string; shelf: Shelf; review?: UserReview } }
   | { type: "PROGRESS_UPDATED"; payload: { id: string; progress: WatchProgress } }
   | { type: "REVIEW_UPDATED"; payload: { id: string; review: UserReview } };
@@ -48,7 +118,7 @@ type JournalAction =
 
 interface JournalState {
   entries: MovieEntry[];
-  isLoaded: boolean; // Have we read from localStorage yet?
+  isLoaded: boolean;
 }
 
 const initialState: JournalState = {
@@ -57,8 +127,6 @@ const initialState: JournalState = {
 };
 
 // ─── Reducer ────────────────────────────────────────────────────────────────
-// A reducer is a pure function: (currentState, action) → newState
-// NEVER mutate `state` directly — always return a new object.
 
 function journalReducer(state: JournalState, action: JournalAction): JournalState {
   switch (action.type) {
@@ -140,64 +208,152 @@ const JournalContext = createContext<JournalContextValue | null>(null);
 
 export function JournalProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(journalReducer, initialState);
+  const { user, session, isLoading: authLoading } = useAuth();
+
+  const isAuthenticated = !!user && !!session;
 
   /**
-   * Load entries from localStorage on first mount.
-   *
-   * WHY useEffect AND NOT INITIAL STATE?
-   * ────────────────────────────────────
-   * localStorage is a browser-only API. During server-side rendering (SSR),
-   * `window` doesn't exist. If we tried to read localStorage in `initialState`,
-   * Next.js would crash during SSR. useEffect only runs in the browser.
+   * Load entries: from API if authenticated, from localStorage if guest.
    */
   useEffect(() => {
-    const stored = getEntries();
-    dispatch({ type: "ENTRIES_LOADED", payload: stored });
-  }, []);
+    if (authLoading) return; // Wait for auth to initialize
+
+    if (isAuthenticated) {
+      // Fetch from API
+      apiClient
+        .get<ApiEntry[]>("/api/entries")
+        .then((data) => {
+          const entries = data.map(apiEntryToMovieEntry);
+          dispatch({ type: "ENTRIES_LOADED", payload: entries });
+        })
+        .catch((err) => {
+          console.error("Failed to fetch entries from API:", err);
+          // Fallback to empty state
+          dispatch({ type: "ENTRIES_LOADED", payload: [] });
+        });
+    } else {
+      // Guest mode — load from localStorage
+      const stored = getEntries();
+      dispatch({ type: "ENTRIES_LOADED", payload: stored });
+    }
+  }, [isAuthenticated, authLoading]);
 
   /**
-   * Auto-save to localStorage whenever entries change.
-   *
-   * WHY NOT SAVE INSIDE EACH ACTION?
-   * ────────────────────────────────
-   * Saving here (in an effect) is cleaner because:
-   *  1. The reducer stays pure (no side effects).
-   *  2. We save once even if multiple dispatches happen in the same render.
-   *  3. When you migrate to Supabase, this effect becomes an API call.
+   * Auto-save to localStorage in guest mode.
+   * In authenticated mode, mutations go through the API directly.
    */
   useEffect(() => {
-    if (state.isLoaded) {
+    if (state.isLoaded && !isAuthenticated) {
       saveEntries(state.entries);
     }
-  }, [state.entries, state.isLoaded]);
+  }, [state.entries, state.isLoaded, isAuthenticated]);
 
-  // Wrap dispatch calls in useCallback to prevent unnecessary re-renders
+  // ─── Actions ────────────────────────────────────────────────────────────
+
   const addEntry = useCallback(
-    (entry: MovieEntry) => dispatch({ type: "ENTRY_ADDED", payload: entry }),
-    []
+    (entry: MovieEntry) => {
+      // Optimistic update
+      dispatch({ type: "ENTRY_ADDED", payload: entry });
+
+      if (isAuthenticated) {
+        apiClient
+          .post<ApiEntry>("/api/entries", movieEntryToApiPayload(entry))
+          .then((created) => {
+            // Replace the optimistic entry with the server-generated one (has real ID)
+            dispatch({ type: "ENTRY_REMOVED", payload: entry.id });
+            dispatch({
+              type: "ENTRY_ADDED",
+              payload: apiEntryToMovieEntry(created),
+            });
+          })
+          .catch((err) => {
+            console.error("Failed to create entry:", err);
+            // Revert optimistic update on duplicate
+            if (err instanceof ApiClientError && err.statusCode === 409) {
+              dispatch({ type: "ENTRY_REMOVED", payload: entry.id });
+            }
+          });
+      }
+    },
+    [isAuthenticated]
   );
 
   const removeEntry = useCallback(
-    (id: string) => dispatch({ type: "ENTRY_REMOVED", payload: id }),
-    []
+    (id: string) => {
+      dispatch({ type: "ENTRY_REMOVED", payload: id });
+
+      if (isAuthenticated) {
+        apiClient.delete(`/api/entries/${id}`).catch((err) => {
+          console.error("Failed to delete entry:", err);
+        });
+      }
+    },
+    [isAuthenticated]
   );
 
   const moveToShelf = useCallback(
-    (id: string, shelf: Shelf, review?: UserReview) =>
-      dispatch({ type: "ENTRY_MOVED", payload: { id, shelf, review } }),
-    []
+    (id: string, shelf: Shelf, review?: UserReview) => {
+      dispatch({ type: "ENTRY_MOVED", payload: { id, shelf, review } });
+
+      if (isAuthenticated) {
+        apiClient
+          .patch(`/api/entries/${id}/shelf`, {
+            shelf,
+            review: review
+              ? {
+                  rating: review.rating,
+                  notes: review.notes,
+                  tags: review.tags,
+                  date_completed: review.dateCompleted || null,
+                }
+              : undefined,
+          })
+          .catch((err) => {
+            console.error("Failed to move entry:", err);
+          });
+      }
+    },
+    [isAuthenticated]
   );
 
   const updateProgress = useCallback(
-    (id: string, progress: WatchProgress) =>
-      dispatch({ type: "PROGRESS_UPDATED", payload: { id, progress } }),
-    []
+    (id: string, progress: WatchProgress) => {
+      dispatch({ type: "PROGRESS_UPDATED", payload: { id, progress } });
+
+      if (isAuthenticated) {
+        apiClient
+          .patch(`/api/entries/${id}`, {
+            current_episode: progress.currentEpisode ?? null,
+            total_episodes: progress.totalEpisodes ?? null,
+            minutes_watched: progress.minutesWatched ?? null,
+            total_minutes: progress.totalMinutes ?? null,
+          })
+          .catch((err) => {
+            console.error("Failed to update progress:", err);
+          });
+      }
+    },
+    [isAuthenticated]
   );
 
   const updateReview = useCallback(
-    (id: string, review: UserReview) =>
-      dispatch({ type: "REVIEW_UPDATED", payload: { id, review } }),
-    []
+    (id: string, review: UserReview) => {
+      dispatch({ type: "REVIEW_UPDATED", payload: { id, review } });
+
+      if (isAuthenticated) {
+        apiClient
+          .post(`/api/entries/${id}/review`, {
+            rating: review.rating,
+            notes: review.notes,
+            tags: review.tags,
+            date_completed: review.dateCompleted || null,
+          })
+          .catch((err) => {
+            console.error("Failed to update review:", err);
+          });
+      }
+    },
+    [isAuthenticated]
   );
 
   return (
@@ -219,16 +375,6 @@ export function JournalProvider({ children }: { children: ReactNode }) {
 
 // ─── Custom Hook ────────────────────────────────────────────────────────────
 
-/**
- * WHY A CUSTOM HOOK?
- * ──────────────────
- * Without this, every component would need:
- *   const ctx = useContext(JournalContext);
- *   if (!ctx) throw new Error("...");
- *
- * This hook encapsulates that boilerplate AND provides a helpful error
- * message if someone forgets to wrap their component tree in <JournalProvider>.
- */
 export function useJournal(): JournalContextValue {
   const context = useContext(JournalContext);
   if (!context) {

@@ -12,7 +12,7 @@
 
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import {
   Plus,
   Film as FilmIcon,
@@ -29,10 +29,16 @@ import {
   Play,
   BookmarkPlus,
   Award,
+  LogIn,
+  LogOut,
+  User as UserIcon,
+  ChevronDown,
 } from "lucide-react";
 import { useJournal } from "@/lib/journal-context";
+import { useAuth } from "@/lib/auth-context";
 import type { Shelf, MovieEntry } from "@/lib/types";
 import SearchModal from "@/components/SearchModal";
+import AuthModal from "@/components/AuthModal";
 import WatchingShelf from "@/components/WatchingShelf";
 import ToWatchShelf from "@/components/ToWatchShelf";
 import WatchedShelf from "@/components/WatchedShelf";
@@ -58,9 +64,31 @@ const NAV_ITEMS: NavDef[] = [
 
 export default function Dashboard() {
   const { entries, isLoaded } = useJournal();
+  const { user, signOut, isLoading: authLoading } = useAuth();
   const [activeNav, setActiveNav] = useState<NavKey>("home");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close user menu on outside click
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSignOut = useCallback(async () => {
+    setIsUserMenuOpen(false);
+    await signOut();
+  }, [signOut]);
+
+  const userInitial = user?.email?.charAt(0).toUpperCase() || "?";
 
   const watching = useMemo(
     () => entries.filter((e) => e.shelf === "watching"),
@@ -195,6 +223,45 @@ export default function Dashboard() {
                 <Plus className="w-4 h-4" />
                 <span className="hidden sm:inline">Add Movie</span>
               </button>
+
+              {/* Auth: Login button or User avatar menu */}
+              {!authLoading && (
+                user ? (
+                  <div className="user-menu-wrapper" ref={userMenuRef}>
+                    <button
+                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                      className="user-avatar-btn"
+                      id="user-menu-button"
+                      aria-label="User menu"
+                    >
+                      <div className="user-avatar-icon">{userInitial}</div>
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    </button>
+                    {isUserMenuOpen && (
+                      <div className="user-menu-dropdown">
+                        <div className="user-menu-email">{user.email}</div>
+                        <button
+                          onClick={handleSignOut}
+                          className="user-menu-item danger"
+                          id="sign-out-button"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Sign Out
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setIsAuthOpen(true)}
+                    className="login-btn"
+                    id="login-button"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    Sign In
+                  </button>
+                )
+              )}
             </div>
           </div>
 
@@ -770,6 +837,12 @@ export default function Dashboard() {
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
         defaultShelf={activeNav === "movies" ? "toWatch" : activeNav === "series" ? "toWatch" : "toWatch"}
+      />
+
+      {/* ── Auth Modal ──────────────────────────────────────── */}
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
       />
     </div>
   );
