@@ -527,11 +527,25 @@ export default function MediaDetailModal({
               </button>
             </div>
 
+            {/* Move to To-Watch Action Button for Watching entries */}
+            {entry.shelf === "watching" && (
+              <button
+                type="button"
+                onClick={() => handleShelfChange("toWatch")}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-purple-300 hover:text-purple-100 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 transition-all shadow-sm cursor-pointer"
+                title="Move to To-Watch backlog"
+              >
+                <BookmarkPlus className="w-3.5 h-3.5" />
+                Move to To-Watch
+              </button>
+            )}
+
             {/* Unwatch Action Button */}
             {entry.shelf === "watched" && (
               <button
+                type="button"
                 onClick={() => handleUnwatch("toWatch")}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-purple-300 hover:text-purple-100 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 transition-all shadow-sm"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-purple-300 hover:text-purple-100 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 transition-all shadow-sm cursor-pointer"
                 title="Unwatch (Move back to Watchlist/Backlog)"
               >
                 <RotateCcw className="w-3.5 h-3.5" />

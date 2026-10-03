@@ -29,6 +29,7 @@ import {
   Loader2,
   CircleAlert,
   Sparkles,
+  BookmarkPlus,
 } from "lucide-react";
 import type { TMDBMovieData, Shelf } from "@/lib/types";
 import { searchMovies, getMovieDetails, TMDBError } from "@/lib/tmdb";
@@ -309,12 +310,23 @@ export default function SearchModal({
                               ? "Watched"
                               : "To Watch"}
                         </button>
+                        {defaultShelf !== "toWatch" && (
+                          <button
+                            onClick={() => handleAddMovie(movie, "toWatch")}
+                            disabled={addingId === movie.tmdbId}
+                            className="text-xs text-zinc-500 hover:text-purple-300 px-2.5 py-1 rounded-lg hover:bg-purple-500/10 transition-all flex items-center gap-1"
+                          >
+                            <BookmarkPlus className="w-3 h-3 text-purple-400" />
+                            + To Watch
+                          </button>
+                        )}
                         {defaultShelf !== "watching" && (
                           <button
                             onClick={() => handleAddMovie(movie, "watching")}
                             disabled={addingId === movie.tmdbId}
-                            className="text-xs text-zinc-500 hover:text-purple-300 px-2.5 py-1 rounded-lg hover:bg-purple-500/10 transition-all"
+                            className="text-xs text-zinc-500 hover:text-purple-300 px-2.5 py-1 rounded-lg hover:bg-purple-500/10 transition-all flex items-center gap-1"
                           >
+                            <Plus className="w-3 h-3" />
                             + Watching
                           </button>
                         )}
@@ -322,8 +334,9 @@ export default function SearchModal({
                           <button
                             onClick={() => handleAddMovie(movie, "watched")}
                             disabled={addingId === movie.tmdbId}
-                            className="text-xs text-zinc-500 hover:text-purple-300 px-2.5 py-1 rounded-lg hover:bg-purple-500/10 transition-all"
+                            className="text-xs text-zinc-500 hover:text-purple-300 px-2.5 py-1 rounded-lg hover:bg-purple-500/10 transition-all flex items-center gap-1"
                           >
+                            <Plus className="w-3 h-3" />
                             + Watched
                           </button>
                         )}

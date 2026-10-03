@@ -676,6 +676,15 @@ export default function Dashboard() {
                   </div>
 
                   <button
+                    onClick={() => setActiveNav("toWatch")}
+                    className="glass-card px-3 py-2 border border-purple-500/20 hover:border-purple-500/40 text-xs text-purple-300 hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer"
+                    title="View To-Watch Backlog"
+                  >
+                    <BookmarkPlus className="w-3.5 h-3.5 text-purple-400" />
+                    <span>To Watch ({toWatch.length})</span>
+                  </button>
+
+                  <button
                     onClick={() => setIsBurgerMenuOpen(true)}
                     className="glass-card px-3 py-2 border border-purple-500/20 hover:border-purple-500/40 text-xs text-purple-300/80 hover:text-purple-200 transition-colors flex items-center gap-1.5 cursor-pointer"
                     title="Open Burger Menu for more shelves"

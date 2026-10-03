@@ -229,10 +229,10 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                 >
                   <button
                     onClick={() => handleMoveToBacklog(entry)}
-                    className="p-2 bg-stone-800/90 hover:bg-purple-600/90 rounded-lg text-stone-200 hover:text-white transition-colors backdrop-blur-sm"
-                    title="Unwatch (Move to Backlog / To-Watch)"
+                    className="p-2 bg-stone-800/90 hover:bg-purple-600/90 rounded-lg text-stone-200 hover:text-white transition-colors backdrop-blur-sm cursor-pointer"
+                    title="Move to To-Watch (Backlog)"
                   >
-                    <RotateCcw className="w-4 h-4" />
+                    <BookmarkPlus className="w-4 h-4 text-purple-400 group-hover:text-white" />
                   </button>
                   <button
                     onClick={() => setCompletingId(entry.id)}
@@ -332,32 +332,60 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                   </div>
                 </div>
 
-                {/* TV Series: Episode Checklist Toggle Bar */}
-                {!isMovie && (
-                  <div className="pt-2 border-t border-stone-800/80 flex items-center justify-between">
+                {/* ── Watching Options Bar: Move to To-Watch, Complete, and Details ── */}
+                <div className="pt-2.5 border-t border-stone-800/80 flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    {/* To Watch Option */}
                     <button
-                      onClick={() =>
-                        setExpandedEpisodeShowId(isExpanded ? null : entry.id)
-                      }
-                      className="text-xs text-purple-400/90 hover:text-purple-300 flex items-center gap-1.5 transition-colors font-medium"
+                      type="button"
+                      onClick={() => handleMoveToBacklog(entry)}
+                      className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-purple-300 hover:text-white bg-purple-500/10 hover:bg-purple-600/30 border border-purple-500/25 hover:border-purple-500/50 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                      title="Move to To-Watch shelf (Backlog)"
                     >
-                      <ListVideo className="w-3.5 h-3.5" />
-                      {isExpanded ? "Hide Episode Guide" : "Episode Checklist Tracker"}
-                      <ChevronDown
-                        className={`w-3.5 h-3.5 transition-transform ${
-                          isExpanded ? "rotate-180" : ""
-                        }`}
-                      />
+                      <BookmarkPlus className="w-3.5 h-3.5 text-purple-400" />
+                      <span>To Watch</span>
                     </button>
 
+                    {/* Mark Complete Option */}
                     <button
-                      onClick={() => setSelectedEntry(entry)}
-                      className="text-xs text-stone-400 hover:text-white transition-colors"
+                      type="button"
+                      onClick={() => setCompletingId(entry.id)}
+                      className="px-2.5 py-1.5 rounded-lg text-xs font-medium text-emerald-300 hover:text-white bg-emerald-950/40 hover:bg-emerald-600/30 border border-emerald-800/40 hover:border-emerald-500/50 transition-all flex items-center gap-1.5 cursor-pointer"
+                      title="Mark as completed / watched"
                     >
-                      All Details &rarr;
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                      <span className="hidden xs:inline">Finished</span>
                     </button>
                   </div>
-                )}
+
+                  <div className="flex items-center gap-2">
+                    {!isMovie && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setExpandedEpisodeShowId(isExpanded ? null : entry.id)
+                        }
+                        className="text-xs text-purple-400/90 hover:text-purple-300 flex items-center gap-1 transition-colors font-medium cursor-pointer"
+                      >
+                        <ListVideo className="w-3.5 h-3.5" />
+                        <span className="hidden sm:inline">{isExpanded ? "Hide" : "Episodes"}</span>
+                        <ChevronDown
+                          className={`w-3.5 h-3.5 transition-transform ${
+                            isExpanded ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={() => setSelectedEntry(entry)}
+                      className="text-xs text-stone-400 hover:text-white transition-colors cursor-pointer"
+                    >
+                      Details &rarr;
+                    </button>
+                  </div>
+                </div>
 
                 {/* TV Series: Inline Episode Checklist Drawer */}
                 {!isMovie && isExpanded && (() => {
