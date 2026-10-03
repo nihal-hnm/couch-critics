@@ -76,6 +76,24 @@
   --modal-bg: #ffffff;
   --hero-overlay-bottom: linear-gradient(to bottom, rgba(248, 246, 251, 0.35) 0%, rgba(248, 246, 251, 0.8) 50%, #f8f6fb 100%);
   --hero-overlay-side: linear-gradient(to right, rgba(248, 246, 251, 0.94) 0%, rgba(248, 246, 251, 0.6) 50%, rgba(248, 246, 251, 0.88) 100%);
+
+  /* High-contrast purple tokens in light mode */
+  --color-purple-50: #f5edff;
+  --color-purple-100: #5c0f92;
+  --color-purple-200: #5c0f92;
+  --color-purple-300: #5c0f92;
+  --color-purple-400: #4a0b77;
+  --color-purple-500: #3b0764;
+  --color-purple-600: #3b0764;
+  --color-purple-700: #2e0854;
+  --color-purple-800: #1d0335;
+  --color-purple-900: #120124;
+  --color-gold: #5c0f92;
+  --color-orange-300: #5c0f92;
+  --color-orange-400: #4a0b77;
+  --color-orange-500: #3b0764;
+  --color-orange-600: #2e0854;
+
   color-scheme: light;
 }
 
@@ -532,13 +550,13 @@ body {
   background: rgba(23, 20, 17, 0.95);
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
-  border: 1px solid rgba(217, 170, 119, 0.15);
+  border: 1px solid rgba(92, 15, 146, 0.25);
   border-radius: 16px;
   padding: 2rem;
   width: 400px;
   max-width: 90vw;
   box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6),
-              0 0 60px rgba(245, 158, 11, 0.05);
+              0 0 60px rgba(92, 15, 146, 0.1);
 }
 
 .auth-modal-header {
@@ -552,7 +570,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #f59e0b;
+  color: #5c0f92;
   font-weight: 700;
   font-size: 1.1rem;
 }
@@ -646,8 +664,8 @@ body {
 }
 
 .auth-input:focus {
-  border-color: rgba(245, 158, 11, 0.5);
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+  border-color: rgba(92, 15, 146, 0.5);
+  box-shadow: 0 0 0 3px rgba(92, 15, 146, 0.15);
 }
 
 .auth-input-toggle {
@@ -673,10 +691,10 @@ body {
   gap: 0.5rem;
   margin-top: 0.5rem;
   padding: 0.75rem;
-  background: linear-gradient(135deg, #f59e0b, #d97706);
+  background: linear-gradient(135deg, #5c0f92, #7c1fc2);
   border: none;
   border-radius: 10px;
-  color: #0a0a0a;
+  color: #ffffff;
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
@@ -684,7 +702,7 @@ body {
 }
 
 .auth-submit-btn:hover:not(:disabled) {
-  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+  box-shadow: 0 4px 20px rgba(92, 15, 146, 0.35);
   transform: translateY(-1px);
 }
 
@@ -696,8 +714,8 @@ body {
 .auth-spinner {
   width: 20px;
   height: 20px;
-  border: 2px solid rgba(0, 0, 0, 0.2);
-  border-top-color: #0a0a0a;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #ffffff;
   border-radius: 50%;
   animation: auth-spin 600ms linear infinite;
 }
@@ -716,14 +734,14 @@ body {
 .auth-link {
   background: transparent;
   border: none;
-  color: #f59e0b;
+  color: #9333ea;
   font-weight: 600;
   cursor: pointer;
   transition: color 200ms;
 }
 
 .auth-link:hover {
-  color: #fbbf24;
+  color: #c084fc;
   text-decoration: underline;
 }
 
@@ -749,18 +767,18 @@ body {
 
 .user-avatar-btn:hover {
   background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(217, 170, 119, 0.2);
+  border-color: rgba(92, 15, 146, 0.35);
 }
 
 .user-avatar-icon {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #f59e0b, #d97706);
+  background: linear-gradient(135deg, #5c0f92, #7c1fc2);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #0a0a0a;
+  color: #ffffff;
   font-weight: 700;
   font-size: 0.75rem;
 }
@@ -985,7 +1003,153 @@ body {
   border-color: rgba(92, 15, 146, 0.2) !important;
 }
 
+.light .theme-segmented-container button[aria-pressed="true"] {
+  background-color: rgba(92, 15, 146, 0.18) !important;
+  border-color: rgba(92, 15, 146, 0.4) !important;
+  color: #4a0b77 !important;
+}
+
 .light .text-glow {
   text-shadow: 0 2px 10px rgba(92, 15, 146, 0.35) !important;
 }
+
+/* ─── Purple Elements High-Contrast Darkening in Light Mode ───────────────── */
+
+/* 1. Purple text elements: force dark rich royal purple (#5c0f92 / #4a0b77 / #3b0764) */
+.light [class*="text-purple-"]:not(
+  button[class*="from-purple"], button[class*="from-purple"] *,
+  button[class*="bg-purple-600"], button[class*="bg-purple-600"] *,
+  button[class*="bg-purple-700"], button[class*="bg-purple-700"] *,
+  [class*="bg-gradient-to-r from-purple"], [class*="bg-gradient-to-r from-purple"] *,
+  [class*="bg-[#5c0f92]"], [class*="bg-[#5c0f92]"] *,
+  .keep-white, .keep-white *
+) {
+  color: #4a0b77 !important;
+}
+
+/* Explicit overrides for all Tailwind text-purple classes */
+.light .text-purple-100,
+.light .text-purple-200,
+.light .text-purple-300,
+.light .text-purple-400,
+.light .text-purple-500,
+.light .text-purple-600 {
+  color: #4a0b77 !important;
+}
+
+/* For classes with opacities like text-purple-400/80, text-purple-400/60, text-purple-300/80, text-purple-500/40 */
+.light [class*="text-purple-"][class*="/"]:not(
+  button[class*="from-purple"] *,
+  button[class*="bg-purple-600"] *,
+  [class*="bg-gradient-to-r from-purple"] *,
+  [class*="bg-[#5c0f92]"] *,
+  .keep-white, .keep-white *
+) {
+  color: #5c0f92 !important;
+}
+
+/* Group & button hover text */
+.light [class*="hover:text-purple-"]:hover {
+  color: #3b0764 !important;
+}
+
+.light .group:hover [class*="group-hover:text-purple-"] {
+  color: #4a0b77 !important;
+}
+
+/* 2. Badge & Pill Backgrounds: clean light purple background with dark purple text and border */
+.light [class*="bg-purple-500/"]:not([class*="blur"]),
+.light [class*="bg-purple-600/"],
+.light [class*="bg-purple-400/"] {
+  background-color: rgba(92, 15, 146, 0.12) !important;
+  border-color: rgba(92, 15, 146, 0.35) !important;
+  color: #3b0764 !important;
+}
+
+.light [class*="bg-purple-500/"]:not([class*="blur"]) *,
+.light [class*="bg-purple-600/"] *,
+.light [class*="bg-purple-400/"] * {
+  color: #3b0764 !important;
+}
+
+.light [class*="bg-purple-500/"]:not([class*="blur"]):hover,
+.light [class*="bg-purple-600/"]:hover {
+  background-color: rgba(92, 15, 146, 0.18) !important;
+  border-color: rgba(92, 15, 146, 0.5) !important;
+  color: #2e0854 !important;
+}
+
+/* 3. Active Nav items and Filter Buttons */
+.light button[class*="bg-purple-500/20"],
+.light div[class*="bg-purple-500/20"],
+.light button[class*="bg-purple-500/15"],
+.light div[class*="bg-purple-500/15"] {
+  background-color: rgba(92, 15, 146, 0.15) !important;
+  border-color: rgba(92, 15, 146, 0.45) !important;
+  color: #3b0764 !important;
+}
+
+.light button[class*="bg-purple-500/20"] *,
+.light div[class*="bg-purple-500/20"] *,
+.light button[class*="bg-purple-500/15"] *,
+.light div[class*="bg-purple-500/15"] * {
+  color: #3b0764 !important;
+}
+
+/* 4. Solid Progress Bars & Checkmarks */
+.light .bg-purple-400,
+.light .bg-purple-500,
+.light .bg-purple-600 {
+  background-color: #5c0f92 !important;
+}
+
+/* 5. Star Ratings & Icons */
+.light [class*="fill-purple-"],
+.light .fill-purple-400,
+.light .fill-purple-500 {
+  fill: #5c0f92 !important;
+  color: #5c0f92 !important;
+}
+
+.light svg[class*="text-purple-"] {
+  color: #5c0f92 !important;
+}
+
+/* 6. Border highlights */
+.light [class*="border-purple-500/"],
+.light [class*="border-purple-400/"] {
+  border-color: rgba(92, 15, 146, 0.35) !important;
+}
+
+/* 7. Burger menu button & Login button */
+.light #burger-menu-button {
+  background-color: rgba(92, 15, 146, 0.12) !important;
+  border-color: rgba(92, 15, 146, 0.35) !important;
+  color: #4a0b77 !important;
+}
+
+.light #burger-menu-button * {
+  color: #4a0b77 !important;
+}
+
+.light #burger-menu-button:hover {
+  background-color: rgba(92, 15, 146, 0.2) !important;
+  border-color: rgba(92, 15, 146, 0.5) !important;
+}
+
+.light #burger-menu-button:hover * {
+  color: #2e0854 !important;
+}
+
+.light .login-btn {
+  color: #5c0f92 !important;
+  border-color: rgba(92, 15, 146, 0.4) !important;
+}
+
+.light .login-btn:hover {
+  background: rgba(92, 15, 146, 0.12) !important;
+  border-color: #5c0f92 !important;
+  color: #3b0764 !important;
+}
+
 

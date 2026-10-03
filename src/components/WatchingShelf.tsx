@@ -383,7 +383,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                           onClick={() => setActiveSeasonMap(prev => ({ ...prev, [entry.id]: "all" }))}
                           className={`px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap transition-colors ${
                             currentSelection === "all"
-                              ? "bg-purple-500 text-stone-950 font-bold"
+                              ? "bg-purple-600 text-white font-bold"
                               : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
                           }`}
                         >
@@ -398,7 +398,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                               onClick={() => setActiveSeasonMap(prev => ({ ...prev, [entry.id]: s.seasonNumber }))}
                               className={`px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap transition-colors ${
                                 isSel
-                                  ? "bg-purple-500 text-stone-950 font-bold"
+                                  ? "bg-purple-600 text-white font-bold"
                                   : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
                               }`}
                             >
@@ -465,7 +465,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                                     >
                                       <div
                                         className={`w-3.5 h-3.5 rounded flex items-center justify-center shrink-0 ${
-                                          isWatched ? "bg-purple-400 text-black" : "border border-stone-600"
+                                          isWatched ? "bg-[#5c0f92] text-white" : "border border-stone-600"
                                         }`}
                                       >
                                         {isWatched && <Check className="w-2.5 h-2.5 stroke-[3]" />}

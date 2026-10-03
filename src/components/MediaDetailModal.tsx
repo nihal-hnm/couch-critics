@@ -650,7 +650,7 @@ export default function MediaDetailModal({
                     onClick={() => setSelectedSeasonFilter("all")}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
                       selectedSeasonFilter === "all"
-                        ? "bg-purple-500 text-stone-950 shadow-md shadow-purple-500/20"
+                        ? "bg-[#5c0f92] text-white shadow-md shadow-purple-500/20"
                         : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
                     }`}
                   >
@@ -670,7 +670,7 @@ export default function MediaDetailModal({
                         onClick={() => setSelectedSeasonFilter(isSelected ? "all" : s.seasonNumber)}
                         className={`px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all flex items-center gap-1.5 ${
                           isSelected
-                            ? "bg-purple-500 text-stone-950 font-bold shadow-md shadow-purple-500/20"
+                            ? "bg-[#5c0f92] text-white font-bold shadow-md shadow-purple-500/20"
                             : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
                         }`}
                         title={`Filter or jump to Season ${s.seasonNumber}`}
@@ -679,7 +679,7 @@ export default function MediaDetailModal({
                         <span
                           className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
                             isSelected
-                              ? "bg-stone-950/30 text-stone-950"
+                              ? "bg-white/20 text-white"
                               : "bg-stone-800 text-stone-400"
                           }`}
                         >
@@ -894,7 +894,7 @@ export default function MediaDetailModal({
                                         type="button"
                                         className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 transition-all ${
                                           isWatched
-                                            ? "bg-purple-500 text-stone-950 font-bold"
+                                            ? "bg-[#5c0f92] text-white font-bold"
                                             : "border border-stone-700 hover:border-purple-400"
                                         }`}
                                       >

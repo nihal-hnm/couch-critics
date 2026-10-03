@@ -48,7 +48,7 @@ export default function ThemeToggle({ variant = "button", className = "" }: Them
           onClick={() => setTheme("light")}
           className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
             isLight
-              ? "bg-[#5c0f92]/25 text-[#7b1cc1] dark:text-[#d8b4fe] border border-[#5c0f92]/40 shadow-sm"
+              ? "bg-[#5c0f92]/25 text-[#5c0f92] dark:text-[#d8b4fe] border border-[#5c0f92]/40 shadow-sm"
               : "text-stone-400 hover:text-stone-200"
           }`}
           aria-pressed={isLight}
@@ -71,7 +71,7 @@ export default function ThemeToggle({ variant = "button", className = "" }: Them
       id="theme-toggle-button"
     >
       {isLight ? (
-        <Sun className="w-4 h-4 text-[#7b1cc1] group-hover:rotate-45 transition-transform duration-300" />
+        <Sun className="w-4 h-4 text-[#5c0f92] group-hover:rotate-45 transition-transform duration-300" />
       ) : (
         <Moon className="w-4 h-4 text-[#c084fc] group-hover:-rotate-12 transition-transform duration-300" />
       )}
