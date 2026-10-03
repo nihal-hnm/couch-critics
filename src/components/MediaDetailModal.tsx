@@ -585,7 +585,7 @@ export default function MediaDetailModal({
           {activeTab === "episodes" && isTV && (
             <div className="space-y-6">
               {/* Overall series progress banner */}
-              <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/5 to-transparent border border-amber-500/25 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg shadow-black/40">
+              <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-[#5c0f92]/10 to-transparent border border-amber-500/25 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg shadow-black/40">
                 <div>
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-amber-400" />
@@ -633,7 +633,7 @@ export default function MediaDetailModal({
                 </div>
                 <div className="w-full bg-stone-950 rounded-full h-2.5 overflow-hidden border border-stone-800/80">
                   <div
-                    className="h-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-400 transition-all duration-300"
+                    className="h-full bg-gradient-to-r from-amber-500 via-[#5c0f92] to-amber-400 transition-all duration-300"
                     style={{
                       width: `${Math.min(100, Math.round((watchedEpisodeCodes.size / (displayTotalEpisodes || 1)) * 100))}%`,
                     }}
@@ -855,7 +855,7 @@ export default function MediaDetailModal({
                         {/* Season Mini Progress Bar */}
                         <div className="w-full bg-stone-950 h-1 overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-300"
+                            className="h-full bg-gradient-to-r from-amber-500 to-[#5c0f92] transition-all duration-300"
                             style={{ width: `${seasonPercent}%` }}
                           />
                         </div>
@@ -1135,7 +1135,7 @@ export default function MediaDetailModal({
                 <button
                   type="button"
                   onClick={handleSaveReview}
-                  className="px-6 py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white rounded-xl text-sm font-semibold shadow-lg shadow-amber-600/20 transition-all"
+                  className="px-6 py-2.5 bg-gradient-to-r from-amber-600 to-[#5c0f92] hover:from-amber-500 hover:to-[#791bbd] text-white rounded-xl text-sm font-semibold shadow-lg shadow-amber-600/20 transition-all"
                 >
                   Save Review
                 </button>

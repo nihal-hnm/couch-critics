@@ -21,9 +21,16 @@
   /* Warm cinema palette */
   --color-amber-glow: #f59e0b;
   --color-gold: #d4a574;
+  --color-cinema-purple: #5c0f92;
   --color-warm-surface: rgba(217, 170, 119, 0.06);
   --color-warm-border: rgba(217, 170, 119, 0.12);
   --color-warm-hover: rgba(217, 170, 119, 0.15);
+
+  /* Override orange with #5c0f92 royal cinema purple */
+  --color-orange-300: #a855f7;
+  --color-orange-400: #7b1cc1;
+  --color-orange-500: #5c0f92;
+  --color-orange-600: #4a0b77;
 }
 
 /* ─── Light / Dark Theme Tokens ─────────────────────────────────────────── */

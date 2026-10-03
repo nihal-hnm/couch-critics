@@ -279,7 +279,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                 {/* Warm amber progress bar */}
                 <div className="w-full bg-stone-800/80 rounded-full h-1.5 overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full transition-all duration-500"
+                    className="h-full bg-gradient-to-r from-amber-500 to-[#5c0f92] rounded-full transition-all duration-500"
                     style={{ width: `${Math.min(100, progressPercent)}%` }}
                   />
                 </div>

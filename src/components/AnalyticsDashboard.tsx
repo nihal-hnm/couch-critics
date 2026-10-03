@@ -200,8 +200,8 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
                 <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
                 Movies: {analytics.totalWatchTimeMins > 0 ? Math.round((analytics.movieWatchTimeMins / analytics.totalWatchTimeMins) * 100) : 0}%
               </span>
-              <span className="flex items-center gap-1.5 text-orange-300">
-                <span className="w-2.5 h-2.5 rounded-full bg-orange-500" />
+              <span className="flex items-center gap-1.5 text-[#c084fc]">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#5c0f92]" />
                 Series: {analytics.totalWatchTimeMins > 0 ? Math.round((analytics.seriesWatchTimeMins / analytics.totalWatchTimeMins) * 100) : 0}%
               </span>
             </div>
@@ -217,7 +217,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
               title={`Movies: ${analytics.movieWatchTimeMins.toLocaleString()} min`}
             />
             <div
-              className="h-full bg-gradient-to-r from-orange-500 to-red-500 transition-all duration-500"
+              className="h-full bg-gradient-to-r from-[#5c0f92] to-[#8b24d6] transition-all duration-500"
               style={{
                 width: `${analytics.totalWatchTimeMins > 0 ? (analytics.seriesWatchTimeMins / analytics.totalWatchTimeMins) * 100 : 50}%`,
               }}
@@ -250,11 +250,11 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
             {/* Series Minutes Card */}
             <div className="p-4 rounded-xl bg-stone-900/60 border border-stone-800/80 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-3 rounded-xl bg-orange-500/10 text-orange-400">
+                <div className="p-3 rounded-xl bg-[#5c0f92]/15 text-[#a855f7]">
                   <Tv className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="text-xs uppercase tracking-wider text-orange-400/80 font-medium">
+                  <p className="text-xs uppercase tracking-wider text-[#a855f7] font-medium">
                     Series Minutes
                   </p>
                   <p className="text-2xl font-bold text-white">
@@ -353,7 +353,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
                         </div>
                         <div className="w-full bg-stone-800 rounded-full h-1.5 overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full"
+                            className="h-full bg-gradient-to-r from-amber-500 to-[#5c0f92] rounded-full"
                             style={{ width: `${show.percentComplete}%` }}
                           />
                         </div>

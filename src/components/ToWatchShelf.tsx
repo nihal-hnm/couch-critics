@@ -127,7 +127,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
           <button
             onClick={pickRandom}
             disabled={filteredEntries.length === 0}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white rounded-xl text-sm font-medium transition-all shadow-lg shadow-amber-500/15 hover:shadow-amber-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-600 to-[#5c0f92] hover:from-amber-500 hover:to-[#791bbd] text-white rounded-xl text-sm font-medium transition-all shadow-lg shadow-amber-500/15 hover:shadow-amber-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Shuffle className="w-4 h-4" />
             Pick for Tonight

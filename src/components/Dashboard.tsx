@@ -254,7 +254,7 @@ export default function Dashboard() {
               }}
               className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
                 activeNav === "watching"
-                  ? "bg-gradient-to-r from-amber-500/25 to-orange-500/15 text-amber-200 border border-amber-500/30 shadow-lg shadow-amber-500/10"
+                  ? "bg-gradient-to-r from-amber-500/25 to-[#5c0f92]/25 text-amber-200 border border-amber-500/30 shadow-lg shadow-amber-500/10"
                   : "text-stone-300 hover:text-white hover:bg-white/5"
               }`}
             >
@@ -348,7 +348,7 @@ export default function Dashboard() {
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Tv className="w-4 h-4 text-orange-400" />
+                  <Tv className="w-4 h-4 text-[#a855f7]" />
                   <span>All TV Series</span>
                 </div>
                 <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-stone-800 text-stone-400">
@@ -508,7 +508,7 @@ export default function Dashboard() {
 
         {/* Ambient warm glow */}
         <div className="absolute top-0 left-1/4 w-[500px] h-[300px] bg-amber-500/5 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[250px] bg-orange-500/5 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[250px] bg-[#5c0f92]/10 rounded-full blur-[100px] pointer-events-none" />
 
         {/* ── Header ─────────────────────────────────────────── */}
         <header className="relative z-10">
@@ -533,7 +533,7 @@ export default function Dashboard() {
                 onClick={() => setActiveNav("watching")}
                 className="flex items-center gap-2.5 cursor-pointer group"
               >
-                <div className="p-2 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-600/10 border border-amber-500/20 shadow-lg shadow-amber-500/5 group-hover:border-amber-500/40 transition-colors">
+                <div className="p-2 rounded-xl bg-gradient-to-br from-amber-500/20 to-[#5c0f92]/20 border border-amber-500/20 shadow-lg shadow-amber-500/5 group-hover:border-amber-500/40 transition-colors">
                   <FilmIcon className="w-5 h-5 text-amber-400" />
                 </div>
                 <div>
@@ -577,7 +577,7 @@ export default function Dashboard() {
 
               <button
                 onClick={() => setIsSearchOpen(true)}
-                className="flex items-center gap-2 px-3.5 py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-xs sm:text-sm rounded-xl transition-all shadow-lg shadow-amber-500/15 hover:shadow-amber-500/25 font-semibold cursor-pointer"
+                className="flex items-center gap-2 px-3.5 py-2.5 bg-gradient-to-r from-amber-600 to-[#5c0f92] hover:from-amber-500 hover:to-[#791bbd] text-white text-xs sm:text-sm rounded-xl transition-all shadow-lg shadow-amber-500/15 hover:shadow-amber-500/25 font-semibold cursor-pointer"
                 id="add-movie-button"
               >
                 <Plus className="w-4 h-4" />
@@ -775,7 +775,7 @@ export default function Dashboard() {
                 <div className="flex flex-wrap items-center justify-center gap-3">
                   <button
                     onClick={() => setIsSearchOpen(true)}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white rounded-xl text-sm font-semibold shadow-lg shadow-amber-500/20 transition-all hover:scale-[1.02] cursor-pointer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-600 to-[#5c0f92] hover:from-amber-500 hover:to-[#791bbd] text-white rounded-xl text-sm font-semibold shadow-lg shadow-amber-500/20 transition-all hover:scale-[1.02] cursor-pointer"
                   >
                     <Plus className="w-4 h-4" />
                     Add What You&apos;re Watching
@@ -893,7 +893,7 @@ export default function Dashboard() {
           <TopReturnBanner
             title="All TV Series"
             subtitle={`Catalog of ${series.length} shows with episode checklists`}
-            icon={<Tv className="w-4 h-4 text-orange-400" />}
+            icon={<Tv className="w-4 h-4 text-[#a855f7]" />}
             watchingCount={watching.length}
             onBackToWatching={() => setActiveNav("watching")}
             onOpenMenu={() => setIsBurgerMenuOpen(true)}
@@ -1040,7 +1040,7 @@ export default function Dashboard() {
       {/* ── Floating Action Button (Mobile) ──────────────────────── */}
       <button
         onClick={() => setIsSearchOpen(true)}
-        className="fixed bottom-6 right-6 sm:hidden p-4 bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-full shadow-2xl shadow-amber-500/30 hover:shadow-amber-500/50 transition-all z-30 animate-glow cursor-pointer"
+        className="fixed bottom-6 right-6 sm:hidden p-4 bg-gradient-to-br from-amber-500 to-[#5c0f92] text-white rounded-full shadow-2xl shadow-amber-500/30 hover:shadow-amber-500/50 transition-all z-30 animate-glow cursor-pointer"
         aria-label="Add title"
       >
         <Plus className="w-6 h-6" />
@@ -1098,7 +1098,7 @@ function TopReturnBanner({
   onOpenMenu: () => void;
 }) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-stone-900/60 border border-amber-500/25 shadow-lg shadow-amber-500/5">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-[#5c0f92]/20 to-stone-900/60 border border-amber-500/25 shadow-lg shadow-amber-500/5">
       <div className="flex items-center gap-3">
         <button
           onClick={onOpenMenu}
@@ -1119,7 +1119,7 @@ function TopReturnBanner({
 
       <button
         onClick={onBackToWatching}
-        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-xs font-semibold rounded-xl shadow-lg shadow-amber-500/20 transition-all hover:scale-[1.02] cursor-pointer shrink-0"
+        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-600 to-[#5c0f92] hover:from-amber-500 hover:to-[#791bbd] text-white text-xs font-semibold rounded-xl shadow-lg shadow-amber-500/20 transition-all hover:scale-[1.02] cursor-pointer shrink-0"
       >
         <Play className="w-3.5 h-3.5 fill-current" />
         <span>Back to Currently Watching ({watchingCount})</span>
@@ -1218,7 +1218,7 @@ function EmptySection({
       <p className="text-stone-500 mt-2 text-sm max-w-sm mx-auto">{subtitle}</p>
       <button
         onClick={onAdd}
-        className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 text-white text-sm rounded-xl transition-all shadow-lg shadow-amber-500/15 hover:shadow-amber-500/25 font-medium cursor-pointer"
+        className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-600 to-[#5c0f92] hover:from-amber-500 hover:to-[#791bbd] text-white text-sm rounded-xl transition-all shadow-lg shadow-amber-500/15 hover:shadow-amber-500/25 font-medium cursor-pointer"
       >
         <Plus className="w-4 h-4" />
         Add Title
