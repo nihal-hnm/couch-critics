@@ -163,6 +163,10 @@ export interface MovieEntry {
 export interface JournalStats {
   totalWatched: number;
   totalWatchTimeMins: number;
+  /** Total watch time specifically spent on movies in minutes */
+  movieMinutes: number;
+  /** Total watch time specifically spent on TV series in minutes */
+  seriesMinutes: number;
   averageRating: number;
   /** Genre → count, sorted by most frequent */
   favoriteGenres: { genre: string; count: number }[];

@@ -372,6 +372,9 @@ export default function Dashboard() {
                       {stats.totalWatchTimeMins.toLocaleString()}
                     </p>
                     <p className="text-xs text-stone-500">Minutes Watched &rarr;</p>
+                    <p className="text-[10px] text-amber-400/80 font-mono mt-0.5 whitespace-nowrap">
+                      🎬 {stats.movieMinutes.toLocaleString()}m &bull; 📺 {stats.seriesMinutes.toLocaleString()}m
+                    </p>
                   </div>
                 </div>
                 {stats.averageRating > 0 && (

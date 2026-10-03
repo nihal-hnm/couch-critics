@@ -23,11 +23,37 @@ import type { MovieEntry, JournalStats } from "./types";
 export function computeStats(entries: MovieEntry[]): JournalStats {
   const watched = entries.filter((e) => e.shelf === "watched");
 
-  // Total watch time: sum of all runtimes for watched entries
-  const totalWatchTimeMins = watched.reduce(
-    (sum, entry) => sum + (entry.tmdb.runtime || 0),
-    0
-  );
+  let movieMinutes = 0;
+  let seriesMinutes = 0;
+
+  for (const entry of entries) {
+    if (entry.tmdb.mediaType === "movie") {
+      if (entry.shelf === "watched") {
+        movieMinutes += entry.tmdb.runtime || 0;
+      } else if (entry.shelf === "watching") {
+        movieMinutes += entry.progress?.minutesWatched || 0;
+      }
+    } else {
+      // TV Series
+      const avgEpRuntime = entry.tmdb.runtime || 45;
+      if (entry.shelf === "watching") {
+        const watchedCount =
+          entry.progress?.watchedEpisodes?.length ||
+          entry.progress?.currentEpisode ||
+          0;
+        seriesMinutes += entry.progress?.minutesWatched || watchedCount * avgEpRuntime;
+      } else if (entry.shelf === "watched") {
+        const watchedCount =
+          entry.progress?.watchedEpisodes?.length ||
+          entry.progress?.totalEpisodes ||
+          entry.tmdb.totalEpisodes ||
+          10;
+        seriesMinutes += entry.progress?.minutesWatched || watchedCount * avgEpRuntime;
+      }
+    }
+  }
+
+  const totalWatchTimeMins = movieMinutes + seriesMinutes;
 
   // Average rating: only count entries that have a review with a rating
   const ratings = watched
@@ -67,6 +93,8 @@ export function computeStats(entries: MovieEntry[]): JournalStats {
   return {
     totalWatched: watched.length,
     totalWatchTimeMins,
+    movieMinutes,
+    seriesMinutes,
     averageRating,
     favoriteGenres,
     watchedPerMonth,

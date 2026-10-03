@@ -176,6 +176,99 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
           />
         </div>
 
+        {/* ── Watch Time Calculation: Movies vs Series Individual Breakdown ──── */}
+        <div className="glass-card p-6 stagger-item space-y-4" style={{ animationDelay: "190ms" }}>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
+                <Timer className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                  Watch Time Calculation
+                  <span className="text-xs font-normal text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
+                    {analytics.totalWatchTimeMins.toLocaleString()} total mins
+                  </span>
+                </h3>
+                <p className="text-xs text-stone-400">
+                  Individual calculation of minutes and hours spent on movies vs. TV series
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 text-xs font-medium">
+              <span className="flex items-center gap-1.5 text-amber-300">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+                Movies: {analytics.totalWatchTimeMins > 0 ? Math.round((analytics.movieWatchTimeMins / analytics.totalWatchTimeMins) * 100) : 0}%
+              </span>
+              <span className="flex items-center gap-1.5 text-orange-300">
+                <span className="w-2.5 h-2.5 rounded-full bg-orange-500" />
+                Series: {analytics.totalWatchTimeMins > 0 ? Math.round((analytics.seriesWatchTimeMins / analytics.totalWatchTimeMins) * 100) : 0}%
+              </span>
+            </div>
+          </div>
+
+          {/* Dual Proportional Split Bar */}
+          <div className="w-full bg-stone-900 rounded-full h-3 overflow-hidden flex border border-stone-800">
+            <div
+              className="h-full bg-gradient-to-r from-amber-500 to-amber-600 transition-all duration-500"
+              style={{
+                width: `${analytics.totalWatchTimeMins > 0 ? (analytics.movieWatchTimeMins / analytics.totalWatchTimeMins) * 100 : 50}%`,
+              }}
+              title={`Movies: ${analytics.movieWatchTimeMins.toLocaleString()} min`}
+            />
+            <div
+              className="h-full bg-gradient-to-r from-orange-500 to-red-500 transition-all duration-500"
+              style={{
+                width: `${analytics.totalWatchTimeMins > 0 ? (analytics.seriesWatchTimeMins / analytics.totalWatchTimeMins) * 100 : 50}%`,
+              }}
+              title={`Series: ${analytics.seriesWatchTimeMins.toLocaleString()} min`}
+            />
+          </div>
+
+          {/* Individual Detailed Metric Cards */}
+          <div className="grid gap-4 sm:grid-cols-2 pt-1">
+            {/* Movie Minutes Card */}
+            <div className="p-4 rounded-xl bg-stone-900/60 border border-stone-800/80 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400">
+                  <Clapperboard className="w-6 h-6" />
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-wider text-amber-400/80 font-medium">
+                    Movie Minutes
+                  </p>
+                  <p className="text-2xl font-bold text-white">
+                    {analytics.movieWatchTimeMins.toLocaleString()} <span className="text-sm font-normal text-stone-400">min</span>
+                  </p>
+                  <p className="text-xs text-stone-400 mt-0.5">
+                    {analytics.movieWatchTimeHours} hours &bull; {analytics.totalMoviesLogged} films logged
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Series Minutes Card */}
+            <div className="p-4 rounded-xl bg-stone-900/60 border border-stone-800/80 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-xl bg-orange-500/10 text-orange-400">
+                  <Tv className="w-6 h-6" />
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-wider text-orange-400/80 font-medium">
+                    Series Minutes
+                  </p>
+                  <p className="text-2xl font-bold text-white">
+                    {analytics.seriesWatchTimeMins.toLocaleString()} <span className="text-sm font-normal text-stone-400">min</span>
+                  </p>
+                  <p className="text-xs text-stone-400 mt-0.5">
+                    {analytics.seriesWatchTimeHours} hours &bull; {analytics.totalEpisodesWatched} episodes watched
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* ── EPISODE-WISE WATCHING BREAKDOWN (TV SERIES) ──────────── */}
         {analytics.tvShowsProgress.length > 0 && (
           <div className="glass-card p-6 stagger-item space-y-5" style={{ animationDelay: "200ms" }}>

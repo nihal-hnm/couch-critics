@@ -77,6 +77,14 @@ export interface AnalyticsData {
   totalHoursWatched: number;
   /** Total watch time in raw minutes */
   totalWatchTimeMins: number;
+  /** Total watch time specifically for movies in minutes */
+  movieWatchTimeMins: number;
+  /** Total watch time specifically for movies in hours */
+  movieWatchTimeHours: number;
+  /** Total watch time specifically for TV series in minutes */
+  seriesWatchTimeMins: number;
+  /** Total watch time specifically for TV series in hours */
+  seriesWatchTimeHours: number;
   /** Total episodes watched (sum of currentEpisode / watchedEpisodes for TV shows) */
   totalEpisodesWatched: number;
   /** Count of completed movies */
@@ -163,7 +171,8 @@ export function filterByGenre(
 export function computeAnalytics(entries: MovieEntry[]): AnalyticsData {
   // ── Single-pass aggregation ───────────────────────────────────────────
 
-  let totalWatchTimeMins = 0;
+  let movieWatchTimeMins = 0;
+  let seriesWatchTimeMins = 0;
   let totalEpisodesWatched = 0;
   let totalMoviesLogged = 0;
   let totalShowsLogged = 0;
@@ -176,26 +185,35 @@ export function computeAnalytics(entries: MovieEntry[]): AnalyticsData {
   > = {};
 
   for (const entry of entries) {
-    // ── Watch time ────────────────────────────────────────────────────
-    // For movies: runtime is the full movie duration
-    // For TV: runtime is the average episode length, so we multiply by
-    //         the number of episodes watched for actual watch time
+    // ── Watch time (separated by media type) ──────────────────────────
     if (entry.tmdb.mediaType === "movie") {
-      totalWatchTimeMins += entry.tmdb.runtime || 0;
+      const movieMins =
+        entry.shelf === "watched"
+          ? (entry.tmdb.runtime || 0)
+          : (entry.progress?.minutesWatched || 0);
+      movieWatchTimeMins += movieMins;
     } else {
-      // TV show: estimate total watch time from episodes × avg episode runtime
-      const episodesWatched = entry.progress?.currentEpisode ?? 0;
-      const episodeRuntime = entry.tmdb.runtime || 0;
-      totalWatchTimeMins += episodesWatched * episodeRuntime;
+      // TV Series: sum from watched episodes or minutesWatched
+      const avgEpRuntime = entry.tmdb.runtime || 45;
+      const watchedCount =
+        entry.progress?.watchedEpisodes?.length ||
+        entry.progress?.currentEpisode ||
+        (entry.shelf === "watched"
+          ? entry.progress?.totalEpisodes || entry.tmdb.totalEpisodes || 10
+          : 0);
+      const tvMins = entry.progress?.minutesWatched || watchedCount * avgEpRuntime;
+      seriesWatchTimeMins += tvMins;
     }
 
     // ── Episode count ─────────────────────────────────────────────────
     if (entry.tmdb.mediaType === "tv") {
-      const eps = entry.progress?.currentEpisode ?? 0;
-      // If on the "watched" shelf with no progress data, assume at least
-      // totalEpisodes were watched (or 0 if unknown)
+      const eps =
+        entry.progress?.watchedEpisodes?.length ||
+        entry.progress?.currentEpisode ||
+        0;
       if (entry.shelf === "watched" && eps === 0) {
-        totalEpisodesWatched += entry.progress?.totalEpisodes ?? 0;
+        totalEpisodesWatched +=
+          entry.progress?.totalEpisodes || entry.tmdb.totalEpisodes || 10;
       } else {
         totalEpisodesWatched += eps;
       }
@@ -303,9 +321,15 @@ export function computeAnalytics(entries: MovieEntry[]): AnalyticsData {
     (a, b) => new Date(b.watchedAt).getTime() - new Date(a.watchedAt).getTime()
   );
 
+  const totalWatchTimeMins = movieWatchTimeMins + seriesWatchTimeMins;
+
   return {
     totalHoursWatched: Math.round((totalWatchTimeMins / 60) * 10) / 10,
     totalWatchTimeMins,
+    movieWatchTimeMins,
+    movieWatchTimeHours: Math.round((movieWatchTimeMins / 60) * 10) / 10,
+    seriesWatchTimeMins,
+    seriesWatchTimeHours: Math.round((seriesWatchTimeMins / 60) * 10) / 10,
     totalEpisodesWatched,
     totalMoviesLogged,
     totalShowsLogged,

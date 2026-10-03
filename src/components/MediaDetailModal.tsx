@@ -31,6 +31,7 @@ import {
   Sparkles,
   ChevronRight,
   ListVideo,
+  RotateCcw,
 } from "lucide-react";
 import type { MovieEntry, Shelf, UserReview, WatchProgress, EpisodeItem } from "@/lib/types";
 import { useJournal } from "@/lib/journal-context";
@@ -54,6 +55,7 @@ export default function MediaDetailModal({
   const [selectedSeason, setSelectedSeason] = useState<number>(1);
   const [seasonEpisodes, setSeasonEpisodes] = useState<EpisodeItem[]>([]);
   const [isLoadingEpisodes, setIsLoadingEpisodes] = useState(false);
+  const [episodeFilter, setEpisodeFilter] = useState<"all" | "watched" | "unwatched">("all");
 
   // Review editing state
   const [rating, setRating] = useState<number>(entry?.review?.rating ?? 8);
@@ -194,7 +196,7 @@ export default function MediaDetailModal({
     updateProgress(entry.id, updatedProgress);
   }
 
-  // ── Mark Whole Season ─────────────────────────────────────────────────────
+  // ── Mark Whole Season (Select All) ────────────────────────────────────────
   function handleMarkAllSeason(seasonNum: number) {
     if (!entry || seasonEpisodes.length === 0) return;
     const newWatched = new Set(entry.progress?.watchedEpisodes ?? []);
@@ -211,6 +213,49 @@ export default function MediaDetailModal({
       watchedEpisodes: watchedArray,
       minutesWatched: watchedArray.length * (entry.tmdb.runtime || 45),
     });
+
+    if (entry.shelf === "toWatch") {
+      moveToShelf(entry.id, "watching");
+    }
+  }
+
+  // ── Unmark Whole Season (Unselect All) ────────────────────────────────────
+  function handleUnmarkAllSeason(seasonNum: number) {
+    if (!entry || seasonEpisodes.length === 0) return;
+    const newWatched = new Set(entry.progress?.watchedEpisodes ?? []);
+
+    seasonEpisodes.forEach((ep) => {
+      newWatched.delete(`S${seasonNum}E${ep.episodeNumber}`);
+    });
+
+    const watchedArray = Array.from(newWatched);
+    updateProgress(entry.id, {
+      ...(entry.progress ?? {}),
+      currentSeason: seasonNum,
+      currentEpisode: watchedArray.length,
+      watchedEpisodes: watchedArray,
+      minutesWatched: watchedArray.length * (entry.tmdb.runtime || 45),
+    });
+  }
+
+  // ── Unwatch Feature ───────────────────────────────────────────────────────
+  function handleUnwatch(targetShelf: Shelf = "toWatch") {
+    if (!entry) return;
+    moveToShelf(entry.id, targetShelf, {
+      rating: 0,
+      notes: entry.review?.notes || "",
+      tags: entry.review?.tags || [],
+      dateCompleted: "",
+    });
+
+    if (targetShelf === "toWatch") {
+      updateProgress(entry.id, {
+        ...(entry.progress ?? {}),
+        currentEpisode: 0,
+        watchedEpisodes: [],
+        minutesWatched: 0,
+      });
+    }
   }
 
   // ── Save Review ───────────────────────────────────────────────────────────
@@ -336,41 +381,55 @@ export default function MediaDetailModal({
 
         {/* ── Shelf Controls & Navigation Bar ───────────────────── */}
         <div className="px-4 sm:px-6 py-3 border-b border-stone-800 bg-[#161311] flex flex-wrap items-center justify-between gap-3 shrink-0">
-          {/* Shelf Switcher */}
-          <div className="flex items-center gap-1.5 bg-stone-900/80 p-1 rounded-xl border border-stone-800">
-            <button
-              onClick={() => handleShelfChange("watching")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                entry.shelf === "watching"
-                  ? "bg-amber-600 text-white shadow-sm"
-                  : "text-stone-400 hover:text-white"
-              }`}
-            >
-              <Play className="w-3 h-3" />
-              Watching
-            </button>
-            <button
-              onClick={() => handleShelfChange("toWatch")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                entry.shelf === "toWatch"
-                  ? "bg-amber-600 text-white shadow-sm"
-                  : "text-stone-400 hover:text-white"
-              }`}
-            >
-              <BookmarkPlus className="w-3 h-3" />
-              To Watch
-            </button>
-            <button
-              onClick={() => handleShelfChange("watched")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                entry.shelf === "watched"
-                  ? "bg-emerald-600 text-white shadow-sm"
-                  : "text-stone-400 hover:text-white"
-              }`}
-            >
-              <CheckCircle2 className="w-3 h-3" />
-              Watched
-            </button>
+          {/* Shelf Switcher & Unwatch button */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 bg-stone-900/80 p-1 rounded-xl border border-stone-800">
+              <button
+                onClick={() => handleShelfChange("watching")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  entry.shelf === "watching"
+                    ? "bg-amber-600 text-white shadow-sm"
+                    : "text-stone-400 hover:text-white"
+                }`}
+              >
+                <Play className="w-3 h-3" />
+                Watching
+              </button>
+              <button
+                onClick={() => handleShelfChange("toWatch")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  entry.shelf === "toWatch"
+                    ? "bg-amber-600 text-white shadow-sm"
+                    : "text-stone-400 hover:text-white"
+                }`}
+              >
+                <BookmarkPlus className="w-3 h-3" />
+                To Watch
+              </button>
+              <button
+                onClick={() => handleShelfChange("watched")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  entry.shelf === "watched"
+                    ? "bg-emerald-600 text-white shadow-sm"
+                    : "text-stone-400 hover:text-white"
+                }`}
+              >
+                <CheckCircle2 className="w-3 h-3" />
+                Watched
+              </button>
+            </div>
+
+            {/* Unwatch Action Button */}
+            {entry.shelf === "watched" && (
+              <button
+                onClick={() => handleUnwatch("toWatch")}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-amber-300 hover:text-amber-100 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 transition-all shadow-sm"
+                title="Unwatch (Move back to Watchlist/Backlog)"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                Unwatch
+              </button>
+            )}
           </div>
 
           {/* Modal View Tabs */}
@@ -468,20 +527,67 @@ export default function MediaDetailModal({
                   ))}
                 </div>
 
-                {/* Mark all season button */}
-                <button
-                  onClick={() => handleMarkAllSeason(selectedSeason)}
-                  className="text-xs text-amber-400/90 hover:text-amber-300 flex items-center gap-1 bg-amber-500/10 px-3 py-1.5 rounded-lg border border-amber-500/20 transition-colors"
-                >
-                  <Check className="w-3.5 h-3.5" />
-                  Mark All S{selectedSeason} Watched
-                </button>
+                {/* Select All and Unselect All buttons */}
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={() => handleMarkAllSeason(selectedSeason)}
+                    className="text-xs text-amber-300 hover:text-amber-100 flex items-center gap-1.5 bg-amber-500/15 hover:bg-amber-500/25 px-3 py-1.5 rounded-lg border border-amber-500/30 transition-colors font-medium"
+                    title="Mark all episodes in this season as watched"
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                    Select All
+                  </button>
+                  <button
+                    onClick={() => handleUnmarkAllSeason(selectedSeason)}
+                    className="text-xs text-stone-400 hover:text-stone-200 flex items-center gap-1.5 bg-stone-900 hover:bg-stone-800 px-3 py-1.5 rounded-lg border border-stone-800 transition-colors font-medium"
+                    title="Unmark all episodes in this season"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    Unselect All
+                  </button>
+                </div>
               </div>
 
-              {/* Season Progress Bar */}
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-xs text-stone-400">
+              {/* Season Progress Bar & Filter Tabs */}
+              <div className="space-y-2">
+                <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-stone-400">
                   <span>Season {selectedSeason} Progress</span>
+                  {/* Episode filter pills */}
+                  <div className="flex items-center gap-1 bg-stone-900/90 p-0.5 rounded-lg border border-stone-800">
+                    <button
+                      type="button"
+                      onClick={() => setEpisodeFilter("all")}
+                      className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
+                        episodeFilter === "all"
+                          ? "bg-amber-500/20 text-amber-300 font-semibold"
+                          : "text-stone-400 hover:text-white"
+                      }`}
+                    >
+                      All ({episodesInCurrentSeason.length})
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEpisodeFilter("watched")}
+                      className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
+                        episodeFilter === "watched"
+                          ? "bg-amber-500/20 text-amber-300 font-semibold"
+                          : "text-stone-400 hover:text-white"
+                      }`}
+                    >
+                      Watched ({watchedInThisSeason})
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEpisodeFilter("unwatched")}
+                      className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
+                        episodeFilter === "unwatched"
+                          ? "bg-amber-500/20 text-amber-300 font-semibold"
+                          : "text-stone-400 hover:text-white"
+                      }`}
+                    >
+                      Unwatched ({episodesInCurrentSeason.length - watchedInThisSeason})
+                    </button>
+                  </div>
                   <span className="font-semibold text-amber-400">
                     {watchedInThisSeason} / {episodesInCurrentSeason.length} ({Math.round((watchedInThisSeason / (episodesInCurrentSeason.length || 1)) * 100)}%)
                   </span>
@@ -505,10 +611,19 @@ export default function MediaDetailModal({
                     Loading season episodes...
                   </div>
                 ) : (
-                  episodesInCurrentSeason.map((ep) => {
-                    const isWatched = watchedEpisodeCodes.has(
-                      `S${selectedSeason}E${ep.episodeNumber}`
-                    );
+                  episodesInCurrentSeason
+                    .filter((ep) => {
+                      const isWatched = watchedEpisodeCodes.has(
+                        `S${selectedSeason}E${ep.episodeNumber}`
+                      );
+                      if (episodeFilter === "watched") return isWatched;
+                      if (episodeFilter === "unwatched") return !isWatched;
+                      return true;
+                    })
+                    .map((ep) => {
+                      const isWatched = watchedEpisodeCodes.has(
+                        `S${selectedSeason}E${ep.episodeNumber}`
+                      );
                     return (
                       <div
                         key={ep.episodeNumber}

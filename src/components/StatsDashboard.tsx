@@ -20,6 +20,7 @@ import { useMemo } from "react";
 import {
   Clock,
   Film,
+  Tv,
   Star,
   TrendingUp,
   Calendar,
@@ -92,6 +93,11 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
             <p className="text-xs text-zinc-500 mt-1">
               {stats.totalWatchTimeMins.toLocaleString()} total minutes
             </p>
+            <div className="flex items-center gap-2 mt-2 pt-2 border-t border-amber-500/10 text-[11px] text-amber-300/80 font-mono">
+              <span>🎬 {stats.movieMinutes.toLocaleString()}m movie</span>
+              <span>•</span>
+              <span>📺 {stats.seriesMinutes.toLocaleString()}m series</span>
+            </div>
           </div>
         </div>
 

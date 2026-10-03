@@ -26,6 +26,7 @@ import {
   Tag,
   Play,
   Award,
+  RotateCcw,
 } from "lucide-react";
 import type { MovieEntry, UserReview } from "@/lib/types";
 import { useJournal } from "@/lib/journal-context";
@@ -207,16 +208,29 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
                   )}
                 </div>
 
-                {/* Date completed */}
-                {entry.review?.dateCompleted && (
-                  <p className="flex items-center gap-1 text-xs text-zinc-500 mt-1.5">
-                    <Calendar className="w-3 h-3 text-amber-500/40" />
-                    {new Date(entry.review.dateCompleted).toLocaleDateString(
-                      "en-US",
-                      { month: "short", day: "numeric", year: "numeric" }
-                    )}
-                  </p>
-                )}
+                {/* Date completed and Unwatch quick action */}
+                <div className="flex items-center gap-3 mt-1.5 flex-wrap">
+                  {entry.review?.dateCompleted && (
+                    <p className="flex items-center gap-1 text-xs text-zinc-500">
+                      <Calendar className="w-3 h-3 text-amber-500/40" />
+                      {new Date(entry.review.dateCompleted).toLocaleDateString(
+                        "en-US",
+                        { month: "short", day: "numeric", year: "numeric" }
+                      )}
+                    </p>
+                  )}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      moveToShelf(entry.id, "toWatch");
+                    }}
+                    className="flex items-center gap-1 text-[11px] font-medium text-amber-400/90 hover:text-amber-200 bg-amber-500/10 hover:bg-amber-500/20 px-2 py-0.5 rounded-md border border-amber-500/25 transition-all"
+                    title="Unwatch (move back to backlog)"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                    Unwatch
+                  </button>
+                </div>
 
                 {/* Tags — warm amber tint */}
                 {entry.review?.tags && entry.review.tags.length > 0 && (
@@ -242,6 +256,13 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
                   title="Edit review"
                 >
                   <Edit3 className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={() => moveToShelf(entry.id, "toWatch")}
+                  className="p-1.5 rounded-lg text-zinc-600 hover:text-amber-400 hover:bg-amber-500/10 transition-all duration-200"
+                  title="Unwatch (Move to Backlog / To-Watch)"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={() => moveToShelf(entry.id, "watching")}

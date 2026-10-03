@@ -24,6 +24,8 @@ import {
   Check,
   ListVideo,
   Sparkles,
+  RotateCcw,
+  BookmarkPlus,
 } from "lucide-react";
 import type { MovieEntry, UserReview, WatchProgress } from "@/lib/types";
 import { useJournal } from "@/lib/journal-context";
@@ -40,6 +42,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
   const [notes, setNotes] = useState("");
   const [selectedEntry, setSelectedEntry] = useState<MovieEntry | null>(null);
   const [expandedEpisodeShowId, setExpandedEpisodeShowId] = useState<string | null>(null);
+  const [activeSeasonMap, setActiveSeasonMap] = useState<Record<string, number>>({});
 
   function handleProgressChange(entry: MovieEntry, delta: number) {
     const current = entry.progress?.minutesWatched ?? 0;
@@ -67,11 +70,13 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
       currentWatched.delete(`S${season}E${current}`);
     }
 
+    const watchedArray = Array.from(currentWatched);
     updateProgress(entry.id, {
       ...entry.progress,
       currentEpisode: newValue,
       totalEpisodes: total,
-      watchedEpisodes: Array.from(currentWatched),
+      watchedEpisodes: watchedArray,
+      minutesWatched: watchedArray.length * (entry.tmdb.runtime || 45),
     });
   }
 
@@ -93,6 +98,40 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
       watchedEpisodes: watchedArray,
       minutesWatched: watchedArray.length * (entry.tmdb.runtime || 45),
     });
+  }
+
+  function handleSelectAllSeason(entry: MovieEntry, seasonNum: number, epCount: number) {
+    const watched = new Set(entry.progress?.watchedEpisodes ?? []);
+    for (let i = 1; i <= epCount; i++) {
+      watched.add(`S${seasonNum}E${i}`);
+    }
+    const watchedArray = Array.from(watched);
+    updateProgress(entry.id, {
+      ...(entry.progress ?? {}),
+      currentSeason: seasonNum,
+      currentEpisode: watchedArray.length,
+      watchedEpisodes: watchedArray,
+      minutesWatched: watchedArray.length * (entry.tmdb.runtime || 45),
+    });
+  }
+
+  function handleUnselectAllSeason(entry: MovieEntry, seasonNum: number, epCount: number) {
+    const watched = new Set(entry.progress?.watchedEpisodes ?? []);
+    for (let i = 1; i <= epCount; i++) {
+      watched.delete(`S${seasonNum}E${i}`);
+    }
+    const watchedArray = Array.from(watched);
+    updateProgress(entry.id, {
+      ...(entry.progress ?? {}),
+      currentSeason: seasonNum,
+      currentEpisode: watchedArray.length,
+      watchedEpisodes: watchedArray,
+      minutesWatched: watchedArray.length * (entry.tmdb.runtime || 45),
+    });
+  }
+
+  function handleMoveToBacklog(entry: MovieEntry) {
+    moveToShelf(entry.id, "toWatch");
   }
 
   function handleMarkComplete(id: string) {
@@ -186,6 +225,13 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                   className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10"
                   onClick={(e) => e.stopPropagation()}
                 >
+                  <button
+                    onClick={() => handleMoveToBacklog(entry)}
+                    className="p-2 bg-stone-800/90 hover:bg-amber-600/90 rounded-lg text-stone-200 hover:text-white transition-colors backdrop-blur-sm"
+                    title="Unwatch (Move to Backlog / To-Watch)"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </button>
                   <button
                     onClick={() => setCompletingId(entry.id)}
                     className="p-2 bg-emerald-600/90 rounded-lg text-white hover:bg-emerald-500 transition-colors backdrop-blur-sm"
@@ -312,16 +358,68 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                 )}
 
                 {/* TV Series: Inline Episode Checklist Drawer */}
-                {!isMovie && isExpanded && (
-                  <div className="pt-2 space-y-2 border-t border-stone-800/80 animate-in fade-in duration-200">
-                    <p className="text-[11px] text-stone-400 uppercase tracking-wider font-medium">
-                      Season {progress?.currentSeason || 1} Episodes:
-                    </p>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 max-h-48 overflow-y-auto pr-1 hide-scrollbar">
-                      {Array.from(
-                        { length: entry.tmdb.seasons?.[0]?.episodeCount || 10 },
-                        (_, i) => {
-                          const sNum = progress?.currentSeason || 1;
+                {!isMovie && isExpanded && (() => {
+                  const availableSeasons = entry.tmdb.seasons && entry.tmdb.seasons.length > 0
+                    ? entry.tmdb.seasons
+                    : Array.from({ length: entry.tmdb.totalSeasons || 1 }, (_, i) => ({
+                        seasonNumber: i + 1,
+                        name: `Season ${i + 1}`,
+                        episodeCount: entry.tmdb.totalEpisodes ? Math.ceil(entry.tmdb.totalEpisodes / (entry.tmdb.totalSeasons || 1)) : 10,
+                      }));
+
+                  const currentActiveSeason = activeSeasonMap[entry.id] || progress?.currentSeason || 1;
+                  const activeSeasonInfo = availableSeasons.find(s => s.seasonNumber === currentActiveSeason) || availableSeasons[0];
+                  const epCount = activeSeasonInfo?.episodeCount || 10;
+
+                  return (
+                    <div className="pt-3 space-y-2.5 border-t border-stone-800/80 animate-in fade-in duration-200">
+                      {/* Season selector tabs if more than 1 season */}
+                      {availableSeasons.length > 1 && (
+                        <div className="flex items-center gap-1 overflow-x-auto pb-1 hide-scrollbar">
+                          {availableSeasons.map((s) => (
+                            <button
+                              key={s.seasonNumber}
+                              type="button"
+                              onClick={() => setActiveSeasonMap(prev => ({ ...prev, [entry.id]: s.seasonNumber }))}
+                              className={`px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap transition-colors ${
+                                currentActiveSeason === s.seasonNumber
+                                  ? "bg-amber-500 text-stone-950 font-bold"
+                                  : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
+                              }`}
+                            >
+                              S{s.seasonNumber}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Header with Season Title and Select / Unselect All */}
+                      <div className="flex items-center justify-between">
+                        <p className="text-[11px] text-stone-300 uppercase tracking-wider font-semibold">
+                          Season {currentActiveSeason} ({epCount} eps)
+                        </p>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => handleSelectAllSeason(entry, currentActiveSeason, epCount)}
+                            className="px-2 py-0.5 rounded text-[10px] font-medium bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/25 transition-colors"
+                          >
+                            Select All
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleUnselectAllSeason(entry, currentActiveSeason, epCount)}
+                            className="px-2 py-0.5 rounded text-[10px] font-medium bg-stone-800 hover:bg-stone-700 text-stone-300 border border-stone-700 transition-colors"
+                          >
+                            Unselect All
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Episode Checklist Grid */}
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 max-h-48 overflow-y-auto pr-1 hide-scrollbar">
+                        {Array.from({ length: epCount }, (_, i) => {
+                          const sNum = currentActiveSeason;
                           const eNum = i + 1;
                           const code = `S${sNum}E${eNum}`;
                           const isWatched = watchedEpisodesList.includes(code);
@@ -347,11 +445,11 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                               <span className="truncate">Ep {eNum}</span>
                             </button>
                           );
-                        }
-                      )}
+                        })}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  );
+                })()}
               </div>
 
               {/* ── Quick Complete Modal ───────────────────────── */}
