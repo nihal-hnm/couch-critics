@@ -49,7 +49,13 @@ app.use(morgan(env.NODE_ENV === "production" ? "combined" : "dev"));
 // ─── API Routes ─────────────────────────────────────────────────────────────
 
 // Health check is OUTSIDE auth middleware (for load balancers, k8s probes)
-app.use("/api/health", apiRouter);
+app.get("/api/health", (_req, res) => {
+  res.json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+  });
+});
 
 // All other /api routes require authentication
 app.use("/api", authMiddleware, apiRouter);
