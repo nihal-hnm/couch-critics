@@ -23,8 +23,12 @@
 
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env["NEXT_PUBLIC_SUPABASE_URL"] || "";
-const supabaseAnonKey = process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"] || "";
+const supabaseUrl =
+  process.env["NEXT_PUBLIC_SUPABASE_URL"] ||
+  "https://nicthqhmdlgbwfhppgou.supabase.co";
+const supabaseAnonKey =
+  process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"] ||
+  "sb_publishable_zhVcta_xJB8nQim7zZJblw_iH_Yjz7N";
 
 /**
  * Whether Supabase is configured. Used by AuthProvider to skip auth

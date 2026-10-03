@@ -15,8 +15,14 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "./database.types";
 
-function requireEnv(key: string): string {
-  const value = process.env[key];
+const DEFAULT_SUPABASE_URL =
+  process.env["NEXT_PUBLIC_SUPABASE_URL"] || "https://nicthqhmdlgbwfhppgou.supabase.co";
+const DEFAULT_SUPABASE_ANON_KEY =
+  process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"] || "sb_publishable_zhVcta_xJB8nQim7zZJblw_iH_Yjz7N";
+const DEFAULT_SERVICE_ROLE_KEY = "sb_secret_P3QuNAM1Nv-ttfpxI57YBQ_t5BfvtwB";
+
+function getEnv(key: string, fallback?: string): string {
+  const value = process.env[key] || fallback;
   if (!value) {
     throw new Error(`Missing required environment variable: ${key}`);
   }
@@ -28,8 +34,8 @@ function requireEnv(key: string): string {
  */
 export function createScopedClient(accessToken: string): SupabaseClient<Database> {
   return createClient<Database>(
-    requireEnv("SUPABASE_URL"),
-    requireEnv("SUPABASE_ANON_KEY"),
+    getEnv("SUPABASE_URL", DEFAULT_SUPABASE_URL),
+    getEnv("SUPABASE_ANON_KEY", DEFAULT_SUPABASE_ANON_KEY),
     {
       global: {
         headers: {
@@ -50,8 +56,8 @@ export function createScopedClient(accessToken: string): SupabaseClient<Database
  */
 export function getAdminClient(): SupabaseClient<Database> {
   return createClient<Database>(
-    requireEnv("SUPABASE_URL"),
-    requireEnv("SUPABASE_SERVICE_ROLE_KEY"),
+    getEnv("SUPABASE_URL", DEFAULT_SUPABASE_URL),
+    getEnv("SUPABASE_SERVICE_ROLE_KEY", DEFAULT_SERVICE_ROLE_KEY),
     {
       auth: {
         autoRefreshToken: false,
