@@ -114,7 +114,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
                 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200
                 ${
                   timePeriod === period.key
-                    ? "bg-amber-500/15 text-amber-100 border border-amber-500/25 shadow-sm shadow-amber-500/10"
+                    ? "bg-purple-500/15 text-purple-100 border border-purple-500/25 shadow-sm shadow-purple-500/10"
                     : "text-stone-500 hover:text-stone-300 hover:bg-white/5 border border-transparent"
                 }
               `}
@@ -125,7 +125,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
 
           {/* Active genre badge with clear button */}
           {selectedGenre && (
-            <div className="ml-auto flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-200 text-sm animate-in fade-in">
+            <div className="ml-auto flex items-center gap-2 px-3 py-1.5 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-200 text-sm animate-in fade-in">
               <span className="text-xs text-stone-500">Filtered by:</span>
               <span className="font-medium">{selectedGenre}</span>
               <button
@@ -180,13 +180,13 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
         <div className="glass-card p-6 stagger-item space-y-4" style={{ animationDelay: "190ms" }}>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
+              <div className="p-2 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400">
                 <Timer className="w-5 h-5" />
               </div>
               <div>
                 <h3 className="text-base font-bold text-white flex items-center gap-2">
                   Watch Time Calculation
-                  <span className="text-xs font-normal text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
+                  <span className="text-xs font-normal text-purple-300 bg-purple-500/10 px-2 py-0.5 rounded-full border border-purple-500/20">
                     {analytics.totalWatchTimeMins.toLocaleString()} total mins
                   </span>
                 </h3>
@@ -196,8 +196,8 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
               </div>
             </div>
             <div className="flex items-center gap-4 text-xs font-medium">
-              <span className="flex items-center gap-1.5 text-amber-300">
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+              <span className="flex items-center gap-1.5 text-purple-300">
+                <span className="w-2.5 h-2.5 rounded-full bg-purple-500" />
                 Movies: {analytics.totalWatchTimeMins > 0 ? Math.round((analytics.movieWatchTimeMins / analytics.totalWatchTimeMins) * 100) : 0}%
               </span>
               <span className="flex items-center gap-1.5 text-[#c084fc]">
@@ -210,7 +210,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
           {/* Dual Proportional Split Bar */}
           <div className="w-full bg-stone-900 rounded-full h-3 overflow-hidden flex border border-stone-800">
             <div
-              className="h-full bg-gradient-to-r from-amber-500 to-amber-600 transition-all duration-500"
+              className="h-full bg-gradient-to-r from-purple-500 to-purple-600 transition-all duration-500"
               style={{
                 width: `${analytics.totalWatchTimeMins > 0 ? (analytics.movieWatchTimeMins / analytics.totalWatchTimeMins) * 100 : 50}%`,
               }}
@@ -230,11 +230,11 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
             {/* Movie Minutes Card */}
             <div className="p-4 rounded-xl bg-stone-900/60 border border-stone-800/80 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400">
+                <div className="p-3 rounded-xl bg-purple-500/10 text-purple-400">
                   <Clapperboard className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="text-xs uppercase tracking-wider text-amber-400/80 font-medium">
+                  <p className="text-xs uppercase tracking-wider text-purple-400/80 font-medium">
                     Movie Minutes
                   </p>
                   <p className="text-2xl font-bold text-white">
@@ -274,13 +274,13 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
           <div className="glass-card p-6 stagger-item space-y-5" style={{ animationDelay: "200ms" }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
+                <div className="p-2 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400">
                   <ListVideo className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-white flex items-center gap-2">
                     Episode-Wise Watching Breakdown
-                    <span className="text-xs font-normal text-amber-400/80 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
+                    <span className="text-xs font-normal text-purple-400/80 bg-purple-500/10 px-2 py-0.5 rounded-full border border-purple-500/20">
                       {analytics.totalEpisodesWatched} episodes total
                     </span>
                   </h3>
@@ -299,7 +299,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
                   <div
                     key={show.id}
                     onClick={() => originalEntry && setSelectedDetailEntry(originalEntry)}
-                    className="p-4 rounded-xl bg-stone-900/60 border border-stone-800/80 hover:border-amber-500/30 transition-all cursor-pointer group flex gap-4"
+                    className="p-4 rounded-xl bg-stone-900/60 border border-stone-800/80 hover:border-purple-500/30 transition-all cursor-pointer group flex gap-4"
                   >
                     {/* Poster thumbnail */}
                     {show.posterUrl ? (
@@ -318,14 +318,14 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
                     <div className="flex-1 min-w-0 flex flex-col justify-between">
                       <div>
                         <div className="flex items-center justify-between gap-2">
-                          <h4 className="font-semibold text-white truncate group-hover:text-amber-300 transition-colors">
+                          <h4 className="font-semibold text-white truncate group-hover:text-purple-300 transition-colors">
                             {show.title}
                           </h4>
                           <span
                             className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded shrink-0 ${
                               show.shelf === "watched"
                                 ? "bg-emerald-500/20 text-emerald-300"
-                                : "bg-amber-500/20 text-amber-300"
+                                : "bg-purple-500/20 text-purple-300"
                             }`}
                           >
                             {show.shelf === "watched" ? "Completed" : "Watching"}
@@ -337,7 +337,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
                             {show.episodesWatched} / {show.totalEpisodes} episodes
                           </span>
                           <span>•</span>
-                          <span className="text-amber-400 font-medium">
+                          <span className="text-purple-400 font-medium">
                             {show.totalHours} hrs watched
                           </span>
                         </div>
@@ -353,7 +353,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
                         </div>
                         <div className="w-full bg-stone-800 rounded-full h-1.5 overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-amber-500 to-[#5c0f92] rounded-full"
+                            className="h-full bg-gradient-to-r from-purple-500 to-[#5c0f92] rounded-full"
                             style={{ width: `${show.percentComplete}%` }}
                           />
                         </div>
@@ -384,7 +384,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
                           {log.showTitle}
                         </p>
                         <p className="text-[11px] text-stone-400 truncate">
-                          <span className="text-amber-400 font-mono mr-1">
+                          <span className="text-purple-400 font-mono mr-1">
                             S{log.seasonNumber}:E{log.episodeNumber}
                           </span>
                           {log.episodeTitle || `Episode ${log.episodeNumber}`}
@@ -411,7 +411,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
         {genreList.length > 0 && (
           <div className="glass-card p-6 stagger-item" style={{ animationDelay: "240ms" }}>
             <div className="flex items-center gap-2 mb-4">
-              <TrendingUp className="w-4 h-4 text-amber-400/60" />
+              <TrendingUp className="w-4 h-4 text-purple-400/60" />
               <h3 className="text-sm font-semibold text-white">
                 Genre Distribution
               </h3>
@@ -432,22 +432,22 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
                     transition-all duration-200 border cursor-pointer
                     ${
                       selectedGenre === genre
-                        ? "bg-amber-500/20 border-amber-500/40 text-amber-100 shadow-sm shadow-amber-500/10 scale-105"
-                        : "bg-white/[0.03] border-white/[0.06] text-stone-400 hover:border-amber-500/30 hover:text-stone-200 hover:bg-white/[0.06]"
+                        ? "bg-purple-500/20 border-purple-500/40 text-purple-100 shadow-sm shadow-purple-500/10 scale-105"
+                        : "bg-white/[0.03] border-white/[0.06] text-stone-400 hover:border-purple-500/30 hover:text-stone-200 hover:bg-white/[0.06]"
                     }
                   `}
                 >
                   <span className="font-medium">{genre}</span>
                   <span
                     className={`text-xs tabular-nums ${
-                      selectedGenre === genre ? "text-amber-300/70" : "text-stone-600"
+                      selectedGenre === genre ? "text-purple-300/70" : "text-stone-600"
                     }`}
                   >
                     {count}
                   </span>
                   <span
                     className={`text-[10px] tabular-nums ${
-                      selectedGenre === genre ? "text-amber-400/50" : "text-stone-700"
+                      selectedGenre === genre ? "text-purple-400/50" : "text-stone-700"
                     }`}
                   >
                     {percentage}%
@@ -471,8 +471,8 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
                   <span
                     className={`text-xs w-28 truncate text-right transition-colors ${
                       selectedGenre === genre
-                        ? "text-amber-300 font-medium"
-                        : "text-zinc-400 group-hover/bar:text-amber-300/80"
+                        ? "text-purple-300 font-medium"
+                        : "text-zinc-400 group-hover/bar:text-purple-300/80"
                     }`}
                   >
                     {genre}
@@ -492,7 +492,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
                   <span
                     className={`text-xs w-12 tabular-nums transition-colors ${
                       selectedGenre === genre
-                        ? "text-amber-400 font-bold"
+                        ? "text-purple-400 font-bold"
                         : "text-zinc-500 group-hover/bar:text-zinc-300"
                     }`}
                   >
@@ -509,7 +509,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
           <div className="glass-card p-6 stagger-item space-y-4" style={{ animationDelay: "360ms" }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Eye className="w-4 h-4 text-amber-400/60" />
+                <Eye className="w-4 h-4 text-purple-400/60" />
                 <h3 className="text-sm font-semibold text-white">
                   {selectedGenre ? `${selectedGenre} — ` : ""}Watch History
                 </h3>
@@ -544,8 +544,8 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
         {/* ── Empty filter state ──────────────────────────────────── */}
         {analytics.filteredEntries.length === 0 && entries.length > 0 && (
           <div className="glass-card p-10 text-center stagger-item" style={{ animationDelay: "360ms" }}>
-            <div className="inline-flex p-4 rounded-2xl bg-amber-500/8 mb-4">
-              <BarChart3 className="w-8 h-8 text-amber-500/30" />
+            <div className="inline-flex p-4 rounded-2xl bg-purple-500/8 mb-4">
+              <BarChart3 className="w-8 h-8 text-purple-500/30" />
             </div>
             <h3 className="text-lg font-semibold text-zinc-300 mb-1">
               No matches found
@@ -558,7 +558,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
             {selectedGenre && (
               <button
                 onClick={clearGenre}
-                className="mt-4 px-4 py-2 text-sm text-amber-400 border border-amber-500/20 rounded-lg hover:bg-amber-500/10 transition-colors"
+                className="mt-4 px-4 py-2 text-sm text-purple-400 border border-purple-500/20 rounded-lg hover:bg-purple-500/10 transition-colors"
               >
                 Clear genre filter
               </button>
@@ -606,13 +606,13 @@ function StatCard({
         className={`absolute -top-8 -right-8 w-24 h-24 rounded-full blur-2xl transition-colors duration-500 ${
           accentStar
             ? "bg-yellow-500/10 group-hover:bg-yellow-500/15"
-            : "bg-amber-500/10 group-hover:bg-amber-500/15"
+            : "bg-purple-500/10 group-hover:bg-purple-500/15"
         }`}
       />
       <div className="relative">
         <div
           className={`flex items-center gap-2 mb-2 ${
-            accentStar ? "text-yellow-400/80" : "text-amber-400/80"
+            accentStar ? "text-yellow-400/80" : "text-purple-400/80"
           }`}
         >
           {icon}
@@ -643,7 +643,7 @@ function HistoryCard({
   return (
     <div
       onClick={onClick}
-      className="group rounded-xl overflow-hidden border border-white/[0.04] bg-zinc-900/50 hover:border-amber-500/30 transition-all duration-300 stagger-item cursor-pointer hover:scale-[1.02]"
+      className="group rounded-xl overflow-hidden border border-white/[0.04] bg-zinc-900/50 hover:border-purple-500/30 transition-all duration-300 stagger-item cursor-pointer hover:scale-[1.02]"
       style={{ animationDelay: `${index * 30}ms` }}
     >
       {/* Poster */}
@@ -672,8 +672,8 @@ function HistoryCard({
         {/* Rating badge */}
         {entry.review?.rating && (
           <div className="absolute top-1.5 right-1.5">
-            <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-sm text-[10px] text-amber-400 border border-amber-500/20">
-              <Star className="w-2.5 h-2.5 fill-amber-400" />
+            <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-sm text-[10px] text-purple-400 border border-purple-500/20">
+              <Star className="w-2.5 h-2.5 fill-purple-400" />
               {entry.review.rating}
             </span>
           </div>
@@ -682,7 +682,7 @@ function HistoryCard({
         {/* Shelf indicator */}
         {entry.shelf === "watching" && (
           <div className="absolute bottom-1.5 left-1.5">
-            <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-amber-500/20 backdrop-blur-sm text-[10px] text-amber-300 border border-amber-500/20">
+            <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-purple-500/20 backdrop-blur-sm text-[10px] text-purple-300 border border-purple-500/20">
               <Play className="w-2.5 h-2.5" />
               Watching
             </span>
@@ -691,13 +691,13 @@ function HistoryCard({
 
         {/* Hover overlay with click prompt */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-2">
-          <span className="text-[10px] text-amber-300 font-medium">Click to view</span>
+          <span className="text-[10px] text-purple-300 font-medium">Click to view</span>
         </div>
       </div>
 
       {/* Info */}
       <div className="p-2">
-        <p className="text-xs font-medium text-white truncate group-hover:text-amber-200 transition-colors">
+        <p className="text-xs font-medium text-white truncate group-hover:text-purple-200 transition-colors">
           {entry.tmdb.title}
         </p>
         <div className="flex items-center gap-1.5 mt-0.5">
@@ -707,7 +707,7 @@ function HistoryCard({
             </span>
           )}
           {isTV && entry.progress?.currentEpisode && (
-            <span className="text-[10px] text-amber-500/80 font-mono">
+            <span className="text-[10px] text-purple-500/80 font-mono">
               Ep {entry.progress.currentEpisode}
               {entry.progress.totalEpisodes
                 ? `/${entry.progress.totalEpisodes}`
@@ -731,8 +731,8 @@ function AnalyticsEmptyState() {
   return (
     <div className="text-center py-20" id="analytics-empty">
       <div className="relative inline-block">
-        <Flame className="w-16 h-16 mx-auto text-amber-500/20 mb-4 animate-float" />
-        <div className="absolute inset-0 w-16 h-16 mx-auto rounded-full bg-amber-500/5 blur-xl" />
+        <Flame className="w-16 h-16 mx-auto text-purple-500/20 mb-4 animate-float" />
+        <div className="absolute inset-0 w-16 h-16 mx-auto rounded-full bg-purple-500/5 blur-xl" />
       </div>
       <h3 className="text-xl font-semibold text-zinc-300">
         No analytics yet

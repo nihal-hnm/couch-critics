@@ -4,10 +4,10 @@
  * =============================================================================
  *
  * Redesigned with the warm cinematic aesthetic:
- *  - Glassmorphism stat cards with warm amber accents
+ *  - Glassmorphism stat cards with warm purple accents
  *  - SVG donut chart for top genre visualization
  *  - Warm gradient bar charts for genre distribution
- *  - Amber-tinted monthly activity bars
+ *  - Purple-tinted monthly activity bars
  *  - Staggered entrance animations
  *
  * ALL DATA IS DERIVED — nothing stored, nothing stale.
@@ -55,8 +55,8 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
     return (
       <div className="text-center py-20">
         <div className="relative inline-block">
-          <Flame className="w-16 h-16 mx-auto text-amber-500/20 mb-4 animate-float" />
-          <div className="absolute inset-0 w-16 h-16 mx-auto rounded-full bg-amber-500/5 blur-xl" />
+          <Flame className="w-16 h-16 mx-auto text-purple-500/20 mb-4 animate-float" />
+          <div className="absolute inset-0 w-16 h-16 mx-auto rounded-full bg-purple-500/5 blur-xl" />
         </div>
         <h3 className="text-xl font-semibold text-zinc-300">
           No stats yet
@@ -79,9 +79,9 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
           style={{ animationDelay: "0ms" }}
         >
           {/* Warm ambient glow */}
-          <div className="absolute -top-8 -right-8 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl group-hover:bg-amber-500/15 transition-colors duration-500" />
+          <div className="absolute -top-8 -right-8 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/15 transition-colors duration-500" />
           <div className="relative">
-            <div className="flex items-center gap-2 text-amber-400/80 mb-2">
+            <div className="flex items-center gap-2 text-purple-400/80 mb-2">
               <Clock className="w-4 h-4" />
               <span className="text-xs uppercase tracking-wider font-medium">
                 Watch Time
@@ -93,7 +93,7 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
             <p className="text-xs text-zinc-500 mt-1">
               {stats.totalWatchTimeMins.toLocaleString()} total minutes
             </p>
-            <div className="flex items-center gap-2 mt-2 pt-2 border-t border-amber-500/10 text-[11px] text-amber-300/80 font-mono">
+            <div className="flex items-center gap-2 mt-2 pt-2 border-t border-purple-500/10 text-[11px] text-purple-300/80 font-mono">
               <span>🎬 {stats.movieMinutes.toLocaleString()}m movie</span>
               <span>•</span>
               <span>📺 {stats.seriesMinutes.toLocaleString()}m series</span>
@@ -106,9 +106,9 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
           className="glass-card p-5 stagger-item relative overflow-hidden group"
           style={{ animationDelay: "60ms" }}
         >
-          <div className="absolute -top-8 -right-8 w-24 h-24 bg-amber-500/8 rounded-full blur-2xl group-hover:bg-amber-500/12 transition-colors duration-500" />
+          <div className="absolute -top-8 -right-8 w-24 h-24 bg-purple-500/8 rounded-full blur-2xl group-hover:bg-purple-500/12 transition-colors duration-500" />
           <div className="relative">
-            <div className="flex items-center gap-2 text-amber-400/80 mb-2">
+            <div className="flex items-center gap-2 text-purple-400/80 mb-2">
               <Film className="w-4 h-4" />
               <span className="text-xs uppercase tracking-wider font-medium">
                 Completed
@@ -118,7 +118,7 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
               {stats.totalWatched}
             </p>
             <p className="text-xs text-zinc-500 mt-1">
-              <span className="text-amber-400/60">{watchingCount}</span> watching · <span className="text-amber-400/60">{toWatchCount}</span> queued
+              <span className="text-purple-400/60">{watchingCount}</span> watching · <span className="text-purple-400/60">{toWatchCount}</span> queued
             </p>
           </div>
         </div>
@@ -128,9 +128,9 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
           className="glass-card p-5 stagger-item relative overflow-hidden group"
           style={{ animationDelay: "120ms" }}
         >
-          <div className="absolute -top-8 -right-8 w-24 h-24 bg-amber-500/8 rounded-full blur-2xl group-hover:bg-amber-500/12 transition-colors duration-500" />
+          <div className="absolute -top-8 -right-8 w-24 h-24 bg-purple-500/8 rounded-full blur-2xl group-hover:bg-purple-500/12 transition-colors duration-500" />
           <div className="relative">
-            <div className="flex items-center gap-2 text-amber-400/80 mb-2">
+            <div className="flex items-center gap-2 text-purple-400/80 mb-2">
               <Star className="w-4 h-4" />
               <span className="text-xs uppercase tracking-wider font-medium">
                 Avg Rating
@@ -151,9 +151,9 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
           className="glass-card p-5 stagger-item relative overflow-hidden group"
           style={{ animationDelay: "180ms" }}
         >
-          <div className="absolute -top-8 -right-8 w-24 h-24 bg-amber-500/8 rounded-full blur-2xl group-hover:bg-amber-500/12 transition-colors duration-500" />
+          <div className="absolute -top-8 -right-8 w-24 h-24 bg-purple-500/8 rounded-full blur-2xl group-hover:bg-purple-500/12 transition-colors duration-500" />
           <div className="relative">
-            <div className="flex items-center gap-2 text-amber-400/80 mb-2">
+            <div className="flex items-center gap-2 text-purple-400/80 mb-2">
               <Award className="w-4 h-4" />
               <span className="text-xs uppercase tracking-wider font-medium">
                 Top Genre
@@ -199,7 +199,7 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
           style={{ animationDelay: "240ms" }}
         >
           <div className="flex items-center gap-2 mb-4">
-            <TrendingUp className="w-4 h-4 text-amber-400/60" />
+            <TrendingUp className="w-4 h-4 text-purple-400/60" />
             <h3 className="text-sm font-semibold text-white">
               Genre Distribution
             </h3>
@@ -211,7 +211,7 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
                 key={genre}
                 className="flex items-center gap-3 group/bar"
               >
-                <span className="text-xs text-zinc-400 w-28 truncate text-right group-hover/bar:text-amber-300/80 transition-colors">
+                <span className="text-xs text-zinc-400 w-28 truncate text-right group-hover/bar:text-purple-300/80 transition-colors">
                   {genre}
                 </span>
                 <div className="flex-1 h-5 bg-zinc-800/50 rounded-full overflow-hidden">
@@ -240,7 +240,7 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
           style={{ animationDelay: "300ms" }}
         >
           <div className="flex items-center gap-2 mb-4">
-            <Calendar className="w-4 h-4 text-amber-400/60" />
+            <Calendar className="w-4 h-4 text-purple-400/60" />
             <h3 className="text-sm font-semibold text-white">
               Monthly Activity
             </h3>
@@ -259,7 +259,7 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
                   key={month}
                   className="flex-1 flex flex-col items-center gap-1 group/bar"
                 >
-                  <span className="text-[10px] text-zinc-600 group-hover/bar:text-amber-400/80 transition-colors">
+                  <span className="text-[10px] text-zinc-600 group-hover/bar:text-purple-400/80 transition-colors">
                     {count}
                   </span>
                   <div className="w-full bg-zinc-800/30 rounded-t-md overflow-hidden flex-1 flex items-end">
@@ -281,14 +281,14 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
           </div>
 
           {/* Summary footer */}
-          <div className="flex items-center justify-between mt-4 pt-3 border-t border-amber-500/8">
+          <div className="flex items-center justify-between mt-4 pt-3 border-t border-purple-500/8">
             <div className="flex items-center gap-1.5 text-xs text-zinc-500">
-              <Eye className="w-3 h-3 text-amber-500/40" />
+              <Eye className="w-3 h-3 text-purple-500/40" />
               {stats.watchedPerMonth.length} months tracked
             </div>
             <div className="text-xs text-zinc-500">
               Most active:{" "}
-              <span className="text-amber-400/70">
+              <span className="text-purple-400/70">
                 {stats.watchedPerMonth.reduce((max, m) => m.count > max.count ? m : max, stats.watchedPerMonth[0])?.month ?? "—"}
               </span>
             </div>

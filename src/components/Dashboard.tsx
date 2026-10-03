@@ -189,8 +189,8 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="p-4 rounded-2xl bg-amber-500/10 animate-glow">
-            <FilmIcon className="w-8 h-8 text-amber-400 animate-pulse" />
+          <div className="p-4 rounded-2xl bg-purple-500/10 animate-glow">
+            <FilmIcon className="w-8 h-8 text-purple-400 animate-pulse" />
           </div>
           <p className="text-sm text-stone-500">Loading your journal...</p>
         </div>
@@ -211,7 +211,7 @@ export default function Dashboard() {
 
       {/* Drawer Panel */}
       <aside
-        className={`fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-[#12100e] border-r border-amber-500/20 z-50 flex flex-col shadow-2xl shadow-black/90 transform transition-transform duration-300 ease-out ${
+        className={`fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-[#12100e] border-r border-purple-500/20 z-50 flex flex-col shadow-2xl shadow-black/90 transform transition-transform duration-300 ease-out ${
           isBurgerMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         aria-label="Side Navigation Menu"
@@ -219,14 +219,14 @@ export default function Dashboard() {
         {/* Drawer Header */}
         <div className="p-5 border-b border-white/10 flex items-center justify-between bg-black/40">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-amber-500/20 border border-amber-500/30">
-              <FilmIcon className="w-5 h-5 text-amber-400" />
+            <div className="p-2 rounded-xl bg-purple-500/20 border border-purple-500/30">
+              <FilmIcon className="w-5 h-5 text-purple-400" />
             </div>
             <div>
               <h2 className="text-base font-bold text-white font-mono uppercase tracking-wider">
                 COUCH CRITICS
               </h2>
-              <p className="text-[10px] text-amber-400/80 tracking-widest uppercase">
+              <p className="text-[10px] text-purple-400/80 tracking-widest uppercase">
                 Navigation Menu
               </p>
             </div>
@@ -254,17 +254,17 @@ export default function Dashboard() {
               }}
               className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
                 activeNav === "watching"
-                  ? "bg-gradient-to-r from-amber-500/25 to-[#5c0f92]/25 text-amber-200 border border-amber-500/30 shadow-lg shadow-amber-500/10"
+                  ? "bg-gradient-to-r from-purple-500/25 to-[#5c0f92]/25 text-purple-200 border border-purple-500/30 shadow-lg shadow-purple-500/10"
                   : "text-stone-300 hover:text-white hover:bg-white/5"
               }`}
             >
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-amber-500/20 text-amber-400">
+                <div className="p-2 rounded-lg bg-purple-500/20 text-purple-400">
                   <Play className="w-4 h-4 fill-current" />
                 </div>
                 <span className="text-left">Currently Watching</span>
               </div>
-              <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-amber-500/20 text-amber-300 border border-amber-500/30">
+              <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-purple-500/20 text-purple-300 border border-purple-500/30">
                 {watching.length}
               </span>
             </button>
@@ -283,7 +283,7 @@ export default function Dashboard() {
                 }}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                   activeNav === "toWatch"
-                    ? "bg-amber-500/20 text-amber-200 border border-amber-500/30"
+                    ? "bg-purple-500/20 text-purple-200 border border-purple-500/30"
                     : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
                 }`}
               >
@@ -303,7 +303,7 @@ export default function Dashboard() {
                 }}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                   activeNav === "watched"
-                    ? "bg-amber-500/20 text-amber-200 border border-amber-500/30"
+                    ? "bg-purple-500/20 text-purple-200 border border-purple-500/30"
                     : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
                 }`}
               >
@@ -323,12 +323,12 @@ export default function Dashboard() {
                 }}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                   activeNav === "movies"
-                    ? "bg-amber-500/20 text-amber-200 border border-amber-500/30"
+                    ? "bg-purple-500/20 text-purple-200 border border-purple-500/30"
                     : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <FilmIcon className="w-4 h-4 text-amber-400" />
+                  <FilmIcon className="w-4 h-4 text-purple-400" />
                   <span>All Movies</span>
                 </div>
                 <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-stone-800 text-stone-400">
@@ -343,7 +343,7 @@ export default function Dashboard() {
                 }}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                   activeNav === "series"
-                    ? "bg-amber-500/20 text-amber-200 border border-amber-500/30"
+                    ? "bg-purple-500/20 text-purple-200 border border-purple-500/30"
                     : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
                 }`}
               >
@@ -371,7 +371,7 @@ export default function Dashboard() {
                 }}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                   activeNav === "stats"
-                    ? "bg-amber-500/20 text-amber-200 border border-amber-500/30"
+                    ? "bg-purple-500/20 text-purple-200 border border-purple-500/30"
                     : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
                 }`}
               >
@@ -379,7 +379,7 @@ export default function Dashboard() {
                   <BarChart3 className="w-4 h-4 text-purple-400" />
                   <span>Watch Analytics</span>
                 </div>
-                <span className="text-[10px] text-amber-400/80 font-mono">
+                <span className="text-[10px] text-purple-400/80 font-mono">
                   {stats.totalWatchTimeMins > 0 ? `${Math.round(stats.totalWatchTimeMins / 60)}h` : "0h"}
                 </span>
               </button>
@@ -391,7 +391,7 @@ export default function Dashboard() {
                 }}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                   activeNav === "favorites"
-                    ? "bg-amber-500/20 text-amber-200 border border-amber-500/30"
+                    ? "bg-purple-500/20 text-purple-200 border border-purple-500/30"
                     : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
                 }`}
               >
@@ -411,7 +411,7 @@ export default function Dashboard() {
                 }}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                   activeNav === "journey"
-                    ? "bg-amber-500/20 text-amber-200 border border-amber-500/30"
+                    ? "bg-purple-500/20 text-purple-200 border border-purple-500/30"
                     : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
                 }`}
               >
@@ -430,7 +430,7 @@ export default function Dashboard() {
           <div>
             <div className="px-3 pb-2 text-[10px] font-bold text-stone-500 uppercase tracking-wider flex items-center justify-between">
               <span>Appearance</span>
-              <span className="text-[10px] font-medium text-amber-500 uppercase">Theme</span>
+              <span className="text-[10px] font-medium text-purple-500 uppercase">Theme</span>
             </div>
             <div className="px-1">
               <ThemeToggle variant="segmented" />
@@ -440,10 +440,10 @@ export default function Dashboard() {
 
         {/* Drawer Footer with Quick Watch Stats & Auth */}
         <div className="p-4 border-t border-white/10 bg-black/60 space-y-3">
-          <div className="p-3 rounded-xl bg-amber-500/5 border border-amber-500/15">
+          <div className="p-3 rounded-xl bg-purple-500/5 border border-purple-500/15">
             <div className="flex items-center justify-between text-xs mb-1.5">
               <span className="text-stone-400">Total Watch Time</span>
-              <span className="font-bold text-amber-300">{formatWatchTime(stats.totalWatchTimeMins)}</span>
+              <span className="font-bold text-purple-300">{formatWatchTime(stats.totalWatchTimeMins)}</span>
             </div>
             <div className="flex items-center justify-between text-[11px] text-stone-400">
               <span>🎬 Movies: {stats.movieMinutes.toLocaleString()}m</span>
@@ -455,7 +455,7 @@ export default function Dashboard() {
             user ? (
               <div className="flex items-center justify-between pt-1">
                 <div className="flex items-center gap-2 text-xs text-stone-300 truncate max-w-[170px]">
-                  <div className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-300 font-bold flex items-center justify-center text-[11px] shrink-0">
+                  <div className="w-6 h-6 rounded-full bg-purple-500/20 text-purple-300 font-bold flex items-center justify-center text-[11px] shrink-0">
                     {userInitial}
                   </div>
                   <span className="truncate">{user.email}</span>
@@ -474,7 +474,7 @@ export default function Dashboard() {
                   setIsBurgerMenuOpen(false);
                   setIsAuthOpen(true);
                 }}
-                className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 text-xs font-semibold transition-all cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 text-purple-300 text-xs font-semibold transition-all cursor-pointer"
               >
                 <LogIn className="w-3.5 h-3.5" />
                 Sign In / Register
@@ -507,7 +507,7 @@ export default function Dashboard() {
         )}
 
         {/* Ambient warm glow */}
-        <div className="absolute top-0 left-1/4 w-[500px] h-[300px] bg-amber-500/5 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-0 left-1/4 w-[500px] h-[300px] bg-purple-500/5 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[250px] bg-[#5c0f92]/10 rounded-full blur-[100px] pointer-events-none" />
 
         {/* ── Header ─────────────────────────────────────────── */}
@@ -517,13 +517,13 @@ export default function Dashboard() {
               {/* Burger Menu Button */}
               <button
                 onClick={() => setIsBurgerMenuOpen(true)}
-                className="p-2 sm:px-3 sm:py-2.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 hover:text-white transition-all flex items-center gap-2 group shadow-lg shadow-amber-500/10 cursor-pointer"
+                className="p-2 sm:px-3 sm:py-2.5 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 text-purple-300 hover:text-white transition-all flex items-center gap-2 group shadow-lg shadow-purple-500/10 cursor-pointer"
                 aria-label="Open navigation menu"
                 id="burger-menu-button"
                 title="Open Menu: Backlog, Watched, Catalogs & Stats"
               >
-                <Menu className="w-5 h-5 text-amber-400 group-hover:scale-110 transition-transform" />
-                <span className="text-xs font-bold tracking-wider uppercase hidden sm:inline text-amber-300 group-hover:text-amber-200">
+                <Menu className="w-5 h-5 text-purple-400 group-hover:scale-110 transition-transform" />
+                <span className="text-xs font-bold tracking-wider uppercase hidden sm:inline text-purple-300 group-hover:text-purple-200">
                   Menu
                 </span>
               </button>
@@ -533,14 +533,14 @@ export default function Dashboard() {
                 onClick={() => setActiveNav("watching")}
                 className="flex items-center gap-2.5 cursor-pointer group"
               >
-                <div className="p-2 rounded-xl bg-gradient-to-br from-amber-500/20 to-[#5c0f92]/20 border border-amber-500/20 shadow-lg shadow-amber-500/5 group-hover:border-amber-500/40 transition-colors">
-                  <FilmIcon className="w-5 h-5 text-amber-400" />
+                <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500/20 to-[#5c0f92]/20 border border-purple-500/20 shadow-lg shadow-purple-500/5 group-hover:border-purple-500/40 transition-colors">
+                  <FilmIcon className="w-5 h-5 text-purple-400" />
                 </div>
                 <div>
-                  <h1 className="text-base sm:text-lg font-bold text-white tracking-wider uppercase font-mono group-hover:text-amber-300 transition-colors">
+                  <h1 className="text-base sm:text-lg font-bold text-white tracking-wider uppercase font-mono group-hover:text-purple-300 transition-colors">
                     COUCH CRITICS
                   </h1>
-                  <p className="text-[10px] text-amber-400/80 font-medium tracking-widest uppercase">
+                  <p className="text-[10px] text-purple-400/80 font-medium tracking-widest uppercase">
                     {activeNav === "watching"
                       ? "Currently Watching"
                       : activeNav === "toWatch"
@@ -577,7 +577,7 @@ export default function Dashboard() {
 
               <button
                 onClick={() => setIsSearchOpen(true)}
-                className="flex items-center gap-2 px-3.5 py-2.5 bg-gradient-to-r from-amber-600 to-[#5c0f92] hover:from-amber-500 hover:to-[#791bbd] text-white text-xs sm:text-sm rounded-xl transition-all shadow-lg shadow-amber-500/15 hover:shadow-amber-500/25 font-semibold cursor-pointer"
+                className="flex items-center gap-2 px-3.5 py-2.5 bg-gradient-to-r from-purple-600 to-[#5c0f92] hover:from-purple-500 hover:to-[#791bbd] text-white text-xs sm:text-sm rounded-xl transition-all shadow-lg shadow-purple-500/15 hover:shadow-purple-500/25 font-semibold cursor-pointer"
                 id="add-movie-button"
               >
                 <Plus className="w-4 h-4" />
@@ -632,8 +632,8 @@ export default function Dashboard() {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                    <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
                     In Progress
                   </span>
                   <span className="text-xs text-stone-500">
@@ -651,8 +651,8 @@ export default function Dashboard() {
               {/* Quick Runtime Metrics Banner */}
               {watching.length > 0 && (
                 <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-                  <div className="glass-card px-3.5 py-2 border border-amber-500/20 flex items-center gap-2.5">
-                    <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-400">
+                  <div className="glass-card px-3.5 py-2 border border-purple-500/20 flex items-center gap-2.5">
+                    <div className="p-1.5 rounded-lg bg-purple-500/10 text-purple-400">
                       <Tv className="w-4 h-4" />
                     </div>
                     <div>
@@ -663,8 +663,8 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  <div className="glass-card px-3.5 py-2 border border-amber-500/20 flex items-center gap-2.5">
-                    <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-400">
+                  <div className="glass-card px-3.5 py-2 border border-purple-500/20 flex items-center gap-2.5">
+                    <div className="p-1.5 rounded-lg bg-purple-500/10 text-purple-400">
                       <FilmIcon className="w-4 h-4" />
                     </div>
                     <div>
@@ -677,7 +677,7 @@ export default function Dashboard() {
 
                   <button
                     onClick={() => setIsBurgerMenuOpen(true)}
-                    className="glass-card px-3 py-2 border border-amber-500/20 hover:border-amber-500/40 text-xs text-amber-300/80 hover:text-amber-200 transition-colors flex items-center gap-1.5 cursor-pointer"
+                    className="glass-card px-3 py-2 border border-purple-500/20 hover:border-purple-500/40 text-xs text-purple-300/80 hover:text-purple-200 transition-colors flex items-center gap-1.5 cursor-pointer"
                     title="Open Burger Menu for more shelves"
                   >
                     <span>More Shelves</span>
@@ -694,7 +694,7 @@ export default function Dashboard() {
                   onClick={() => setWatchingTypeFilter("all")}
                   className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                     watchingTypeFilter === "all"
-                      ? "bg-amber-500/20 text-amber-200 border border-amber-500/40 shadow-sm shadow-amber-500/10"
+                      ? "bg-purple-500/20 text-purple-200 border border-purple-500/40 shadow-sm shadow-purple-500/10"
                       : "text-stone-400 hover:text-stone-200 bg-white/5 border border-white/5 hover:bg-white/10"
                   }`}
                 >
@@ -706,7 +706,7 @@ export default function Dashboard() {
                   onClick={() => setWatchingTypeFilter("tv")}
                   className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                     watchingTypeFilter === "tv"
-                      ? "bg-amber-500/20 text-amber-200 border border-amber-500/40 shadow-sm shadow-amber-500/10"
+                      ? "bg-purple-500/20 text-purple-200 border border-purple-500/40 shadow-sm shadow-purple-500/10"
                       : "text-stone-400 hover:text-stone-200 bg-white/5 border border-white/5 hover:bg-white/10"
                   }`}
                 >
@@ -718,7 +718,7 @@ export default function Dashboard() {
                   onClick={() => setWatchingTypeFilter("movie")}
                   className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                     watchingTypeFilter === "movie"
-                      ? "bg-amber-500/20 text-amber-200 border border-amber-500/40 shadow-sm shadow-amber-500/10"
+                      ? "bg-purple-500/20 text-purple-200 border border-purple-500/40 shadow-sm shadow-purple-500/10"
                       : "text-stone-400 hover:text-stone-200 bg-white/5 border border-white/5 hover:bg-white/10"
                   }`}
                 >
@@ -740,8 +740,8 @@ export default function Dashboard() {
             filteredWatching.length > 0 ? (
               <WatchingShelf entries={filteredWatching} />
             ) : (
-              <div className="glass-card p-12 text-center rounded-2xl border border-amber-500/20">
-                <div className="inline-flex p-4 rounded-2xl bg-amber-500/10 mb-4 text-amber-400">
+              <div className="glass-card p-12 text-center rounded-2xl border border-purple-500/20">
+                <div className="inline-flex p-4 rounded-2xl bg-purple-500/10 mb-4 text-purple-400">
                   {watchingTypeFilter === "tv" ? <Tv className="w-8 h-8" /> : <FilmIcon className="w-8 h-8" />}
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">
@@ -752,7 +752,7 @@ export default function Dashboard() {
                 </p>
                 <button
                   onClick={() => setWatchingTypeFilter("all")}
-                  className="px-4 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 text-xs font-semibold border border-amber-500/30 transition-all cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 text-xs font-semibold border border-purple-500/30 transition-all cursor-pointer"
                 >
                   Show All ({watching.length})
                 </button>
@@ -760,10 +760,10 @@ export default function Dashboard() {
             )
           ) : (
             /* Clean Empty State when zero titles are in Currently Watching */
-            <div className="glass-card p-8 sm:p-12 text-center rounded-2xl border border-amber-500/20 relative overflow-hidden my-4">
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[200px] bg-amber-500/5 rounded-full blur-[80px] pointer-events-none" />
+            <div className="glass-card p-8 sm:p-12 text-center rounded-2xl border border-purple-500/20 relative overflow-hidden my-4">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[200px] bg-purple-500/5 rounded-full blur-[80px] pointer-events-none" />
               <div className="relative z-10 max-w-md mx-auto">
-                <div className="inline-flex p-4 rounded-2xl bg-amber-500/10 mb-4 animate-float text-amber-400">
+                <div className="inline-flex p-4 rounded-2xl bg-purple-500/10 mb-4 animate-float text-purple-400">
                   <Play className="w-8 h-8 fill-current" />
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-2 text-glow">
@@ -775,7 +775,7 @@ export default function Dashboard() {
                 <div className="flex flex-wrap items-center justify-center gap-3">
                   <button
                     onClick={() => setIsSearchOpen(true)}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-600 to-[#5c0f92] hover:from-amber-500 hover:to-[#791bbd] text-white rounded-xl text-sm font-semibold shadow-lg shadow-amber-500/20 transition-all hover:scale-[1.02] cursor-pointer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-600 to-[#5c0f92] hover:from-purple-500 hover:to-[#791bbd] text-white rounded-xl text-sm font-semibold shadow-lg shadow-purple-500/20 transition-all hover:scale-[1.02] cursor-pointer"
                   >
                     <Plus className="w-4 h-4" />
                     Add What You&apos;re Watching
@@ -795,7 +795,7 @@ export default function Dashboard() {
                     onClick={() => setIsBurgerMenuOpen(true)}
                     className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-stone-300 text-sm font-medium transition-all cursor-pointer"
                   >
-                    <Menu className="w-4 h-4 text-amber-400" />
+                    <Menu className="w-4 h-4 text-purple-400" />
                     Open Menu
                   </button>
                 </div>
@@ -841,7 +841,7 @@ export default function Dashboard() {
           <TopReturnBanner
             title="All Movies"
             subtitle={`Catalog of ${movies.length} films across in-progress, backlog, and watched`}
-            icon={<FilmIcon className="w-4 h-4 text-amber-400" />}
+            icon={<FilmIcon className="w-4 h-4 text-purple-400" />}
             watchingCount={watching.length}
             onBackToWatching={() => setActiveNav("watching")}
             onOpenMenu={() => setIsBurgerMenuOpen(true)}
@@ -851,7 +851,7 @@ export default function Dashboard() {
             <div className="space-y-8">
               {watchingMovies.length > 0 && (
                 <section>
-                  <h3 className="text-sm font-semibold text-amber-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-purple-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
                     <Play className="w-3.5 h-3.5" /> Movies In Progress ({watchingMovies.length})
                   </h3>
                   <WatchingShelf entries={watchingMovies} />
@@ -860,7 +860,7 @@ export default function Dashboard() {
 
               {toWatch.filter((e) => e.tmdb.mediaType === "movie").length > 0 && (
                 <section>
-                  <h3 className="text-sm font-semibold text-amber-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-purple-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
                     <BookmarkPlus className="w-3.5 h-3.5" /> Movies To Watch ({toWatch.filter((e) => e.tmdb.mediaType === "movie").length})
                   </h3>
                   <ToWatchShelf entries={toWatch.filter((e) => e.tmdb.mediaType === "movie")} />
@@ -869,7 +869,7 @@ export default function Dashboard() {
 
               {watched.filter((e) => e.tmdb.mediaType === "movie").length > 0 && (
                 <section>
-                  <h3 className="text-sm font-semibold text-amber-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-purple-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
                     <Award className="w-3.5 h-3.5" /> Watched Movies ({watched.filter((e) => e.tmdb.mediaType === "movie").length})
                   </h3>
                   <WatchedShelf entries={watched.filter((e) => e.tmdb.mediaType === "movie")} />
@@ -878,7 +878,7 @@ export default function Dashboard() {
             </div>
           ) : (
             <EmptySection
-              icon={<FilmIcon className="w-10 h-10 text-amber-500/40" />}
+              icon={<FilmIcon className="w-10 h-10 text-purple-500/40" />}
               title="No movies yet"
               subtitle="Add a movie to your journal to get started."
               onAdd={() => setIsSearchOpen(true)}
@@ -903,7 +903,7 @@ export default function Dashboard() {
             <div className="space-y-8">
               {watchingSeries.length > 0 && (
                 <section>
-                  <h3 className="text-sm font-semibold text-amber-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-purple-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
                     <Play className="w-3.5 h-3.5" /> Series In Progress ({watchingSeries.length})
                   </h3>
                   <WatchingShelf entries={watchingSeries} />
@@ -912,7 +912,7 @@ export default function Dashboard() {
 
               {toWatch.filter((e) => e.tmdb.mediaType === "tv").length > 0 && (
                 <section>
-                  <h3 className="text-sm font-semibold text-amber-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-purple-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
                     <BookmarkPlus className="w-3.5 h-3.5" /> Series To Watch ({toWatch.filter((e) => e.tmdb.mediaType === "tv").length})
                   </h3>
                   <ToWatchShelf entries={toWatch.filter((e) => e.tmdb.mediaType === "tv")} />
@@ -921,7 +921,7 @@ export default function Dashboard() {
 
               {watched.filter((e) => e.tmdb.mediaType === "tv").length > 0 && (
                 <section>
-                  <h3 className="text-sm font-semibold text-amber-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-purple-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
                     <Award className="w-3.5 h-3.5" /> Completed Series ({watched.filter((e) => e.tmdb.mediaType === "tv").length})
                   </h3>
                   <WatchedShelf entries={watched.filter((e) => e.tmdb.mediaType === "tv")} />
@@ -930,7 +930,7 @@ export default function Dashboard() {
             </div>
           ) : (
             <EmptySection
-              icon={<Tv className="w-10 h-10 text-amber-500/40" />}
+              icon={<Tv className="w-10 h-10 text-purple-500/40" />}
               title="No TV series yet"
               subtitle="Add a TV show to track episodes and progress."
               onAdd={() => setIsSearchOpen(true)}
@@ -969,10 +969,10 @@ export default function Dashboard() {
           {journeyYears.length > 0 ? (
             <div className="space-y-8">
               {journeyYears.map(([year, yearEntries]) => (
-                <div key={year} className="glass-card p-6 rounded-2xl border border-amber-500/20">
+                <div key={year} className="glass-card p-6 rounded-2xl border border-purple-500/20">
                   <div className="flex items-center gap-3 mb-5">
                     <h3 className="text-3xl font-bold text-white font-mono">{year}</h3>
-                    <div className="flex-1 h-px bg-gradient-to-r from-amber-500/30 to-transparent" />
+                    <div className="flex-1 h-px bg-gradient-to-r from-purple-500/30 to-transparent" />
                     <span className="text-xs text-stone-400 font-mono">
                       {yearEntries.length} {yearEntries.length === 1 ? "title" : "titles"}
                     </span>
@@ -993,7 +993,7 @@ export default function Dashboard() {
             </div>
           ) : (
             <EmptySection
-              icon={<Map className="w-10 h-10 text-amber-500/40" />}
+              icon={<Map className="w-10 h-10 text-purple-500/40" />}
               title="No journey entries yet"
               subtitle="Mark movies and series as watched to populate your journey timeline."
               onAdd={() => setIsSearchOpen(true)}
@@ -1028,7 +1028,7 @@ export default function Dashboard() {
             </div>
           ) : (
             <EmptySection
-              icon={<Heart className="w-10 h-10 text-amber-500/40" />}
+              icon={<Heart className="w-10 h-10 text-purple-500/40" />}
               title="No favorites yet"
               subtitle="Rate movies and shows 8/10 or higher to bookmark them in your favorites."
               onAdd={() => setIsSearchOpen(true)}
@@ -1040,7 +1040,7 @@ export default function Dashboard() {
       {/* ── Floating Action Button (Mobile) ──────────────────────── */}
       <button
         onClick={() => setIsSearchOpen(true)}
-        className="fixed bottom-6 right-6 sm:hidden p-4 bg-gradient-to-br from-amber-500 to-[#5c0f92] text-white rounded-full shadow-2xl shadow-amber-500/30 hover:shadow-amber-500/50 transition-all z-30 animate-glow cursor-pointer"
+        className="fixed bottom-6 right-6 sm:hidden p-4 bg-gradient-to-br from-purple-500 to-[#5c0f92] text-white rounded-full shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50 transition-all z-30 animate-glow cursor-pointer"
         aria-label="Add title"
       >
         <Plus className="w-6 h-6" />
@@ -1098,11 +1098,11 @@ function TopReturnBanner({
   onOpenMenu: () => void;
 }) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-[#5c0f92]/20 to-stone-900/60 border border-amber-500/25 shadow-lg shadow-amber-500/5">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-gradient-to-r from-purple-500/15 via-[#5c0f92]/20 to-stone-900/60 border border-purple-500/25 shadow-lg shadow-purple-500/5">
       <div className="flex items-center gap-3">
         <button
           onClick={onOpenMenu}
-          className="p-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 transition-all flex items-center gap-1.5 text-xs font-semibold cursor-pointer shrink-0"
+          className="p-2 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30 transition-all flex items-center gap-1.5 text-xs font-semibold cursor-pointer shrink-0"
           title="Open Burger Menu"
         >
           <Menu className="w-4 h-4" />
@@ -1110,7 +1110,7 @@ function TopReturnBanner({
         </button>
         <div>
           <div className="flex items-center gap-2">
-            <div className="text-amber-400">{icon}</div>
+            <div className="text-purple-400">{icon}</div>
             <h2 className="text-base sm:text-lg font-bold text-white">{title}</h2>
           </div>
           <p className="text-xs text-stone-400 mt-0.5">{subtitle}</p>
@@ -1119,7 +1119,7 @@ function TopReturnBanner({
 
       <button
         onClick={onBackToWatching}
-        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-600 to-[#5c0f92] hover:from-amber-500 hover:to-[#791bbd] text-white text-xs font-semibold rounded-xl shadow-lg shadow-amber-500/20 transition-all hover:scale-[1.02] cursor-pointer shrink-0"
+        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-purple-600 to-[#5c0f92] hover:from-purple-500 hover:to-[#791bbd] text-white text-xs font-semibold rounded-xl shadow-lg shadow-purple-500/20 transition-all hover:scale-[1.02] cursor-pointer shrink-0"
       >
         <Play className="w-3.5 h-3.5 fill-current" />
         <span>Back to Currently Watching ({watchingCount})</span>
@@ -1170,11 +1170,11 @@ function PosterCard({
 
         {/* Hover overlay with click prompt */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-2">
-          <span className="text-[10px] text-amber-300 font-medium">Click for details</span>
+          <span className="text-[10px] text-purple-300 font-medium">Click for details</span>
         </div>
       </div>
       <div className="poster-card-info p-2">
-        <p className="text-xs font-medium text-white truncate group-hover:text-amber-200 transition-colors">
+        <p className="text-xs font-medium text-white truncate group-hover:text-purple-200 transition-colors">
           {entry.tmdb.title}
         </p>
         <div className="flex items-center justify-between mt-0.5">
@@ -1182,12 +1182,12 @@ function PosterCard({
             {entry.tmdb.releaseYear}
           </span>
           {showRating && entry.review?.rating ? (
-            <span className="flex items-center gap-0.5 text-[10px] text-amber-400 font-semibold">
-              <Star className="w-2.5 h-2.5 fill-amber-400" />
+            <span className="flex items-center gap-0.5 text-[10px] text-purple-400 font-semibold">
+              <Star className="w-2.5 h-2.5 fill-purple-400" />
               {entry.review.rating}
             </span>
           ) : isTV && entry.progress?.currentEpisode ? (
-            <span className="text-[10px] text-amber-500/80 font-mono">
+            <span className="text-[10px] text-purple-500/80 font-mono">
               Ep {entry.progress.currentEpisode}
             </span>
           ) : null}
@@ -1211,14 +1211,14 @@ function EmptySection({
 }) {
   return (
     <div className="text-center py-16">
-      <div className="inline-flex p-4 rounded-2xl bg-amber-500/8 mb-4">
+      <div className="inline-flex p-4 rounded-2xl bg-purple-500/8 mb-4">
         {icon}
       </div>
       <h3 className="text-xl font-semibold text-stone-300">{title}</h3>
       <p className="text-stone-500 mt-2 text-sm max-w-sm mx-auto">{subtitle}</p>
       <button
         onClick={onAdd}
-        className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-600 to-[#5c0f92] hover:from-amber-500 hover:to-[#791bbd] text-white text-sm rounded-xl transition-all shadow-lg shadow-amber-500/15 hover:shadow-amber-500/25 font-medium cursor-pointer"
+        className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-600 to-[#5c0f92] hover:from-purple-500 hover:to-[#791bbd] text-white text-sm rounded-xl transition-all shadow-lg shadow-purple-500/15 hover:shadow-purple-500/25 font-medium cursor-pointer"
       >
         <Plus className="w-4 h-4" />
         Add Title

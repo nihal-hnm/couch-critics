@@ -150,8 +150,8 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
   if (entries.length === 0) {
     return (
       <div className="text-center py-20">
-        <div className="inline-flex p-4 rounded-2xl bg-amber-500/8 mb-4">
-          <Play className="w-10 h-10 text-amber-500/40" />
+        <div className="inline-flex p-4 rounded-2xl bg-purple-500/8 mb-4">
+          <Play className="w-10 h-10 text-purple-500/40" />
         </div>
         <h3 className="text-xl font-semibold text-stone-300">
           Nothing playing right now
@@ -214,9 +214,9 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                 <div className="absolute inset-0 cinema-gradient-strong" />
 
                 {/* Currently watching badge */}
-                <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-500/30 backdrop-blur-sm">
-                  <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                  <span className="text-[10px] font-medium text-amber-200 uppercase tracking-wider flex items-center gap-1">
+                <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-purple-500/20 border border-purple-500/30 backdrop-blur-sm">
+                  <div className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+                  <span className="text-[10px] font-medium text-purple-200 uppercase tracking-wider flex items-center gap-1">
                     {isMovie ? <Film className="w-2.5 h-2.5" /> : <Tv className="w-2.5 h-2.5" />}
                     Now Watching
                   </span>
@@ -229,7 +229,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                 >
                   <button
                     onClick={() => handleMoveToBacklog(entry)}
-                    className="p-2 bg-stone-800/90 hover:bg-amber-600/90 rounded-lg text-stone-200 hover:text-white transition-colors backdrop-blur-sm"
+                    className="p-2 bg-stone-800/90 hover:bg-purple-600/90 rounded-lg text-stone-200 hover:text-white transition-colors backdrop-blur-sm"
                     title="Unwatch (Move to Backlog / To-Watch)"
                   >
                     <RotateCcw className="w-4 h-4" />
@@ -276,10 +276,10 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
 
               {/* ── Progress Section ───────────────────────────── */}
               <div className="p-4 space-y-3 bg-[#141210]">
-                {/* Warm amber progress bar */}
+                {/* Warm purple progress bar */}
                 <div className="w-full bg-stone-800/80 rounded-full h-1.5 overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-amber-500 to-[#5c0f92] rounded-full transition-all duration-500"
+                    className="h-full bg-gradient-to-r from-purple-500 to-[#5c0f92] rounded-full transition-all duration-500"
                     style={{ width: `${Math.min(100, progressPercent)}%` }}
                   />
                 </div>
@@ -315,7 +315,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                     >
                       <Minus className="w-3.5 h-3.5" />
                     </button>
-                    <span className="text-sm font-semibold text-amber-400 min-w-[3rem] text-center">
+                    <span className="text-sm font-semibold text-purple-400 min-w-[3rem] text-center">
                       {progressPercent}%
                     </span>
                     <button
@@ -339,7 +339,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                       onClick={() =>
                         setExpandedEpisodeShowId(isExpanded ? null : entry.id)
                       }
-                      className="text-xs text-amber-400/90 hover:text-amber-300 flex items-center gap-1.5 transition-colors font-medium"
+                      className="text-xs text-purple-400/90 hover:text-purple-300 flex items-center gap-1.5 transition-colors font-medium"
                     >
                       <ListVideo className="w-3.5 h-3.5" />
                       {isExpanded ? "Hide Episode Guide" : "Episode Checklist Tracker"}
@@ -383,7 +383,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                           onClick={() => setActiveSeasonMap(prev => ({ ...prev, [entry.id]: "all" }))}
                           className={`px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap transition-colors ${
                             currentSelection === "all"
-                              ? "bg-amber-500 text-stone-950 font-bold"
+                              ? "bg-purple-500 text-stone-950 font-bold"
                               : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
                           }`}
                         >
@@ -398,7 +398,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                               onClick={() => setActiveSeasonMap(prev => ({ ...prev, [entry.id]: s.seasonNumber }))}
                               className={`px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap transition-colors ${
                                 isSel
-                                  ? "bg-amber-500 text-stone-950 font-bold"
+                                  ? "bg-purple-500 text-stone-950 font-bold"
                                   : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
                               }`}
                             >
@@ -431,7 +431,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                                   <button
                                     type="button"
                                     onClick={() => handleSelectAllSeason(entry, sNum, epCount)}
-                                    className="px-2 py-0.5 rounded text-[10px] font-medium bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/25 transition-colors"
+                                    className="px-2 py-0.5 rounded text-[10px] font-medium bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/25 transition-colors"
                                   >
                                     Select All
                                   </button>
@@ -459,13 +459,13 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                                       onClick={() => handleToggleEpisode(entry, sNum, eNum)}
                                       className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium text-left border transition-all ${
                                         isWatched
-                                          ? "bg-amber-500/20 text-amber-200 border-amber-500/30"
+                                          ? "bg-purple-500/20 text-purple-200 border-purple-500/30"
                                           : "bg-stone-900 text-stone-400 border-stone-800 hover:border-stone-700"
                                       }`}
                                     >
                                       <div
                                         className={`w-3.5 h-3.5 rounded flex items-center justify-center shrink-0 ${
-                                          isWatched ? "bg-amber-400 text-black" : "border border-stone-600"
+                                          isWatched ? "bg-purple-400 text-black" : "border border-stone-600"
                                         }`}
                                       >
                                         {isWatched && <Check className="w-2.5 h-2.5 stroke-[3]" />}
@@ -484,7 +484,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                       <button
                         type="button"
                         onClick={() => setSelectedEntry(entry)}
-                        className="w-full py-1.5 px-3 rounded-lg text-xs font-semibold text-amber-300 hover:text-amber-100 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 transition-all flex items-center justify-center gap-1.5"
+                        className="w-full py-1.5 px-3 rounded-lg text-xs font-semibold text-purple-300 hover:text-purple-100 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 transition-all flex items-center justify-center gap-1.5"
                       >
                         <ListVideo className="w-3.5 h-3.5" />
                         Open Full Episode Guide &amp; Overviews &rarr;
@@ -510,7 +510,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                         onClick={() => setRating(i + 1)}
                         className={`text-lg transition-colors ${
                           i < rating
-                            ? "text-amber-400"
+                            ? "text-purple-400"
                             : "text-stone-700 hover:text-stone-500"
                         }`}
                       >
@@ -523,7 +523,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                     placeholder="Quick thoughts (optional)..."
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    className="w-full max-w-xs bg-stone-900 border border-stone-700 rounded-xl p-3 text-sm text-white placeholder-stone-500 resize-none h-20 outline-none focus:border-amber-500/50 transition-colors"
+                    className="w-full max-w-xs bg-stone-900 border border-stone-700 rounded-xl p-3 text-sm text-white placeholder-stone-500 resize-none h-20 outline-none focus:border-purple-500/50 transition-colors"
                   />
 
                   <div className="flex gap-3 mt-4">

@@ -6,7 +6,7 @@
  * Redesigned with the warm cinematic aesthetic:
  *  - Poster-forward grid with warm hover effects
  *  - Glassmorphism filter bar
- *  - Amber/gold "Pick for Tonight" roulette button
+ *  - Purple/gold "Pick for Tonight" roulette button
  *  - Warm gradient overlays on hover
  */
 
@@ -78,8 +78,8 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
   if (entries.length === 0) {
     return (
       <div className="text-center py-20">
-        <div className="inline-flex p-4 rounded-2xl bg-amber-500/8 mb-4">
-          <Sparkles className="w-10 h-10 text-amber-500/40" />
+        <div className="inline-flex p-4 rounded-2xl bg-purple-500/8 mb-4">
+          <Sparkles className="w-10 h-10 text-purple-500/40" />
         </div>
         <h3 className="text-xl font-semibold text-stone-300">
           Your backlog is empty
@@ -105,7 +105,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
               placeholder="Filter by title or genre..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 glass-card text-sm text-white placeholder-stone-500 outline-none focus:border-amber-500/30 transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 glass-card text-sm text-white placeholder-stone-500 outline-none focus:border-purple-500/30 transition-colors"
               id="towatch-search"
             />
           </div>
@@ -115,7 +115,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm transition-all ${
               showFilters
-                ? "bg-amber-500/10 border-amber-500/30 text-amber-200"
+                ? "bg-purple-500/10 border-purple-500/30 text-purple-200"
                 : "glass-card text-stone-400 hover:text-white"
             }`}
           >
@@ -127,7 +127,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
           <button
             onClick={pickRandom}
             disabled={filteredEntries.length === 0}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-600 to-[#5c0f92] hover:from-amber-500 hover:to-[#791bbd] text-white rounded-xl text-sm font-medium transition-all shadow-lg shadow-amber-500/15 hover:shadow-amber-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-600 to-[#5c0f92] hover:from-purple-500 hover:to-[#791bbd] text-white rounded-xl text-sm font-medium transition-all shadow-lg shadow-purple-500/15 hover:shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Shuffle className="w-4 h-4" />
             Pick for Tonight
@@ -144,7 +144,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
               <select
                 value={genreFilter}
                 onChange={(e) => setGenreFilter(e.target.value)}
-                className="bg-stone-900 border border-stone-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-amber-500/50"
+                className="bg-stone-900 border border-stone-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-purple-500/50"
               >
                 <option value="">All Genres</option>
                 {allGenres.map((genre) => (
@@ -162,7 +162,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
               <select
                 value={maxRuntime}
                 onChange={(e) => setMaxRuntime(Number(e.target.value))}
-                className="bg-stone-900 border border-stone-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-amber-500/50"
+                className="bg-stone-900 border border-stone-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-purple-500/50"
               >
                 <option value={0}>Any length</option>
                 <option value={90}>≤ 90 min (quick watch)</option>
@@ -183,7 +183,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
 
       {/* ── Picked Movie Spotlight ──────────────────────────── */}
       {pickedMovie && (
-        <div className="relative p-5 rounded-2xl overflow-hidden border border-amber-500/20 animate-in zoom-in-95 duration-300">
+        <div className="relative p-5 rounded-2xl overflow-hidden border border-purple-500/20 animate-in zoom-in-95 duration-300">
           {/* Ambient backdrop from the picked poster */}
           {pickedMovie.tmdb.posterUrl && (
             <div className="absolute inset-0">
@@ -204,7 +204,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
               <X className="w-4 h-4" />
             </button>
 
-            <div className="flex items-center gap-2 mb-3 text-amber-300">
+            <div className="flex items-center gap-2 mb-3 text-purple-300">
               <Sparkles className="w-4 h-4" />
               <span className="text-sm font-medium">Tonight&apos;s Pick</span>
             </div>
@@ -241,7 +241,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
                       moveToShelf(pickedMovie.id, "watching");
                       setPickedMovie(null);
                     }}
-                    className="flex items-center gap-1.5 text-xs bg-amber-600 hover:bg-amber-500 text-white px-3.5 py-2 rounded-lg transition-colors font-medium"
+                    className="flex items-center gap-1.5 text-xs bg-purple-600 hover:bg-purple-500 text-white px-3.5 py-2 rounded-lg transition-colors font-medium"
                   >
                     <Play className="w-3 h-3" />
                     Start Watching
@@ -295,7 +295,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
               <div className="flex gap-1.5 mt-2.5" onClick={(e) => e.stopPropagation()}>
                 <button
                   onClick={() => moveToShelf(entry.id, "watching")}
-                  className="flex-1 flex items-center justify-center gap-1 text-xs bg-amber-600/80 hover:bg-amber-500 text-white py-1.5 rounded-lg transition-colors"
+                  className="flex-1 flex items-center justify-center gap-1 text-xs bg-purple-600/80 hover:bg-purple-500 text-white py-1.5 rounded-lg transition-colors"
                   title="Start watching"
                 >
                   <Play className="w-3 h-3" />
@@ -356,7 +356,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
               setGenreFilter("");
               setMaxRuntime(0);
             }}
-            className="mt-2 text-amber-400 hover:text-amber-300 text-sm underline"
+            className="mt-2 text-purple-400 hover:text-purple-300 text-sm underline"
           >
             Clear all filters
           </button>

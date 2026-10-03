@@ -5,7 +5,7 @@
  *
  * Redesigned with the warm cinematic aesthetic:
  *  - Glassmorphism modal with warm backdrop
- *  - Amber-tinted search bar with cinematic glow
+ *  - Purple-tinted search bar with cinematic glow
  *  - Warm hover effects on search results
  *  - Gold accent buttons for adding movies
  *  - Poster-forward result cards
@@ -193,8 +193,8 @@ export default function SearchModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* ── Header (warm search bar) ──────────────────────── */}
-        <div className="flex items-center gap-3 p-4 border-b border-amber-500/10">
-          <Search className="w-5 h-5 text-amber-400/60" />
+        <div className="flex items-center gap-3 p-4 border-b border-purple-500/10">
+          <Search className="w-5 h-5 text-purple-400/60" />
           <input
             ref={inputRef}
             type="text"
@@ -225,7 +225,7 @@ export default function SearchModal({
         {/* ── Results ────────────────────────────────────────── */}
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {isLoading && (
-            <div className="flex items-center justify-center py-12 text-amber-400/60">
+            <div className="flex items-center justify-center py-12 text-purple-400/60">
               <Loader2 className="w-6 h-6 animate-spin mr-2" />
               <span className="text-zinc-400">Searching TMDB...</span>
             </div>
@@ -255,7 +255,7 @@ export default function SearchModal({
                     <img
                       src={movie.posterUrl}
                       alt={`${movie.title} poster`}
-                      className="w-16 h-24 rounded-lg object-cover shrink-0 group-hover:shadow-lg group-hover:shadow-amber-500/10 transition-shadow"
+                      className="w-16 h-24 rounded-lg object-cover shrink-0 group-hover:shadow-lg group-hover:shadow-purple-500/10 transition-shadow"
                     />
                   ) : (
                     <div className="w-16 h-24 rounded-lg bg-zinc-800 flex items-center justify-center shrink-0 border border-zinc-700/30">
@@ -270,9 +270,9 @@ export default function SearchModal({
                         {movie.title}
                       </h3>
                       {movie.mediaType === "tv" ? (
-                        <Tv className="w-3.5 h-3.5 text-amber-300/60 shrink-0" />
+                        <Tv className="w-3.5 h-3.5 text-purple-300/60 shrink-0" />
                       ) : (
-                        <Film className="w-3.5 h-3.5 text-amber-400/60 shrink-0" />
+                        <Film className="w-3.5 h-3.5 text-purple-400/60 shrink-0" />
                       )}
                     </div>
                     <p className="text-sm text-zinc-400">
@@ -288,7 +288,7 @@ export default function SearchModal({
                   {/* Add buttons */}
                   <div className="flex flex-col gap-1.5 shrink-0">
                     {isAlreadyAdded ? (
-                      <span className="text-xs text-amber-400 bg-amber-400/10 px-2.5 py-1.5 rounded-lg border border-amber-400/15">
+                      <span className="text-xs text-purple-400 bg-purple-400/10 px-2.5 py-1.5 rounded-lg border border-purple-400/15">
                         Added ✓
                       </span>
                     ) : (
@@ -296,7 +296,7 @@ export default function SearchModal({
                         <button
                           onClick={() => handleAddMovie(movie, defaultShelf)}
                           disabled={addingId === movie.tmdbId}
-                          className="flex items-center gap-1 text-xs bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 px-2.5 py-1.5 rounded-lg transition-all border border-amber-500/20 disabled:opacity-50"
+                          className="flex items-center gap-1 text-xs bg-purple-500/15 hover:bg-purple-500/25 text-purple-300 px-2.5 py-1.5 rounded-lg transition-all border border-purple-500/20 disabled:opacity-50"
                         >
                           {addingId === movie.tmdbId ? (
                             <Loader2 className="w-3 h-3 animate-spin" />
@@ -313,7 +313,7 @@ export default function SearchModal({
                           <button
                             onClick={() => handleAddMovie(movie, "watching")}
                             disabled={addingId === movie.tmdbId}
-                            className="text-xs text-zinc-500 hover:text-amber-300 px-2.5 py-1 rounded-lg hover:bg-amber-500/10 transition-all"
+                            className="text-xs text-zinc-500 hover:text-purple-300 px-2.5 py-1 rounded-lg hover:bg-purple-500/10 transition-all"
                           >
                             + Watching
                           </button>
@@ -322,7 +322,7 @@ export default function SearchModal({
                           <button
                             onClick={() => handleAddMovie(movie, "watched")}
                             disabled={addingId === movie.tmdbId}
-                            className="text-xs text-zinc-500 hover:text-amber-300 px-2.5 py-1 rounded-lg hover:bg-amber-500/10 transition-all"
+                            className="text-xs text-zinc-500 hover:text-purple-300 px-2.5 py-1 rounded-lg hover:bg-purple-500/10 transition-all"
                           >
                             + Watched
                           </button>
@@ -337,8 +337,8 @@ export default function SearchModal({
           {!isLoading && !error && results.length === 0 && query === "" && (
             <div className="text-center py-16 text-zinc-500">
               <div className="relative inline-block mb-4">
-                <Sparkles className="w-12 h-12 mx-auto text-amber-500/20 animate-float" />
-                <div className="absolute inset-0 w-12 h-12 mx-auto rounded-full bg-amber-500/5 blur-xl" />
+                <Sparkles className="w-12 h-12 mx-auto text-purple-500/20 animate-float" />
+                <div className="absolute inset-0 w-12 h-12 mx-auto rounded-full bg-purple-500/5 blur-xl" />
               </div>
               <p className="text-lg text-zinc-400">Search for a movie or TV show</p>
               <p className="text-sm mt-1 text-zinc-600">

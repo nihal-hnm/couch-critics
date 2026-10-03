@@ -419,7 +419,7 @@ export default function MediaDetailModal({
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-4xl max-h-[90vh] bg-[#12100e] border border-amber-500/20 rounded-2xl overflow-hidden shadow-2xl flex flex-col z-10"
+        className="relative w-full max-w-4xl max-h-[90vh] bg-[#12100e] border border-purple-500/20 rounded-2xl overflow-hidden shadow-2xl flex flex-col z-10"
         onClick={(e) => e.stopPropagation()}
       >
         {/* ── Banner Header ─────────────────────────────────────── */}
@@ -431,7 +431,7 @@ export default function MediaDetailModal({
               className="w-full h-full object-cover object-center filter brightness-50"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-r from-stone-900 to-amber-950/40" />
+            <div className="w-full h-full bg-gradient-to-r from-stone-900 to-purple-950/40" />
           )}
 
           <div className="absolute inset-0 bg-gradient-to-t from-[#12100e] via-[#12100e]/60 to-transparent" />
@@ -456,7 +456,7 @@ export default function MediaDetailModal({
             )}
             <div className="flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1">
+                <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-purple-500/20 text-purple-300 border border-purple-500/30 flex items-center gap-1">
                   {isTV ? <Tv className="w-3 h-3" /> : <Film className="w-3 h-3" />}
                   {isTV ? "TV Series" : "Movie"}
                 </span>
@@ -468,8 +468,8 @@ export default function MediaDetailModal({
                   </span>
                 )}
                 {entry.review?.rating && (
-                  <span className="flex items-center gap-1 text-xs text-amber-400 font-semibold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
-                    <Star className="w-3 h-3 fill-amber-400" />
+                  <span className="flex items-center gap-1 text-xs text-purple-400 font-semibold bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">
+                    <Star className="w-3 h-3 fill-purple-400" />
                     {entry.review.rating}/10
                   </span>
                 )}
@@ -496,7 +496,7 @@ export default function MediaDetailModal({
                 onClick={() => handleShelfChange("watching")}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                   entry.shelf === "watching"
-                    ? "bg-amber-600 text-white shadow-sm"
+                    ? "bg-purple-600 text-white shadow-sm"
                     : "text-stone-400 hover:text-white"
                 }`}
               >
@@ -507,7 +507,7 @@ export default function MediaDetailModal({
                 onClick={() => handleShelfChange("toWatch")}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                   entry.shelf === "toWatch"
-                    ? "bg-amber-600 text-white shadow-sm"
+                    ? "bg-purple-600 text-white shadow-sm"
                     : "text-stone-400 hover:text-white"
                 }`}
               >
@@ -531,7 +531,7 @@ export default function MediaDetailModal({
             {entry.shelf === "watched" && (
               <button
                 onClick={() => handleUnwatch("toWatch")}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-amber-300 hover:text-amber-100 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 transition-all shadow-sm"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-purple-300 hover:text-purple-100 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 transition-all shadow-sm"
                 title="Unwatch (Move back to Watchlist/Backlog)"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
@@ -547,7 +547,7 @@ export default function MediaDetailModal({
                 onClick={() => setActiveTab("episodes")}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                   activeTab === "episodes"
-                    ? "bg-amber-500/15 text-amber-200 border border-amber-500/30"
+                    ? "bg-purple-500/15 text-purple-200 border border-purple-500/30"
                     : "text-stone-400 hover:text-stone-200"
                 }`}
               >
@@ -559,7 +559,7 @@ export default function MediaDetailModal({
               onClick={() => setActiveTab("overview")}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                 activeTab === "overview"
-                  ? "bg-amber-500/15 text-amber-200 border border-amber-500/30"
+                  ? "bg-purple-500/15 text-purple-200 border border-purple-500/30"
                   : "text-stone-400 hover:text-stone-200"
               }`}
             >
@@ -569,7 +569,7 @@ export default function MediaDetailModal({
               onClick={() => setActiveTab("review")}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                 activeTab === "review"
-                  ? "bg-amber-500/15 text-amber-200 border border-amber-500/30"
+                  ? "bg-purple-500/15 text-purple-200 border border-purple-500/30"
                   : "text-stone-400 hover:text-stone-200"
               }`}
             >
@@ -585,14 +585,14 @@ export default function MediaDetailModal({
           {activeTab === "episodes" && isTV && (
             <div className="space-y-6">
               {/* Overall series progress banner */}
-              <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-[#5c0f92]/10 to-transparent border border-amber-500/25 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg shadow-black/40">
+              <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-purple-500/10 via-[#5c0f92]/10 to-transparent border border-purple-500/25 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg shadow-black/40">
                 <div>
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-amber-400" />
+                    <Sparkles className="w-4 h-4 text-purple-400" />
                     <h4 className="text-base font-bold text-white tracking-tight">
                       All Seasons &amp; Episodes Tracker
                     </h4>
-                    <span className="text-[11px] font-semibold uppercase px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    <span className="text-[11px] font-semibold uppercase px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
                       {seasonsList.length} Seasons
                     </span>
                   </div>
@@ -602,7 +602,7 @@ export default function MediaDetailModal({
                 </div>
                 <div className="flex items-center gap-5 shrink-0">
                   <div className="text-right">
-                    <p className="text-xl font-black text-amber-400">
+                    <p className="text-xl font-black text-purple-400">
                       {watchedEpisodeCodes.size} <span className="text-stone-400 text-sm font-normal">/ {displayTotalEpisodes}</span>
                     </p>
                     <p className="text-[10px] text-stone-400 uppercase tracking-wider font-semibold">
@@ -624,16 +624,16 @@ export default function MediaDetailModal({
               <div className="space-y-1.5 bg-stone-900/60 p-3 rounded-xl border border-stone-800/80">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-stone-300 font-medium flex items-center gap-1.5">
-                    <Tv className="w-3.5 h-3.5 text-amber-400" />
+                    <Tv className="w-3.5 h-3.5 text-purple-400" />
                     Overall Series Completion
                   </span>
-                  <span className="font-bold text-amber-400">
+                  <span className="font-bold text-purple-400">
                     {Math.round((watchedEpisodeCodes.size / (displayTotalEpisodes || 1)) * 100)}%
                   </span>
                 </div>
                 <div className="w-full bg-stone-950 rounded-full h-2.5 overflow-hidden border border-stone-800/80">
                   <div
-                    className="h-full bg-gradient-to-r from-amber-500 via-[#5c0f92] to-amber-400 transition-all duration-300"
+                    className="h-full bg-gradient-to-r from-purple-500 via-[#5c0f92] to-purple-400 transition-all duration-300"
                     style={{
                       width: `${Math.min(100, Math.round((watchedEpisodeCodes.size / (displayTotalEpisodes || 1)) * 100))}%`,
                     }}
@@ -650,7 +650,7 @@ export default function MediaDetailModal({
                     onClick={() => setSelectedSeasonFilter("all")}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
                       selectedSeasonFilter === "all"
-                        ? "bg-amber-500 text-stone-950 shadow-md shadow-amber-500/20"
+                        ? "bg-purple-500 text-stone-950 shadow-md shadow-purple-500/20"
                         : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
                     }`}
                   >
@@ -670,7 +670,7 @@ export default function MediaDetailModal({
                         onClick={() => setSelectedSeasonFilter(isSelected ? "all" : s.seasonNumber)}
                         className={`px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all flex items-center gap-1.5 ${
                           isSelected
-                            ? "bg-amber-500 text-stone-950 font-bold shadow-md shadow-amber-500/20"
+                            ? "bg-purple-500 text-stone-950 font-bold shadow-md shadow-purple-500/20"
                             : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
                         }`}
                         title={`Filter or jump to Season ${s.seasonNumber}`}
@@ -695,7 +695,7 @@ export default function MediaDetailModal({
                   <button
                     type="button"
                     onClick={handleMarkAllSeries}
-                    className="text-xs text-amber-300 hover:text-amber-100 flex items-center gap-1.5 bg-amber-500/15 hover:bg-amber-500/25 px-2.5 py-1.5 rounded-lg border border-amber-500/30 transition-colors font-medium"
+                    className="text-xs text-purple-300 hover:text-purple-100 flex items-center gap-1.5 bg-purple-500/15 hover:bg-purple-500/25 px-2.5 py-1.5 rounded-lg border border-purple-500/30 transition-colors font-medium"
                     title="Mark all episodes across all seasons as watched"
                   >
                     <CheckCheck className="w-3.5 h-3.5" />
@@ -727,7 +727,7 @@ export default function MediaDetailModal({
               {/* Episode Filter Bar: All / Watched / Unwatched */}
               <div className="flex items-center justify-between flex-wrap gap-2 text-xs text-stone-400">
                 <span className="font-semibold text-stone-300 flex items-center gap-1.5">
-                  <Filter className="w-3.5 h-3.5 text-amber-400" />
+                  <Filter className="w-3.5 h-3.5 text-purple-400" />
                   Showing: {selectedSeasonFilter === "all" ? "All Seasons" : `Season ${selectedSeasonFilter}`}
                 </span>
                 <div className="flex items-center gap-1 bg-stone-900/90 p-1 rounded-xl border border-stone-800">
@@ -736,7 +736,7 @@ export default function MediaDetailModal({
                     onClick={() => setEpisodeFilter("all")}
                     className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
                       episodeFilter === "all"
-                        ? "bg-amber-500/20 text-amber-300 font-semibold"
+                        ? "bg-purple-500/20 text-purple-300 font-semibold"
                         : "text-stone-400 hover:text-white"
                     }`}
                   >
@@ -747,7 +747,7 @@ export default function MediaDetailModal({
                     onClick={() => setEpisodeFilter("watched")}
                     className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
                       episodeFilter === "watched"
-                        ? "bg-amber-500/20 text-amber-300 font-semibold"
+                        ? "bg-purple-500/20 text-purple-300 font-semibold"
                         : "text-stone-400 hover:text-white"
                     }`}
                   >
@@ -758,7 +758,7 @@ export default function MediaDetailModal({
                     onClick={() => setEpisodeFilter("unwatched")}
                     className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
                       episodeFilter === "unwatched"
-                        ? "bg-amber-500/20 text-amber-300 font-semibold"
+                        ? "bg-purple-500/20 text-purple-300 font-semibold"
                         : "text-stone-400 hover:text-white"
                     }`}
                   >
@@ -808,7 +808,7 @@ export default function MediaDetailModal({
                               {isCollapsed ? (
                                 <ChevronRight className="w-4 h-4 text-stone-400" />
                               ) : (
-                                <ChevronDown className="w-4 h-4 text-amber-400" />
+                                <ChevronDown className="w-4 h-4 text-purple-400" />
                               )}
                             </button>
                             <div>
@@ -820,7 +820,7 @@ export default function MediaDetailModal({
                                   ({seasonEps.length} episodes)
                                 </span>
                               </div>
-                              <p className="text-xs text-amber-400/90 mt-0.5 font-medium">
+                              <p className="text-xs text-purple-400/90 mt-0.5 font-medium">
                                 {watchedInSeason} / {seasonEps.length} watched ({seasonPercent}%)
                               </p>
                             </div>
@@ -834,7 +834,7 @@ export default function MediaDetailModal({
                             <button
                               type="button"
                               onClick={() => handleMarkAllSeason(seasonNumber)}
-                              className="text-xs text-amber-300 hover:text-amber-100 flex items-center gap-1.5 bg-amber-500/15 hover:bg-amber-500/25 px-2.5 py-1 rounded-lg border border-amber-500/30 transition-colors font-medium"
+                              className="text-xs text-purple-300 hover:text-purple-100 flex items-center gap-1.5 bg-purple-500/15 hover:bg-purple-500/25 px-2.5 py-1 rounded-lg border border-purple-500/30 transition-colors font-medium"
                               title={`Mark all episodes in ${season.name} as watched`}
                             >
                               <Check className="w-3.5 h-3.5" />
@@ -855,7 +855,7 @@ export default function MediaDetailModal({
                         {/* Season Mini Progress Bar */}
                         <div className="w-full bg-stone-950 h-1 overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-amber-500 to-[#5c0f92] transition-all duration-300"
+                            className="h-full bg-gradient-to-r from-purple-500 to-[#5c0f92] transition-all duration-300"
                             style={{ width: `${seasonPercent}%` }}
                           />
                         </div>
@@ -885,7 +885,7 @@ export default function MediaDetailModal({
                                     }
                                     className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer ${
                                       isWatched
-                                        ? "bg-amber-500/10 border-amber-500/30 text-white"
+                                        ? "bg-purple-500/10 border-purple-500/30 text-white"
                                         : "bg-stone-900/60 border-stone-800/80 text-stone-400 hover:border-stone-700 hover:bg-stone-900"
                                     }`}
                                   >
@@ -894,8 +894,8 @@ export default function MediaDetailModal({
                                         type="button"
                                         className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 transition-all ${
                                           isWatched
-                                            ? "bg-amber-500 text-stone-950 font-bold"
-                                            : "border border-stone-700 hover:border-amber-400"
+                                            ? "bg-purple-500 text-stone-950 font-bold"
+                                            : "border border-stone-700 hover:border-purple-400"
                                         }`}
                                       >
                                         {isWatched ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : null}
@@ -906,7 +906,7 @@ export default function MediaDetailModal({
                                             isWatched ? "text-white" : "text-stone-300"
                                           }`}
                                         >
-                                          <span className="text-amber-400 font-mono text-xs font-bold mr-2">
+                                          <span className="text-purple-400 font-mono text-xs font-bold mr-2">
                                             E{ep.episodeNumber}
                                           </span>
                                           {ep.title}
@@ -931,7 +931,7 @@ export default function MediaDetailModal({
                                       <span
                                         className={`text-[10px] px-2 py-0.5 rounded font-semibold uppercase tracking-wider ${
                                           isWatched
-                                            ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                                            ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
                                             : "bg-stone-800 text-stone-500"
                                         }`}
                                       >
@@ -959,7 +959,7 @@ export default function MediaDetailModal({
                 {entry.tmdb.genres.map((genre) => (
                   <span
                     key={genre}
-                    className="px-3 py-1 text-xs rounded-full bg-stone-900 text-amber-200 border border-stone-800"
+                    className="px-3 py-1 text-xs rounded-full bg-stone-900 text-purple-200 border border-stone-800"
                   >
                     {genre}
                   </span>
@@ -981,7 +981,7 @@ export default function MediaDetailModal({
                 <div className="p-4 rounded-xl bg-stone-900/60 border border-stone-800 space-y-3">
                   <div className="flex justify-between items-center text-sm">
                     <span className="font-semibold text-white">Movie Watch Progress</span>
-                    <span className="text-amber-400 font-semibold">
+                    <span className="text-purple-400 font-semibold">
                       {entry.progress?.minutesWatched ?? 0} / {entry.tmdb.runtime || 120} min
                     </span>
                   </div>
@@ -997,7 +997,7 @@ export default function MediaDetailModal({
                         totalMinutes: entry.tmdb.runtime || 120,
                       })
                     }
-                    className="w-full accent-amber-500 cursor-pointer"
+                    className="w-full accent-purple-500 cursor-pointer"
                   />
                   <div className="flex justify-between">
                     <button
@@ -1056,7 +1056,7 @@ export default function MediaDetailModal({
                           <Star
                             className={`w-5 h-5 sm:w-6 sm:h-6 transition-colors ${
                               active
-                                ? "text-amber-400 fill-amber-400"
+                                ? "text-purple-400 fill-purple-400"
                                 : "text-stone-700 hover:text-stone-500"
                             }`}
                           />
@@ -1064,7 +1064,7 @@ export default function MediaDetailModal({
                       );
                     })}
                   </div>
-                  <span className="text-xl font-bold text-amber-400 ml-2">
+                  <span className="text-xl font-bold text-purple-400 ml-2">
                     {hoverRating || rating} / 10
                   </span>
                 </div>
@@ -1080,7 +1080,7 @@ export default function MediaDetailModal({
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="What resonated with you? Notable scenes, performances, takeaways..."
                   rows={4}
-                  className="w-full bg-stone-900/90 border border-stone-800 rounded-xl p-3 text-sm text-white placeholder-stone-600 focus:outline-none focus:border-amber-500/50 resize-y transition-colors"
+                  className="w-full bg-stone-900/90 border border-stone-800 rounded-xl p-3 text-sm text-white placeholder-stone-600 focus:outline-none focus:border-purple-500/50 resize-y transition-colors"
                 />
               </div>
 
@@ -1093,7 +1093,7 @@ export default function MediaDetailModal({
                   {tags.map((t) => (
                     <span
                       key={t}
-                      className="px-2.5 py-1 text-xs rounded-lg bg-amber-500/10 text-amber-300 border border-amber-500/20 flex items-center gap-1.5"
+                      className="px-2.5 py-1 text-xs rounded-lg bg-purple-500/10 text-purple-300 border border-purple-500/20 flex items-center gap-1.5"
                     >
                       #{t}
                       <button
@@ -1118,7 +1118,7 @@ export default function MediaDetailModal({
                       }
                     }}
                     placeholder="Add a tag (e.g. comfort-watch, peak-writing)..."
-                    className="flex-1 bg-stone-900 border border-stone-800 rounded-xl px-3 py-2 text-xs text-white placeholder-stone-600 focus:outline-none focus:border-amber-500/50"
+                    className="flex-1 bg-stone-900 border border-stone-800 rounded-xl px-3 py-2 text-xs text-white placeholder-stone-600 focus:outline-none focus:border-purple-500/50"
                   />
                   <button
                     type="button"
@@ -1135,7 +1135,7 @@ export default function MediaDetailModal({
                 <button
                   type="button"
                   onClick={handleSaveReview}
-                  className="px-6 py-2.5 bg-gradient-to-r from-amber-600 to-[#5c0f92] hover:from-amber-500 hover:to-[#791bbd] text-white rounded-xl text-sm font-semibold shadow-lg shadow-amber-600/20 transition-all"
+                  className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-[#5c0f92] hover:from-purple-500 hover:to-[#791bbd] text-white rounded-xl text-sm font-semibold shadow-lg shadow-purple-600/20 transition-all"
                 >
                   Save Review
                 </button>
