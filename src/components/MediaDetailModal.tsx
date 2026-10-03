@@ -26,14 +26,19 @@ import {
   BookmarkPlus,
   Trash2,
   Check,
+  CheckCheck,
   Plus,
   Minus,
   Sparkles,
   ChevronRight,
+  ChevronDown,
+  ChevronUp,
   ListVideo,
   RotateCcw,
+  Layers,
+  Filter,
 } from "lucide-react";
-import type { MovieEntry, Shelf, UserReview, WatchProgress, EpisodeItem } from "@/lib/types";
+import type { MovieEntry, Shelf, UserReview, WatchProgress, EpisodeItem, TMDBSeasonData } from "@/lib/types";
 import { useJournal } from "@/lib/journal-context";
 import { fetchSeasonEpisodes } from "@/lib/tmdb";
 
@@ -52,9 +57,10 @@ export default function MediaDetailModal({
 
   // Local state for edits
   const [activeTab, setActiveTab] = useState<"overview" | "episodes" | "review">("overview");
-  const [selectedSeason, setSelectedSeason] = useState<number>(1);
-  const [seasonEpisodes, setSeasonEpisodes] = useState<EpisodeItem[]>([]);
-  const [isLoadingEpisodes, setIsLoadingEpisodes] = useState(false);
+  const [selectedSeasonFilter, setSelectedSeasonFilter] = useState<number | "all">("all");
+  const [seasonsEpisodesMap, setSeasonsEpisodesMap] = useState<Record<number, EpisodeItem[]>>({});
+  const [loadingSeasons, setLoadingSeasons] = useState<Record<number, boolean>>({});
+  const [collapsedSeasons, setCollapsedSeasons] = useState<Record<number, boolean>>({});
   const [episodeFilter, setEpisodeFilter] = useState<"all" | "watched" | "unwatched">("all");
 
   // Review editing state
@@ -71,41 +77,63 @@ export default function MediaDetailModal({
       setRating(entry.review?.rating ?? 8);
       setNotes(entry.review?.notes ?? "");
       setTags(entry.review?.tags ?? []);
-      const currentS = entry.progress?.currentSeason || 1;
-      setSelectedSeason(currentS);
       setActiveTab(entry.tmdb.mediaType === "tv" ? "episodes" : "overview");
+      setSelectedSeasonFilter("all");
+      setCollapsedSeasons({});
     }
-  }, [entry]);
+  }, [entry?.id]);
 
-  // Load episodes when season changes for TV shows
+  // Load and cache episodes for ALL seasons of TV shows
   useEffect(() => {
     if (!entry || entry.tmdb.mediaType !== "tv") return;
 
-    // Check if season is already in entry.tmdb.seasons with episodes
-    const seasonData = entry.tmdb.seasons?.find((s) => s.seasonNumber === selectedSeason);
-    if (seasonData?.episodes && seasonData.episodes.length > 0) {
-      setSeasonEpisodes(seasonData.episodes);
-      return;
-    }
+    const seasons: TMDBSeasonData[] = entry.tmdb.seasons && entry.tmdb.seasons.length > 0
+      ? entry.tmdb.seasons
+      : Array.from({ length: entry.tmdb.totalSeasons || 1 }, (_, i) => ({
+          seasonNumber: i + 1,
+          name: `Season ${i + 1}`,
+          episodeCount: entry.tmdb.totalEpisodes
+            ? Math.ceil(entry.tmdb.totalEpisodes / (entry.tmdb.totalSeasons || 1))
+            : 10,
+        }));
 
-    // Otherwise fetch or generate
-    setIsLoadingEpisodes(true);
-    fetchSeasonEpisodes(entry.tmdb.tmdbId, selectedSeason)
-      .then((eps) => setSeasonEpisodes(eps))
-      .catch(() => {
-        // Fallback
-        const fallbackCount = seasonData?.episodeCount || 10;
-        setSeasonEpisodes(
-          Array.from({ length: fallbackCount }, (_, i) => ({
-            seasonNumber: selectedSeason,
-            episodeNumber: i + 1,
-            title: `Episode ${i + 1}`,
-            runtime: entry.tmdb.runtime || 45,
-          }))
-        );
-      })
-      .finally(() => setIsLoadingEpisodes(false));
-  }, [entry, selectedSeason]);
+    // Initialize immediate fallback or existing data for each season
+    const initialMap: Record<number, EpisodeItem[]> = {};
+    seasons.forEach((s) => {
+      if (s.episodes && s.episodes.length > 0) {
+        initialMap[s.seasonNumber] = s.episodes;
+      } else {
+        const count = s.episodeCount || 10;
+        initialMap[s.seasonNumber] = Array.from({ length: count }, (_, i) => ({
+          seasonNumber: s.seasonNumber,
+          episodeNumber: i + 1,
+          title: `Episode ${i + 1}`,
+          runtime: entry.tmdb.runtime || 45,
+        }));
+      }
+    });
+    setSeasonsEpisodesMap(initialMap);
+
+    // Fetch detailed episode data for all seasons in background from TMDB
+    seasons.forEach((s) => {
+      setLoadingSeasons((prev) => ({ ...prev, [s.seasonNumber]: true }));
+      fetchSeasonEpisodes(entry.tmdb.tmdbId, s.seasonNumber)
+        .then((eps) => {
+          if (eps && eps.length > 0) {
+            setSeasonsEpisodesMap((prev) => ({
+              ...prev,
+              [s.seasonNumber]: eps,
+            }));
+          }
+        })
+        .catch((err) => {
+          console.warn(`Could not load episodes for S${s.seasonNumber}:`, err);
+        })
+        .finally(() => {
+          setLoadingSeasons((prev) => ({ ...prev, [s.seasonNumber]: false }));
+        });
+    });
+  }, [entry?.id, entry?.tmdb?.tmdbId]);
 
   // Handle escape key to close
   useEffect(() => {
@@ -196,12 +224,28 @@ export default function MediaDetailModal({
     updateProgress(entry.id, updatedProgress);
   }
 
+  // ── Helper: Get episodes for any season (cached, fetched, or fallback) ────
+  function getEpisodesForSeason(seasonNum: number, fallbackCount: number = 10): EpisodeItem[] {
+    if (seasonsEpisodesMap[seasonNum] && seasonsEpisodesMap[seasonNum].length > 0) {
+      return seasonsEpisodesMap[seasonNum];
+    }
+    return Array.from({ length: fallbackCount || 10 }, (_, i) => ({
+      seasonNumber: seasonNum,
+      episodeNumber: i + 1,
+      title: `Episode ${i + 1}`,
+      runtime: entry?.tmdb.runtime || 45,
+      overview: "",
+    }));
+  }
+
   // ── Mark Whole Season (Select All) ────────────────────────────────────────
   function handleMarkAllSeason(seasonNum: number) {
-    if (!entry || seasonEpisodes.length === 0) return;
+    if (!entry) return;
+    const seasonData = seasonsList.find((s) => s.seasonNumber === seasonNum);
+    const eps = getEpisodesForSeason(seasonNum, seasonData?.episodeCount || 10);
     const newWatched = new Set(entry.progress?.watchedEpisodes ?? []);
 
-    seasonEpisodes.forEach((ep) => {
+    eps.forEach((ep) => {
       newWatched.add(`S${seasonNum}E${ep.episodeNumber}`);
     });
 
@@ -221,10 +265,12 @@ export default function MediaDetailModal({
 
   // ── Unmark Whole Season (Unselect All) ────────────────────────────────────
   function handleUnmarkAllSeason(seasonNum: number) {
-    if (!entry || seasonEpisodes.length === 0) return;
+    if (!entry) return;
+    const seasonData = seasonsList.find((s) => s.seasonNumber === seasonNum);
+    const eps = getEpisodesForSeason(seasonNum, seasonData?.episodeCount || 10);
     const newWatched = new Set(entry.progress?.watchedEpisodes ?? []);
 
-    seasonEpisodes.forEach((ep) => {
+    eps.forEach((ep) => {
       newWatched.delete(`S${seasonNum}E${ep.episodeNumber}`);
     });
 
@@ -236,6 +282,63 @@ export default function MediaDetailModal({
       watchedEpisodes: watchedArray,
       minutesWatched: watchedArray.length * (entry.tmdb.runtime || 45),
     });
+  }
+
+  // ── Mark Entire Series (Select All Series) ────────────────────────────────
+  function handleMarkAllSeries() {
+    if (!entry) return;
+    const newWatched = new Set(entry.progress?.watchedEpisodes ?? []);
+
+    seasonsList.forEach((s) => {
+      const eps = getEpisodesForSeason(s.seasonNumber, s.episodeCount || 10);
+      eps.forEach((ep) => {
+        newWatched.add(`S${s.seasonNumber}E${ep.episodeNumber}`);
+      });
+    });
+
+    const watchedArray = Array.from(newWatched);
+    updateProgress(entry.id, {
+      ...(entry.progress ?? {}),
+      currentSeason: seasonsList[seasonsList.length - 1]?.seasonNumber || 1,
+      currentEpisode: watchedArray.length,
+      watchedEpisodes: watchedArray,
+      minutesWatched: watchedArray.length * (entry.tmdb.runtime || 45),
+    });
+
+    if (entry.shelf === "toWatch") {
+      moveToShelf(entry.id, "watching");
+    }
+  }
+
+  // ── Unmark Entire Series (Unselect All Series) ────────────────────────────
+  function handleUnmarkAllSeries() {
+    if (!entry) return;
+    updateProgress(entry.id, {
+      ...(entry.progress ?? {}),
+      currentEpisode: 0,
+      watchedEpisodes: [],
+      minutesWatched: 0,
+    });
+  }
+
+  // ── Season Accordion Controls ────────────────────────────────────────────
+  function toggleSeasonCollapse(seasonNum: number) {
+    setCollapsedSeasons((prev) => ({
+      ...prev,
+      [seasonNum]: !prev[seasonNum],
+    }));
+  }
+
+  function handleExpandAll() {
+    setCollapsedSeasons({});
+  }
+
+  function handleCollapseAll() {
+    const allCollapsed: Record<number, boolean> = {};
+    seasonsList.forEach((s) => {
+      allCollapsed[s.seasonNumber] = true;
+    });
+    setCollapsedSeasons(allCollapsed);
   }
 
   // ── Unwatch Feature ───────────────────────────────────────────────────────
@@ -283,27 +386,22 @@ export default function MediaDetailModal({
     setTags(tags.filter((t) => t !== tag));
   }
 
-  const seasonsList = entry.tmdb.seasons && entry.tmdb.seasons.length > 0
+  const seasonsList: TMDBSeasonData[] = entry.tmdb.seasons && entry.tmdb.seasons.length > 0
     ? entry.tmdb.seasons
     : Array.from({ length: entry.tmdb.totalSeasons || 1 }, (_, i) => ({
         seasonNumber: i + 1,
         name: `Season ${i + 1}`,
-        episodeCount: 10,
+        episodeCount: entry.tmdb.totalEpisodes
+          ? Math.ceil(entry.tmdb.totalEpisodes / (entry.tmdb.totalSeasons || 1))
+          : 10,
       }));
 
-  const episodesInCurrentSeason: EpisodeItem[] = seasonEpisodes.length > 0
-    ? seasonEpisodes
-    : Array.from({ length: 10 }, (_, i) => ({
-        seasonNumber: selectedSeason,
-        episodeNumber: i + 1,
-        title: `Episode ${i + 1}`,
-        runtime: entry.tmdb.runtime || 45,
-        overview: "",
-      }));
+  const totalCalculatedEpisodes = seasonsList.reduce((sum, s) => {
+    const count = seasonsEpisodesMap[s.seasonNumber]?.length || s.episodeCount || 10;
+    return sum + count;
+  }, 0);
 
-  const watchedInThisSeason = episodesInCurrentSeason.filter((ep) =>
-    watchedEpisodeCodes.has(`S${selectedSeason}E${ep.episodeNumber}`)
-  ).length;
+  const displayTotalEpisodes = entry.tmdb.totalEpisodes || totalCalculatedEpisodes;
 
   return (
     <div
@@ -444,7 +542,7 @@ export default function MediaDetailModal({
                 }`}
               >
                 <ListVideo className="w-3.5 h-3.5" />
-                Episodes ({watchedEpisodeCodes.size}/{entry.tmdb.totalEpisodes || "?"})
+                Episodes ({watchedEpisodeCodes.size}/{displayTotalEpisodes})
               </button>
             )}
             <button
@@ -473,214 +571,372 @@ export default function MediaDetailModal({
 
         {/* ── Scrollable Tab Content ────────────────────────────── */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
-          {/* TAB 1: EPISODES TRACKER (TV SHOWS) */}
+          {/* TAB 1: ALL SEASONS & EPISODES TRACKER (TV SHOWS) */}
           {activeTab === "episodes" && isTV && (
-            <div className="space-y-5">
+            <div className="space-y-6">
               {/* Overall series progress banner */}
-              <div className="p-4 rounded-xl bg-gradient-to-r from-amber-500/10 via-orange-500/5 to-transparent border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/5 to-transparent border border-amber-500/25 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg shadow-black/40">
                 <div>
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-amber-400" />
-                    <h4 className="text-sm font-bold text-white">
-                      Episode Tracking Progress
+                    <h4 className="text-base font-bold text-white tracking-tight">
+                      All Seasons &amp; Episodes Tracker
                     </h4>
+                    <span className="text-[11px] font-semibold uppercase px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                      {seasonsList.length} Seasons
+                    </span>
                   </div>
-                  <p className="text-xs text-stone-400 mt-1">
-                    Check off individual episodes to track your exact watch history and consumption time.
+                  <p className="text-xs text-stone-400 mt-1 max-w-xl">
+                    View and check off episodes across all seasons. Interactive checklist updates your watch statistics, time logged, and dashboard in real-time.
                   </p>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-5 shrink-0">
                   <div className="text-right">
-                    <p className="text-lg font-bold text-amber-400">
-                      {watchedEpisodeCodes.size} / {entry.tmdb.totalEpisodes || episodesInCurrentSeason.length}
+                    <p className="text-xl font-black text-amber-400">
+                      {watchedEpisodeCodes.size} <span className="text-stone-400 text-sm font-normal">/ {displayTotalEpisodes}</span>
                     </p>
-                    <p className="text-[10px] text-stone-500 uppercase tracking-wider">
-                      Episodes Logged
+                    <p className="text-[10px] text-stone-400 uppercase tracking-wider font-semibold">
+                      Episodes Watched
                     </p>
                   </div>
                   <div className="text-right pl-4 border-l border-stone-800">
-                    <p className="text-lg font-bold text-white">
+                    <p className="text-xl font-black text-white">
                       {Math.round(((watchedEpisodeCodes.size * (entry.tmdb.runtime || 45)) / 60) * 10) / 10}h
                     </p>
-                    <p className="text-[10px] text-stone-500 uppercase tracking-wider">
-                      Time Watched
+                    <p className="text-[10px] text-stone-400 uppercase tracking-wider font-semibold">
+                      Series Watch Time
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Season Selection Pills */}
-              <div className="flex items-center justify-between flex-wrap gap-2">
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full hide-scrollbar">
-                  {seasonsList.map((season) => (
-                    <button
-                      key={season.seasonNumber}
-                      onClick={() => setSelectedSeason(season.seasonNumber)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
-                        selectedSeason === season.seasonNumber
-                          ? "bg-amber-600 text-white font-semibold shadow-md shadow-amber-600/20"
-                          : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
-                      }`}
-                    >
-                      {season.name} ({season.episodeCount} eps)
-                    </button>
-                  ))}
-                </div>
-
-                {/* Select All and Unselect All buttons */}
-                <div className="flex items-center gap-2 shrink-0">
-                  <button
-                    onClick={() => handleMarkAllSeason(selectedSeason)}
-                    className="text-xs text-amber-300 hover:text-amber-100 flex items-center gap-1.5 bg-amber-500/15 hover:bg-amber-500/25 px-3 py-1.5 rounded-lg border border-amber-500/30 transition-colors font-medium"
-                    title="Mark all episodes in this season as watched"
-                  >
-                    <Check className="w-3.5 h-3.5" />
-                    Select All
-                  </button>
-                  <button
-                    onClick={() => handleUnmarkAllSeason(selectedSeason)}
-                    className="text-xs text-stone-400 hover:text-stone-200 flex items-center gap-1.5 bg-stone-900 hover:bg-stone-800 px-3 py-1.5 rounded-lg border border-stone-800 transition-colors font-medium"
-                    title="Unmark all episodes in this season"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5" />
-                    Unselect All
-                  </button>
-                </div>
-              </div>
-
-              {/* Season Progress Bar & Filter Tabs */}
-              <div className="space-y-2">
-                <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-stone-400">
-                  <span>Season {selectedSeason} Progress</span>
-                  {/* Episode filter pills */}
-                  <div className="flex items-center gap-1 bg-stone-900/90 p-0.5 rounded-lg border border-stone-800">
-                    <button
-                      type="button"
-                      onClick={() => setEpisodeFilter("all")}
-                      className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
-                        episodeFilter === "all"
-                          ? "bg-amber-500/20 text-amber-300 font-semibold"
-                          : "text-stone-400 hover:text-white"
-                      }`}
-                    >
-                      All ({episodesInCurrentSeason.length})
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setEpisodeFilter("watched")}
-                      className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
-                        episodeFilter === "watched"
-                          ? "bg-amber-500/20 text-amber-300 font-semibold"
-                          : "text-stone-400 hover:text-white"
-                      }`}
-                    >
-                      Watched ({watchedInThisSeason})
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setEpisodeFilter("unwatched")}
-                      className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
-                        episodeFilter === "unwatched"
-                          ? "bg-amber-500/20 text-amber-300 font-semibold"
-                          : "text-stone-400 hover:text-white"
-                      }`}
-                    >
-                      Unwatched ({episodesInCurrentSeason.length - watchedInThisSeason})
-                    </button>
-                  </div>
-                  <span className="font-semibold text-amber-400">
-                    {watchedInThisSeason} / {episodesInCurrentSeason.length} ({Math.round((watchedInThisSeason / (episodesInCurrentSeason.length || 1)) * 100)}%)
+              {/* Overall Series Progress Bar */}
+              <div className="space-y-1.5 bg-stone-900/60 p-3 rounded-xl border border-stone-800/80">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-stone-300 font-medium flex items-center gap-1.5">
+                    <Tv className="w-3.5 h-3.5 text-amber-400" />
+                    Overall Series Completion
+                  </span>
+                  <span className="font-bold text-amber-400">
+                    {Math.round((watchedEpisodeCodes.size / (displayTotalEpisodes || 1)) * 100)}%
                   </span>
                 </div>
-                <div className="w-full bg-stone-900 rounded-full h-2 overflow-hidden border border-stone-800">
+                <div className="w-full bg-stone-950 rounded-full h-2.5 overflow-hidden border border-stone-800/80">
                   <div
-                    className="h-full bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-300"
+                    className="h-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-400 transition-all duration-300"
                     style={{
-                      width: `${Math.round(
-                        (watchedInThisSeason / (episodesInCurrentSeason.length || 1)) * 100
-                      )}%`,
+                      width: `${Math.min(100, Math.round((watchedEpisodeCodes.size / (displayTotalEpisodes || 1)) * 100))}%`,
                     }}
                   />
                 </div>
               </div>
 
-              {/* Episode Checklist Grid */}
-              <div className="space-y-2">
-                {isLoadingEpisodes ? (
-                  <div className="py-12 text-center text-stone-500 text-sm">
-                    Loading season episodes...
-                  </div>
-                ) : (
-                  episodesInCurrentSeason
-                    .filter((ep) => {
-                      const isWatched = watchedEpisodeCodes.has(
-                        `S${selectedSeason}E${ep.episodeNumber}`
-                      );
+              {/* Toolbar: Season Filter / Jump Pills + Global Batch Actions */}
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 bg-stone-950/70 p-3 rounded-xl border border-stone-800/80">
+                {/* Season Quick Jump / Filter Pills */}
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 max-w-full hide-scrollbar">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedSeasonFilter("all")}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+                      selectedSeasonFilter === "all"
+                        ? "bg-amber-500 text-stone-950 shadow-md shadow-amber-500/20"
+                        : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
+                    }`}
+                  >
+                    All Seasons ({seasonsList.length})
+                  </button>
+                  {seasonsList.map((s) => {
+                    const seasonEps = getEpisodesForSeason(s.seasonNumber, s.episodeCount || 10);
+                    const seasonWatched = seasonEps.filter((ep) =>
+                      watchedEpisodeCodes.has(`S${s.seasonNumber}E${ep.episodeNumber}`)
+                    ).length;
+                    const isSelected = selectedSeasonFilter === s.seasonNumber;
+
+                    return (
+                      <button
+                        key={s.seasonNumber}
+                        type="button"
+                        onClick={() => setSelectedSeasonFilter(isSelected ? "all" : s.seasonNumber)}
+                        className={`px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all flex items-center gap-1.5 ${
+                          isSelected
+                            ? "bg-amber-500 text-stone-950 font-bold shadow-md shadow-amber-500/20"
+                            : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
+                        }`}
+                        title={`Filter or jump to Season ${s.seasonNumber}`}
+                      >
+                        <span>S{s.seasonNumber}</span>
+                        <span
+                          className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                            isSelected
+                              ? "bg-stone-950/30 text-stone-950"
+                              : "bg-stone-800 text-stone-400"
+                          }`}
+                        >
+                          {seasonWatched}/{seasonEps.length}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Right side controls: Batch actions & Accordion Expand/Collapse */}
+                <div className="flex items-center flex-wrap gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={handleMarkAllSeries}
+                    className="text-xs text-amber-300 hover:text-amber-100 flex items-center gap-1.5 bg-amber-500/15 hover:bg-amber-500/25 px-2.5 py-1.5 rounded-lg border border-amber-500/30 transition-colors font-medium"
+                    title="Mark all episodes across all seasons as watched"
+                  >
+                    <CheckCheck className="w-3.5 h-3.5" />
+                    Select All Series
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleUnmarkAllSeries}
+                    className="text-xs text-stone-400 hover:text-stone-200 flex items-center gap-1.5 bg-stone-900 hover:bg-stone-800 px-2.5 py-1.5 rounded-lg border border-stone-800 transition-colors font-medium"
+                    title="Unmark all episodes in this series"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    Unselect All
+                  </button>
+                  <button
+                    type="button"
+                    onClick={
+                      Object.keys(collapsedSeasons).length > 0 ? handleExpandAll : handleCollapseAll
+                    }
+                    className="text-xs text-stone-400 hover:text-stone-200 flex items-center gap-1.5 bg-stone-900 hover:bg-stone-800 px-2.5 py-1.5 rounded-lg border border-stone-800 transition-colors font-medium"
+                    title="Expand or collapse all season accordions"
+                  >
+                    <Layers className="w-3.5 h-3.5" />
+                    {Object.keys(collapsedSeasons).length > 0 ? "Expand All" : "Collapse All"}
+                  </button>
+                </div>
+              </div>
+
+              {/* Episode Filter Bar: All / Watched / Unwatched */}
+              <div className="flex items-center justify-between flex-wrap gap-2 text-xs text-stone-400">
+                <span className="font-semibold text-stone-300 flex items-center gap-1.5">
+                  <Filter className="w-3.5 h-3.5 text-amber-400" />
+                  Showing: {selectedSeasonFilter === "all" ? "All Seasons" : `Season ${selectedSeasonFilter}`}
+                </span>
+                <div className="flex items-center gap-1 bg-stone-900/90 p-1 rounded-xl border border-stone-800">
+                  <button
+                    type="button"
+                    onClick={() => setEpisodeFilter("all")}
+                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                      episodeFilter === "all"
+                        ? "bg-amber-500/20 text-amber-300 font-semibold"
+                        : "text-stone-400 hover:text-white"
+                    }`}
+                  >
+                    All Episodes
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEpisodeFilter("watched")}
+                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                      episodeFilter === "watched"
+                        ? "bg-amber-500/20 text-amber-300 font-semibold"
+                        : "text-stone-400 hover:text-white"
+                    }`}
+                  >
+                    Watched ({watchedEpisodeCodes.size})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEpisodeFilter("unwatched")}
+                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                      episodeFilter === "unwatched"
+                        ? "bg-amber-500/20 text-amber-300 font-semibold"
+                        : "text-stone-400 hover:text-white"
+                    }`}
+                  >
+                    Unwatched ({Math.max(0, displayTotalEpisodes - watchedEpisodeCodes.size)})
+                  </button>
+                </div>
+              </div>
+
+              {/* ── ALL SEASONS LIST ─────────────────────────────────── */}
+              <div className="space-y-5">
+                {seasonsList
+                  .filter((s) => selectedSeasonFilter === "all" || selectedSeasonFilter === s.seasonNumber)
+                  .map((season) => {
+                    const seasonNumber = season.seasonNumber;
+                    const seasonEps = getEpisodesForSeason(seasonNumber, season.episodeCount || 10);
+                    const watchedInSeason = seasonEps.filter((ep) =>
+                      watchedEpisodeCodes.has(`S${seasonNumber}E${ep.episodeNumber}`)
+                    ).length;
+                    const seasonPercent = Math.round((watchedInSeason / (seasonEps.length || 1)) * 100);
+                    const isCollapsed = !!collapsedSeasons[seasonNumber];
+                    const isLoading = !!loadingSeasons[seasonNumber];
+
+                    const filteredEps = seasonEps.filter((ep) => {
+                      const isWatched = watchedEpisodeCodes.has(`S${seasonNumber}E${ep.episodeNumber}`);
                       if (episodeFilter === "watched") return isWatched;
                       if (episodeFilter === "unwatched") return !isWatched;
                       return true;
-                    })
-                    .map((ep) => {
-                      const isWatched = watchedEpisodeCodes.has(
-                        `S${selectedSeason}E${ep.episodeNumber}`
-                      );
+                    });
+
                     return (
                       <div
-                        key={ep.episodeNumber}
-                        onClick={() =>
-                          handleToggleEpisode(selectedSeason, ep.episodeNumber, ep.title)
-                        }
-                        className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer ${
-                          isWatched
-                            ? "bg-amber-500/10 border-amber-500/30 text-white"
-                            : "bg-stone-900/60 border-stone-800/80 text-stone-400 hover:border-stone-700 hover:bg-stone-900"
-                        }`}
+                        key={seasonNumber}
+                        id={`season-block-${seasonNumber}`}
+                        className="rounded-2xl border border-stone-800/80 bg-[#151210] overflow-hidden shadow-md transition-all hover:border-stone-700/80"
                       >
-                        <div className="flex items-center gap-3 min-w-0">
-                          <button
-                            type="button"
-                            className={`w-6 h-6 rounded-md flex items-center justify-center transition-all ${
-                              isWatched
-                                ? "bg-amber-500 text-stone-950 font-bold"
-                                : "border border-stone-700 hover:border-amber-400"
-                            }`}
-                          >
-                            {isWatched ? <Check className="w-4 h-4 stroke-[3]" /> : null}
-                          </button>
-                          <div className="min-w-0">
-                            <p className={`text-sm font-medium truncate ${isWatched ? "text-white" : "text-stone-300"}`}>
-                              <span className="text-amber-400 font-mono text-xs mr-2">
-                                E{ep.episodeNumber}
-                              </span>
-                              {ep.title}
-                            </p>
-                            {ep.overview && (
-                              <p className="text-xs text-stone-500 truncate max-w-lg mt-0.5">
-                                {ep.overview}
+                        {/* Season Header Bar (Click to toggle accordion) */}
+                        <div
+                          onClick={() => toggleSeasonCollapse(seasonNumber)}
+                          className="p-3.5 sm:p-4 bg-stone-900/60 hover:bg-stone-900/90 transition-colors flex flex-wrap items-center justify-between gap-3 cursor-pointer select-none border-b border-stone-800/60"
+                        >
+                          <div className="flex items-center gap-3">
+                            <button
+                              type="button"
+                              className="p-1 rounded-lg bg-stone-800/80 text-stone-300 hover:text-white transition-colors"
+                              aria-label={isCollapsed ? "Expand season" : "Collapse season"}
+                            >
+                              {isCollapsed ? (
+                                <ChevronRight className="w-4 h-4 text-stone-400" />
+                              ) : (
+                                <ChevronDown className="w-4 h-4 text-amber-400" />
+                              )}
+                            </button>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <h5 className="text-sm sm:text-base font-bold text-white">
+                                  {season.name}
+                                </h5>
+                                <span className="text-xs text-stone-400 font-normal">
+                                  ({seasonEps.length} episodes)
+                                </span>
+                              </div>
+                              <p className="text-xs text-amber-400/90 mt-0.5 font-medium">
+                                {watchedInSeason} / {seasonEps.length} watched ({seasonPercent}%)
                               </p>
-                            )}
+                            </div>
+                          </div>
+
+                          {/* Season Batch Actions */}
+                          <div
+                            className="flex items-center gap-2 shrink-0"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <button
+                              type="button"
+                              onClick={() => handleMarkAllSeason(seasonNumber)}
+                              className="text-xs text-amber-300 hover:text-amber-100 flex items-center gap-1.5 bg-amber-500/15 hover:bg-amber-500/25 px-2.5 py-1 rounded-lg border border-amber-500/30 transition-colors font-medium"
+                              title={`Mark all episodes in ${season.name} as watched`}
+                            >
+                              <Check className="w-3.5 h-3.5" />
+                              Select All S{seasonNumber}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleUnmarkAllSeason(seasonNumber)}
+                              className="text-xs text-stone-400 hover:text-stone-200 flex items-center gap-1.5 bg-stone-950 hover:bg-stone-800 px-2.5 py-1 rounded-lg border border-stone-800 transition-colors font-medium"
+                              title={`Unmark all episodes in ${season.name}`}
+                            >
+                              <RotateCcw className="w-3.5 h-3.5" />
+                              Unselect
+                            </button>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-3 shrink-0 ml-3">
-                          <span className="text-xs text-stone-500 flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            {ep.runtime || entry.tmdb.runtime || 45}m
-                          </span>
-                          <span
-                            className={`text-[10px] px-2 py-0.5 rounded font-semibold uppercase ${
-                              isWatched
-                                ? "bg-amber-500/20 text-amber-300"
-                                : "bg-stone-800 text-stone-500"
-                            }`}
-                          >
-                            {isWatched ? "Watched" : "Unwatched"}
-                          </span>
+                        {/* Season Mini Progress Bar */}
+                        <div className="w-full bg-stone-950 h-1 overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-300"
+                            style={{ width: `${seasonPercent}%` }}
+                          />
                         </div>
+
+                        {/* Season Episodes Checklist (When Expanded) */}
+                        {!isCollapsed && (
+                          <div className="p-3 sm:p-4 space-y-2">
+                            {isLoading && seasonEps.length === 0 ? (
+                              <div className="py-6 text-center text-xs text-stone-500 animate-pulse">
+                                Loading Season {seasonNumber} episodes from TMDB...
+                              </div>
+                            ) : filteredEps.length === 0 ? (
+                              <div className="py-6 text-center text-xs text-stone-500">
+                                No episodes match filter &ldquo;{episodeFilter}&rdquo; in {season.name}.
+                              </div>
+                            ) : (
+                              filteredEps.map((ep) => {
+                                const isWatched = watchedEpisodeCodes.has(
+                                  `S${seasonNumber}E${ep.episodeNumber}`
+                                );
+
+                                return (
+                                  <div
+                                    key={ep.episodeNumber}
+                                    onClick={() =>
+                                      handleToggleEpisode(seasonNumber, ep.episodeNumber, ep.title)
+                                    }
+                                    className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer ${
+                                      isWatched
+                                        ? "bg-amber-500/10 border-amber-500/30 text-white"
+                                        : "bg-stone-900/60 border-stone-800/80 text-stone-400 hover:border-stone-700 hover:bg-stone-900"
+                                    }`}
+                                  >
+                                    <div className="flex items-center gap-3 min-w-0">
+                                      <button
+                                        type="button"
+                                        className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 transition-all ${
+                                          isWatched
+                                            ? "bg-amber-500 text-stone-950 font-bold"
+                                            : "border border-stone-700 hover:border-amber-400"
+                                        }`}
+                                      >
+                                        {isWatched ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : null}
+                                      </button>
+                                      <div className="min-w-0">
+                                        <p
+                                          className={`text-sm font-medium truncate ${
+                                            isWatched ? "text-white" : "text-stone-300"
+                                          }`}
+                                        >
+                                          <span className="text-amber-400 font-mono text-xs font-bold mr-2">
+                                            E{ep.episodeNumber}
+                                          </span>
+                                          {ep.title}
+                                        </p>
+                                        {ep.overview ? (
+                                          <p className="text-xs text-stone-500 truncate max-w-xl mt-0.5">
+                                            {ep.overview}
+                                          </p>
+                                        ) : ep.airDate ? (
+                                          <p className="text-[11px] text-stone-500 mt-0.5">
+                                            Aired {ep.airDate}
+                                          </p>
+                                        ) : null}
+                                      </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-3 shrink-0 ml-3">
+                                      <span className="text-xs text-stone-500 flex items-center gap-1">
+                                        <Clock className="w-3 h-3" />
+                                        {ep.runtime || entry.tmdb.runtime || 45}m
+                                      </span>
+                                      <span
+                                        className={`text-[10px] px-2 py-0.5 rounded font-semibold uppercase tracking-wider ${
+                                          isWatched
+                                            ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                                            : "bg-stone-800 text-stone-500"
+                                        }`}
+                                      >
+                                        {isWatched ? "Watched" : "Unwatched"}
+                                      </span>
+                                    </div>
+                                  </div>
+                                );
+                              })
+                            )}
+                          </div>
+                        )}
                       </div>
                     );
-                  })
-                )}
+                  })}
               </div>
             </div>
           )}

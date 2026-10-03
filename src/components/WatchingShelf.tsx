@@ -42,7 +42,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
   const [notes, setNotes] = useState("");
   const [selectedEntry, setSelectedEntry] = useState<MovieEntry | null>(null);
   const [expandedEpisodeShowId, setExpandedEpisodeShowId] = useState<string | null>(null);
-  const [activeSeasonMap, setActiveSeasonMap] = useState<Record<string, number>>({});
+  const [activeSeasonMap, setActiveSeasonMap] = useState<Record<string, number | "all">>({});
 
   function handleProgressChange(entry: MovieEntry, delta: number) {
     const current = entry.progress?.minutesWatched ?? 0;
@@ -367,86 +367,126 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                         episodeCount: entry.tmdb.totalEpisodes ? Math.ceil(entry.tmdb.totalEpisodes / (entry.tmdb.totalSeasons || 1)) : 10,
                       }));
 
-                  const currentActiveSeason = activeSeasonMap[entry.id] || progress?.currentSeason || 1;
-                  const activeSeasonInfo = availableSeasons.find(s => s.seasonNumber === currentActiveSeason) || availableSeasons[0];
-                  const epCount = activeSeasonInfo?.episodeCount || 10;
+                  const currentSelection = activeSeasonMap[entry.id] ?? "all";
+                  const seasonsToDisplay = currentSelection === "all"
+                    ? availableSeasons
+                    : availableSeasons.filter(s => s.seasonNumber === currentSelection);
 
                   return (
-                    <div className="pt-3 space-y-2.5 border-t border-stone-800/80 animate-in fade-in duration-200">
-                      {/* Season selector tabs if more than 1 season */}
-                      {availableSeasons.length > 1 && (
-                        <div className="flex items-center gap-1 overflow-x-auto pb-1 hide-scrollbar">
-                          {availableSeasons.map((s) => (
+                    <div className="pt-3 space-y-3 border-t border-stone-800/80 animate-in fade-in duration-200">
+                      {/* Season selector tabs */}
+                      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar">
+                        <button
+                          type="button"
+                          onClick={() => setActiveSeasonMap(prev => ({ ...prev, [entry.id]: "all" }))}
+                          className={`px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap transition-colors ${
+                            currentSelection === "all"
+                              ? "bg-amber-500 text-stone-950 font-bold"
+                              : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
+                          }`}
+                        >
+                          All Seasons ({availableSeasons.length})
+                        </button>
+                        {availableSeasons.map((s) => {
+                          const isSel = currentSelection === s.seasonNumber;
+                          return (
                             <button
                               key={s.seasonNumber}
                               type="button"
                               onClick={() => setActiveSeasonMap(prev => ({ ...prev, [entry.id]: s.seasonNumber }))}
                               className={`px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap transition-colors ${
-                                currentActiveSeason === s.seasonNumber
+                                isSel
                                   ? "bg-amber-500 text-stone-950 font-bold"
                                   : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
                               }`}
                             >
                               S{s.seasonNumber}
                             </button>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Header with Season Title and Select / Unselect All */}
-                      <div className="flex items-center justify-between">
-                        <p className="text-[11px] text-stone-300 uppercase tracking-wider font-semibold">
-                          Season {currentActiveSeason} ({epCount} eps)
-                        </p>
-                        <div className="flex items-center gap-1.5">
-                          <button
-                            type="button"
-                            onClick={() => handleSelectAllSeason(entry, currentActiveSeason, epCount)}
-                            className="px-2 py-0.5 rounded text-[10px] font-medium bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/25 transition-colors"
-                          >
-                            Select All
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleUnselectAllSeason(entry, currentActiveSeason, epCount)}
-                            className="px-2 py-0.5 rounded text-[10px] font-medium bg-stone-800 hover:bg-stone-700 text-stone-300 border border-stone-700 transition-colors"
-                          >
-                            Unselect All
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Episode Checklist Grid */}
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 max-h-48 overflow-y-auto pr-1 hide-scrollbar">
-                        {Array.from({ length: epCount }, (_, i) => {
-                          const sNum = currentActiveSeason;
-                          const eNum = i + 1;
-                          const code = `S${sNum}E${eNum}`;
-                          const isWatched = watchedEpisodesList.includes(code);
-
-                          return (
-                            <button
-                              key={code}
-                              type="button"
-                              onClick={() => handleToggleEpisode(entry, sNum, eNum)}
-                              className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium text-left border transition-all ${
-                                isWatched
-                                  ? "bg-amber-500/20 text-amber-200 border-amber-500/30"
-                                  : "bg-stone-900 text-stone-400 border-stone-800 hover:border-stone-700"
-                              }`}
-                            >
-                              <div
-                                className={`w-3.5 h-3.5 rounded flex items-center justify-center shrink-0 ${
-                                  isWatched ? "bg-amber-400 text-black" : "border border-stone-600"
-                                }`}
-                              >
-                                {isWatched && <Check className="w-2.5 h-2.5 stroke-[3]" />}
-                              </div>
-                              <span className="truncate">Ep {eNum}</span>
-                            </button>
                           );
                         })}
                       </div>
+
+                      {/* Display each season and its episodes */}
+                      <div className="space-y-3 max-h-64 overflow-y-auto pr-1">
+                        {seasonsToDisplay.map((season) => {
+                          const sNum = season.seasonNumber;
+                          const epCount = season.episodeCount || 10;
+                          let watchedInSeason = 0;
+                          for (let i = 1; i <= epCount; i++) {
+                            if (watchedEpisodesList.includes(`S${sNum}E${i}`)) {
+                              watchedInSeason++;
+                            }
+                          }
+
+                          return (
+                            <div key={sNum} className="space-y-1.5 bg-stone-950/60 p-2.5 rounded-xl border border-stone-800/80">
+                              {/* Header with Season Title and Select / Unselect All */}
+                              <div className="flex items-center justify-between">
+                                <p className="text-[11px] text-stone-300 uppercase tracking-wider font-bold">
+                                  {season.name || `Season ${sNum}`} ({watchedInSeason}/{epCount} eps)
+                                </p>
+                                <div className="flex items-center gap-1.5">
+                                  <button
+                                    type="button"
+                                    onClick={() => handleSelectAllSeason(entry, sNum, epCount)}
+                                    className="px-2 py-0.5 rounded text-[10px] font-medium bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/25 transition-colors"
+                                  >
+                                    Select All
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleUnselectAllSeason(entry, sNum, epCount)}
+                                    className="px-2 py-0.5 rounded text-[10px] font-medium bg-stone-800 hover:bg-stone-700 text-stone-300 border border-stone-700 transition-colors"
+                                  >
+                                    Unselect All
+                                  </button>
+                                </div>
+                              </div>
+
+                              {/* Episode Checklist Grid */}
+                              <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                                {Array.from({ length: epCount }, (_, i) => {
+                                  const eNum = i + 1;
+                                  const code = `S${sNum}E${eNum}`;
+                                  const isWatched = watchedEpisodesList.includes(code);
+
+                                  return (
+                                    <button
+                                      key={code}
+                                      type="button"
+                                      onClick={() => handleToggleEpisode(entry, sNum, eNum)}
+                                      className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium text-left border transition-all ${
+                                        isWatched
+                                          ? "bg-amber-500/20 text-amber-200 border-amber-500/30"
+                                          : "bg-stone-900 text-stone-400 border-stone-800 hover:border-stone-700"
+                                      }`}
+                                    >
+                                      <div
+                                        className={`w-3.5 h-3.5 rounded flex items-center justify-center shrink-0 ${
+                                          isWatched ? "bg-amber-400 text-black" : "border border-stone-600"
+                                        }`}
+                                      >
+                                        {isWatched && <Check className="w-2.5 h-2.5 stroke-[3]" />}
+                                      </div>
+                                      <span className="truncate">Ep {eNum}</span>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* Link to Open Full Modal */}
+                      <button
+                        type="button"
+                        onClick={() => setSelectedEntry(entry)}
+                        className="w-full py-1.5 px-3 rounded-lg text-xs font-semibold text-amber-300 hover:text-amber-100 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 transition-all flex items-center justify-center gap-1.5"
+                      >
+                        <ListVideo className="w-3.5 h-3.5" />
+                        Open Full Episode Guide &amp; Overviews &rarr;
+                      </button>
                     </div>
                   );
                 })()}
