@@ -18,6 +18,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { AuthProvider } from "@/lib/auth-context";
 import { JournalProvider } from "@/lib/journal-context";
+import { ThemeProvider } from "@/lib/theme-context";
 import "./globals.css";
 
 /**
@@ -42,16 +43,23 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${inter.variable} antialiased`}>
-      <body className="min-h-screen bg-zinc-950 text-white font-sans">
+    <html lang="en" className={`${inter.variable} antialiased`} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('couch_critics_theme')||'dark';document.documentElement.setAttribute('data-theme',t);if(t==='light'){document.documentElement.classList.add('light');document.documentElement.classList.remove('dark');}else{document.documentElement.classList.add('dark');document.documentElement.classList.remove('light');}}catch(e){}})()`,
+          }}
+        />
+      </head>
+      <body className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)] font-sans transition-colors duration-200">
         {/**
-         * AuthProvider → JournalProvider → children
-         * Auth must come first because JournalProvider reads auth state
-         * to decide whether to use localStorage or the cloud API.
+         * ThemeProvider → AuthProvider → JournalProvider → children
          */}
-        <AuthProvider>
-          <JournalProvider>{children}</JournalProvider>
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <JournalProvider>{children}</JournalProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

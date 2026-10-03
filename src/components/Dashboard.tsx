@@ -56,6 +56,7 @@ import ToWatchShelf from "@/components/ToWatchShelf";
 import WatchedShelf from "@/components/WatchedShelf";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
 import MediaDetailModal from "@/components/MediaDetailModal";
+import ThemeToggle from "@/components/ThemeToggle";
 import { computeStats, formatWatchTime } from "@/lib/stats";
 
 export type NavKey =
@@ -424,6 +425,17 @@ export default function Dashboard() {
               </button>
             </div>
           </div>
+
+          {/* Theme / Appearance Toggle */}
+          <div>
+            <div className="px-3 pb-2 text-[10px] font-bold text-stone-500 uppercase tracking-wider flex items-center justify-between">
+              <span>Appearance</span>
+              <span className="text-[10px] font-medium text-amber-500 uppercase">Theme</span>
+            </div>
+            <div className="px-1">
+              <ThemeToggle variant="segmented" />
+            </div>
+          </div>
         </div>
 
         {/* Drawer Footer with Quick Watch Stats & Auth */}
@@ -487,11 +499,11 @@ export default function Dashboard() {
                 />
               ))}
             </div>
-            <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/40 via-[#0a0a0a]/75 to-[#0a0a0a]" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/90 via-[#0a0a0a]/60 to-[#0a0a0a]/80" />
+            <div className="absolute inset-0 hero-overlay-bottom" />
+            <div className="absolute inset-0 hero-overlay-side" />
           </div>
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-[#1a1510] via-[#0a0a0a] to-[#0a0a0a]" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#1a1510] via-[#0a0a0a] to-[#0a0a0a] light:from-[#eeeae0] light:via-[#f7f5f0] light:to-[#f7f5f0]" />
         )}
 
         {/* Ambient warm glow */}
@@ -551,6 +563,9 @@ export default function Dashboard() {
 
             {/* Header Right Actions */}
             <div className="flex items-center gap-2 sm:gap-3">
+              {/* Light / Dark Mode Toggle */}
+              <ThemeToggle variant="button" />
+
               <button
                 onClick={() => setIsSearchOpen(true)}
                 className="p-2.5 rounded-xl glass-card text-stone-400 hover:text-white transition-colors cursor-pointer"
