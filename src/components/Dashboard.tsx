@@ -43,6 +43,7 @@ import WatchingShelf from "@/components/WatchingShelf";
 import ToWatchShelf from "@/components/ToWatchShelf";
 import WatchedShelf from "@/components/WatchedShelf";
 import StatsDashboard from "@/components/StatsDashboard";
+import AnalyticsDashboard from "@/components/AnalyticsDashboard";
 import { computeStats, formatWatchTime } from "@/lib/stats";
 
 type NavKey = "home" | "movies" | "series" | "stats" | "journey" | "favorites";
@@ -713,11 +714,11 @@ export default function Dashboard() {
               <BarChart3 className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white">My Statistics</h2>
-              <p className="text-xs text-stone-500">A glance into my cinematic world</p>
+              <h2 className="text-xl font-bold text-white">Watch Analytics</h2>
+              <p className="text-xs text-stone-500">Consumption metrics &amp; genre insights</p>
             </div>
           </div>
-          <StatsDashboard entries={entries} />
+          <AnalyticsDashboard entries={entries} />
         </main>
       )}
 

@@ -203,6 +203,16 @@ body {
   transform: translateY(-1px);
 }
 
+/* ─── Analytics Genre Pill (interactive, clickable) ──────────────────────── */
+.analytics-genre-pill {
+  cursor: pointer;
+  user-select: none;
+}
+
+.analytics-genre-pill:active {
+  transform: scale(0.97);
+}
+
 .genre-icon-circle {
   width: 32px;
   height: 32px;
