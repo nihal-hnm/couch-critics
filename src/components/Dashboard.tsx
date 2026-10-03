@@ -1,13 +1,21 @@
 /**
  * =============================================================================
- * Main Dashboard — Cinematic Layout with Hero + Multi-Section Scroll
+ * Main Dashboard — Currently Watching Focus with Burger Bar Menu Drawer
  * =============================================================================
  *
- * Redesigned to match the warm, cinematic reference UI:
- *  - Large hero section with movie poster wall backdrop
- *  - Bold stat cards in hero footer (Movies, Series, Minutes, Rating)
- *  - Horizontal nav: Home, Movies, Series, Stats, Journey, Favorites
- *  - Scroll-based single-page layout with distinct sections
+ * Features:
+ *  - Main View: Exclusively focused on Currently Watching shows & movies
+ *    with interactive episode-wise checklists, progress steppers, and filter pills.
+ *  - Burger Bar (Slide-out Drawer): Houses the rest of the app:
+ *    • To Watch (Backlog)
+ *    • Watched Archive & Reviews
+ *    • All Movies catalog
+ *    • All TV Series catalog
+ *    • Watch Analytics & Stats
+ *    • Favorites (8+ Rated)
+ *    • My Journey (Yearly Timeline)
+ *    • User profile / Authentication & Total runtime statistics
+ *  - Seamless navigation with quick "Back to Currently Watching" return banner
  */
 
 "use client";
@@ -33,6 +41,10 @@ import {
   LogOut,
   User as UserIcon,
   ChevronDown,
+  Menu,
+  X,
+  RotateCcw,
+  SlidersHorizontal,
 } from "lucide-react";
 import { useJournal } from "@/lib/journal-context";
 import { useAuth } from "@/lib/auth-context";
@@ -42,57 +54,64 @@ import AuthModal from "@/components/AuthModal";
 import WatchingShelf from "@/components/WatchingShelf";
 import ToWatchShelf from "@/components/ToWatchShelf";
 import WatchedShelf from "@/components/WatchedShelf";
-import StatsDashboard from "@/components/StatsDashboard";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
 import MediaDetailModal from "@/components/MediaDetailModal";
 import { computeStats, formatWatchTime } from "@/lib/stats";
 
-type NavKey = "home" | "movies" | "series" | "stats" | "journey" | "favorites";
-
-interface NavDef {
-  key: NavKey;
-  label: string;
-  icon: React.ReactNode;
-}
-
-const NAV_ITEMS: NavDef[] = [
-  { key: "home", label: "Home", icon: <Home className="w-4 h-4" /> },
-  { key: "movies", label: "Movies", icon: <FilmIcon className="w-4 h-4" /> },
-  { key: "series", label: "Series", icon: <Tv className="w-4 h-4" /> },
-  { key: "stats", label: "Stats", icon: <BarChart3 className="w-4 h-4" /> },
-  { key: "journey", label: "Journey", icon: <Map className="w-4 h-4" /> },
-  { key: "favorites", label: "Favorites", icon: <Heart className="w-4 h-4" /> },
-];
+export type NavKey =
+  | "watching"
+  | "toWatch"
+  | "watched"
+  | "movies"
+  | "series"
+  | "stats"
+  | "journey"
+  | "favorites";
 
 export default function Dashboard() {
   const { entries, isLoaded } = useJournal();
   const { user, signOut, isLoading: authLoading } = useAuth();
-  const [activeNav, setActiveNav] = useState<NavKey>("home");
+  const [activeNav, setActiveNav] = useState<NavKey>("watching");
+  const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [watchingTypeFilter, setWatchingTypeFilter] = useState<"all" | "tv" | "movie">("all");
   const [selectedDetailEntry, setSelectedDetailEntry] = useState<MovieEntry | null>(null);
+
   const heroRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
-  // Close user menu on outside click
+  // Close menus on outside click or Escape key
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
         setIsUserMenuOpen(false);
       }
     }
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setIsBurgerMenuOpen(false);
+        setIsUserMenuOpen(false);
+      }
+    }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
   const handleSignOut = useCallback(async () => {
     setIsUserMenuOpen(false);
+    setIsBurgerMenuOpen(false);
     await signOut();
   }, [signOut]);
 
   const userInitial = user?.email?.charAt(0).toUpperCase() || "?";
 
+  // Shelf-categorized entries
   const watching = useMemo(
     () => entries.filter((e) => e.shelf === "watching"),
     [entries]
@@ -106,6 +125,23 @@ export default function Dashboard() {
     [entries]
   );
 
+  // Sub-categorized currently watching
+  const watchingSeries = useMemo(
+    () => watching.filter((e) => e.tmdb.mediaType === "tv"),
+    [watching]
+  );
+  const watchingMovies = useMemo(
+    () => watching.filter((e) => e.tmdb.mediaType === "movie"),
+    [watching]
+  );
+
+  const filteredWatching = useMemo(() => {
+    if (watchingTypeFilter === "tv") return watchingSeries;
+    if (watchingTypeFilter === "movie") return watchingMovies;
+    return watching;
+  }, [watching, watchingTypeFilter, watchingSeries, watchingMovies]);
+
+  // Overall statistics
   const stats = useMemo(() => computeStats(entries), [entries]);
 
   // Movies vs TV shows
@@ -123,17 +159,10 @@ export default function Dashboard() {
     return [...watched]
       .filter((e) => e.review?.rating && e.review.rating >= 8)
       .sort((a, b) => (b.review?.rating ?? 0) - (a.review?.rating ?? 0))
-      .slice(0, 10);
+      .slice(0, 20);
   }, [watched]);
 
-  // Featured movie: highest rated for the detail panel
-  const featuredMovie = useMemo(() => {
-    if (favorites.length > 0) return favorites[0];
-    if (watched.length > 0) return watched[0];
-    return null;
-  }, [favorites, watched]);
-
-  // Hero backdrop posters — collect up to 6 posters for the poster wall
+  // Hero backdrop posters — collect up to 8 posters for the poster wall
   const heroPosterUrls = useMemo(() => {
     const withPosters = entries.filter((e) => e.tmdb.posterUrl);
     const shuffled = [...withPosters].sort(() => Math.random() - 0.5);
@@ -152,7 +181,7 @@ export default function Dashboard() {
     });
     return Object.entries(yearMap)
       .sort(([a], [b]) => b.localeCompare(a))
-      .slice(0, 4);
+      .slice(0, 6);
   }, [watched]);
 
   if (!isLoaded) {
@@ -169,9 +198,282 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen">
-      {/* ══ HERO SECTION ═══════════════════════════════════════════ */}
-      <div ref={heroRef} className="relative overflow-hidden min-h-[420px]">
+    <div className="min-h-screen relative">
+      {/* ══ BURGER MENU SLIDE-OUT DRAWER ═══════════════════════════ */}
+      {/* Backdrop */}
+      <div
+        className={`fixed inset-0 bg-black/80 backdrop-blur-md z-50 transition-opacity duration-300 ${
+          isBurgerMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+        onClick={() => setIsBurgerMenuOpen(false)}
+      />
+
+      {/* Drawer Panel */}
+      <aside
+        className={`fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-[#12100e] border-r border-amber-500/20 z-50 flex flex-col shadow-2xl shadow-black/90 transform transition-transform duration-300 ease-out ${
+          isBurgerMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+        aria-label="Side Navigation Menu"
+      >
+        {/* Drawer Header */}
+        <div className="p-5 border-b border-white/10 flex items-center justify-between bg-black/40">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-amber-500/20 border border-amber-500/30">
+              <FilmIcon className="w-5 h-5 text-amber-400" />
+            </div>
+            <div>
+              <h2 className="text-base font-bold text-white font-mono uppercase tracking-wider">
+                COUCH CRITICS
+              </h2>
+              <p className="text-[10px] text-amber-400/80 tracking-widest uppercase">
+                Navigation Menu
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setIsBurgerMenuOpen(false)}
+            className="p-2 rounded-xl text-stone-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            aria-label="Close menu"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Drawer Nav Items */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-6 hide-scrollbar">
+          {/* Main Focus: Currently Watching */}
+          <div>
+            <div className="px-3 pb-2 text-[10px] font-bold text-stone-500 uppercase tracking-wider">
+              Main Dashboard
+            </div>
+            <button
+              onClick={() => {
+                setActiveNav("watching");
+                setIsBurgerMenuOpen(false);
+              }}
+              className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
+                activeNav === "watching"
+                  ? "bg-gradient-to-r from-amber-500/25 to-orange-500/15 text-amber-200 border border-amber-500/30 shadow-lg shadow-amber-500/10"
+                  : "text-stone-300 hover:text-white hover:bg-white/5"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-amber-500/20 text-amber-400">
+                  <Play className="w-4 h-4 fill-current" />
+                </div>
+                <span className="text-left">Currently Watching</span>
+              </div>
+              <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                {watching.length}
+              </span>
+            </button>
+          </div>
+
+          {/* Shelves & Catalogs */}
+          <div>
+            <div className="px-3 pb-2 text-[10px] font-bold text-stone-500 uppercase tracking-wider">
+              Your Library &amp; Shelves
+            </div>
+            <div className="space-y-1">
+              <button
+                onClick={() => {
+                  setActiveNav("toWatch");
+                  setIsBurgerMenuOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                  activeNav === "toWatch"
+                    ? "bg-amber-500/20 text-amber-200 border border-amber-500/30"
+                    : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <BookmarkPlus className="w-4 h-4 text-blue-400" />
+                  <span>To Watch (Backlog)</span>
+                </div>
+                <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-stone-800 text-stone-400">
+                  {toWatch.length}
+                </span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setActiveNav("watched");
+                  setIsBurgerMenuOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                  activeNav === "watched"
+                    ? "bg-amber-500/20 text-amber-200 border border-amber-500/30"
+                    : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Award className="w-4 h-4 text-emerald-400" />
+                  <span>Watched Archive</span>
+                </div>
+                <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-stone-800 text-stone-400">
+                  {watched.length}
+                </span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setActiveNav("movies");
+                  setIsBurgerMenuOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                  activeNav === "movies"
+                    ? "bg-amber-500/20 text-amber-200 border border-amber-500/30"
+                    : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <FilmIcon className="w-4 h-4 text-amber-400" />
+                  <span>All Movies</span>
+                </div>
+                <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-stone-800 text-stone-400">
+                  {movies.length}
+                </span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setActiveNav("series");
+                  setIsBurgerMenuOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                  activeNav === "series"
+                    ? "bg-amber-500/20 text-amber-200 border border-amber-500/30"
+                    : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Tv className="w-4 h-4 text-orange-400" />
+                  <span>All TV Series</span>
+                </div>
+                <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-stone-800 text-stone-400">
+                  {series.length}
+                </span>
+              </button>
+            </div>
+          </div>
+
+          {/* Insights & Discovery */}
+          <div>
+            <div className="px-3 pb-2 text-[10px] font-bold text-stone-500 uppercase tracking-wider">
+              Insights &amp; Memories
+            </div>
+            <div className="space-y-1">
+              <button
+                onClick={() => {
+                  setActiveNav("stats");
+                  setIsBurgerMenuOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                  activeNav === "stats"
+                    ? "bg-amber-500/20 text-amber-200 border border-amber-500/30"
+                    : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <BarChart3 className="w-4 h-4 text-purple-400" />
+                  <span>Watch Analytics</span>
+                </div>
+                <span className="text-[10px] text-amber-400/80 font-mono">
+                  {stats.totalWatchTimeMins > 0 ? `${Math.round(stats.totalWatchTimeMins / 60)}h` : "0h"}
+                </span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setActiveNav("favorites");
+                  setIsBurgerMenuOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                  activeNav === "favorites"
+                    ? "bg-amber-500/20 text-amber-200 border border-amber-500/30"
+                    : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Heart className="w-4 h-4 text-rose-400" />
+                  <span>My Favorites</span>
+                </div>
+                <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-stone-800 text-stone-400">
+                  {favorites.length}
+                </span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setActiveNav("journey");
+                  setIsBurgerMenuOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                  activeNav === "journey"
+                    ? "bg-amber-500/20 text-amber-200 border border-amber-500/30"
+                    : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Map className="w-4 h-4 text-emerald-400" />
+                  <span>My Journey</span>
+                </div>
+                <span className="text-[10px] text-stone-500">
+                  {journeyYears.length} {journeyYears.length === 1 ? "year" : "years"}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Drawer Footer with Quick Watch Stats & Auth */}
+        <div className="p-4 border-t border-white/10 bg-black/60 space-y-3">
+          <div className="p-3 rounded-xl bg-amber-500/5 border border-amber-500/15">
+            <div className="flex items-center justify-between text-xs mb-1.5">
+              <span className="text-stone-400">Total Watch Time</span>
+              <span className="font-bold text-amber-300">{formatWatchTime(stats.totalWatchTimeMins)}</span>
+            </div>
+            <div className="flex items-center justify-between text-[11px] text-stone-400">
+              <span>🎬 Movies: {stats.movieMinutes.toLocaleString()}m</span>
+              <span>📺 Series: {stats.seriesMinutes.toLocaleString()}m</span>
+            </div>
+          </div>
+
+          {!authLoading && (
+            user ? (
+              <div className="flex items-center justify-between pt-1">
+                <div className="flex items-center gap-2 text-xs text-stone-300 truncate max-w-[170px]">
+                  <div className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-300 font-bold flex items-center justify-center text-[11px] shrink-0">
+                    {userInitial}
+                  </div>
+                  <span className="truncate">{user.email}</span>
+                </div>
+                <button
+                  onClick={handleSignOut}
+                  className="text-xs text-stone-500 hover:text-red-400 transition-colors flex items-center gap-1 cursor-pointer"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  setIsBurgerMenuOpen(false);
+                  setIsAuthOpen(true);
+                }}
+                className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 text-xs font-semibold transition-all cursor-pointer"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                Sign In / Register
+              </button>
+            )
+          )}
+        </div>
+      </aside>
+
+      {/* ══ HERO & HEADER SECTION ══════════════════════════════════ */}
+      <div ref={heroRef} className="relative overflow-hidden min-h-[320px] pb-6">
         {/* Poster wall backdrop */}
         {heroPosterUrls.length > 0 ? (
           <div className="absolute inset-0">
@@ -185,49 +487,86 @@ export default function Dashboard() {
                 />
               ))}
             </div>
-            <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/30 via-[#0a0a0a]/60 to-[#0a0a0a]" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/80 via-transparent to-[#0a0a0a]/60" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/40 via-[#0a0a0a]/75 to-[#0a0a0a]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/90 via-[#0a0a0a]/60 to-[#0a0a0a]/80" />
           </div>
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-[#1a1510] via-[#0a0a0a] to-[#0a0a0a]" />
         )}
 
         {/* Ambient warm glow */}
-        <div className="absolute top-0 left-1/3 w-[600px] h-[400px] bg-amber-500/5 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[300px] bg-orange-500/5 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute top-0 left-1/4 w-[500px] h-[300px] bg-amber-500/5 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[250px] bg-orange-500/5 rounded-full blur-[100px] pointer-events-none" />
 
         {/* ── Header ─────────────────────────────────────────── */}
         <header className="relative z-10">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-600/10 border border-amber-500/20 shadow-lg shadow-amber-500/5">
-                <FilmIcon className="w-5 h-5 text-amber-400" />
-              </div>
-              <div>
-                <h1 className="text-lg font-bold text-white tracking-wider uppercase font-mono">
-                  COUCH CRITICS
-                </h1>
-                <p className="text-[10px] text-amber-400/80 font-medium tracking-widest uppercase">
-                  Personal Watch Journal
-                </p>
+              {/* Burger Menu Button */}
+              <button
+                onClick={() => setIsBurgerMenuOpen(true)}
+                className="p-2 sm:px-3 sm:py-2.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 hover:text-white transition-all flex items-center gap-2 group shadow-lg shadow-amber-500/10 cursor-pointer"
+                aria-label="Open navigation menu"
+                id="burger-menu-button"
+                title="Open Menu: Backlog, Watched, Catalogs & Stats"
+              >
+                <Menu className="w-5 h-5 text-amber-400 group-hover:scale-110 transition-transform" />
+                <span className="text-xs font-bold tracking-wider uppercase hidden sm:inline text-amber-300 group-hover:text-amber-200">
+                  Menu
+                </span>
+              </button>
+
+              {/* Logo / Brand */}
+              <div
+                onClick={() => setActiveNav("watching")}
+                className="flex items-center gap-2.5 cursor-pointer group"
+              >
+                <div className="p-2 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-600/10 border border-amber-500/20 shadow-lg shadow-amber-500/5 group-hover:border-amber-500/40 transition-colors">
+                  <FilmIcon className="w-5 h-5 text-amber-400" />
+                </div>
+                <div>
+                  <h1 className="text-base sm:text-lg font-bold text-white tracking-wider uppercase font-mono group-hover:text-amber-300 transition-colors">
+                    COUCH CRITICS
+                  </h1>
+                  <p className="text-[10px] text-amber-400/80 font-medium tracking-widest uppercase">
+                    {activeNav === "watching"
+                      ? "Currently Watching"
+                      : activeNav === "toWatch"
+                      ? "To Watch Backlog"
+                      : activeNav === "watched"
+                      ? "Watched Archive"
+                      : activeNav === "movies"
+                      ? "Movies Catalog"
+                      : activeNav === "series"
+                      ? "Series Catalog"
+                      : activeNav === "stats"
+                      ? "Watch Analytics"
+                      : activeNav === "journey"
+                      ? "My Journey"
+                      : "Favorites"}
+                  </p>
+                </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            {/* Header Right Actions */}
+            <div className="flex items-center gap-2 sm:gap-3">
               <button
                 onClick={() => setIsSearchOpen(true)}
-                className="p-2.5 rounded-xl glass-card text-stone-400 hover:text-white transition-colors"
-                aria-label="Search"
+                className="p-2.5 rounded-xl glass-card text-stone-400 hover:text-white transition-colors cursor-pointer"
+                aria-label="Search movies and series"
+                title="Search TMDB"
               >
                 <SearchIcon className="w-4 h-4" />
               </button>
+
               <button
                 onClick={() => setIsSearchOpen(true)}
-                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-sm rounded-xl transition-all shadow-lg shadow-amber-500/15 hover:shadow-amber-500/25 font-medium"
+                className="flex items-center gap-2 px-3.5 py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-xs sm:text-sm rounded-xl transition-all shadow-lg shadow-amber-500/15 hover:shadow-amber-500/25 font-semibold cursor-pointer"
                 id="add-movie-button"
               >
                 <Plus className="w-4 h-4" />
-                <span className="hidden sm:inline">Add Movie</span>
+                <span className="hidden sm:inline">Add Title</span>
               </button>
 
               {/* Auth: Login button or User avatar menu */}
@@ -236,7 +575,7 @@ export default function Dashboard() {
                   <div className="user-menu-wrapper" ref={userMenuRef}>
                     <button
                       onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                      className="user-avatar-btn"
+                      className="user-avatar-btn cursor-pointer"
                       id="user-menu-button"
                       aria-label="User menu"
                     >
@@ -248,7 +587,7 @@ export default function Dashboard() {
                         <div className="user-menu-email">{user.email}</div>
                         <button
                           onClick={handleSignOut}
-                          className="user-menu-item danger"
+                          className="user-menu-item danger cursor-pointer"
                           id="sign-out-button"
                         >
                           <LogOut className="w-4 h-4" />
@@ -260,563 +599,367 @@ export default function Dashboard() {
                 ) : (
                   <button
                     onClick={() => setIsAuthOpen(true)}
-                    className="login-btn"
+                    className="login-btn cursor-pointer"
                     id="login-button"
                   >
                     <LogIn className="w-4 h-4" />
-                    Sign In
+                    <span className="hidden sm:inline">Sign In</span>
                   </button>
                 )
               )}
             </div>
           </div>
-
-          {/* ── Nav bar ──────────────────────────────────────── */}
-          <div className="max-w-6xl mx-auto px-4 sm:px-6">
-            <nav
-              className="flex gap-1 overflow-x-auto pb-1 hide-scrollbar"
-              role="tablist"
-            >
-              {NAV_ITEMS.map((item) => (
-                <button
-                  key={item.key}
-                  role="tab"
-                  aria-selected={activeNav === item.key}
-                  onClick={() => setActiveNav(item.key)}
-                  className={`
-                    flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap
-                    transition-all duration-200
-                    ${
-                      activeNav === item.key
-                        ? "bg-amber-500/15 text-amber-100 border border-amber-500/20"
-                        : "text-stone-500 hover:text-stone-300 hover:bg-white/5"
-                    }
-                  `}
-                >
-                  {item.icon}
-                  <span>{item.label}</span>
-                </button>
-              ))}
-            </nav>
-          </div>
         </header>
 
-        {/* ── Hero Content ───────────────────────────────────── */}
-        {activeNav === "home" && (
-          <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-8 pb-10">
-            <p className="text-xs text-amber-400/80 uppercase tracking-widest mb-2 font-medium">
-              Welcome to
-            </p>
-            <h2 className="text-4xl sm:text-5xl font-extrabold text-white text-glow mb-3 tracking-tight">
-              COUCH CRITICS
-            </h2>
-            <p className="text-stone-300 max-w-md text-sm leading-relaxed mb-6">
-              Your personal cinema &amp; TV journal. Track episodes, rate films,
-              and uncover your viewing analytics.
-              <br />
-              <span className="text-stone-500 italic">
-                &ldquo;Every movie and show you log becomes part of your story.&rdquo;
-              </span>
-            </p>
+        {/* ── Main Hero Content (Focused on Currently Watching) ── */}
+        {activeNav === "watching" && (
+          <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-4 pb-2">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                    In Progress
+                  </span>
+                  <span className="text-xs text-stone-500">
+                    &bull; {watching.length} {watching.length === 1 ? "title" : "titles"}
+                  </span>
+                </div>
+                <h2 className="text-3xl sm:text-4xl font-extrabold text-white text-glow tracking-tight">
+                  Currently Watching
+                </h2>
+                <p className="text-stone-300 text-xs sm:text-sm mt-1 max-w-lg">
+                  Track series episode by episode, log movie minutes, and keep your screen in sync.
+                </p>
+              </div>
 
-            {entries.length > 0 && (
-              <button
-                onClick={() => setActiveNav("journey")}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-amber-500/30 text-amber-200 text-sm hover:bg-amber-500/10 transition-all group cursor-pointer"
-              >
-                <Sparkles className="w-4 h-4 text-amber-400" />
-                Explore My Journey
-                <ChevronRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-              </button>
-            )}
-
-            {/* ── Stat Cards (Interactive & Clickable) ─────────── */}
-            {entries.length > 0 && (
-              <div className="flex flex-wrap gap-4 mt-8">
-                <div
-                  onClick={() => setActiveNav("movies")}
-                  className="hero-stat-card cursor-pointer hover:border-amber-500/40 hover:scale-[1.03] transition-all group"
-                  title="View all movies"
-                >
-                  <div className="hero-stat-icon">
-                    <FilmIcon className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold text-white group-hover:text-amber-300 transition-colors">{movies.length}</p>
-                    <p className="text-xs text-stone-500">Movies &rarr;</p>
-                  </div>
-                </div>
-                <div
-                  onClick={() => setActiveNav("series")}
-                  className="hero-stat-card cursor-pointer hover:border-amber-500/40 hover:scale-[1.03] transition-all group"
-                  title="View all TV series"
-                >
-                  <div className="hero-stat-icon">
-                    <Tv className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold text-white group-hover:text-amber-300 transition-colors">{series.length}</p>
-                    <p className="text-xs text-stone-500">Series &rarr;</p>
-                  </div>
-                </div>
-                <div
-                  onClick={() => setActiveNav("stats")}
-                  className="hero-stat-card cursor-pointer hover:border-amber-500/40 hover:scale-[1.03] transition-all group"
-                  title="View watch analytics"
-                >
-                  <div className="hero-stat-icon">
-                    <Clock className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold text-white group-hover:text-amber-300 transition-colors">
-                      {stats.totalWatchTimeMins.toLocaleString()}
-                    </p>
-                    <p className="text-xs text-stone-500">Minutes Watched &rarr;</p>
-                    <p className="text-[10px] text-amber-400/80 font-mono mt-0.5 whitespace-nowrap">
-                      🎬 {stats.movieMinutes.toLocaleString()}m &bull; 📺 {stats.seriesMinutes.toLocaleString()}m
-                    </p>
-                  </div>
-                </div>
-                {stats.averageRating > 0 && (
-                  <div
-                    onClick={() => setActiveNav("stats")}
-                    className="hero-stat-card cursor-pointer hover:border-amber-500/40 hover:scale-[1.03] transition-all group"
-                    title="View rating statistics"
-                  >
-                    <div className="hero-stat-icon star">
-                      <Star className="w-5 h-5 fill-current" />
+              {/* Quick Runtime Metrics Banner */}
+              {watching.length > 0 && (
+                <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+                  <div className="glass-card px-3.5 py-2 border border-amber-500/20 flex items-center gap-2.5">
+                    <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-400">
+                      <Tv className="w-4 h-4" />
                     </div>
                     <div>
-                      <p className="text-2xl font-bold text-white group-hover:text-amber-300 transition-colors">
-                        {stats.averageRating.toFixed(1)}
-                      </p>
-                      <p className="text-xs text-stone-500">Average Rating &rarr;</p>
+                      <div className="text-xs font-bold text-white font-mono">
+                        {stats.seriesMinutes.toLocaleString()}m
+                      </div>
+                      <div className="text-[10px] text-stone-500">Series Time</div>
                     </div>
                   </div>
-                )}
+
+                  <div className="glass-card px-3.5 py-2 border border-amber-500/20 flex items-center gap-2.5">
+                    <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-400">
+                      <FilmIcon className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-white font-mono">
+                        {stats.movieMinutes.toLocaleString()}m
+                      </div>
+                      <div className="text-[10px] text-stone-500">Movie Time</div>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => setIsBurgerMenuOpen(true)}
+                    className="glass-card px-3 py-2 border border-amber-500/20 hover:border-amber-500/40 text-xs text-amber-300/80 hover:text-amber-200 transition-colors flex items-center gap-1.5 cursor-pointer"
+                    title="Open Burger Menu for more shelves"
+                  >
+                    <span>More Shelves</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Filter Pills for Currently Watching: All | Series | Movies */}
+            {watching.length > 0 && (
+              <div className="flex items-center gap-2 mt-6 overflow-x-auto pb-1 hide-scrollbar">
+                <button
+                  onClick={() => setWatchingTypeFilter("all")}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    watchingTypeFilter === "all"
+                      ? "bg-amber-500/20 text-amber-200 border border-amber-500/40 shadow-sm shadow-amber-500/10"
+                      : "text-stone-400 hover:text-stone-200 bg-white/5 border border-white/5 hover:bg-white/10"
+                  }`}
+                >
+                  <Play className="w-3 h-3 fill-current" />
+                  <span>All In Progress ({watching.length})</span>
+                </button>
+
+                <button
+                  onClick={() => setWatchingTypeFilter("tv")}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    watchingTypeFilter === "tv"
+                      ? "bg-amber-500/20 text-amber-200 border border-amber-500/40 shadow-sm shadow-amber-500/10"
+                      : "text-stone-400 hover:text-stone-200 bg-white/5 border border-white/5 hover:bg-white/10"
+                  }`}
+                >
+                  <Tv className="w-3 h-3" />
+                  <span>TV Series ({watchingSeries.length})</span>
+                </button>
+
+                <button
+                  onClick={() => setWatchingTypeFilter("movie")}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    watchingTypeFilter === "movie"
+                      ? "bg-amber-500/20 text-amber-200 border border-amber-500/40 shadow-sm shadow-amber-500/10"
+                      : "text-stone-400 hover:text-stone-200 bg-white/5 border border-white/5 hover:bg-white/10"
+                  }`}
+                >
+                  <FilmIcon className="w-3 h-3" />
+                  <span>Movies ({watchingMovies.length})</span>
+                </button>
               </div>
             )}
           </div>
         )}
       </div>
 
-      {/* ══ MAIN CONTENT ══════════════════════════════════════════ */}
+      {/* ══ MAIN CONTENT VIEWS ══════════════════════════════════════ */}
 
-      {/* ── Home View: Multi-section scroll ─────────────────────── */}
-      {activeNav === "home" && entries.length > 0 && (
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-12">
-          {/* My Collection — horizontal poster scroll */}
-          {(watching.length > 0 || toWatch.length > 0) && (
-            <section>
-              <div className="flex items-center justify-between mb-5">
-                <div className="flex items-center gap-3">
-                  <div className="section-icon">
-                    <FilmIcon className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-white">My Collection</h3>
-                    <p className="text-xs text-stone-500">
-                      Movies and series in your watchlist
-                    </p>
-                  </div>
+      {/* ── View 1: CURRENTLY WATCHING (Primary Home Screen) ─────── */}
+      {activeNav === "watching" && (
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-8">
+          {watching.length > 0 ? (
+            filteredWatching.length > 0 ? (
+              <WatchingShelf entries={filteredWatching} />
+            ) : (
+              <div className="glass-card p-12 text-center rounded-2xl border border-amber-500/20">
+                <div className="inline-flex p-4 rounded-2xl bg-amber-500/10 mb-4 text-amber-400">
+                  {watchingTypeFilter === "tv" ? <Tv className="w-8 h-8" /> : <FilmIcon className="w-8 h-8" />}
                 </div>
+                <h3 className="text-lg font-bold text-white mb-2">
+                  No {watchingTypeFilter === "tv" ? "TV Series" : "Movies"} in progress
+                </h3>
+                <p className="text-stone-400 text-sm max-w-sm mx-auto mb-6">
+                  You have other titles currently watching, but none matching this filter.
+                </p>
                 <button
-                  onClick={() => setActiveNav("movies")}
-                  className="text-xs text-amber-400/70 hover:text-amber-300 flex items-center gap-1 transition-colors"
+                  onClick={() => setWatchingTypeFilter("all")}
+                  className="px-4 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 text-xs font-semibold border border-amber-500/30 transition-all cursor-pointer"
                 >
-                  View All <ChevronRight className="w-3 h-3" />
+                  Show All ({watching.length})
                 </button>
               </div>
-              <div className="poster-scroll-row">
-                {[...watching, ...toWatch].slice(0, 8).map((entry, idx) => (
-                  <PosterCard
-                    key={entry.id}
-                    entry={entry}
-                    index={idx}
-                    onClick={() => setSelectedDetailEntry(entry)}
-                  />
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* My Favorites — top rated */}
-          {favorites.length > 0 && (
-            <section>
-              <div className="flex items-center justify-between mb-5">
-                <div className="flex items-center gap-3">
-                  <div className="section-icon favorite">
-                    <Heart className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-white">My Favorites</h3>
-                    <p className="text-xs text-stone-500">
-                      Movies and series you loved the most
-                    </p>
-                  </div>
+            )
+          ) : (
+            /* Clean Empty State when zero titles are in Currently Watching */
+            <div className="glass-card p-8 sm:p-12 text-center rounded-2xl border border-amber-500/20 relative overflow-hidden my-4">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[200px] bg-amber-500/5 rounded-full blur-[80px] pointer-events-none" />
+              <div className="relative z-10 max-w-md mx-auto">
+                <div className="inline-flex p-4 rounded-2xl bg-amber-500/10 mb-4 animate-float text-amber-400">
+                  <Play className="w-8 h-8 fill-current" />
                 </div>
-                <button
-                  onClick={() => setActiveNav("favorites")}
-                  className="text-xs text-amber-400/70 hover:text-amber-300 flex items-center gap-1 transition-colors"
-                >
-                  View All <ChevronRight className="w-3 h-3" />
-                </button>
-              </div>
-              <div className="poster-scroll-row">
-                {favorites.slice(0, 8).map((entry, idx) => (
-                  <PosterCard
-                    key={entry.id}
-                    entry={entry}
-                    index={idx}
-                    showRating
-                    onClick={() => setSelectedDetailEntry(entry)}
-                  />
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* My Journey — timeline by year */}
-          {journeyYears.length > 0 && (
-            <section>
-              <div className="flex items-center justify-between mb-5">
-                <div className="flex items-center gap-3">
-                  <div className="section-icon journey">
-                    <Map className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-white">My Journey</h3>
-                    <p className="text-xs text-stone-500">
-                      A timeline of the stories I&apos;ve experienced over the years
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setActiveNav("journey")}
-                  className="text-xs text-amber-400/70 hover:text-amber-300 flex items-center gap-1 transition-colors"
-                >
-                  View All <ChevronRight className="w-3 h-3" />
-                </button>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {journeyYears.map(([year, yearEntries]) => (
-                  <div
-                    key={year}
-                    onClick={() => setActiveNav("journey")}
-                    className="journey-year-card glass-card p-4 cursor-pointer hover:border-amber-500/30 hover:scale-[1.02] transition-all group"
+                <h3 className="text-2xl font-bold text-white mb-2 text-glow">
+                  No Shows or Movies In Progress
+                </h3>
+                <p className="text-stone-400 text-sm leading-relaxed mb-6">
+                  Start watching something new or open your &ldquo;To Watch&rdquo; backlog from the burger menu.
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-3">
+                  <button
+                    onClick={() => setIsSearchOpen(true)}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white rounded-xl text-sm font-semibold shadow-lg shadow-amber-500/20 transition-all hover:scale-[1.02] cursor-pointer"
                   >
-                    <div className="flex items-center justify-between mb-3">
-                      <h4 className="text-2xl font-bold text-white group-hover:text-amber-300 transition-colors">
-                        {year}
-                      </h4>
-                      <span className="text-xs text-stone-500">
-                        {yearEntries.length} titles &rarr;
-                      </span>
-                    </div>
-                    <div className="flex -space-x-2 overflow-hidden">
-                      {yearEntries.slice(0, 5).map((entry) => (
-                        <div
-                          key={entry.id}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedDetailEntry(entry);
-                          }}
-                          className="journey-poster-thumb hover:scale-110 hover:z-20 transition-transform cursor-pointer"
-                          title={`Click to view ${entry.tmdb.title}`}
-                        >
-                          {entry.tmdb.posterUrl ? (
-                            <img
-                              src={entry.tmdb.posterUrl}
-                              alt={entry.tmdb.title}
-                              className="w-full h-full object-cover rounded-lg border-2 border-[#0a0a0a]"
-                            />
-                          ) : (
-                            <div className="w-full h-full rounded-lg bg-stone-800 flex items-center justify-center border-2 border-[#0a0a0a]">
-                              <FilmIcon className="w-3 h-3 text-stone-600" />
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                      {yearEntries.length > 5 && (
-                        <div className="journey-poster-thumb bg-stone-800/80 rounded-lg border-2 border-[#0a0a0a] flex items-center justify-center">
-                          <span className="text-[10px] text-stone-400 font-medium">
-                            +{yearEntries.length - 5}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+                    <Plus className="w-4 h-4" />
+                    Add What You&apos;re Watching
+                  </button>
 
-          {/* Viewing Statistics — quick overview */}
-          {entries.length > 0 && (
-            <section>
-              <div className="flex items-center justify-between mb-5">
-                <div className="flex items-center gap-3">
-                  <div className="section-icon stats">
-                    <BarChart3 className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-white">Viewing Analytics</h3>
-                    <p className="text-xs text-stone-500">
-                      A glance into your personal media journal
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setActiveNav("stats")}
-                  className="text-xs text-amber-400/70 hover:text-amber-300 flex items-center gap-1 transition-colors"
-                >
-                  Full Analytics &rarr;
-                </button>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {/* Quick stat cards */}
-                <div
-                  onClick={() => setActiveNav("movies")}
-                  className="glass-card p-5 relative overflow-hidden group cursor-pointer hover:border-amber-500/40 hover:scale-[1.02] transition-all"
-                  title="View all movies"
-                >
-                  <div className="absolute -top-8 -right-8 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl group-hover:bg-amber-500/15 transition-colors duration-500" />
-                  <div className="relative flex items-center gap-4">
-                    <div className="stat-circle-icon">
-                      <FilmIcon className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-white group-hover:text-amber-300 transition-colors">
-                        {watched.length + watching.length}
-                      </p>
-                      <p className="text-xs text-stone-500">Movies Watched &rarr;</p>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  onClick={() => setActiveNav("series")}
-                  className="glass-card p-5 relative overflow-hidden group cursor-pointer hover:border-amber-500/40 hover:scale-[1.02] transition-all"
-                  title="View all TV series"
-                >
-                  <div className="absolute -top-8 -right-8 w-24 h-24 bg-amber-500/8 rounded-full blur-2xl group-hover:bg-amber-500/12 transition-colors duration-500" />
-                  <div className="relative flex items-center gap-4">
-                    <div className="stat-circle-icon">
-                      <Tv className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-white group-hover:text-amber-300 transition-colors">{series.length}</p>
-                      <p className="text-xs text-stone-500">Series Tracked &rarr;</p>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  onClick={() => setActiveNav("stats")}
-                  className="glass-card p-5 relative overflow-hidden group cursor-pointer hover:border-amber-500/40 hover:scale-[1.02] transition-all"
-                  title="View watch time analytics"
-                >
-                  <div className="absolute -top-8 -right-8 w-24 h-24 bg-amber-500/8 rounded-full blur-2xl group-hover:bg-amber-500/12 transition-colors duration-500" />
-                  <div className="relative flex items-center gap-4">
-                    <div className="stat-circle-icon">
-                      <Clock className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-white group-hover:text-amber-300 transition-colors">
-                        {formatWatchTime(stats.totalWatchTimeMins)}
-                      </p>
-                      <p className="text-xs text-stone-500">Watch Time &rarr;</p>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  onClick={() => setActiveNav("stats")}
-                  className="glass-card p-5 relative overflow-hidden group cursor-pointer hover:border-amber-500/40 hover:scale-[1.02] transition-all"
-                  title="View rating distribution"
-                >
-                  <div className="absolute -top-8 -right-8 w-24 h-24 bg-amber-500/8 rounded-full blur-2xl group-hover:bg-amber-500/12 transition-colors duration-500" />
-                  <div className="relative flex items-center gap-4">
-                    <div className="stat-circle-icon star">
-                      <Star className="w-5 h-5 fill-current" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-white group-hover:text-amber-300 transition-colors">
-                        {stats.averageRating > 0 ? stats.averageRating.toFixed(1) : "—"}
-                      </p>
-                      <p className="text-xs text-stone-500">Average Rating &rarr;</p>
-                    </div>
-                  </div>
+                  {toWatch.length > 0 && (
+                    <button
+                      onClick={() => setActiveNav("toWatch")}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-stone-800/80 hover:bg-stone-700/80 text-stone-200 border border-stone-700 text-sm font-semibold transition-all cursor-pointer"
+                    >
+                      <BookmarkPlus className="w-4 h-4 text-blue-400" />
+                      Browse Backlog ({toWatch.length})
+                    </button>
+                  )}
+
+                  <button
+                    onClick={() => setIsBurgerMenuOpen(true)}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-stone-300 text-sm font-medium transition-all cursor-pointer"
+                  >
+                    <Menu className="w-4 h-4 text-amber-400" />
+                    Open Menu
+                  </button>
                 </div>
               </div>
-
-              {/* Top Genres row (Interactive & Clickable) */}
-              {stats.favoriteGenres.length > 0 && (
-                <div className="mt-5">
-                  <p className="text-xs text-stone-500 uppercase tracking-wider mb-3">
-                    Top Genres (Click to filter in Analytics)
-                  </p>
-                  <div className="flex flex-wrap gap-3">
-                    {stats.favoriteGenres.slice(0, 6).map(({ genre, count }) => (
-                      <button
-                        key={genre}
-                        onClick={() => setActiveNav("stats")}
-                        className="genre-pill glass-card px-4 py-2.5 flex items-center gap-2.5 cursor-pointer hover:border-amber-500/40 hover:scale-105 transition-all text-left"
-                      >
-                        <div className="genre-icon-circle">
-                          <span className="text-xs font-bold text-amber-400">
-                            {genre.charAt(0)}
-                          </span>
-                        </div>
-                        <div>
-                          <p className="text-sm text-white font-medium">{genre}</p>
-                          <p className="text-[10px] text-stone-500">{count} titles</p>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </section>
-          )}
-
-          {/* Featured Movie — detail panel */}
-          {featuredMovie && (
-            <section>
-              <FeaturedMoviePanel
-                entry={featuredMovie}
-                onOpenDetail={() => setSelectedDetailEntry(featuredMovie)}
-              />
-            </section>
+            </div>
           )}
         </main>
       )}
 
-      {/* ── Movies View ─────────────────────────────────────────── */}
+      {/* ── View 2: TO WATCH BACKLOG (From Burger Bar) ───────────── */}
+      {activeNav === "toWatch" && (
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+          <TopReturnBanner
+            title="To Watch Backlog"
+            subtitle="Your wishlist of movies and TV series waiting to be watched"
+            icon={<BookmarkPlus className="w-4 h-4 text-blue-400" />}
+            watchingCount={watching.length}
+            onBackToWatching={() => setActiveNav("watching")}
+            onOpenMenu={() => setIsBurgerMenuOpen(true)}
+          />
+          <ToWatchShelf entries={toWatch} />
+        </main>
+      )}
+
+      {/* ── View 3: WATCHED ARCHIVE & REVIEWS (From Burger Bar) ──── */}
+      {activeNav === "watched" && (
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+          <TopReturnBanner
+            title="Watched Archive &amp; Reviews"
+            subtitle="Your complete history of finished movies, seasons, ratings, and notes"
+            icon={<Award className="w-4 h-4 text-emerald-400" />}
+            watchingCount={watching.length}
+            onBackToWatching={() => setActiveNav("watching")}
+            onOpenMenu={() => setIsBurgerMenuOpen(true)}
+          />
+          <WatchedShelf entries={watched} />
+        </main>
+      )}
+
+      {/* ── View 4: ALL MOVIES (From Burger Bar) ─────────────────── */}
       {activeNav === "movies" && (
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="section-icon">
-              <FilmIcon className="w-4 h-4" />
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-8">
+          <TopReturnBanner
+            title="All Movies"
+            subtitle={`Catalog of ${movies.length} films across in-progress, backlog, and watched`}
+            icon={<FilmIcon className="w-4 h-4 text-amber-400" />}
+            watchingCount={watching.length}
+            onBackToWatching={() => setActiveNav("watching")}
+            onOpenMenu={() => setIsBurgerMenuOpen(true)}
+          />
+
+          {movies.length > 0 ? (
+            <div className="space-y-8">
+              {watchingMovies.length > 0 && (
+                <section>
+                  <h3 className="text-sm font-semibold text-amber-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <Play className="w-3.5 h-3.5" /> Movies In Progress ({watchingMovies.length})
+                  </h3>
+                  <WatchingShelf entries={watchingMovies} />
+                </section>
+              )}
+
+              {toWatch.filter((e) => e.tmdb.mediaType === "movie").length > 0 && (
+                <section>
+                  <h3 className="text-sm font-semibold text-amber-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <BookmarkPlus className="w-3.5 h-3.5" /> Movies To Watch ({toWatch.filter((e) => e.tmdb.mediaType === "movie").length})
+                  </h3>
+                  <ToWatchShelf entries={toWatch.filter((e) => e.tmdb.mediaType === "movie")} />
+                </section>
+              )}
+
+              {watched.filter((e) => e.tmdb.mediaType === "movie").length > 0 && (
+                <section>
+                  <h3 className="text-sm font-semibold text-amber-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <Award className="w-3.5 h-3.5" /> Watched Movies ({watched.filter((e) => e.tmdb.mediaType === "movie").length})
+                  </h3>
+                  <WatchedShelf entries={watched.filter((e) => e.tmdb.mediaType === "movie")} />
+                </section>
+              )}
             </div>
-            <h2 className="text-xl font-bold text-white">My Movies</h2>
-          </div>
-          {watching.length > 0 && (
-            <div>
-              <h3 className="text-sm font-semibold text-amber-400/70 uppercase tracking-wider mb-4 flex items-center gap-2">
-                <Play className="w-3.5 h-3.5" /> Currently Watching
-              </h3>
-              <WatchingShelf entries={watching.filter(e => e.tmdb.mediaType === "movie")} />
-            </div>
-          )}
-          {toWatch.length > 0 && (
-            <div>
-              <h3 className="text-sm font-semibold text-amber-400/70 uppercase tracking-wider mb-4 flex items-center gap-2">
-                <BookmarkPlus className="w-3.5 h-3.5" /> To Watch
-              </h3>
-              <ToWatchShelf entries={toWatch.filter(e => e.tmdb.mediaType === "movie")} />
-            </div>
-          )}
-          {watched.length > 0 && (
-            <div>
-              <h3 className="text-sm font-semibold text-amber-400/70 uppercase tracking-wider mb-4 flex items-center gap-2">
-                <Award className="w-3.5 h-3.5" /> Watched
-              </h3>
-              <WatchedShelf entries={watched.filter(e => e.tmdb.mediaType === "movie")} />
-            </div>
-          )}
-          {movies.length === 0 && (
+          ) : (
             <EmptySection
               icon={<FilmIcon className="w-10 h-10 text-amber-500/40" />}
               title="No movies yet"
-              subtitle="Add a movie to get started."
+              subtitle="Add a movie to your journal to get started."
               onAdd={() => setIsSearchOpen(true)}
             />
           )}
         </main>
       )}
 
-      {/* ── Series View ─────────────────────────────────────────── */}
+      {/* ── View 5: ALL TV SERIES (From Burger Bar) ──────────────── */}
       {activeNav === "series" && (
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="section-icon">
-              <Tv className="w-4 h-4" />
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-8">
+          <TopReturnBanner
+            title="All TV Series"
+            subtitle={`Catalog of ${series.length} shows with episode checklists`}
+            icon={<Tv className="w-4 h-4 text-orange-400" />}
+            watchingCount={watching.length}
+            onBackToWatching={() => setActiveNav("watching")}
+            onOpenMenu={() => setIsBurgerMenuOpen(true)}
+          />
+
+          {series.length > 0 ? (
+            <div className="space-y-8">
+              {watchingSeries.length > 0 && (
+                <section>
+                  <h3 className="text-sm font-semibold text-amber-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <Play className="w-3.5 h-3.5" /> Series In Progress ({watchingSeries.length})
+                  </h3>
+                  <WatchingShelf entries={watchingSeries} />
+                </section>
+              )}
+
+              {toWatch.filter((e) => e.tmdb.mediaType === "tv").length > 0 && (
+                <section>
+                  <h3 className="text-sm font-semibold text-amber-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <BookmarkPlus className="w-3.5 h-3.5" /> Series To Watch ({toWatch.filter((e) => e.tmdb.mediaType === "tv").length})
+                  </h3>
+                  <ToWatchShelf entries={toWatch.filter((e) => e.tmdb.mediaType === "tv")} />
+                </section>
+              )}
+
+              {watched.filter((e) => e.tmdb.mediaType === "tv").length > 0 && (
+                <section>
+                  <h3 className="text-sm font-semibold text-amber-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <Award className="w-3.5 h-3.5" /> Completed Series ({watched.filter((e) => e.tmdb.mediaType === "tv").length})
+                  </h3>
+                  <WatchedShelf entries={watched.filter((e) => e.tmdb.mediaType === "tv")} />
+                </section>
+              )}
             </div>
-            <h2 className="text-xl font-bold text-white">My Series</h2>
-          </div>
-          {watching.filter(e => e.tmdb.mediaType === "tv").length > 0 && (
-            <div>
-              <h3 className="text-sm font-semibold text-amber-400/70 uppercase tracking-wider mb-4 flex items-center gap-2">
-                <Play className="w-3.5 h-3.5" /> Currently Watching
-              </h3>
-              <WatchingShelf entries={watching.filter(e => e.tmdb.mediaType === "tv")} />
-            </div>
-          )}
-          {toWatch.filter(e => e.tmdb.mediaType === "tv").length > 0 && (
-            <div>
-              <h3 className="text-sm font-semibold text-amber-400/70 uppercase tracking-wider mb-4 flex items-center gap-2">
-                <BookmarkPlus className="w-3.5 h-3.5" /> To Watch
-              </h3>
-              <ToWatchShelf entries={toWatch.filter(e => e.tmdb.mediaType === "tv")} />
-            </div>
-          )}
-          {watched.filter(e => e.tmdb.mediaType === "tv").length > 0 && (
-            <div>
-              <h3 className="text-sm font-semibold text-amber-400/70 uppercase tracking-wider mb-4 flex items-center gap-2">
-                <Award className="w-3.5 h-3.5" /> Watched
-              </h3>
-              <WatchedShelf entries={watched.filter(e => e.tmdb.mediaType === "tv")} />
-            </div>
-          )}
-          {series.length === 0 && (
+          ) : (
             <EmptySection
               icon={<Tv className="w-10 h-10 text-amber-500/40" />}
-              title="No series yet"
-              subtitle="Add a TV show to get started."
+              title="No TV series yet"
+              subtitle="Add a TV show to track episodes and progress."
               onAdd={() => setIsSearchOpen(true)}
             />
           )}
         </main>
       )}
 
-      {/* ── Stats View ──────────────────────────────────────────── */}
+      {/* ── View 6: WATCH ANALYTICS (From Burger Bar) ────────────── */}
       {activeNav === "stats" && (
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="section-icon stats">
-              <BarChart3 className="w-4 h-4" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-white">Watch Analytics</h2>
-              <p className="text-xs text-stone-500">Consumption metrics &amp; genre insights</p>
-            </div>
-          </div>
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+          <TopReturnBanner
+            title="Watch Analytics"
+            subtitle="Consumption metrics, individual movie vs series minutes, and genre distribution"
+            icon={<BarChart3 className="w-4 h-4 text-purple-400" />}
+            watchingCount={watching.length}
+            onBackToWatching={() => setActiveNav("watching")}
+            onOpenMenu={() => setIsBurgerMenuOpen(true)}
+          />
           <AnalyticsDashboard entries={entries} />
         </main>
       )}
 
-      {/* ── Journey View ────────────────────────────────────────── */}
+      {/* ── View 7: MY JOURNEY (From Burger Bar) ─────────────────── */}
       {activeNav === "journey" && (
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="section-icon journey">
-              <Map className="w-4 h-4" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-white">My Journey</h2>
-              <p className="text-xs text-stone-500">
-                A timeline of the stories I&apos;ve experienced over the years
-              </p>
-            </div>
-          </div>
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+          <TopReturnBanner
+            title="My Journey"
+            subtitle="A timeline of the stories experienced across the years"
+            icon={<Map className="w-4 h-4 text-emerald-400" />}
+            watchingCount={watching.length}
+            onBackToWatching={() => setActiveNav("watching")}
+            onOpenMenu={() => setIsBurgerMenuOpen(true)}
+          />
 
           {journeyYears.length > 0 ? (
             <div className="space-y-8">
               {journeyYears.map(([year, yearEntries]) => (
-                <div key={year}>
-                  <div className="flex items-center gap-3 mb-4">
-                    <h3 className="text-3xl font-bold text-white">{year}</h3>
-                    <div className="flex-1 h-px bg-gradient-to-r from-amber-500/20 to-transparent" />
-                    <span className="text-sm text-stone-500">
-                      {yearEntries.length} titles
+                <div key={year} className="glass-card p-6 rounded-2xl border border-amber-500/20">
+                  <div className="flex items-center gap-3 mb-5">
+                    <h3 className="text-3xl font-bold text-white font-mono">{year}</h3>
+                    <div className="flex-1 h-px bg-gradient-to-r from-amber-500/30 to-transparent" />
+                    <span className="text-xs text-stone-400 font-mono">
+                      {yearEntries.length} {yearEntries.length === 1 ? "title" : "titles"}
                     </span>
                   </div>
                   <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
@@ -836,28 +979,26 @@ export default function Dashboard() {
           ) : (
             <EmptySection
               icon={<Map className="w-10 h-10 text-amber-500/40" />}
-              title="No journey yet"
-              subtitle="Mark movies as watched to start building your timeline."
+              title="No journey entries yet"
+              subtitle="Mark movies and series as watched to populate your journey timeline."
               onAdd={() => setIsSearchOpen(true)}
             />
           )}
         </main>
       )}
 
-      {/* ── Favorites View ──────────────────────────────────────── */}
+      {/* ── View 8: FAVORITES (From Burger Bar) ──────────────────── */}
       {activeNav === "favorites" && (
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="section-icon favorite">
-              <Heart className="w-4 h-4" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-white">My Favorites</h2>
-              <p className="text-xs text-stone-500">
-                Movies and series you rated 8 or higher
-              </p>
-            </div>
-          </div>
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+          <TopReturnBanner
+            title="My Favorites"
+            subtitle="Films and shows you rated 8/10 or higher"
+            icon={<Heart className="w-4 h-4 text-rose-400" />}
+            watchingCount={watching.length}
+            onBackToWatching={() => setActiveNav("watching")}
+            onOpenMenu={() => setIsBurgerMenuOpen(true)}
+          />
+
           {favorites.length > 0 ? (
             <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {favorites.map((entry, idx) => (
@@ -874,69 +1015,100 @@ export default function Dashboard() {
             <EmptySection
               icon={<Heart className="w-10 h-10 text-amber-500/40" />}
               title="No favorites yet"
-              subtitle="Rate movies 8/10 or higher to add them to your favorites."
+              subtitle="Rate movies and shows 8/10 or higher to bookmark them in your favorites."
               onAdd={() => setIsSearchOpen(true)}
             />
           )}
         </main>
       )}
 
-      {/* ── Empty State CTA ─────────────────────────────────── */}
-      {entries.length === 0 && activeNav === "home" && (
-        <div className="flex items-center justify-center py-20">
-          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-amber-500/8 rounded-full blur-[100px]" />
-          <div className="text-center relative">
-            <div className="inline-flex p-5 rounded-2xl bg-amber-500/10 mb-6 animate-float">
-              <Sparkles className="w-12 h-12 text-amber-400/60" />
-            </div>
-            <h2 className="text-3xl font-bold text-white mb-3 text-glow">
-              Welcome to COUCH CRITICS
-            </h2>
-            <p className="text-stone-400 max-w-md mx-auto mb-8 leading-relaxed">
-              Track what you&apos;re watching, build your backlog, and keep a
-              personal archive of every movie and show you experience.
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <button
-                onClick={() => setIsSearchOpen(true)}
-                className="inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl font-semibold shadow-xl shadow-amber-500/20 hover:shadow-amber-500/35 transition-all hover:scale-[1.02] active:scale-[0.98]"
-              >
-                <Plus className="w-5 h-5" />
-                Add Your First Movie
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ── Floating Action — mobile ────────────────────────── */}
+      {/* ── Floating Action Button (Mobile) ──────────────────────── */}
       <button
         onClick={() => setIsSearchOpen(true)}
-        className="fixed bottom-6 right-6 sm:hidden p-4 bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-full shadow-2xl shadow-amber-500/20 hover:shadow-amber-500/40 transition-all z-30 animate-glow"
-        aria-label="Add movie"
+        className="fixed bottom-6 right-6 sm:hidden p-4 bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-full shadow-2xl shadow-amber-500/30 hover:shadow-amber-500/50 transition-all z-30 animate-glow cursor-pointer"
+        aria-label="Add title"
       >
         <Plus className="w-6 h-6" />
       </button>
 
-      {/* ── Search Modal ───────────────────────────────────── */}
+      {/* ── Search Modal ────────────────────────────────────────── */}
       <SearchModal
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
-        defaultShelf={activeNav === "movies" ? "toWatch" : activeNav === "series" ? "toWatch" : "toWatch"}
+        defaultShelf={activeNav === "toWatch" ? "toWatch" : "watching"}
       />
 
-      {/* ── Auth Modal ──────────────────────────────────────── */}
+      {/* ── Auth Modal ──────────────────────────────────────────── */}
       <AuthModal
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
       />
 
-      {/* ── Media Detail Modal (makes all cards interactive) ── */}
+      {/* ── Media Detail Modal ──────────────────────────────────── */}
       <MediaDetailModal
-        entry={selectedDetailEntry ? entries.find((e) => e.id === selectedDetailEntry.id) ?? selectedDetailEntry : null}
+        entry={
+          selectedDetailEntry
+            ? entries.find((e) => e.id === selectedDetailEntry.id) ??
+              entries.find(
+                (e) =>
+                  e.tmdb?.tmdbId &&
+                  selectedDetailEntry.tmdb?.tmdbId &&
+                  e.tmdb.tmdbId === selectedDetailEntry.tmdb.tmdbId &&
+                  e.tmdb.mediaType === selectedDetailEntry.tmdb.mediaType
+              ) ??
+              selectedDetailEntry
+            : null
+        }
         isOpen={!!selectedDetailEntry}
         onClose={() => setSelectedDetailEntry(null)}
       />
+    </div>
+  );
+}
+
+/* ─── Top Return Banner (Shown when viewing non-watching shelves) ─────────── */
+function TopReturnBanner({
+  title,
+  subtitle,
+  icon,
+  watchingCount,
+  onBackToWatching,
+  onOpenMenu,
+}: {
+  title: string;
+  subtitle: string;
+  icon: React.ReactNode;
+  watchingCount: number;
+  onBackToWatching: () => void;
+  onOpenMenu: () => void;
+}) {
+  return (
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-stone-900/60 border border-amber-500/25 shadow-lg shadow-amber-500/5">
+      <div className="flex items-center gap-3">
+        <button
+          onClick={onOpenMenu}
+          className="p-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 transition-all flex items-center gap-1.5 text-xs font-semibold cursor-pointer shrink-0"
+          title="Open Burger Menu"
+        >
+          <Menu className="w-4 h-4" />
+          <span className="hidden sm:inline">Menu</span>
+        </button>
+        <div>
+          <div className="flex items-center gap-2">
+            <div className="text-amber-400">{icon}</div>
+            <h2 className="text-base sm:text-lg font-bold text-white">{title}</h2>
+          </div>
+          <p className="text-xs text-stone-400 mt-0.5">{subtitle}</p>
+        </div>
+      </div>
+
+      <button
+        onClick={onBackToWatching}
+        className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-xs font-semibold rounded-xl shadow-lg shadow-amber-500/20 transition-all hover:scale-[1.02] cursor-pointer shrink-0"
+      >
+        <Play className="w-3.5 h-3.5 fill-current" />
+        <span>Back to Currently Watching ({watchingCount})</span>
+      </button>
     </div>
   );
 }
@@ -959,7 +1131,7 @@ function PosterCard({
     <div
       onClick={onClick}
       className="poster-card group stagger-item cursor-pointer hover:scale-[1.03] transition-all"
-      style={{ animationDelay: `${index * 40}ms` }}
+      style={{ animationDelay: `${index * 30}ms` }}
     >
       <div className="poster-card-image relative overflow-hidden">
         {entry.tmdb.posterUrl ? (
@@ -1010,110 +1182,6 @@ function PosterCard({
   );
 }
 
-/* ─── Featured Movie Panel ───────────────────────────────────────────────── */
-function FeaturedMoviePanel({
-  entry,
-  onOpenDetail,
-}: {
-  entry: MovieEntry;
-  onOpenDetail: () => void;
-}) {
-  return (
-    <div
-      onClick={onOpenDetail}
-      className="featured-panel glass-card overflow-hidden relative cursor-pointer group hover:border-amber-500/30 transition-all"
-    >
-      {/* Background */}
-      {entry.tmdb.posterUrl && (
-        <div className="absolute inset-0">
-          <img
-            src={entry.tmdb.posterUrl}
-            alt=""
-            className="w-full h-full object-cover opacity-15 blur-sm scale-110"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a] via-[#0a0a0a]/80 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-[#0a0a0a]/40" />
-        </div>
-      )}
-
-      <div className="relative z-10 flex flex-col sm:flex-row gap-6 p-6">
-        {/* Poster */}
-        {entry.tmdb.posterUrl && (
-          <img
-            src={entry.tmdb.posterUrl}
-            alt={entry.tmdb.title}
-            className="w-32 sm:w-40 h-48 sm:h-60 rounded-xl object-cover shadow-2xl shadow-black/50 shrink-0 mx-auto sm:mx-0 group-hover:scale-105 transition-transform"
-          />
-        )}
-
-        {/* Info */}
-        <div className="flex-1 flex flex-col justify-center">
-          <div className="flex items-center justify-between mb-1">
-            <p className="text-[10px] text-amber-400 uppercase tracking-widest font-semibold">
-              ★ Featured in Your Journal
-            </p>
-            <span className="text-xs text-amber-400/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
-              View Details &amp; Episodes &rarr;
-            </span>
-          </div>
-          <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2 group-hover:text-amber-200 transition-colors">
-            {entry.tmdb.title}
-          </h3>
-          <div className="flex flex-wrap items-center gap-2 text-sm text-stone-400 mb-3">
-            <span>{entry.tmdb.releaseYear}</span>
-            {entry.tmdb.genres.slice(0, 3).map((g) => (
-              <span key={g} className="px-2 py-0.5 text-xs rounded-md bg-white/5 border border-white/10">
-                {g}
-              </span>
-            ))}
-            {entry.tmdb.runtime > 0 && (
-              <span className="flex items-center gap-1">
-                <Clock className="w-3 h-3" />
-                {Math.floor(entry.tmdb.runtime / 60)}h {entry.tmdb.runtime % 60}m
-              </span>
-            )}
-          </div>
-
-          {/* Rating */}
-          {entry.review?.rating && (
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-3xl font-bold text-amber-400">
-                {entry.review.rating.toFixed(1)}
-              </span>
-              <div className="flex gap-0.5">
-                {Array.from({ length: 10 }, (_, i) => (
-                  <Star
-                    key={i}
-                    className={`w-4 h-4 ${
-                      i < entry.review!.rating
-                        ? "text-amber-400 fill-amber-400"
-                        : "text-stone-700"
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Notes quote */}
-          {entry.review?.notes && (
-            <p className="text-sm text-stone-400 italic leading-relaxed max-w-lg">
-              &ldquo;{entry.review.notes}&rdquo;
-            </p>
-          )}
-
-          {/* Overview fallback */}
-          {!entry.review?.notes && entry.tmdb.overview && (
-            <p className="text-sm text-stone-500 leading-relaxed max-w-lg line-clamp-3">
-              {entry.tmdb.overview}
-            </p>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 /* ─── Empty Section ──────────────────────────────────────────────────────── */
 function EmptySection({
   icon,
@@ -1127,7 +1195,7 @@ function EmptySection({
   onAdd: () => void;
 }) {
   return (
-    <div className="text-center py-20">
+    <div className="text-center py-16">
       <div className="inline-flex p-4 rounded-2xl bg-amber-500/8 mb-4">
         {icon}
       </div>
@@ -1135,10 +1203,10 @@ function EmptySection({
       <p className="text-stone-500 mt-2 text-sm max-w-sm mx-auto">{subtitle}</p>
       <button
         onClick={onAdd}
-        className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 text-white text-sm rounded-xl transition-all shadow-lg shadow-amber-500/15 hover:shadow-amber-500/25 font-medium"
+        className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 text-white text-sm rounded-xl transition-all shadow-lg shadow-amber-500/15 hover:shadow-amber-500/25 font-medium cursor-pointer"
       >
         <Plus className="w-4 h-4" />
-        Add Movie
+        Add Title
       </button>
     </div>
   );
