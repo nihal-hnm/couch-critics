@@ -19,13 +19,25 @@
  */
 
 import type { MovieEntry } from "./types";
-import { STARTER_ENTRIES } from "./starter-data";
 
 const STORAGE_KEY = "couch-critics-entries";
 
+const SAMPLE_IDS = new Set([
+  "entry-bb-1",
+  "entry-bear-1",
+  "entry-challengers-1",
+  "entry-dune-2",
+  "entry-opp-1",
+  "entry-spidey-1",
+  "entry-interstellar-1",
+  "entry-succ-1",
+  "entry-severance-1",
+]);
+
 /**
  * Load all movie entries from localStorage.
- * If empty on first launch, seeds with rich starter entries (including episode data).
+ * Defaults to an empty journal without sample data.
+ * Automatically cleans up any previously stored sample/seed entries.
  */
 export function getEntries(): MovieEntry[] {
   if (typeof window === "undefined") return [];
@@ -33,30 +45,50 @@ export function getEntries(): MovieEntry[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
-      // First launch — initialize with rich starter data
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(STARTER_ENTRIES));
-      return STARTER_ENTRIES;
+      return [];
     }
 
     const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
 
-    if (!Array.isArray(parsed) || parsed.length === 0) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(STARTER_ENTRIES));
-      return STARTER_ENTRIES;
+    // Filter out any leftover sample/demo entries from previous versions
+    const userOnlyEntries = parsed.filter(
+      (e: any) =>
+        e &&
+        e.id &&
+        !SAMPLE_IDS.has(e.id) &&
+        !String(e.id).startsWith("entry-bb-") &&
+        !String(e.id).startsWith("entry-bear-") &&
+        !String(e.id).startsWith("entry-succ-") &&
+        !String(e.id).startsWith("entry-dune-") &&
+        !String(e.id).startsWith("entry-opp-") &&
+        !String(e.id).startsWith("entry-challengers-") &&
+        !String(e.id).startsWith("entry-spidey-") &&
+        !String(e.id).startsWith("entry-interstellar-") &&
+        !String(e.id).startsWith("entry-severance-")
+    );
+
+    if (userOnlyEntries.length !== parsed.length) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(userOnlyEntries));
     }
 
-    return parsed as MovieEntry[];
+    return userOnlyEntries as MovieEntry[];
   } catch (error) {
     console.error("Couch Critics: Failed to load data from localStorage:", error);
-    return STARTER_ENTRIES;
+    return [];
   }
 }
 
-/** Reset to initial starter sample data */
+/** Clear all entries from storage */
+export function clearAllEntries(): MovieEntry[] {
+  if (typeof window === "undefined") return [];
+  localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+  return [];
+}
+
+/** Backward compatibility helper for clearing data */
 export function resetToStarterData(): MovieEntry[] {
-  if (typeof window === "undefined") return STARTER_ENTRIES;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(STARTER_ENTRIES));
-  return STARTER_ENTRIES;
+  return clearAllEntries();
 }
 
 /**

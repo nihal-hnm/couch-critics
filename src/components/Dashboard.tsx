@@ -65,7 +65,7 @@ const NAV_ITEMS: NavDef[] = [
 ];
 
 export default function Dashboard() {
-  const { entries, isLoaded, resetToDemoData } = useJournal();
+  const { entries, isLoaded } = useJournal();
   const { user, signOut, isLoading: authLoading } = useAuth();
   const [activeNav, setActiveNav] = useState<NavKey>("home");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -215,15 +215,6 @@ export default function Dashboard() {
 
             <div className="flex items-center gap-3">
               <button
-                onClick={() => resetToDemoData()}
-                className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass-card text-xs text-amber-300/80 hover:text-amber-200 hover:border-amber-500/30 transition-all"
-                title="Populate or reset demo media entries with episode data"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                Sample Data
-              </button>
-
-              <button
                 onClick={() => setIsSearchOpen(true)}
                 className="p-2.5 rounded-xl glass-card text-stone-400 hover:text-white transition-colors"
                 aria-label="Search"
@@ -255,16 +246,6 @@ export default function Dashboard() {
                     {isUserMenuOpen && (
                       <div className="user-menu-dropdown">
                         <div className="user-menu-email">{user.email}</div>
-                        <button
-                          onClick={() => {
-                            resetToDemoData();
-                            setIsUserMenuOpen(false);
-                          }}
-                          className="user-menu-item text-xs text-amber-300 hover:bg-amber-500/10"
-                        >
-                          <Sparkles className="w-4 h-4" />
-                          Reload Sample Data
-                        </button>
                         <button
                           onClick={handleSignOut}
                           className="user-menu-item danger"
@@ -919,13 +900,6 @@ export default function Dashboard() {
               >
                 <Plus className="w-5 h-5" />
                 Add Your First Movie
-              </button>
-              <button
-                onClick={() => resetToDemoData()}
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl border border-amber-500/30 text-amber-200 text-sm hover:bg-amber-500/10 transition-all font-medium"
-              >
-                <Sparkles className="w-4 h-4 text-amber-400" />
-                Load Sample Media &amp; Episodes
               </button>
             </div>
           </div>
