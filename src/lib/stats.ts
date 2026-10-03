@@ -102,20 +102,45 @@ export function computeStats(entries: MovieEntry[]): JournalStats {
 }
 
 /**
- * Format minutes into a human-readable string.
- * Examples: "2d 5h 30m", "0h 45m", "12h 0m"
+ * Format overall watch time in days and hours.
+ * Examples: "3d 8h", "0d 14h"
  */
-export function formatWatchTime(totalMins: number): string {
-  if (totalMins === 0) return "0h 0m";
+export function formatDaysAndHours(totalMins: number): string {
+  if (totalMins === 0) return "0d 0h";
 
-  const days = Math.floor(totalMins / (24 * 60));
-  const hours = Math.floor((totalMins % (24 * 60)) / 60);
+  const days = Math.floor(totalMins / 1440);
+  const hours = Math.floor((totalMins % 1440) / 60);
+
+  return `${days}d ${hours}h`;
+}
+
+/**
+ * Format watch time in hours and minutes.
+ * Examples: "14h 30m", "2h", "45m"
+ */
+export function formatHours(totalMins: number): string {
+  if (totalMins === 0) return "0h";
+
+  const hours = Math.floor(totalMins / 60);
   const minutes = totalMins % 60;
 
-  const parts: string[] = [];
-  if (days > 0) parts.push(`${days}d`);
-  parts.push(`${hours}h`);
-  parts.push(`${minutes}m`);
+  if (hours === 0) return `${minutes}m`;
+  return minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`;
+}
 
-  return parts.join(" ");
+/**
+ * Format watch time in decimal hours.
+ * Examples: "14.5h", "2.0h"
+ */
+export function formatHoursDecimal(totalMins: number): string {
+  if (totalMins === 0) return "0h";
+  const hours = totalMins / 60;
+  return `${hours.toFixed(1).replace(/\.0$/, "")}h`;
+}
+
+/**
+ * Format overall watch time in days and hours.
+ */
+export function formatWatchTime(totalMins: number): string {
+  return formatDaysAndHours(totalMins);
 }

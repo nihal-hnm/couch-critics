@@ -29,7 +29,7 @@ import {
   Eye,
 } from "lucide-react";
 import type { MovieEntry } from "@/lib/types";
-import { computeStats, formatWatchTime } from "@/lib/stats";
+import { computeStats, formatWatchTime, formatDaysAndHours, formatHours } from "@/lib/stats";
 
 interface StatsDashboardProps {
   entries: MovieEntry[];
@@ -88,15 +88,15 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
               </span>
             </div>
             <p className="text-2xl font-bold text-white">
-              {formatWatchTime(stats.totalWatchTimeMins)}
+              {formatDaysAndHours(stats.totalWatchTimeMins)}
             </p>
             <p className="text-xs text-zinc-500 mt-1">
-              {stats.totalWatchTimeMins.toLocaleString()} total minutes
+              Overall time ({Math.round(stats.totalWatchTimeMins / 60)}h total)
             </p>
             <div className="flex items-center gap-2 mt-2 pt-2 border-t border-purple-500/10 text-[11px] text-purple-300/80 font-mono">
-              <span>🎬 {stats.movieMinutes.toLocaleString()}m movie</span>
+              <span>🎬 {formatHours(stats.movieMinutes)} movie</span>
               <span>•</span>
-              <span>📺 {stats.seriesMinutes.toLocaleString()}m series</span>
+              <span>📺 {formatHours(stats.seriesMinutes)} series</span>
             </div>
           </div>
         </div>

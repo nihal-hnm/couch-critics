@@ -31,7 +31,7 @@ import {
   Home,
   BarChart3,
   Heart,
-  Map,
+  Map as MapIcon,
   Search as SearchIcon,
   ChevronRight,
   Play,
@@ -45,6 +45,7 @@ import {
   X,
   RotateCcw,
   SlidersHorizontal,
+  Tags,
 } from "lucide-react";
 import { useJournal } from "@/lib/journal-context";
 import { useAuth } from "@/lib/auth-context";
@@ -57,7 +58,7 @@ import WatchedShelf from "@/components/WatchedShelf";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
 import MediaDetailModal from "@/components/MediaDetailModal";
 import ThemeToggle from "@/components/ThemeToggle";
-import { computeStats, formatWatchTime } from "@/lib/stats";
+import { computeStats, formatWatchTime, formatDaysAndHours, formatHours } from "@/lib/stats";
 
 export type NavKey =
   | "watching"
@@ -65,6 +66,7 @@ export type NavKey =
   | "watched"
   | "movies"
   | "series"
+  | "genres"
   | "stats"
   | "journey"
   | "favorites";
@@ -78,6 +80,9 @@ export default function Dashboard() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [watchingTypeFilter, setWatchingTypeFilter] = useState<"all" | "tv" | "movie">("all");
+  const [watchingGenreFilter, setWatchingGenreFilter] = useState<string>("all");
+  const [selectedGenre, setSelectedGenre] = useState<string>("all");
+  const [genreShelfFilter, setGenreShelfFilter] = useState<"all" | "watching" | "toWatch" | "watched">("all");
   const [selectedDetailEntry, setSelectedDetailEntry] = useState<MovieEntry | null>(null);
 
   const heroRef = useRef<HTMLDivElement>(null);
@@ -136,11 +141,82 @@ export default function Dashboard() {
     [watching]
   );
 
+  // All unique genres across entire journal with counts
+  const allGenres = useMemo(() => {
+    const counts: Record<string, number> = {};
+    entries.forEach((entry) => {
+      entry.tmdb.genres.forEach((genre) => {
+        counts[genre] = (counts[genre] || 0) + 1;
+      });
+    });
+    return Object.entries(counts)
+      .map(([genre, count]) => ({ genre, count }))
+      .sort((a, b) => b.count - a.count);
+  }, [entries]);
+
+  // Unique genres in currently watching list
+  const watchingGenres = useMemo(() => {
+    const counts: Record<string, number> = {};
+    watching.forEach((entry) => {
+      entry.tmdb.genres.forEach((genre) => {
+        counts[genre] = (counts[genre] || 0) + 1;
+      });
+    });
+    return Object.entries(counts)
+      .map(([genre, count]) => ({ genre, count }))
+      .sort((a, b) => b.count - a.count);
+  }, [watching]);
+
+  // Filtered currently watching by type & genre
   const filteredWatching = useMemo(() => {
-    if (watchingTypeFilter === "tv") return watchingSeries;
-    if (watchingTypeFilter === "movie") return watchingMovies;
-    return watching;
-  }, [watching, watchingTypeFilter, watchingSeries, watchingMovies]);
+    let list = watching;
+    if (watchingTypeFilter === "tv") list = watchingSeries;
+    if (watchingTypeFilter === "movie") list = watchingMovies;
+    if (watchingGenreFilter !== "all") {
+      list = list.filter((e) => e.tmdb.genres.includes(watchingGenreFilter));
+    }
+    return list;
+  }, [watching, watchingTypeFilter, watchingSeries, watchingMovies, watchingGenreFilter]);
+
+  // Genre Explorer filtered list
+  const genreFilteredEntries = useMemo(() => {
+    if (selectedGenre === "all") return entries;
+    return entries.filter((e) => e.tmdb.genres.includes(selectedGenre));
+  }, [entries, selectedGenre]);
+
+  const displayedGenreEntries = useMemo(() => {
+    if (genreShelfFilter === "all") return genreFilteredEntries;
+    return genreFilteredEntries.filter((e) => e.shelf === genreShelfFilter);
+  }, [genreFilteredEntries, genreShelfFilter]);
+
+  // Genre watch time statistics (total in days/hours, movies & series in hours)
+  const selectedGenreStats = useMemo(() => {
+    let totalMins = 0;
+    let movieMins = 0;
+    let seriesMins = 0;
+
+    genreFilteredEntries.forEach((entry) => {
+      const runtime = entry.tmdb.runtime || 0;
+      if (entry.tmdb.mediaType === "movie") {
+        if (entry.shelf === "watched") {
+          movieMins += runtime;
+          totalMins += runtime;
+        } else if (entry.shelf === "watching") {
+          const partial = Math.round(runtime * 0.5);
+          movieMins += partial;
+          totalMins += partial;
+        }
+      } else {
+        const watchedEpisodes = entry.progress?.watchedEpisodes?.length || entry.progress?.currentEpisode || 0;
+        const episodeRuntime = runtime || 45;
+        const sMins = watchedEpisodes * episodeRuntime;
+        seriesMins += sMins;
+        totalMins += sMins;
+      }
+    });
+
+    return { totalMins, movieMins, seriesMins };
+  }, [genreFilteredEntries]);
 
   // Overall statistics
   const stats = useMemo(() => computeStats(entries), [entries]);
@@ -355,6 +431,26 @@ export default function Dashboard() {
                   {series.length}
                 </span>
               </button>
+
+              <button
+                onClick={() => {
+                  setActiveNav("genres");
+                  setIsBurgerMenuOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                  activeNav === "genres"
+                    ? "bg-purple-500/20 text-purple-200 border border-purple-500/30"
+                    : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Tags className="w-4 h-4 text-purple-400" />
+                  <span>Browse by Genre</span>
+                </div>
+                <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-stone-800 text-stone-400">
+                  {allGenres.length}
+                </span>
+              </button>
             </div>
           </div>
 
@@ -380,7 +476,7 @@ export default function Dashboard() {
                   <span>Watch Analytics</span>
                 </div>
                 <span className="text-[10px] text-purple-400/80 font-mono">
-                  {stats.totalWatchTimeMins > 0 ? `${Math.round(stats.totalWatchTimeMins / 60)}h` : "0h"}
+                  {stats.totalWatchTimeMins > 0 ? formatDaysAndHours(stats.totalWatchTimeMins) : "0d 0h"}
                 </span>
               </button>
 
@@ -416,7 +512,7 @@ export default function Dashboard() {
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Map className="w-4 h-4 text-emerald-400" />
+                  <MapIcon className="w-4 h-4 text-emerald-400" />
                   <span>My Journey</span>
                 </div>
                 <span className="text-[10px] text-stone-500">
@@ -442,12 +538,12 @@ export default function Dashboard() {
         <div className="p-4 border-t border-white/10 bg-black/60 space-y-3">
           <div className="p-3 rounded-xl bg-purple-500/5 border border-purple-500/15">
             <div className="flex items-center justify-between text-xs mb-1.5">
-              <span className="text-stone-400">Total Watch Time</span>
-              <span className="font-bold text-purple-300">{formatWatchTime(stats.totalWatchTimeMins)}</span>
+              <span className="text-stone-400">Overall Watch Time</span>
+              <span className="font-bold text-purple-300">{formatDaysAndHours(stats.totalWatchTimeMins)}</span>
             </div>
             <div className="flex items-center justify-between text-[11px] text-stone-400">
-              <span>🎬 Movies: {stats.movieMinutes.toLocaleString()}m</span>
-              <span>📺 Series: {stats.seriesMinutes.toLocaleString()}m</span>
+              <span>🎬 Movies: {formatHours(stats.movieMinutes)}</span>
+              <span>📺 Series: {formatHours(stats.seriesMinutes)}</span>
             </div>
           </div>
 
@@ -551,6 +647,8 @@ export default function Dashboard() {
                       ? "Movies Catalog"
                       : activeNav === "series"
                       ? "Series Catalog"
+                      : activeNav === "genres"
+                      ? "Browse by Genre"
                       : activeNav === "stats"
                       ? "Watch Analytics"
                       : activeNav === "journey"
@@ -648,28 +746,43 @@ export default function Dashboard() {
                 </p>
               </div>
 
-              {/* Quick Runtime Metrics Banner */}
+              {/* Quick Runtime Metrics Banner: Overall in days & hours, Series and Movies in hours */}
               {watching.length > 0 && (
                 <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+                  {/* Overall Watch Time in Days & Hours */}
+                  <div className="glass-card px-3.5 py-2 border border-purple-500/20 flex items-center gap-2.5">
+                    <div className="p-1.5 rounded-lg bg-purple-500/10 text-purple-400">
+                      <Clock className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-white font-mono">
+                        {formatDaysAndHours(stats.totalWatchTimeMins)}
+                      </div>
+                      <div className="text-[10px] text-stone-500">Overall Time</div>
+                    </div>
+                  </div>
+
+                  {/* Series Time in Hours */}
                   <div className="glass-card px-3.5 py-2 border border-purple-500/20 flex items-center gap-2.5">
                     <div className="p-1.5 rounded-lg bg-purple-500/10 text-purple-400">
                       <Tv className="w-4 h-4" />
                     </div>
                     <div>
                       <div className="text-xs font-bold text-white font-mono">
-                        {stats.seriesMinutes.toLocaleString()}m
+                        {formatHours(stats.seriesMinutes)}
                       </div>
                       <div className="text-[10px] text-stone-500">Series Time</div>
                     </div>
                   </div>
 
+                  {/* Movie Time in Hours */}
                   <div className="glass-card px-3.5 py-2 border border-purple-500/20 flex items-center gap-2.5">
                     <div className="p-1.5 rounded-lg bg-purple-500/10 text-purple-400">
                       <FilmIcon className="w-4 h-4" />
                     </div>
                     <div>
                       <div className="text-xs font-bold text-white font-mono">
-                        {stats.movieMinutes.toLocaleString()}m
+                        {formatHours(stats.movieMinutes)}
                       </div>
                       <div className="text-[10px] text-stone-500">Movie Time</div>
                     </div>
@@ -696,44 +809,88 @@ export default function Dashboard() {
               )}
             </div>
 
-            {/* Filter Pills for Currently Watching: All | Series | Movies */}
+            {/* Filter Pills for Currently Watching: All | Series | Movies | View by Genre */}
             {watching.length > 0 && (
-              <div className="flex items-center gap-2 mt-6 overflow-x-auto pb-1 hide-scrollbar">
-                <button
-                  onClick={() => setWatchingTypeFilter("all")}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
-                    watchingTypeFilter === "all"
-                      ? "bg-purple-500/20 text-purple-200 border border-purple-500/40 shadow-sm shadow-purple-500/10"
-                      : "text-stone-400 hover:text-stone-200 bg-white/5 border border-white/5 hover:bg-white/10"
-                  }`}
-                >
-                  <Play className="w-3 h-3 fill-current" />
-                  <span>All In Progress ({watching.length})</span>
-                </button>
+              <div className="space-y-2.5 mt-6">
+                <div className="flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar">
+                  <button
+                    onClick={() => setWatchingTypeFilter("all")}
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+                      watchingTypeFilter === "all"
+                        ? "bg-purple-500/20 text-purple-200 border border-purple-500/40 shadow-sm shadow-purple-500/10"
+                        : "text-stone-400 hover:text-stone-200 bg-white/5 border border-white/5 hover:bg-white/10"
+                    }`}
+                  >
+                    <Play className="w-3 h-3 fill-current" />
+                    <span>All In Progress ({watching.length})</span>
+                  </button>
 
-                <button
-                  onClick={() => setWatchingTypeFilter("tv")}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
-                    watchingTypeFilter === "tv"
-                      ? "bg-purple-500/20 text-purple-200 border border-purple-500/40 shadow-sm shadow-purple-500/10"
-                      : "text-stone-400 hover:text-stone-200 bg-white/5 border border-white/5 hover:bg-white/10"
-                  }`}
-                >
-                  <Tv className="w-3 h-3" />
-                  <span>TV Series ({watchingSeries.length})</span>
-                </button>
+                  <button
+                    onClick={() => setWatchingTypeFilter("tv")}
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+                      watchingTypeFilter === "tv"
+                        ? "bg-purple-500/20 text-purple-200 border border-purple-500/40 shadow-sm shadow-purple-500/10"
+                        : "text-stone-400 hover:text-stone-200 bg-white/5 border border-white/5 hover:bg-white/10"
+                    }`}
+                  >
+                    <Tv className="w-3 h-3" />
+                    <span>TV Series ({watchingSeries.length})</span>
+                  </button>
 
-                <button
-                  onClick={() => setWatchingTypeFilter("movie")}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
-                    watchingTypeFilter === "movie"
-                      ? "bg-purple-500/20 text-purple-200 border border-purple-500/40 shadow-sm shadow-purple-500/10"
-                      : "text-stone-400 hover:text-stone-200 bg-white/5 border border-white/5 hover:bg-white/10"
-                  }`}
-                >
-                  <FilmIcon className="w-3 h-3" />
-                  <span>Movies ({watchingMovies.length})</span>
-                </button>
+                  <button
+                    onClick={() => setWatchingTypeFilter("movie")}
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+                      watchingTypeFilter === "movie"
+                        ? "bg-purple-500/20 text-purple-200 border border-purple-500/40 shadow-sm shadow-purple-500/10"
+                        : "text-stone-400 hover:text-stone-200 bg-white/5 border border-white/5 hover:bg-white/10"
+                    }`}
+                  >
+                    <FilmIcon className="w-3 h-3" />
+                    <span>Movies ({watchingMovies.length})</span>
+                  </button>
+
+                  <button
+                    onClick={() => setActiveNav("genres")}
+                    className="px-3 py-1.5 rounded-xl text-xs font-semibold text-purple-300 hover:text-white bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/25 transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ml-auto"
+                    title="View all titles grouped by genre"
+                  >
+                    <Tags className="w-3.5 h-3.5 text-purple-400" />
+                    <span>View All via Genre &rarr;</span>
+                  </button>
+                </div>
+
+                {/* Genre Quick Filter row for Watching shelf */}
+                {watchingGenres.length > 0 && (
+                  <div className="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar">
+                    <span className="text-[11px] font-semibold text-purple-400/80 uppercase tracking-wider flex items-center gap-1 shrink-0 mr-1">
+                      <Tags className="w-3 h-3" />
+                      Genre:
+                    </span>
+                    <button
+                      onClick={() => setWatchingGenreFilter("all")}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all shrink-0 cursor-pointer ${
+                        watchingGenreFilter === "all"
+                          ? "bg-purple-600 text-white font-semibold shadow-sm"
+                          : "text-stone-400 hover:text-stone-200 bg-white/5 hover:bg-white/10"
+                      }`}
+                    >
+                      All
+                    </button>
+                    {watchingGenres.map(({ genre, count }) => (
+                      <button
+                        key={genre}
+                        onClick={() => setWatchingGenreFilter(watchingGenreFilter === genre ? "all" : genre)}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all shrink-0 cursor-pointer ${
+                          watchingGenreFilter === genre
+                            ? "bg-purple-600 text-white font-semibold shadow-sm"
+                            : "text-stone-400 hover:text-stone-200 bg-white/5 hover:bg-white/10"
+                        }`}
+                      >
+                        {genre} ({count})
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -948,7 +1105,210 @@ export default function Dashboard() {
         </main>
       )}
 
-      {/* ── View 6: WATCH ANALYTICS (From Burger Bar) ────────────── */}
+      {/* ── View 6: BROWSE BY GENRE (From Burger Bar) ──────────────── */}
+      {activeNav === "genres" && (
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+          <TopReturnBanner
+            title="Browse by Genre"
+            subtitle={`Explore ${entries.length} titles across ${allGenres.length} genres with watch time tracking`}
+            icon={<Tags className="w-4 h-4 text-purple-400" />}
+            watchingCount={watching.length}
+            onBackToWatching={() => setActiveNav("watching")}
+            onOpenMenu={() => setIsBurgerMenuOpen(true)}
+          />
+
+          {/* Genre Runtime Stats Banner */}
+          <div className="glass-card p-5 rounded-2xl border border-purple-500/20 bg-gradient-to-r from-purple-900/20 via-[#5c0f92]/20 to-purple-950/30">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Tags className="w-4 h-4 text-purple-400" />
+                  <span className="text-xs uppercase tracking-wider font-semibold text-purple-400 font-mono">
+                    {selectedGenre === "all" ? "All Genres Combined" : `${selectedGenre} Overview`}
+                  </span>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold text-white mt-1">
+                  {selectedGenre === "all" ? "Total Watch Time" : `${selectedGenre} Watch Time`}
+                </h3>
+              </div>
+
+              {/* Stats Grid: Overall in Days & Hours, Series in Hours, Movies in Hours */}
+              <div className="grid grid-cols-3 gap-3 sm:gap-4">
+                <div className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20">
+                  <p className="text-[10px] text-stone-400 font-medium uppercase tracking-wider">Overall Time</p>
+                  <p className="text-sm sm:text-base font-bold text-purple-300 font-mono mt-0.5">
+                    {formatDaysAndHours(selectedGenreStats.totalMins)}
+                  </p>
+                  <span className="text-[9px] text-purple-400/80">days &amp; hours</span>
+                </div>
+                <div className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20">
+                  <p className="text-[10px] text-stone-400 font-medium uppercase tracking-wider">Series Time</p>
+                  <p className="text-sm sm:text-base font-bold text-purple-300 font-mono mt-0.5">
+                    {formatHours(selectedGenreStats.seriesMins)}
+                  </p>
+                  <span className="text-[9px] text-purple-400/80">in hours</span>
+                </div>
+                <div className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20">
+                  <p className="text-[10px] text-stone-400 font-medium uppercase tracking-wider">Movie Time</p>
+                  <p className="text-sm sm:text-base font-bold text-purple-300 font-mono mt-0.5">
+                    {formatHours(selectedGenreStats.movieMins)}
+                  </p>
+                  <span className="text-[9px] text-purple-400/80">in hours</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Genre Selection Filter Bar */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-stone-400 uppercase tracking-wider flex items-center gap-1.5">
+                <SlidersHorizontal className="w-3.5 h-3.5 text-purple-400" />
+                Select Genre ({allGenres.length})
+              </span>
+              {selectedGenre !== "all" && (
+                <button
+                  onClick={() => setSelectedGenre("all")}
+                  className="text-xs text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1 font-medium cursor-pointer"
+                >
+                  <RotateCcw className="w-3 h-3" /> Reset to All
+                </button>
+              )}
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setSelectedGenre("all")}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  selectedGenre === "all"
+                    ? "bg-purple-600 text-white shadow-md shadow-purple-500/25 border border-purple-400/30 scale-105"
+                    : "bg-stone-800/80 text-stone-400 hover:text-stone-200 hover:bg-stone-700/60 border border-white/5"
+                }`}
+              >
+                <span>All Genres</span>
+                <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-black/30 font-mono">
+                  {entries.length}
+                </span>
+              </button>
+
+              {allGenres.map(({ genre, count }) => (
+                <button
+                  key={genre}
+                  onClick={() => setSelectedGenre(genre)}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    selectedGenre === genre
+                      ? "bg-purple-600 text-white shadow-md shadow-purple-500/25 border border-purple-400/30 scale-105"
+                      : "bg-stone-800/80 text-stone-400 hover:text-stone-200 hover:bg-stone-700/60 border border-white/5"
+                  }`}
+                >
+                  <span>{genre}</span>
+                  <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-black/30 font-mono">
+                    {count}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Shelf Sub-Filter (All, Watching, To Watch, Watched) */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-purple-500/10">
+            <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-stone-900/60 border border-white/10">
+              <button
+                onClick={() => setGenreShelfFilter("all")}
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                  genreShelfFilter === "all"
+                    ? "bg-purple-500/30 text-purple-200 border border-purple-500/40"
+                    : "text-stone-400 hover:text-stone-200"
+                }`}
+              >
+                All Shelves ({genreFilteredEntries.length})
+              </button>
+              <button
+                onClick={() => setGenreShelfFilter("watching")}
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer flex items-center gap-1 ${
+                  genreShelfFilter === "watching"
+                    ? "bg-purple-500/30 text-purple-200 border border-purple-500/40"
+                    : "text-stone-400 hover:text-stone-200"
+                }`}
+              >
+                <Play className="w-3 h-3 fill-current text-purple-400" />
+                Watching ({genreFilteredEntries.filter((e) => e.shelf === "watching").length})
+              </button>
+              <button
+                onClick={() => setGenreShelfFilter("toWatch")}
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer flex items-center gap-1 ${
+                  genreShelfFilter === "toWatch"
+                    ? "bg-purple-500/30 text-purple-200 border border-purple-500/40"
+                    : "text-stone-400 hover:text-stone-200"
+                }`}
+              >
+                <BookmarkPlus className="w-3 h-3 text-blue-400" />
+                To Watch ({genreFilteredEntries.filter((e) => e.shelf === "toWatch").length})
+              </button>
+              <button
+                onClick={() => setGenreShelfFilter("watched")}
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer flex items-center gap-1 ${
+                  genreShelfFilter === "watched"
+                    ? "bg-purple-500/30 text-purple-200 border border-purple-500/40"
+                    : "text-stone-400 hover:text-stone-200"
+                }`}
+              >
+                <Award className="w-3 h-3 text-emerald-400" />
+                Watched ({genreFilteredEntries.filter((e) => e.shelf === "watched").length})
+              </button>
+            </div>
+
+            <span className="text-xs text-stone-500 font-mono">
+              Showing {displayedGenreEntries.length} {displayedGenreEntries.length === 1 ? "title" : "titles"}
+            </span>
+          </div>
+
+          {/* Titles Grid or Empty State */}
+          {displayedGenreEntries.length > 0 ? (
+            <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+              {displayedGenreEntries.map((entry, idx) => (
+                <PosterCard
+                  key={entry.id}
+                  entry={entry}
+                  index={idx}
+                  showShelfBadge
+                  showRating={entry.shelf === "watched"}
+                  onClick={() => setSelectedDetailEntry(entry)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16 glass-card rounded-2xl border border-purple-500/10">
+              <Tags className="w-12 h-12 text-purple-400/40 mx-auto mb-3" />
+              <h3 className="text-base font-semibold text-stone-300">
+                No titles found in {selectedGenre === "all" ? "this filter" : `"${selectedGenre}"`}
+              </h3>
+              <p className="text-xs text-stone-500 mt-1 max-w-sm mx-auto">
+                Try switching the shelf filter or selecting another genre from the pills above.
+              </p>
+              <div className="mt-4 flex items-center justify-center gap-2">
+                <button
+                  onClick={() => {
+                    setSelectedGenre("all");
+                    setGenreShelfFilter("all");
+                  }}
+                  className="px-4 py-2 bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs font-medium rounded-xl transition-colors cursor-pointer"
+                >
+                  Reset Filters
+                </button>
+                <button
+                  onClick={() => setIsSearchOpen(true)}
+                  className="px-4 py-2 bg-gradient-to-r from-purple-600 to-[#5c0f92] hover:from-purple-500 hover:to-[#791bbd] text-white text-xs font-medium rounded-xl transition-all shadow-md shadow-purple-500/20 cursor-pointer"
+                >
+                  Add Title
+                </button>
+              </div>
+            </div>
+          )}
+        </main>
+      )}
+
+      {/* ── View 7: WATCH ANALYTICS (From Burger Bar) ────────────── */}
       {activeNav === "stats" && (
         <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
           <TopReturnBanner
@@ -969,7 +1329,7 @@ export default function Dashboard() {
           <TopReturnBanner
             title="My Journey"
             subtitle="A timeline of the stories experienced across the years"
-            icon={<Map className="w-4 h-4 text-emerald-400" />}
+            icon={<MapIcon className="w-4 h-4 text-emerald-400" />}
             watchingCount={watching.length}
             onBackToWatching={() => setActiveNav("watching")}
             onOpenMenu={() => setIsBurgerMenuOpen(true)}
@@ -1002,7 +1362,7 @@ export default function Dashboard() {
             </div>
           ) : (
             <EmptySection
-              icon={<Map className="w-10 h-10 text-purple-500/40" />}
+              icon={<MapIcon className="w-10 h-10 text-purple-500/40" />}
               title="No journey entries yet"
               subtitle="Mark movies and series as watched to populate your journey timeline."
               onAdd={() => setIsSearchOpen(true)}
@@ -1142,11 +1502,13 @@ function PosterCard({
   entry,
   index,
   showRating = false,
+  showShelfBadge = false,
   onClick,
 }: {
   entry: MovieEntry;
   index: number;
   showRating?: boolean;
+  showShelfBadge?: boolean;
   onClick?: () => void;
 }) {
   const isTV = entry.tmdb.mediaType === "tv";
@@ -1177,6 +1539,23 @@ function PosterCard({
           </span>
         </div>
 
+        {/* Optional Shelf badge */}
+        {showShelfBadge && (
+          <div className="absolute top-1.5 right-1.5 z-10">
+            <span
+              className={`px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider backdrop-blur-sm border shadow-sm ${
+                entry.shelf === "watching"
+                  ? "bg-purple-600/90 text-white border-purple-400/40"
+                  : entry.shelf === "toWatch"
+                  ? "bg-blue-600/90 text-white border-blue-400/40"
+                  : "bg-emerald-600/90 text-white border-emerald-400/40"
+              }`}
+            >
+              {entry.shelf === "watching" ? "Watching" : entry.shelf === "toWatch" ? "To Watch" : "Watched"}
+            </span>
+          </div>
+        )}
+
         {/* Hover overlay with click prompt */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-2">
           <span className="text-[10px] text-purple-300 font-medium">Click for details</span>
@@ -1187,9 +1566,15 @@ function PosterCard({
           {entry.tmdb.title}
         </p>
         <div className="flex items-center justify-between mt-0.5">
-          <span className="text-[10px] text-stone-500">
-            {entry.tmdb.releaseYear}
-          </span>
+          <div className="flex items-center gap-1.5 text-[10px] text-stone-500">
+            <span>{entry.tmdb.releaseYear}</span>
+            {entry.tmdb.runtime ? (
+              <>
+                <span>•</span>
+                <span className="text-purple-400/90 font-mono text-[9px]">{formatHours(entry.tmdb.runtime)}</span>
+              </>
+            ) : null}
+          </div>
           {showRating && entry.review?.rating ? (
             <span className="flex items-center gap-0.5 text-[10px] text-purple-400 font-semibold">
               <Star className="w-2.5 h-2.5 fill-purple-400" />
