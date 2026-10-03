@@ -306,6 +306,15 @@ export default function SearchModal({
                             + Watching
                           </button>
                         )}
+                        {defaultShelf !== "watched" && (
+                          <button
+                            onClick={() => handleAddMovie(movie, "watched")}
+                            disabled={addingId === movie.tmdbId}
+                            className="text-xs text-zinc-500 hover:text-amber-300 px-2.5 py-1 rounded-lg hover:bg-amber-500/10 transition-all"
+                          >
+                            + Watched
+                          </button>
+                        )}
                       </>
                     )}
                   </div>
