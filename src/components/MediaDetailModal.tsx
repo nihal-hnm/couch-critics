@@ -49,11 +49,14 @@ interface MediaDetailModalProps {
 }
 
 export default function MediaDetailModal({
-  entry,
+  entry: initialEntry,
   isOpen,
   onClose,
 }: MediaDetailModalProps) {
-  const { moveToShelf, updateProgress, updateReview, removeEntry } = useJournal();
+  const { entries, moveToShelf, updateProgress, updateReview, removeEntry } = useJournal();
+
+  // Always resolve the live, real-time entry from context so every interaction updates immediately
+  const entry = (initialEntry ? entries.find((e) => e.id === initialEntry.id) : null) ?? initialEntry;
 
   // Local state for edits
   const [activeTab, setActiveTab] = useState<"overview" | "episodes" | "review">("overview");

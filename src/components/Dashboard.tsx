@@ -933,7 +933,7 @@ export default function Dashboard() {
 
       {/* ── Media Detail Modal (makes all cards interactive) ── */}
       <MediaDetailModal
-        entry={selectedDetailEntry}
+        entry={selectedDetailEntry ? entries.find((e) => e.id === selectedDetailEntry.id) ?? selectedDetailEntry : null}
         isOpen={!!selectedDetailEntry}
         onClose={() => setSelectedDetailEntry(null)}
       />

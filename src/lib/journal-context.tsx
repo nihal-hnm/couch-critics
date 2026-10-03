@@ -121,10 +121,19 @@ interface JournalState {
   isLoaded: boolean;
 }
 
-const initialState: JournalState = {
-  entries: [],
-  isLoaded: false,
-};
+function getInitialJournalState(): JournalState {
+  if (typeof window !== "undefined") {
+    try {
+      const stored = getEntries();
+      if (stored && stored.length > 0) {
+        return { entries: stored, isLoaded: true };
+      }
+    } catch {
+      // ignore SSR or storage errors
+    }
+  }
+  return { entries: [], isLoaded: false };
+}
 
 // ─── Reducer ────────────────────────────────────────────────────────────────
 
@@ -208,7 +217,7 @@ const JournalContext = createContext<JournalContextValue | null>(null);
 // ─── Provider Component ─────────────────────────────────────────────────────
 
 export function JournalProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(journalReducer, initialState);
+  const [state, dispatch] = useReducer(journalReducer, undefined, getInitialJournalState);
   const { user, session, isLoading: authLoading } = useAuth();
 
   const isAuthenticated = !!user && !!session;
@@ -224,11 +233,49 @@ export function JournalProvider({ children }: { children: ReactNode }) {
       apiClient
         .get<ApiEntry[]>("/api/entries")
         .then((data) => {
-          const entries = data.map(apiEntryToMovieEntry);
+          const serverEntries = data.map(apiEntryToMovieEntry);
           const localEntries = getEntries();
-          // If server has data, use it; otherwise fallback to local entries
-          const resolved = entries.length > 0 ? entries : localEntries;
-          dispatch({ type: "ENTRIES_LOADED", payload: resolved });
+
+          if (serverEntries.length === 0) {
+            dispatch({ type: "ENTRIES_LOADED", payload: localEntries });
+            return;
+          }
+
+          // Deep merge server entries with local entries so we never lose
+          // granular watchedEpisodes, seasons, episodeHistory, or rich TMDB data
+          const localById = new Map(localEntries.map((e) => [e.id, e]));
+          const localByTmdb = new Map(localEntries.map((e) => [e.tmdb?.tmdbId, e]));
+
+          const resolved = serverEntries.map((serverEntry) => {
+            const local = localById.get(serverEntry.id) || localByTmdb.get(serverEntry.tmdb?.tmdbId);
+            if (!local) return serverEntry;
+            return {
+              ...serverEntry,
+              tmdb: {
+                ...serverEntry.tmdb,
+                seasons: local.tmdb?.seasons ?? serverEntry.tmdb?.seasons,
+                backdropUrl: local.tmdb?.backdropUrl ?? serverEntry.tmdb?.backdropUrl,
+                director: local.tmdb?.director || serverEntry.tmdb?.director,
+                overview: serverEntry.tmdb?.overview || local.tmdb?.overview,
+                totalEpisodes: local.tmdb?.totalEpisodes ?? serverEntry.tmdb?.totalEpisodes,
+              },
+              progress: {
+                ...local.progress,
+                ...serverEntry.progress,
+                watchedEpisodes: local.progress?.watchedEpisodes ?? serverEntry.progress?.watchedEpisodes ?? [],
+                currentSeason: local.progress?.currentSeason ?? serverEntry.progress?.currentSeason,
+                episodeHistory: local.progress?.episodeHistory ?? serverEntry.progress?.episodeHistory,
+              },
+              review: serverEntry.review || local.review,
+            };
+          });
+
+          // Also include any local-only entries that haven't synced yet
+          const serverTmdbIds = new Set(serverEntries.map((e) => e.tmdb.tmdbId));
+          const localOnly = localEntries.filter((l) => !serverTmdbIds.has(l.tmdb.tmdbId) && !localById.has(l.id));
+          const combined = [...resolved, ...localOnly];
+
+          dispatch({ type: "ENTRIES_LOADED", payload: combined });
         })
         .catch((err) => {
           console.warn("Entries API unavailable, falling back to local storage:", err);

@@ -171,7 +171,9 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
           const progress = entry.progress;
           const isMovie = entry.tmdb.mediaType === "movie";
           const watchedEpisodesList = progress?.watchedEpisodes ?? [];
-          const watchedEpisodesCount = watchedEpisodesList.length || (progress?.currentEpisode ?? 1);
+          const watchedEpisodesCount = progress?.watchedEpisodes !== undefined
+            ? watchedEpisodesList.length
+            : (progress?.currentEpisode ?? 0);
           const totalEpisodesCount = progress?.totalEpisodes ?? entry.tmdb.totalEpisodes ?? 10;
 
           const progressPercent = isMovie
@@ -547,7 +549,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
 
       {/* Media Detail Modal */}
       <MediaDetailModal
-        entry={selectedEntry}
+        entry={selectedEntry ? entries.find((e) => e.id === selectedEntry.id) ?? selectedEntry : null}
         isOpen={!!selectedEntry}
         onClose={() => setSelectedEntry(null)}
       />

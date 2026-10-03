@@ -569,7 +569,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
 
       {/* Media Detail Modal */}
       <MediaDetailModal
-        entry={selectedDetailEntry}
+        entry={selectedDetailEntry ? entries.find((e) => e.id === selectedDetailEntry.id) ?? selectedDetailEntry : null}
         isOpen={!!selectedDetailEntry}
         onClose={() => setSelectedDetailEntry(null)}
       />

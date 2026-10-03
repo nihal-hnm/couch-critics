@@ -365,7 +365,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
 
       {/* Media Detail Modal */}
       <MediaDetailModal
-        entry={selectedEntry}
+        entry={selectedEntry ? entries.find((e) => e.id === selectedEntry.id) ?? selectedEntry : null}
         isOpen={!!selectedEntry}
         onClose={() => setSelectedEntry(null)}
       />
