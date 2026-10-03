@@ -64,17 +64,20 @@ app.use("/api", authMiddleware, apiRouter);
 
 app.use(errorHandler);
 
-// ─── Start Server ───────────────────────────────────────────────────────────
+// ─── Start Server (local dev only — Vercel uses the default export) ─────────
 
-app.listen(env.PORT, () => {
-  console.log(`
+if (!process.env["VERCEL"]) {
+  app.listen(env.PORT, () => {
+    console.log(`
   ╔══════════════════════════════════════════════════════╗
   ║   🎬  Cinema Journal API                            ║
   ║   Port:  ${String(env.PORT).padEnd(42)}║
   ║   Env:   ${env.NODE_ENV.padEnd(42)}║
   ║   CORS:  ${env.CORS_ORIGINS.join(", ").padEnd(42)}║
   ╚══════════════════════════════════════════════════════╝
-  `);
-});
+    `);
+  });
+}
 
 export default app;
+
