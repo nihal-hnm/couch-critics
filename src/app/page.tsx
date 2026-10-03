@@ -21,6 +21,10 @@
 
 import Dashboard from "@/components/Dashboard";
 
+// Ensure page is always dynamically rendered so deployments & refreshes are immediate
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default function HomePage() {
   return <Dashboard />;
 }

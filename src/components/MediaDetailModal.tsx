@@ -56,7 +56,14 @@ export default function MediaDetailModal({
   const { entries, moveToShelf, updateProgress, updateReview, removeEntry } = useJournal();
 
   // Always resolve the live, real-time entry from context so every interaction updates immediately
-  const entry = (initialEntry ? entries.find((e) => e.id === initialEntry.id) : null) ?? initialEntry;
+  const entry =
+    (initialEntry
+      ? entries.find(
+          (e) =>
+            e.id === initialEntry.id ||
+            (Boolean(e.tmdb?.tmdbId) && e.tmdb.tmdbId === initialEntry.tmdb?.tmdbId)
+        )
+      : null) ?? initialEntry;
 
   // Local state for edits
   const [activeTab, setActiveTab] = useState<"overview" | "episodes" | "review">("overview");

@@ -310,11 +310,29 @@ export function JournalProvider({ children }: { children: ReactNode }) {
         apiClient
           .post<ApiEntry>("/api/entries", movieEntryToApiPayload(entry))
           .then((created) => {
-            // Replace the optimistic entry with the server-generated one
+            // Replace the optimistic entry with the server-generated one,
+            // but preserve rich TMDB metadata (seasons, backdrop) and watched episodes!
+            const converted = apiEntryToMovieEntry(created);
+            const preserved: MovieEntry = {
+              ...entry,
+              id: created.id,
+              tmdb: {
+                ...entry.tmdb,
+                ...converted.tmdb,
+                seasons: entry.tmdb.seasons,
+                backdropUrl: entry.tmdb.backdropUrl,
+              },
+              progress: {
+                ...entry.progress,
+                ...converted.progress,
+                watchedEpisodes: entry.progress?.watchedEpisodes ?? [],
+                currentSeason: entry.progress?.currentSeason ?? 1,
+              },
+            };
             dispatch({ type: "ENTRY_REMOVED", payload: entry.id });
             dispatch({
               type: "ENTRY_ADDED",
-              payload: apiEntryToMovieEntry(created),
+              payload: preserved,
             });
           })
           .catch((err) => {
