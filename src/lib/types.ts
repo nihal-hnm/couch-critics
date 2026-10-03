@@ -24,45 +24,85 @@
  * Represents the raw movie/show data fetched from TMDB.
  * We store a snapshot of this so the app works offline after the first fetch.
  */
+export interface EpisodeItem {
+  seasonNumber: number;
+  episodeNumber: number;
+  title: string;
+  runtime?: number;
+  overview?: string;
+  airDate?: string;
+}
+
+export interface TMDBSeasonData {
+  seasonNumber: number;
+  name: string;
+  episodeCount: number;
+  posterUrl?: string | null;
+  overview?: string;
+  episodes?: EpisodeItem[];
+}
+
 export interface TMDBMovieData {
   /** TMDB's unique identifier — useful as a deduplication key */
   tmdbId: number;
   title: string;
   /** Full URL to the poster image, or null if TMDB has no poster */
   posterUrl: string | null;
+  /** Backdrop URL for banner views */
+  backdropUrl?: string | null;
   /** e.g. "2024" — extracted from release_date for cleaner display */
   releaseYear: string;
-  /** Runtime in minutes (0 if unknown). Used by the "Pick for Tonight" filter */
+  /** Runtime in minutes (for TV, average episode runtime) */
   runtime: number;
   /** Array of genre names like ["Action", "Sci-Fi"] */
   genres: string[];
-  /** Director name(s). TMDB stores this in credits, not in the main response */
+  /** Director name(s) or TV creators */
   director: string;
   /** Brief plot summary */
   overview: string;
-  /** "movie" or "tv" — we might want to handle these differently later */
+  /** "movie" or "tv" */
   mediaType: "movie" | "tv";
+  /** Total episodes across all seasons (for TV shows) */
+  totalEpisodes?: number;
+  /** Total seasons (for TV shows) */
+  totalSeasons?: number;
+  /** Season information with episode counts */
+  seasons?: TMDBSeasonData[];
 }
 
 // ─── User-Generated Data (personal review/progress) ─────────────────────────
 
 /**
  * Which "shelf" (category) a movie lives on.
- * Using a string union instead of an enum because:
- *  1. Enums generate extra JS code; unions are zero-cost at runtime.
- *  2. They serialize to/from JSON naturally (important for localStorage).
  */
 export type Shelf = "watching" | "toWatch" | "watched";
 
+export interface EpisodeLogItem {
+  id: string;
+  seasonNumber: number;
+  episodeNumber: number;
+  episodeTitle?: string;
+  runtimeMinutes?: number;
+  watchedAt: string;
+}
+
 /**
  * Progress tracking for items on the "Watching" shelf.
- * Supports both movies (timestamp) and TV shows (episode count).
+ * Supports both movies (timestamp) and TV shows (granular episode-wise tracking).
  */
 export interface WatchProgress {
-  /** Which episode the user is on (for TV shows) */
+  /** Current season number the user is watching (e.g. 1, 2) */
+  currentSeason?: number;
+  /** Total seasons in this series */
+  totalSeasons?: number;
+  /** Which episode number the user is on (for TV shows) */
   currentEpisode?: number;
   /** Total episodes (for TV shows) */
   totalEpisodes?: number;
+  /** Array of watched episode keys, formatted as "S{season}E{episode}" e.g. ["S1E1", "S1E2"] */
+  watchedEpisodes?: string[];
+  /** Detailed log of episode watches with timestamps */
+  episodeHistory?: EpisodeLogItem[];
   /** How many minutes in the user has watched (for movies) */
   minutesWatched?: number;
   /** Total runtime in minutes (for movies) */
@@ -85,39 +125,26 @@ export interface UserReview {
 
 // ─── The Main Entry (combines TMDB data + user data) ────────────────────────
 
-/**
- * A single movie/show entry in the user's journal.
- *
- * WHY ONE INTERFACE INSTEAD OF THREE?
- * ───────────────────────────────────
- * A "Watching" entry might later move to "Watched" — if we used separate
- * types, we'd need to delete from one array and reconstruct in another.
- * With a single type + `shelf` discriminator, we just update the shelf field
- * and optionally attach a review. This is the "state machine" pattern.
- */
 export interface MovieEntry {
-  /**
-   * Client-generated unique ID (crypto.randomUUID()).
-   * When you move to Supabase, this becomes the primary key (UUID type).
-   */
+  /** Client-generated unique ID */
   id: string;
 
-  /** Which shelf this entry is on — the core discriminator */
+  /** Which shelf this entry is on */
   shelf: Shelf;
 
   /** Snapshot of TMDB data at the time of adding */
   tmdb: TMDBMovieData;
 
-  /** Only meaningful when shelf === "watching" */
+  /** Progress details (watching shelf or TV episode tracker) */
   progress?: WatchProgress;
 
-  /** Only meaningful when shelf === "watched" */
+  /** Personal review (watched shelf) */
   review?: UserReview;
 
   /** ISO timestamp of when the user added this to their journal */
   addedAt: string;
 
-  /** ISO timestamp of the last update (shelf move, progress change, etc.) */
+  /** ISO timestamp of the last update */
   updatedAt: string;
 }
 

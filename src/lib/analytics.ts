@@ -45,14 +45,41 @@ export interface GenreBreakdown {
   episodeCount: number;
 }
 
+export interface TVShowEpisodeStats {
+  id: string;
+  title: string;
+  posterUrl: string | null;
+  episodesWatched: number;
+  totalEpisodes: number;
+  currentSeason?: number;
+  currentEpisode?: number;
+  percentComplete: number;
+  totalHours: number;
+  genres: string[];
+  watchedEpisodeCodes: string[];
+  lastUpdated: string;
+  shelf: string;
+}
+
+export interface EpisodeActivityLog {
+  id: string;
+  showTitle: string;
+  seasonNumber: number;
+  episodeNumber: number;
+  episodeTitle?: string;
+  runtimeMinutes?: number;
+  watchedAt: string;
+  posterUrl: string | null;
+}
+
 export interface AnalyticsData {
   /** Total hours (as decimal) of watched content */
   totalHoursWatched: number;
   /** Total watch time in raw minutes */
   totalWatchTimeMins: number;
-  /** Total episodes watched (sum of currentEpisode for TV shows on watched/watching shelf) */
+  /** Total episodes watched (sum of currentEpisode / watchedEpisodes for TV shows) */
   totalEpisodesWatched: number;
-  /** Count of completed movies (shelf === "watched" && mediaType === "movie") */
+  /** Count of completed movies */
   totalMoviesLogged: number;
   /** Count of completed TV shows */
   totalShowsLogged: number;
@@ -62,7 +89,11 @@ export interface AnalyticsData {
   averageRating: number;
   /** Genre breakdown sorted by count descending */
   genreBreakdown: GenreBreakdown[];
-  /** The filtered entries themselves (for rendering the watch history grid) */
+  /** Detailed episode-wise statistics for every TV series */
+  tvShowsProgress: TVShowEpisodeStats[];
+  /** Granular chronological log of episodes watched */
+  recentEpisodeLogs: EpisodeActivityLog[];
+  /** The filtered entries themselves */
   filteredEntries: MovieEntry[];
 }
 
@@ -212,6 +243,66 @@ export function computeAnalytics(entries: MovieEntry[]): AnalyticsData {
     }))
     .sort((a, b) => b.count - a.count);
 
+  // ── Build TV Shows episode-wise progress ────────────────────────────
+  const tvShowsProgress: TVShowEpisodeStats[] = entries
+    .filter((e) => e.tmdb.mediaType === "tv")
+    .map((e) => {
+      const watchedCount =
+        e.progress?.watchedEpisodes && e.progress.watchedEpisodes.length > 0
+          ? e.progress.watchedEpisodes.length
+          : e.shelf === "watched"
+          ? e.progress?.totalEpisodes || e.tmdb.totalEpisodes || 10
+          : e.progress?.currentEpisode ?? 0;
+
+      const total =
+        e.progress?.totalEpisodes ||
+        e.tmdb.totalEpisodes ||
+        (e.shelf === "watched" ? Math.max(watchedCount, 10) : 10);
+
+      const percent = total > 0 ? Math.min(100, Math.round((watchedCount / total) * 100)) : 0;
+      const episodeRuntime = e.tmdb.runtime || 45;
+      const hours = Math.round(((watchedCount * episodeRuntime) / 60) * 10) / 10;
+
+      return {
+        id: e.id,
+        title: e.tmdb.title,
+        posterUrl: e.tmdb.posterUrl,
+        episodesWatched: watchedCount,
+        totalEpisodes: total,
+        currentSeason: e.progress?.currentSeason,
+        currentEpisode: e.progress?.currentEpisode,
+        percentComplete: percent,
+        totalHours: hours,
+        genres: e.tmdb.genres,
+        watchedEpisodeCodes: e.progress?.watchedEpisodes || [],
+        lastUpdated: e.updatedAt || e.addedAt,
+        shelf: e.shelf,
+      };
+    })
+    .sort((a, b) => b.episodesWatched - a.episodesWatched);
+
+  // ── Build Recent Episode Activity Log ────────────────────────────────
+  const recentEpisodeLogs: EpisodeActivityLog[] = [];
+  for (const entry of entries) {
+    if (entry.tmdb.mediaType === "tv" && entry.progress?.episodeHistory) {
+      for (const log of entry.progress.episodeHistory) {
+        recentEpisodeLogs.push({
+          id: log.id,
+          showTitle: entry.tmdb.title,
+          seasonNumber: log.seasonNumber,
+          episodeNumber: log.episodeNumber,
+          episodeTitle: log.episodeTitle,
+          runtimeMinutes: log.runtimeMinutes || entry.tmdb.runtime || 45,
+          watchedAt: log.watchedAt,
+          posterUrl: entry.tmdb.posterUrl,
+        });
+      }
+    }
+  }
+  recentEpisodeLogs.sort(
+    (a, b) => new Date(b.watchedAt).getTime() - new Date(a.watchedAt).getTime()
+  );
+
   return {
     totalHoursWatched: Math.round((totalWatchTimeMins / 60) * 10) / 10,
     totalWatchTimeMins,
@@ -224,6 +315,8 @@ export function computeAnalytics(entries: MovieEntry[]): AnalyticsData {
         ? Math.round((ratingSum / ratingCount) * 10) / 10
         : 0,
     genreBreakdown,
+    tvShowsProgress,
+    recentEpisodeLogs,
     filteredEntries: entries,
   };
 }

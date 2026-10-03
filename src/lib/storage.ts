@@ -19,37 +19,44 @@
  */
 
 import type { MovieEntry } from "./types";
+import { STARTER_ENTRIES } from "./starter-data";
 
-const STORAGE_KEY = "cinema-journal-entries";
+const STORAGE_KEY = "couch-critics-entries";
 
 /**
  * Load all movie entries from localStorage.
- * Returns an empty array if nothing is stored yet (first launch).
- *
- * NOTE: We wrap this in try/catch because:
- *  1. localStorage might be disabled (private browsing in some browsers)
- *  2. The stored data might be corrupted or from an old schema version
+ * If empty on first launch, seeds with rich starter entries (including episode data).
  */
 export function getEntries(): MovieEntry[] {
-  if (typeof window === "undefined") return []; // Server-side safety guard
+  if (typeof window === "undefined") return [];
 
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
+    if (!raw) {
+      // First launch — initialize with rich starter data
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(STARTER_ENTRIES));
+      return STARTER_ENTRIES;
+    }
 
     const parsed = JSON.parse(raw);
 
-    // Basic validation: make sure it's an array
-    if (!Array.isArray(parsed)) {
-      console.warn("Cinema Journal: Stored data is not an array. Resetting.");
-      return [];
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(STARTER_ENTRIES));
+      return STARTER_ENTRIES;
     }
 
     return parsed as MovieEntry[];
   } catch (error) {
-    console.error("Cinema Journal: Failed to load data from localStorage:", error);
-    return [];
+    console.error("Couch Critics: Failed to load data from localStorage:", error);
+    return STARTER_ENTRIES;
   }
+}
+
+/** Reset to initial starter sample data */
+export function resetToStarterData(): MovieEntry[] {
+  if (typeof window === "undefined") return STARTER_ENTRIES;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(STARTER_ENTRIES));
+  return STARTER_ENTRIES;
 }
 
 /**

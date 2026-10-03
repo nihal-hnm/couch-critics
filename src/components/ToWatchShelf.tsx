@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import type { MovieEntry } from "@/lib/types";
 import { useJournal } from "@/lib/journal-context";
+import MediaDetailModal from "./MediaDetailModal";
 
 interface ToWatchShelfProps {
   entries: MovieEntry[];
@@ -35,6 +36,7 @@ interface ToWatchShelfProps {
 
 export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
   const { moveToShelf, removeEntry } = useJournal();
+  const [selectedEntry, setSelectedEntry] = useState<MovieEntry | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [genreFilter, setGenreFilter] = useState<string>("");
   const [maxRuntime, setMaxRuntime] = useState<number>(0);
@@ -263,7 +265,8 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
         {filteredEntries.map((entry, index) => (
           <div
             key={entry.id}
-            className="group relative rounded-xl overflow-hidden border border-stone-800/40 poster-lift stagger-item"
+            onClick={() => setSelectedEntry(entry)}
+            className="group relative rounded-xl overflow-hidden border border-stone-800/40 poster-lift stagger-item cursor-pointer"
             style={{ animationDelay: `${index * 50}ms` }}
           >
             {/* Poster */}
@@ -271,7 +274,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
               <img
                 src={entry.tmdb.posterUrl}
                 alt={entry.tmdb.title}
-                className="w-full aspect-[2/3] object-cover"
+                className="w-full aspect-[2/3] object-cover group-hover:scale-105 transition-transform duration-300"
               />
             ) : (
               <div className="w-full aspect-[2/3] bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center">
@@ -289,7 +292,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
                 {entry.tmdb.runtime > 0 && ` · ${entry.tmdb.runtime}m`}
               </p>
 
-              <div className="flex gap-1.5 mt-2.5">
+              <div className="flex gap-1.5 mt-2.5" onClick={(e) => e.stopPropagation()}>
                 <button
                   onClick={() => moveToShelf(entry.id, "watching")}
                   className="flex-1 flex items-center justify-center gap-1 text-xs bg-amber-600/80 hover:bg-amber-500 text-white py-1.5 rounded-lg transition-colors"
@@ -359,6 +362,13 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
           </button>
         </div>
       )}
+
+      {/* Media Detail Modal */}
+      <MediaDetailModal
+        entry={selectedEntry}
+        isOpen={!!selectedEntry}
+        onClose={() => setSelectedEntry(null)}
+      />
     </div>
   );
 }

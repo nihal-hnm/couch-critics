@@ -35,9 +35,9 @@ const inter = Inter({
  * This is a server-only feature (can't use useState for metadata).
  */
 export const metadata: Metadata = {
-  title: "Cinema Journal — Your Personal Movie Portfolio",
+  title: "COUCH CRITICS — Personal Movie & TV Journal",
   description:
-    "Track what you're watching, curate your backlog, and keep a personal archive of every movie and show you experience. Powered by TMDB.",
+    "Track episodes, curate your backlog, and analyze your viewing metrics. Your personal movie and TV show journal.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

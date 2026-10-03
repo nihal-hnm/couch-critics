@@ -26,7 +26,7 @@ import {
   type ReactNode,
 } from "react";
 import type { MovieEntry, Shelf, UserReview, WatchProgress } from "./types";
-import { getEntries, saveEntries } from "./storage";
+import { getEntries, saveEntries, resetToStarterData } from "./storage";
 import { useAuth } from "./auth-context";
 import { apiClient, ApiClientError } from "./api-client";
 
@@ -200,6 +200,7 @@ interface JournalContextValue {
   moveToShelf: (id: string, shelf: Shelf, review?: UserReview) => void;
   updateProgress: (id: string, progress: WatchProgress) => void;
   updateReview: (id: string, review: UserReview) => void;
+  resetToDemoData: () => void;
 }
 
 const JournalContext = createContext<JournalContextValue | null>(null);
@@ -356,6 +357,11 @@ export function JournalProvider({ children }: { children: ReactNode }) {
     [isAuthenticated]
   );
 
+  const resetToDemoData = useCallback(() => {
+    const starter = resetToStarterData();
+    dispatch({ type: "ENTRIES_LOADED", payload: starter });
+  }, []);
+
   return (
     <JournalContext.Provider
       value={{
@@ -366,6 +372,7 @@ export function JournalProvider({ children }: { children: ReactNode }) {
         moveToShelf,
         updateProgress,
         updateReview,
+        resetToDemoData,
       }}
     >
       {children}

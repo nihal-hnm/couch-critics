@@ -44,6 +44,7 @@ import ToWatchShelf from "@/components/ToWatchShelf";
 import WatchedShelf from "@/components/WatchedShelf";
 import StatsDashboard from "@/components/StatsDashboard";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
+import MediaDetailModal from "@/components/MediaDetailModal";
 import { computeStats, formatWatchTime } from "@/lib/stats";
 
 type NavKey = "home" | "movies" | "series" | "stats" | "journey" | "favorites";
@@ -64,12 +65,13 @@ const NAV_ITEMS: NavDef[] = [
 ];
 
 export default function Dashboard() {
-  const { entries, isLoaded } = useJournal();
+  const { entries, isLoaded, resetToDemoData } = useJournal();
   const { user, signOut, isLoading: authLoading } = useAuth();
   const [activeNav, setActiveNav] = useState<NavKey>("home");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [selectedDetailEntry, setSelectedDetailEntry] = useState<MovieEntry | null>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -202,13 +204,25 @@ export default function Dashboard() {
                 <FilmIcon className="w-5 h-5 text-amber-400" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-white tracking-tight">
-                  My Cinema
+                <h1 className="text-lg font-bold text-white tracking-wider uppercase font-mono">
+                  COUCH CRITICS
                 </h1>
+                <p className="text-[10px] text-amber-400/80 font-medium tracking-widest uppercase">
+                  Personal Watch Journal
+                </p>
               </div>
             </div>
 
             <div className="flex items-center gap-3">
+              <button
+                onClick={() => resetToDemoData()}
+                className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass-card text-xs text-amber-300/80 hover:text-amber-200 hover:border-amber-500/30 transition-all"
+                title="Populate or reset demo media entries with episode data"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                Sample Data
+              </button>
+
               <button
                 onClick={() => setIsSearchOpen(true)}
                 className="p-2.5 rounded-xl glass-card text-stone-400 hover:text-white transition-colors"
@@ -241,6 +255,16 @@ export default function Dashboard() {
                     {isUserMenuOpen && (
                       <div className="user-menu-dropdown">
                         <div className="user-menu-email">{user.email}</div>
+                        <button
+                          onClick={() => {
+                            resetToDemoData();
+                            setIsUserMenuOpen(false);
+                          }}
+                          className="user-menu-item text-xs text-amber-300 hover:bg-amber-500/10"
+                        >
+                          <Sparkles className="w-4 h-4" />
+                          Reload Sample Data
+                        </button>
                         <button
                           onClick={handleSignOut}
                           className="user-menu-item danger"
@@ -299,25 +323,25 @@ export default function Dashboard() {
         {/* ── Hero Content ───────────────────────────────────── */}
         {activeNav === "home" && (
           <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-8 pb-10">
-            <p className="text-xs text-stone-500 uppercase tracking-widest mb-2">
+            <p className="text-xs text-amber-400/80 uppercase tracking-widest mb-2 font-medium">
               Welcome to
             </p>
-            <h2 className="text-4xl sm:text-5xl font-bold text-white text-glow mb-3">
-              My Cinema
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-white text-glow mb-3 tracking-tight">
+              COUCH CRITICS
             </h2>
-            <p className="text-stone-400 max-w-md text-sm leading-relaxed mb-6">
-              A collection of stories I&apos;ve lived through.
+            <p className="text-stone-300 max-w-md text-sm leading-relaxed mb-6">
+              Your personal cinema &amp; TV journal. Track episodes, rate films,
+              and uncover your viewing analytics.
               <br />
-              <span className="text-stone-500">
-                &ldquo;Every movie you watch, you are making part of
-                you.&rdquo;
+              <span className="text-stone-500 italic">
+                &ldquo;Every movie and show you log becomes part of your story.&rdquo;
               </span>
             </p>
 
             {entries.length > 0 && (
               <button
                 onClick={() => setActiveNav("journey")}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-amber-500/30 text-amber-200 text-sm hover:bg-amber-500/10 transition-all group"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-amber-500/30 text-amber-200 text-sm hover:bg-amber-500/10 transition-all group cursor-pointer"
               >
                 <Sparkles className="w-4 h-4 text-amber-400" />
                 Explore My Journey
@@ -325,48 +349,64 @@ export default function Dashboard() {
               </button>
             )}
 
-            {/* ── Stat Cards ─────────────────────────────────── */}
+            {/* ── Stat Cards (Interactive & Clickable) ─────────── */}
             {entries.length > 0 && (
               <div className="flex flex-wrap gap-4 mt-8">
-                <div className="hero-stat-card">
+                <div
+                  onClick={() => setActiveNav("movies")}
+                  className="hero-stat-card cursor-pointer hover:border-amber-500/40 hover:scale-[1.03] transition-all group"
+                  title="View all movies"
+                >
                   <div className="hero-stat-icon">
                     <FilmIcon className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-white">{movies.length}</p>
-                    <p className="text-xs text-stone-500">Movies</p>
+                    <p className="text-2xl font-bold text-white group-hover:text-amber-300 transition-colors">{movies.length}</p>
+                    <p className="text-xs text-stone-500">Movies &rarr;</p>
                   </div>
                 </div>
-                <div className="hero-stat-card">
+                <div
+                  onClick={() => setActiveNav("series")}
+                  className="hero-stat-card cursor-pointer hover:border-amber-500/40 hover:scale-[1.03] transition-all group"
+                  title="View all TV series"
+                >
                   <div className="hero-stat-icon">
                     <Tv className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-white">{series.length}</p>
-                    <p className="text-xs text-stone-500">Series</p>
+                    <p className="text-2xl font-bold text-white group-hover:text-amber-300 transition-colors">{series.length}</p>
+                    <p className="text-xs text-stone-500">Series &rarr;</p>
                   </div>
                 </div>
-                <div className="hero-stat-card">
+                <div
+                  onClick={() => setActiveNav("stats")}
+                  className="hero-stat-card cursor-pointer hover:border-amber-500/40 hover:scale-[1.03] transition-all group"
+                  title="View watch analytics"
+                >
                   <div className="hero-stat-icon">
                     <Clock className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-white">
+                    <p className="text-2xl font-bold text-white group-hover:text-amber-300 transition-colors">
                       {stats.totalWatchTimeMins.toLocaleString()}
                     </p>
-                    <p className="text-xs text-stone-500">Minutes Watched</p>
+                    <p className="text-xs text-stone-500">Minutes Watched &rarr;</p>
                   </div>
                 </div>
                 {stats.averageRating > 0 && (
-                  <div className="hero-stat-card">
+                  <div
+                    onClick={() => setActiveNav("stats")}
+                    className="hero-stat-card cursor-pointer hover:border-amber-500/40 hover:scale-[1.03] transition-all group"
+                    title="View rating statistics"
+                  >
                     <div className="hero-stat-icon star">
                       <Star className="w-5 h-5 fill-current" />
                     </div>
                     <div>
-                      <p className="text-2xl font-bold text-white">
+                      <p className="text-2xl font-bold text-white group-hover:text-amber-300 transition-colors">
                         {stats.averageRating.toFixed(1)}
                       </p>
-                      <p className="text-xs text-stone-500">Average Rating</p>
+                      <p className="text-xs text-stone-500">Average Rating &rarr;</p>
                     </div>
                   </div>
                 )}
@@ -405,7 +445,12 @@ export default function Dashboard() {
               </div>
               <div className="poster-scroll-row">
                 {[...watching, ...toWatch].slice(0, 8).map((entry, idx) => (
-                  <PosterCard key={entry.id} entry={entry} index={idx} />
+                  <PosterCard
+                    key={entry.id}
+                    entry={entry}
+                    index={idx}
+                    onClick={() => setSelectedDetailEntry(entry)}
+                  />
                 ))}
               </div>
             </section>
@@ -435,7 +480,13 @@ export default function Dashboard() {
               </div>
               <div className="poster-scroll-row">
                 {favorites.slice(0, 8).map((entry, idx) => (
-                  <PosterCard key={entry.id} entry={entry} index={idx} showRating />
+                  <PosterCard
+                    key={entry.id}
+                    entry={entry}
+                    index={idx}
+                    showRating
+                    onClick={() => setSelectedDetailEntry(entry)}
+                  />
                 ))}
               </div>
             </section>
@@ -465,16 +516,30 @@ export default function Dashboard() {
               </div>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {journeyYears.map(([year, yearEntries]) => (
-                  <div key={year} className="journey-year-card glass-card p-4">
+                  <div
+                    key={year}
+                    onClick={() => setActiveNav("journey")}
+                    className="journey-year-card glass-card p-4 cursor-pointer hover:border-amber-500/30 hover:scale-[1.02] transition-all group"
+                  >
                     <div className="flex items-center justify-between mb-3">
-                      <h4 className="text-2xl font-bold text-white">{year}</h4>
+                      <h4 className="text-2xl font-bold text-white group-hover:text-amber-300 transition-colors">
+                        {year}
+                      </h4>
                       <span className="text-xs text-stone-500">
-                        {yearEntries.length} titles
+                        {yearEntries.length} titles &rarr;
                       </span>
                     </div>
                     <div className="flex -space-x-2 overflow-hidden">
                       {yearEntries.slice(0, 5).map((entry) => (
-                        <div key={entry.id} className="journey-poster-thumb">
+                        <div
+                          key={entry.id}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedDetailEntry(entry);
+                          }}
+                          className="journey-poster-thumb hover:scale-110 hover:z-20 transition-transform cursor-pointer"
+                          title={`Click to view ${entry.tmdb.title}`}
+                        >
                           {entry.tmdb.posterUrl ? (
                             <img
                               src={entry.tmdb.posterUrl}
@@ -502,7 +567,7 @@ export default function Dashboard() {
             </section>
           )}
 
-          {/* My Statistics — quick overview */}
+          {/* Viewing Statistics — quick overview */}
           {entries.length > 0 && (
             <section>
               <div className="flex items-center justify-between mb-5">
@@ -511,9 +576,9 @@ export default function Dashboard() {
                     <BarChart3 className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-white">My Statistics</h3>
+                    <h3 className="text-lg font-bold text-white">Viewing Analytics</h3>
                     <p className="text-xs text-stone-500">
-                      A glance into my cinematic world
+                      A glance into your personal media journal
                     </p>
                   </div>
                 </div>
@@ -521,79 +586,98 @@ export default function Dashboard() {
                   onClick={() => setActiveNav("stats")}
                   className="text-xs text-amber-400/70 hover:text-amber-300 flex items-center gap-1 transition-colors"
                 >
-                  Full Stats <ChevronRight className="w-3 h-3" />
+                  Full Analytics &rarr;
                 </button>
               </div>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {/* Quick stat cards */}
-                <div className="glass-card p-5 relative overflow-hidden group">
+                <div
+                  onClick={() => setActiveNav("movies")}
+                  className="glass-card p-5 relative overflow-hidden group cursor-pointer hover:border-amber-500/40 hover:scale-[1.02] transition-all"
+                  title="View all movies"
+                >
                   <div className="absolute -top-8 -right-8 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl group-hover:bg-amber-500/15 transition-colors duration-500" />
                   <div className="relative flex items-center gap-4">
                     <div className="stat-circle-icon">
                       <FilmIcon className="w-5 h-5" />
                     </div>
                     <div>
-                      <p className="text-2xl font-bold text-white">{watched.length + watching.length}</p>
-                      <p className="text-xs text-stone-500">Movies Watched</p>
+                      <p className="text-2xl font-bold text-white group-hover:text-amber-300 transition-colors">
+                        {watched.length + watching.length}
+                      </p>
+                      <p className="text-xs text-stone-500">Movies Watched &rarr;</p>
                     </div>
                   </div>
                 </div>
-                <div className="glass-card p-5 relative overflow-hidden group">
+                <div
+                  onClick={() => setActiveNav("series")}
+                  className="glass-card p-5 relative overflow-hidden group cursor-pointer hover:border-amber-500/40 hover:scale-[1.02] transition-all"
+                  title="View all TV series"
+                >
                   <div className="absolute -top-8 -right-8 w-24 h-24 bg-amber-500/8 rounded-full blur-2xl group-hover:bg-amber-500/12 transition-colors duration-500" />
                   <div className="relative flex items-center gap-4">
                     <div className="stat-circle-icon">
                       <Tv className="w-5 h-5" />
                     </div>
                     <div>
-                      <p className="text-2xl font-bold text-white">{series.length}</p>
-                      <p className="text-xs text-stone-500">Series</p>
+                      <p className="text-2xl font-bold text-white group-hover:text-amber-300 transition-colors">{series.length}</p>
+                      <p className="text-xs text-stone-500">Series Tracked &rarr;</p>
                     </div>
                   </div>
                 </div>
-                <div className="glass-card p-5 relative overflow-hidden group">
+                <div
+                  onClick={() => setActiveNav("stats")}
+                  className="glass-card p-5 relative overflow-hidden group cursor-pointer hover:border-amber-500/40 hover:scale-[1.02] transition-all"
+                  title="View watch time analytics"
+                >
                   <div className="absolute -top-8 -right-8 w-24 h-24 bg-amber-500/8 rounded-full blur-2xl group-hover:bg-amber-500/12 transition-colors duration-500" />
                   <div className="relative flex items-center gap-4">
                     <div className="stat-circle-icon">
                       <Clock className="w-5 h-5" />
                     </div>
                     <div>
-                      <p className="text-2xl font-bold text-white">
+                      <p className="text-2xl font-bold text-white group-hover:text-amber-300 transition-colors">
                         {formatWatchTime(stats.totalWatchTimeMins)}
                       </p>
-                      <p className="text-xs text-stone-500">Watch Time</p>
+                      <p className="text-xs text-stone-500">Watch Time &rarr;</p>
                     </div>
                   </div>
                 </div>
-                <div className="glass-card p-5 relative overflow-hidden group">
+                <div
+                  onClick={() => setActiveNav("stats")}
+                  className="glass-card p-5 relative overflow-hidden group cursor-pointer hover:border-amber-500/40 hover:scale-[1.02] transition-all"
+                  title="View rating distribution"
+                >
                   <div className="absolute -top-8 -right-8 w-24 h-24 bg-amber-500/8 rounded-full blur-2xl group-hover:bg-amber-500/12 transition-colors duration-500" />
                   <div className="relative flex items-center gap-4">
                     <div className="stat-circle-icon star">
                       <Star className="w-5 h-5 fill-current" />
                     </div>
                     <div>
-                      <p className="text-2xl font-bold text-white">
+                      <p className="text-2xl font-bold text-white group-hover:text-amber-300 transition-colors">
                         {stats.averageRating > 0 ? stats.averageRating.toFixed(1) : "—"}
                       </p>
-                      <p className="text-xs text-stone-500">Average Rating</p>
+                      <p className="text-xs text-stone-500">Average Rating &rarr;</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Top Genres row */}
+              {/* Top Genres row (Interactive & Clickable) */}
               {stats.favoriteGenres.length > 0 && (
                 <div className="mt-5">
                   <p className="text-xs text-stone-500 uppercase tracking-wider mb-3">
-                    Top Genres
+                    Top Genres (Click to filter in Analytics)
                   </p>
                   <div className="flex flex-wrap gap-3">
                     {stats.favoriteGenres.slice(0, 6).map(({ genre, count }) => (
-                      <div
+                      <button
                         key={genre}
-                        className="genre-pill glass-card px-4 py-2.5 flex items-center gap-2.5"
+                        onClick={() => setActiveNav("stats")}
+                        className="genre-pill glass-card px-4 py-2.5 flex items-center gap-2.5 cursor-pointer hover:border-amber-500/40 hover:scale-105 transition-all text-left"
                       >
                         <div className="genre-icon-circle">
-                          <span className="text-xs font-bold">
+                          <span className="text-xs font-bold text-amber-400">
                             {genre.charAt(0)}
                           </span>
                         </div>
@@ -601,7 +685,7 @@ export default function Dashboard() {
                           <p className="text-sm text-white font-medium">{genre}</p>
                           <p className="text-[10px] text-stone-500">{count} titles</p>
                         </div>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -612,7 +696,10 @@ export default function Dashboard() {
           {/* Featured Movie — detail panel */}
           {featuredMovie && (
             <section>
-              <FeaturedMoviePanel entry={featuredMovie} />
+              <FeaturedMoviePanel
+                entry={featuredMovie}
+                onOpenDetail={() => setSelectedDetailEntry(featuredMovie)}
+              />
             </section>
           )}
         </main>
@@ -750,7 +837,13 @@ export default function Dashboard() {
                   </div>
                   <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                     {yearEntries.map((entry, idx) => (
-                      <PosterCard key={entry.id} entry={entry} index={idx} showRating />
+                      <PosterCard
+                        key={entry.id}
+                        entry={entry}
+                        index={idx}
+                        showRating
+                        onClick={() => setSelectedDetailEntry(entry)}
+                      />
                     ))}
                   </div>
                 </div>
@@ -784,7 +877,13 @@ export default function Dashboard() {
           {favorites.length > 0 ? (
             <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {favorites.map((entry, idx) => (
-                <PosterCard key={entry.id} entry={entry} index={idx} showRating />
+                <PosterCard
+                  key={entry.id}
+                  entry={entry}
+                  index={idx}
+                  showRating
+                  onClick={() => setSelectedDetailEntry(entry)}
+                />
               ))}
             </div>
           ) : (
@@ -807,19 +906,28 @@ export default function Dashboard() {
               <Sparkles className="w-12 h-12 text-amber-400/60" />
             </div>
             <h2 className="text-3xl font-bold text-white mb-3 text-glow">
-              Welcome to My Cinema
+              Welcome to COUCH CRITICS
             </h2>
             <p className="text-stone-400 max-w-md mx-auto mb-8 leading-relaxed">
               Track what you&apos;re watching, build your backlog, and keep a
               personal archive of every movie and show you experience.
             </p>
-            <button
-              onClick={() => setIsSearchOpen(true)}
-              className="inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl font-semibold shadow-xl shadow-amber-500/20 hover:shadow-amber-500/35 transition-all hover:scale-[1.02] active:scale-[0.98]"
-            >
-              <Plus className="w-5 h-5" />
-              Add Your First Movie
-            </button>
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <button
+                onClick={() => setIsSearchOpen(true)}
+                className="inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl font-semibold shadow-xl shadow-amber-500/20 hover:shadow-amber-500/35 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <Plus className="w-5 h-5" />
+                Add Your First Movie
+              </button>
+              <button
+                onClick={() => resetToDemoData()}
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl border border-amber-500/30 text-amber-200 text-sm hover:bg-amber-500/10 transition-all font-medium"
+              >
+                <Sparkles className="w-4 h-4 text-amber-400" />
+                Load Sample Media &amp; Episodes
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -845,56 +953,80 @@ export default function Dashboard() {
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
       />
+
+      {/* ── Media Detail Modal (makes all cards interactive) ── */}
+      <MediaDetailModal
+        entry={selectedDetailEntry}
+        isOpen={!!selectedDetailEntry}
+        onClose={() => setSelectedDetailEntry(null)}
+      />
     </div>
   );
 }
 
-/* ─── Poster Card Component ──────────────────────────────────────────────── */
+/* ─── Poster Card Component (Interactive & Clickable) ─────────────────────── */
 function PosterCard({
   entry,
   index,
   showRating = false,
+  onClick,
 }: {
   entry: MovieEntry;
   index: number;
   showRating?: boolean;
+  onClick?: () => void;
 }) {
+  const isTV = entry.tmdb.mediaType === "tv";
+
   return (
     <div
-      className="poster-card group stagger-item"
-      style={{ animationDelay: `${index * 50}ms` }}
+      onClick={onClick}
+      className="poster-card group stagger-item cursor-pointer hover:scale-[1.03] transition-all"
+      style={{ animationDelay: `${index * 40}ms` }}
     >
-      <div className="poster-card-image">
+      <div className="poster-card-image relative overflow-hidden">
         {entry.tmdb.posterUrl ? (
           <img
             src={entry.tmdb.posterUrl}
             alt={entry.tmdb.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center">
-            <FilmIcon className="w-8 h-8 text-stone-700" />
+            {isTV ? <Tv className="w-8 h-8 text-stone-700" /> : <FilmIcon className="w-8 h-8 text-stone-700" />}
           </div>
         )}
-        {/* Hover overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+        {/* Media type badge */}
+        <div className="absolute top-1.5 left-1.5 z-10">
+          <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-sm text-[9px] text-stone-300 border border-white/10 uppercase tracking-wider font-semibold">
+            {isTV ? "TV" : "Film"}
+          </span>
+        </div>
+
+        {/* Hover overlay with click prompt */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-2">
+          <span className="text-[10px] text-amber-300 font-medium">Click for details</span>
+        </div>
       </div>
-      <div className="poster-card-info">
-        <p className="text-xs font-medium text-white truncate">
+      <div className="poster-card-info p-2">
+        <p className="text-xs font-medium text-white truncate group-hover:text-amber-200 transition-colors">
           {entry.tmdb.title}
         </p>
-        <div className="flex items-center gap-1.5 mt-0.5">
+        <div className="flex items-center justify-between mt-0.5">
+          <span className="text-[10px] text-stone-500">
+            {entry.tmdb.releaseYear}
+          </span>
           {showRating && entry.review?.rating ? (
-            <span className="flex items-center gap-0.5 text-[10px] text-amber-400">
+            <span className="flex items-center gap-0.5 text-[10px] text-amber-400 font-semibold">
               <Star className="w-2.5 h-2.5 fill-amber-400" />
               {entry.review.rating}
             </span>
-          ) : null}
-          {entry.tmdb.releaseYear && (
-            <span className="text-[10px] text-stone-500">
-              {entry.tmdb.releaseYear}
+          ) : isTV && entry.progress?.currentEpisode ? (
+            <span className="text-[10px] text-amber-500/80 font-mono">
+              Ep {entry.progress.currentEpisode}
             </span>
-          )}
+          ) : null}
         </div>
       </div>
     </div>
@@ -902,9 +1034,18 @@ function PosterCard({
 }
 
 /* ─── Featured Movie Panel ───────────────────────────────────────────────── */
-function FeaturedMoviePanel({ entry }: { entry: MovieEntry }) {
+function FeaturedMoviePanel({
+  entry,
+  onOpenDetail,
+}: {
+  entry: MovieEntry;
+  onOpenDetail: () => void;
+}) {
   return (
-    <div className="featured-panel glass-card overflow-hidden relative">
+    <div
+      onClick={onOpenDetail}
+      className="featured-panel glass-card overflow-hidden relative cursor-pointer group hover:border-amber-500/30 transition-all"
+    >
       {/* Background */}
       {entry.tmdb.posterUrl && (
         <div className="absolute inset-0">
@@ -924,16 +1065,21 @@ function FeaturedMoviePanel({ entry }: { entry: MovieEntry }) {
           <img
             src={entry.tmdb.posterUrl}
             alt={entry.tmdb.title}
-            className="w-32 sm:w-40 h-48 sm:h-60 rounded-xl object-cover shadow-2xl shadow-black/50 shrink-0 mx-auto sm:mx-0"
+            className="w-32 sm:w-40 h-48 sm:h-60 rounded-xl object-cover shadow-2xl shadow-black/50 shrink-0 mx-auto sm:mx-0 group-hover:scale-105 transition-transform"
           />
         )}
 
         {/* Info */}
         <div className="flex-1 flex flex-col justify-center">
-          <p className="text-[10px] text-amber-400 uppercase tracking-widest mb-1">
-            ★ Featured
-          </p>
-          <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+          <div className="flex items-center justify-between mb-1">
+            <p className="text-[10px] text-amber-400 uppercase tracking-widest font-semibold">
+              ★ Featured in Your Journal
+            </p>
+            <span className="text-xs text-amber-400/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+              View Details &amp; Episodes &rarr;
+            </span>
+          </div>
+          <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2 group-hover:text-amber-200 transition-colors">
             {entry.tmdb.title}
           </h3>
           <div className="flex flex-wrap items-center gap-2 text-sm text-stone-400 mb-3">

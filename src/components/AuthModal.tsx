@@ -121,7 +121,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         <div className="auth-modal-header">
           <div className="auth-modal-logo">
             <Film size={28} />
-            <span>Cinema Journal</span>
+            <span>COUCH CRITICS</span>
           </div>
           <button
             onClick={onClose}

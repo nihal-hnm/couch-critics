@@ -138,10 +138,22 @@ export default function SearchModal({
         // Initialize progress for "watching" entries
         ...(shelf === "watching"
           ? {
-              progress: {
-                minutesWatched: 0,
-                totalMinutes: fullDetails.runtime,
-              },
+              progress:
+                fullDetails.mediaType === "tv"
+                  ? {
+                      currentSeason: 1,
+                      totalSeasons: fullDetails.totalSeasons || 1,
+                      currentEpisode: 1,
+                      totalEpisodes: fullDetails.totalEpisodes || 10,
+                      watchedEpisodes: ["S1E1"],
+                      minutesWatched: fullDetails.runtime || 45,
+                      totalMinutes:
+                        (fullDetails.totalEpisodes || 10) * (fullDetails.runtime || 45),
+                    }
+                  : {
+                      minutesWatched: 0,
+                      totalMinutes: fullDetails.runtime,
+                    },
             }
           : {}),
       });

@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import type { MovieEntry, UserReview } from "@/lib/types";
 import { useJournal } from "@/lib/journal-context";
+import MediaDetailModal from "./MediaDetailModal";
 
 interface WatchedShelfProps {
   entries: MovieEntry[];
@@ -36,6 +37,7 @@ interface WatchedShelfProps {
 
 export default function WatchedShelf({ entries }: WatchedShelfProps) {
   const { updateReview, removeEntry, moveToShelf } = useJournal();
+  const [selectedEntry, setSelectedEntry] = useState<MovieEntry | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editRating, setEditRating] = useState(0);
   const [editNotes, setEditNotes] = useState("");
@@ -163,7 +165,8 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
         {sortedEntries.map((entry, idx) => (
           <div
             key={entry.id}
-            className="glass-card glass-card-hover overflow-hidden poster-lift stagger-item"
+            onClick={() => setSelectedEntry(entry)}
+            className="glass-card glass-card-hover overflow-hidden poster-lift stagger-item cursor-pointer group"
             style={{ animationDelay: `${idx * 50}ms` }}
           >
             <div className="flex gap-3 p-4">
@@ -173,7 +176,7 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
                   <img
                     src={entry.tmdb.posterUrl}
                     alt={entry.tmdb.title}
-                    className="w-20 h-28 rounded-lg object-cover"
+                    className="w-20 h-28 rounded-lg object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   {/* Warm glow overlay on poster hover */}
                   <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-amber-500/10 to-transparent opacity-0 group-hover/poster:opacity-100 transition-opacity duration-300" />
@@ -186,7 +189,7 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
 
               {/* Info */}
               <div className="flex-1 min-w-0">
-                <h4 className="font-semibold text-white truncate">
+                <h4 className="font-semibold text-white truncate group-hover:text-amber-200 transition-colors">
                   {entry.tmdb.title}
                 </h4>
                 <p className="text-xs text-zinc-500 mt-0.5">
@@ -232,7 +235,7 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
               </div>
 
               {/* Actions */}
-              <div className="flex flex-col gap-1.5 shrink-0">
+              <div className="flex flex-col gap-1.5 shrink-0" onClick={(e) => e.stopPropagation()}>
                 <button
                   onClick={() => startEditing(entry)}
                   className="p-1.5 rounded-lg text-zinc-600 hover:text-amber-400 hover:bg-amber-500/10 transition-all duration-200"
@@ -343,6 +346,13 @@ export default function WatchedShelf({ entries }: WatchedShelfProps) {
           </div>
         ))}
       </div>
+
+      {/* Media Detail Modal */}
+      <MediaDetailModal
+        entry={selectedEntry}
+        isOpen={!!selectedEntry}
+        onClose={() => setSelectedEntry(null)}
+      />
     </div>
   );
 }
