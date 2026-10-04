@@ -294,6 +294,26 @@ export default function Dashboard() {
     [watching]
   );
 
+  // Sub-categorized watched entries (separated strictly by mediaType)
+  const watchedMovies = useMemo(
+    () => watched.filter((e) => e.tmdb.mediaType === "movie"),
+    [watched]
+  );
+  const watchedSeries = useMemo(
+    () => watched.filter((e) => e.tmdb.mediaType === "tv"),
+    [watched]
+  );
+
+  // Sub-categorized toWatch entries
+  const toWatchMovies = useMemo(
+    () => toWatch.filter((e) => e.tmdb.mediaType === "movie"),
+    [toWatch]
+  );
+  const toWatchSeries = useMemo(
+    () => toWatch.filter((e) => e.tmdb.mediaType === "tv"),
+    [toWatch]
+  );
+
   // All unique genres across entire journal with counts
   const allGenres = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -582,9 +602,14 @@ export default function Dashboard() {
                   <Award className="w-4 h-4 text-emerald-400" />
                   <span>Watched Archive</span>
                 </div>
-                <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-stone-800 text-stone-400">
-                  {watched.length}
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-purple-500/15 text-purple-300 border border-purple-500/20" title="Movies & Shows breakdown">
+                    {watchedMovies.length}M · {watchedSeries.length}S
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-stone-800 text-stone-400">
+                    {watched.length}
+                  </span>
+                </div>
               </button>
 
               <button
@@ -1249,7 +1274,7 @@ export default function Dashboard() {
         <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
           <TopReturnBanner
             title="Watched Archive &amp; Reviews"
-            subtitle="Your complete history of finished movies, seasons, ratings, and notes"
+            subtitle={`${watchedMovies.length} ${watchedMovies.length === 1 ? "movie" : "movies"} and ${watchedSeries.length} completed TV ${watchedSeries.length === 1 ? "series" : "series"} (${watched.length} total)`}
             icon={<Award className="w-4 h-4 text-emerald-400" />}
             watchingCount={watching.length}
             onBackToWatching={() => setActiveNav("watching")}
@@ -1282,21 +1307,21 @@ export default function Dashboard() {
                 </section>
               )}
 
-              {toWatch.filter((e) => e.tmdb.mediaType === "movie").length > 0 && (
+              {toWatchMovies.length > 0 && (
                 <section>
                   <h3 className="text-sm font-semibold text-purple-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <BookmarkPlus className="w-3.5 h-3.5" /> Movies To Watch ({toWatch.filter((e) => e.tmdb.mediaType === "movie").length})
+                    <BookmarkPlus className="w-3.5 h-3.5" /> Movies To Watch ({toWatchMovies.length})
                   </h3>
-                  <ToWatchShelf entries={toWatch.filter((e) => e.tmdb.mediaType === "movie")} />
+                  <ToWatchShelf entries={toWatchMovies} />
                 </section>
               )}
 
-              {watched.filter((e) => e.tmdb.mediaType === "movie").length > 0 && (
+              {watchedMovies.length > 0 && (
                 <section>
                   <h3 className="text-sm font-semibold text-purple-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <Award className="w-3.5 h-3.5" /> Watched Movies ({watched.filter((e) => e.tmdb.mediaType === "movie").length})
+                    <Award className="w-3.5 h-3.5" /> Watched Movies ({watchedMovies.length})
                   </h3>
-                  <WatchedShelf entries={watched.filter((e) => e.tmdb.mediaType === "movie")} />
+                  <WatchedShelf entries={watchedMovies} defaultMediaType="movie" hideMediaTypeFilter />
                 </section>
               )}
             </div>
@@ -1334,21 +1359,21 @@ export default function Dashboard() {
                 </section>
               )}
 
-              {toWatch.filter((e) => e.tmdb.mediaType === "tv").length > 0 && (
+              {toWatchSeries.length > 0 && (
                 <section>
                   <h3 className="text-sm font-semibold text-purple-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <BookmarkPlus className="w-3.5 h-3.5" /> Series To Watch ({toWatch.filter((e) => e.tmdb.mediaType === "tv").length})
+                    <BookmarkPlus className="w-3.5 h-3.5" /> Series To Watch ({toWatchSeries.length})
                   </h3>
-                  <ToWatchShelf entries={toWatch.filter((e) => e.tmdb.mediaType === "tv")} />
+                  <ToWatchShelf entries={toWatchSeries} />
                 </section>
               )}
 
-              {watched.filter((e) => e.tmdb.mediaType === "tv").length > 0 && (
+              {watchedSeries.length > 0 && (
                 <section>
                   <h3 className="text-sm font-semibold text-purple-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <Award className="w-3.5 h-3.5" /> Completed Series ({watched.filter((e) => e.tmdb.mediaType === "tv").length})
+                    <Award className="w-3.5 h-3.5" /> Completed TV Series ({watchedSeries.length})
                   </h3>
-                  <WatchedShelf entries={watched.filter((e) => e.tmdb.mediaType === "tv")} />
+                  <WatchedShelf entries={watchedSeries} defaultMediaType="tv" hideMediaTypeFilter />
                 </section>
               )}
             </div>
