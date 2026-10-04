@@ -71,6 +71,159 @@ export type NavKey =
   | "journey"
   | "favorites";
 
+interface MarqueeMediaItem {
+  id: string;
+  title: string;
+  mediaType: "movie" | "tv";
+  posterUrl: string;
+  releaseYear: string;
+}
+
+const SHOWCASE_MEDIA_ITEMS: MarqueeMediaItem[] = [
+  // ── TV Shows ──────────────────────────────────────────
+  {
+    id: "showcase-1396",
+    title: "Breaking Bad",
+    mediaType: "tv",
+    posterUrl: "https://image.tmdb.org/t/p/w500/anFx9aTOOYqgS3v7x3R84Kz67ly.jpg",
+    releaseYear: "2008",
+  },
+  {
+    id: "showcase-95396",
+    title: "Severance",
+    mediaType: "tv",
+    posterUrl: "https://image.tmdb.org/t/p/w500/pPHpeI2X1qEd1CS1SeyrdhZ4qnT.jpg",
+    releaseYear: "2022",
+  },
+  {
+    id: "showcase-136315",
+    title: "The Bear",
+    mediaType: "tv",
+    posterUrl: "https://image.tmdb.org/t/p/w500/eKfVzzEazSIjJMrw9ADa2x8ksLz.jpg",
+    releaseYear: "2022",
+  },
+  {
+    id: "showcase-76331",
+    title: "Succession",
+    mediaType: "tv",
+    posterUrl: "https://image.tmdb.org/t/p/w500/z0XiwdrCQ9yVIr4O0pxzaAYRxdW.jpg",
+    releaseYear: "2018",
+  },
+  {
+    id: "showcase-94605",
+    title: "Arcane",
+    mediaType: "tv",
+    posterUrl: "https://image.tmdb.org/t/p/w500/fqldf2t8ztc9aiwn3k6mlX3tvRT.jpg",
+    releaseYear: "2021",
+  },
+  {
+    id: "showcase-1399",
+    title: "Game of Thrones",
+    mediaType: "tv",
+    posterUrl: "https://image.tmdb.org/t/p/w500/1XS1oqL89opfnbLl8WnZY1O1uJx.jpg",
+    releaseYear: "2011",
+  },
+  {
+    id: "showcase-66732",
+    title: "Stranger Things",
+    mediaType: "tv",
+    posterUrl: "https://image.tmdb.org/t/p/w500/uOOtwVbSr4QDjAGIifLDwpb2Pdl.jpg",
+    releaseYear: "2016",
+  },
+  {
+    id: "showcase-100088",
+    title: "The Last of Us",
+    mediaType: "tv",
+    posterUrl: "https://image.tmdb.org/t/p/w500/dmo6TYuuJgaYinXBPjrgG9mB5od.jpg",
+    releaseYear: "2023",
+  },
+  {
+    id: "showcase-87108",
+    title: "Chernobyl",
+    mediaType: "tv",
+    posterUrl: "https://image.tmdb.org/t/p/w500/hlLXt2tOPT6RRnjiUmoxyG1LTFi.jpg",
+    releaseYear: "2019",
+  },
+  {
+    id: "showcase-60059",
+    title: "Better Call Saul",
+    mediaType: "tv",
+    posterUrl: "https://image.tmdb.org/t/p/w500/fC2HDm5t0kHl7mTm7jxMR31b7by.jpg",
+    releaseYear: "2015",
+  },
+  // ── Movies ────────────────────────────────────────────
+  {
+    id: "showcase-693134",
+    title: "Dune: Part Two",
+    mediaType: "movie",
+    posterUrl: "https://image.tmdb.org/t/p/w500/6izwz7rsy95ARzTR3poZ8H6c5pp.jpg",
+    releaseYear: "2024",
+  },
+  {
+    id: "showcase-872585",
+    title: "Oppenheimer",
+    mediaType: "movie",
+    posterUrl: "https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
+    releaseYear: "2023",
+  },
+  {
+    id: "showcase-157336",
+    title: "Interstellar",
+    mediaType: "movie",
+    posterUrl: "https://image.tmdb.org/t/p/w500/yQvGrMoipbRoddT0ZR8tPoR7NfX.jpg",
+    releaseYear: "2014",
+  },
+  {
+    id: "showcase-569094",
+    title: "Spider-Man: Across the Spider-Verse",
+    mediaType: "movie",
+    posterUrl: "https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg",
+    releaseYear: "2023",
+  },
+  {
+    id: "showcase-155",
+    title: "The Dark Knight",
+    mediaType: "movie",
+    posterUrl: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+    releaseYear: "2008",
+  },
+  {
+    id: "showcase-27205",
+    title: "Inception",
+    mediaType: "movie",
+    posterUrl: "https://image.tmdb.org/t/p/w500/xlaY2zyzMfkhk0HSC5VUwzoZPU1.jpg",
+    releaseYear: "2010",
+  },
+  {
+    id: "showcase-550",
+    title: "Fight Club",
+    mediaType: "movie",
+    posterUrl: "https://image.tmdb.org/t/p/w500/jSziioSwPVrOy9Yow3XhWIBDjq1.jpg",
+    releaseYear: "1999",
+  },
+  {
+    id: "showcase-680",
+    title: "Pulp Fiction",
+    mediaType: "movie",
+    posterUrl: "https://image.tmdb.org/t/p/w500/vQWk5YBFWF4bZaofAbv0tShwBvQ.jpg",
+    releaseYear: "1994",
+  },
+  {
+    id: "showcase-129",
+    title: "Spirited Away",
+    mediaType: "movie",
+    posterUrl: "https://image.tmdb.org/t/p/w500/jUo8cNmU400WtZiJss45HNXlQ2e.jpg",
+    releaseYear: "2001",
+  },
+  {
+    id: "showcase-335984",
+    title: "Blade Runner 2049",
+    mediaType: "movie",
+    posterUrl: "https://image.tmdb.org/t/p/w500/gajva2L0rPYkEWjzgFlBXCAVBE5.jpg",
+    releaseYear: "2017",
+  },
+];
+
 export default function Dashboard() {
   const { entries, isLoaded } = useJournal();
   const { user, signOut, isLoading: authLoading } = useAuth();
@@ -239,11 +392,53 @@ export default function Dashboard() {
       .slice(0, 20);
   }, [watched]);
 
-  // Hero backdrop posters — collect up to 8 posters for the poster wall
-  const heroPosterUrls = useMemo(() => {
-    const withPosters = entries.filter((e) => e.tmdb.posterUrl);
-    const shuffled = [...withPosters].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, 8).map((e) => e.tmdb.posterUrl!);
+  // Moving Background Marquee: curated & user-synced movies and TV shows
+  const { marqueeRow1, marqueeRow2 } = useMemo(() => {
+    // Map user entries that have posters
+    const userMedia: MarqueeMediaItem[] = entries
+      .filter((e) => e.tmdb?.posterUrl)
+      .map((e) => ({
+        id: e.id,
+        title: e.tmdb.title,
+        mediaType: e.tmdb.mediaType,
+        posterUrl: e.tmdb.posterUrl!,
+        releaseYear: e.tmdb.releaseYear,
+      }));
+
+    const allItems = [...userMedia, ...SHOWCASE_MEDIA_ITEMS];
+    const seen = new Set<string>();
+    const uniqueItems: MarqueeMediaItem[] = [];
+    for (const item of allItems) {
+      if (!seen.has(item.posterUrl)) {
+        seen.add(item.posterUrl);
+        uniqueItems.push(item);
+      }
+    }
+
+    const movieItems = uniqueItems.filter((i) => i.mediaType === "movie");
+    const showItems = uniqueItems.filter((i) => i.mediaType === "tv");
+
+    const row1Items: MarqueeMediaItem[] = [];
+    const row2Items: MarqueeMediaItem[] = [];
+    const maxLen = Math.max(movieItems.length, showItems.length);
+
+    for (let i = 0; i < maxLen; i++) {
+      if (i % 2 === 0) {
+        if (movieItems[i]) row1Items.push(movieItems[i]);
+        if (showItems[i]) row2Items.push(showItems[i]);
+      } else {
+        if (showItems[i]) row1Items.push(showItems[i]);
+        if (movieItems[i]) row2Items.push(movieItems[i]);
+      }
+    }
+
+    const baseRow1 = row1Items.length >= 6 ? row1Items : [...row1Items, ...SHOWCASE_MEDIA_ITEMS.slice(0, 8)];
+    const baseRow2 = row2Items.length >= 6 ? row2Items : [...row2Items, ...SHOWCASE_MEDIA_ITEMS.slice(8)];
+
+    return {
+      marqueeRow1: [...baseRow1, ...baseRow1],
+      marqueeRow2: [...baseRow2, ...baseRow2],
+    };
   }, [entries]);
 
   // Journey data — group by year
@@ -581,26 +776,89 @@ export default function Dashboard() {
       </aside>
 
       {/* ══ HERO & HEADER SECTION ══════════════════════════════════ */}
-      <div ref={heroRef} className="relative overflow-hidden min-h-[320px] pb-6">
-        {/* Poster wall backdrop */}
-        {heroPosterUrls.length > 0 ? (
-          <div className="absolute inset-0">
-            <div className="poster-wall-grid">
-              {heroPosterUrls.map((url, i) => (
+      <div ref={heroRef} className="relative overflow-hidden min-h-[380px] sm:min-h-[440px] pb-6">
+        {/* ══ DYNAMIC MOVING BACKGROUND: MOVIES & SHOWS MARQUEE ══ */}
+        <div className="hero-marquee-wrapper" aria-hidden="true">
+          {/* Row 1 — Moving Left */}
+          <div className="hero-marquee-track-left">
+            {marqueeRow1.map((item, idx) => (
+              <div
+                key={`r1-${item.id}-${idx}`}
+                className="hero-poster-card w-28 sm:w-36 md:w-44 h-40 sm:h-52 md:h-60 mx-1.5 sm:mx-2"
+              >
                 <img
-                  key={i}
-                  src={url}
+                  src={item.posterUrl}
                   alt=""
+                  loading="eager"
                   className="w-full h-full object-cover"
                 />
-              ))}
-            </div>
-            <div className="absolute inset-0 hero-overlay-bottom" />
-            <div className="absolute inset-0 hero-overlay-side" />
+                <div className="hero-poster-overlay">
+                  <div className="flex items-center justify-between">
+                    <span
+                      className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider backdrop-blur-md shadow-sm ${
+                        item.mediaType === "tv"
+                          ? "bg-purple-600/90 text-purple-100 border border-purple-400/40"
+                          : "bg-indigo-600/90 text-indigo-100 border border-indigo-400/40"
+                      }`}
+                    >
+                      {item.mediaType === "tv" ? "TV Show" : "Movie"}
+                    </span>
+                    {item.releaseYear && (
+                      <span className="text-[9px] font-mono text-stone-300 font-semibold bg-black/60 px-1 rounded">
+                        {item.releaseYear}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[11px] font-bold text-white truncate drop-shadow-md">
+                    {item.title}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-[#1a1510] via-[#0a0a0a] to-[#0a0a0a] light:from-[#eeeae0] light:via-[#f7f5f0] light:to-[#f7f5f0]" />
-        )}
+
+          {/* Row 2 — Moving Right */}
+          <div className="hero-marquee-track-right">
+            {marqueeRow2.map((item, idx) => (
+              <div
+                key={`r2-${item.id}-${idx}`}
+                className="hero-poster-card w-28 sm:w-36 md:w-44 h-40 sm:h-52 md:h-60 mx-1.5 sm:mx-2"
+              >
+                <img
+                  src={item.posterUrl}
+                  alt=""
+                  loading="eager"
+                  className="w-full h-full object-cover"
+                />
+                <div className="hero-poster-overlay">
+                  <div className="flex items-center justify-between">
+                    <span
+                      className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider backdrop-blur-md shadow-sm ${
+                        item.mediaType === "tv"
+                          ? "bg-purple-600/90 text-purple-100 border border-purple-400/40"
+                          : "bg-indigo-600/90 text-indigo-100 border border-indigo-400/40"
+                      }`}
+                    >
+                      {item.mediaType === "tv" ? "TV Show" : "Movie"}
+                    </span>
+                    {item.releaseYear && (
+                      <span className="text-[9px] font-mono text-stone-300 font-semibold bg-black/60 px-1 rounded">
+                        {item.releaseYear}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[11px] font-bold text-white truncate drop-shadow-md">
+                    {item.title}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Cinematic gradient scrims for text legibility and smooth edge fade */}
+        <div className="absolute inset-0 hero-overlay-bottom pointer-events-none" />
+        <div className="absolute inset-0 hero-overlay-side pointer-events-none" />
 
         {/* Ambient warm glow */}
         <div className="absolute top-0 left-1/4 w-[500px] h-[300px] bg-purple-500/5 rounded-full blur-[120px] pointer-events-none" />
@@ -728,20 +986,20 @@ export default function Dashboard() {
         {activeNav === "watching" && (
           <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-4 pb-2">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-              <div>
+              <div className="p-3 sm:p-4 rounded-2xl bg-black/40 light:bg-white/75 backdrop-blur-md border border-white/10 light:border-purple-500/20 max-w-xl shadow-xl">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase bg-purple-500/25 text-purple-300 light:text-purple-700 border border-purple-500/40">
                     <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
                     In Progress
                   </span>
-                  <span className="text-xs text-stone-500">
+                  <span className="text-xs text-stone-300 light:text-stone-600 font-medium">
                     &bull; {watching.length} {watching.length === 1 ? "title" : "titles"}
                   </span>
                 </div>
-                <h2 className="text-3xl sm:text-4xl font-extrabold text-white text-glow tracking-tight">
+                <h2 className="text-3xl sm:text-4xl font-extrabold text-white light:text-stone-900 tracking-tight drop-shadow-md">
                   Currently Watching
                 </h2>
-                <p className="text-stone-300 text-xs sm:text-sm mt-1 max-w-lg">
+                <p className="text-stone-200 light:text-stone-600 text-xs sm:text-sm mt-1 drop-shadow-sm font-medium">
                   Track series episode by episode, log movie minutes, and keep your screen in sync.
                 </p>
               </div>
