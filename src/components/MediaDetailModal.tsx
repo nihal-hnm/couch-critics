@@ -40,7 +40,8 @@ import {
 } from "lucide-react";
 import type { MovieEntry, Shelf, UserReview, WatchProgress, EpisodeItem, TMDBSeasonData } from "@/lib/types";
 import { useJournal } from "@/lib/journal-context";
-import { fetchSeasonEpisodes } from "@/lib/tmdb";
+import { fetchSeasonEpisodes, getMovieDetails, buildWatchedEpisodes } from "@/lib/tmdb";
+import { getCachedTVSeasons } from "@/lib/tv-seasons-cache";
 
 interface MediaDetailModalProps {
   entry: MovieEntry | null;
@@ -53,7 +54,7 @@ export default function MediaDetailModal({
   isOpen,
   onClose,
 }: MediaDetailModalProps) {
-  const { entries, moveToShelf, updateProgress, updateReview, removeEntry } = useJournal();
+  const { entries, moveToShelf, updateProgress, updateReview, removeEntry, enrichEntrySeasons } = useJournal();
 
   // Always resolve the live, real-time entry from context so every interaction updates immediately
   const entry =
@@ -68,6 +69,7 @@ export default function MediaDetailModal({
   // Local state for edits
   const [activeTab, setActiveTab] = useState<"overview" | "episodes" | "review">("overview");
   const [selectedSeasonFilter, setSelectedSeasonFilter] = useState<number | "all">("all");
+  const [modalSeasons, setModalSeasons] = useState<TMDBSeasonData[]>([]);
   const [seasonsEpisodesMap, setSeasonsEpisodesMap] = useState<Record<number, EpisodeItem[]>>({});
   const [loadingSeasons, setLoadingSeasons] = useState<Record<number, boolean>>({});
   const [collapsedSeasons, setCollapsedSeasons] = useState<Record<number, boolean>>({});
@@ -97,53 +99,111 @@ export default function MediaDetailModal({
   useEffect(() => {
     if (!entry || entry.tmdb.mediaType !== "tv") return;
 
-    const seasons: TMDBSeasonData[] = entry.tmdb.seasons && entry.tmdb.seasons.length > 0
-      ? entry.tmdb.seasons
-      : Array.from({ length: entry.tmdb.totalSeasons || 1 }, (_, i) => ({
-          seasonNumber: i + 1,
-          name: `Season ${i + 1}`,
-          episodeCount: entry.tmdb.totalEpisodes
-            ? Math.ceil(entry.tmdb.totalEpisodes / (entry.tmdb.totalSeasons || 1))
-            : 10,
-        }));
+    const catalog = getCachedTVSeasons(entry.tmdb.tmdbId);
+    let resolvedSeasons: TMDBSeasonData[] =
+      entry.tmdb.seasons && entry.tmdb.seasons.length > 1
+        ? entry.tmdb.seasons
+        : catalog?.seasons && catalog.seasons.length > 0
+        ? catalog.seasons
+        : entry.tmdb.seasons && entry.tmdb.seasons.length > 0
+        ? entry.tmdb.seasons
+        : [];
 
-    // Initialize immediate fallback or existing data for each season
-    const initialMap: Record<number, EpisodeItem[]> = {};
-    seasons.forEach((s) => {
-      if (s.episodes && s.episodes.length > 0) {
-        initialMap[s.seasonNumber] = s.episodes;
-      } else {
-        const count = s.episodeCount || 10;
-        initialMap[s.seasonNumber] = Array.from({ length: count }, (_, i) => ({
-          seasonNumber: s.seasonNumber,
-          episodeNumber: i + 1,
-          title: `Episode ${i + 1}`,
-          runtime: entry.tmdb.runtime || 45,
-        }));
+    function populateSeasons(seasons: TMDBSeasonData[]) {
+      setModalSeasons(seasons);
+
+      // Initialize immediate fallback or existing data for each season
+      const initialMap: Record<number, EpisodeItem[]> = {};
+      seasons.forEach((s) => {
+        if (s.episodes && s.episodes.length > 0) {
+          initialMap[s.seasonNumber] = s.episodes;
+        } else {
+          const count = s.episodeCount || 10;
+          initialMap[s.seasonNumber] = Array.from({ length: count }, (_, i) => ({
+            seasonNumber: s.seasonNumber,
+            episodeNumber: i + 1,
+            title: `Episode ${i + 1}`,
+            runtime: entry?.tmdb.runtime || 45,
+          }));
+        }
+      });
+      setSeasonsEpisodesMap(initialMap);
+
+      // Fetch detailed episode data for all seasons in background from TMDB
+      seasons.forEach((s) => {
+        setLoadingSeasons((prev) => ({ ...prev, [s.seasonNumber]: true }));
+        fetchSeasonEpisodes(entry!.tmdb.tmdbId, s.seasonNumber)
+          .then((eps) => {
+            if (eps && eps.length > 0) {
+              setSeasonsEpisodesMap((prev) => ({
+                ...prev,
+                [s.seasonNumber]: eps,
+              }));
+            }
+          })
+          .catch((err) => {
+            console.warn(`Could not load episodes for S${s.seasonNumber}:`, err);
+          })
+          .finally(() => {
+            setLoadingSeasons((prev) => ({ ...prev, [s.seasonNumber]: false }));
+          });
+      });
+    }
+
+    if (resolvedSeasons.length > 0) {
+      populateSeasons(resolvedSeasons);
+      if (catalog && (!entry.tmdb.seasons || entry.tmdb.seasons.length <= 1)) {
+        enrichEntrySeasons(
+          entry.id,
+          catalog.seasons,
+          catalog.totalSeasons,
+          catalog.backdropUrl,
+          catalog.totalEpisodes
+        );
       }
-    });
-    setSeasonsEpisodesMap(initialMap);
+    }
 
-    // Fetch detailed episode data for all seasons in background from TMDB
-    seasons.forEach((s) => {
-      setLoadingSeasons((prev) => ({ ...prev, [s.seasonNumber]: true }));
-      fetchSeasonEpisodes(entry.tmdb.tmdbId, s.seasonNumber)
-        .then((eps) => {
-          if (eps && eps.length > 0) {
-            setSeasonsEpisodesMap((prev) => ({
-              ...prev,
-              [s.seasonNumber]: eps,
-            }));
+    // If show didn't have rich seasons, fetch directly from TMDB
+    if (resolvedSeasons.length <= 1) {
+      let cancelled = false;
+      getMovieDetails(entry.tmdb.tmdbId, "tv")
+        .then((details) => {
+          if (cancelled) return;
+          if (details.seasons && details.seasons.length > 0) {
+            populateSeasons(details.seasons);
+            enrichEntrySeasons(
+              entry.id,
+              details.seasons,
+              details.totalSeasons || details.seasons.length,
+              details.backdropUrl,
+              details.totalEpisodes
+            );
           }
         })
-        .catch((err) => {
-          console.warn(`Could not load episodes for S${s.seasonNumber}:`, err);
-        })
-        .finally(() => {
-          setLoadingSeasons((prev) => ({ ...prev, [s.seasonNumber]: false }));
+        .catch(() => {
+          if (resolvedSeasons.length === 0) {
+            const fallback = Array.from(
+              {
+                length:
+                  entry.tmdb.totalSeasons ||
+                  catalog?.totalSeasons ||
+                  1,
+              },
+              (_, i) => ({
+                seasonNumber: i + 1,
+                name: `Season ${i + 1}`,
+                episodeCount: entry.tmdb.totalEpisodes || 10,
+              })
+            );
+            populateSeasons(fallback);
+          }
         });
-    });
-  }, [entry?.id, entry?.tmdb?.tmdbId]);
+
+      return () => {
+        cancelled = true;
+      };
+    }
+  }, [entry?.id, entry?.tmdb?.tmdbId, enrichEntrySeasons]);
 
   // Handle escape key to close
   useEffect(() => {
@@ -163,7 +223,36 @@ export default function MediaDetailModal({
   if (!isOpen || !entry) return null;
 
   const isTV = entry.tmdb.mediaType === "tv";
-  const watchedEpisodeCodes = new Set(entry.progress?.watchedEpisodes ?? []);
+  const catalogSeasons = getCachedTVSeasons(entry.tmdb.tmdbId)?.seasons;
+  const currentShowSeasons =
+    (modalSeasons.length > 0 ? modalSeasons : null) ||
+    (entry.tmdb.seasons && entry.tmdb.seasons.length > 0 ? entry.tmdb.seasons : null) ||
+    (catalogSeasons && catalogSeasons.length > 0 ? catalogSeasons : null);
+
+  const hasInvalidSeason1Overflow =
+    Boolean(currentShowSeasons &&
+    currentShowSeasons.length > 1 &&
+    entry.progress?.watchedEpisodes?.some((code) => {
+      const match = code.match(/^S1E(\d+)$/);
+      if (!match) return false;
+      const ep = parseInt(match[1], 10);
+      const s1Count = currentShowSeasons?.find((s) => s.seasonNumber === 1)?.episodeCount || 10;
+      return ep > s1Count;
+    }));
+
+  const rawWatchedEpisodes =
+    entry.progress?.watchedEpisodes &&
+    entry.progress.watchedEpisodes.length > 0 &&
+    !hasInvalidSeason1Overflow
+      ? entry.progress.watchedEpisodes
+      : buildWatchedEpisodes(
+          entry.shelf === "watched"
+            ? (entry.progress?.totalEpisodes ?? entry.tmdb.totalEpisodes ?? 10)
+            : (entry.progress?.currentEpisode ?? 0),
+          currentShowSeasons || undefined
+        );
+
+  const watchedEpisodeCodes = new Set(rawWatchedEpisodes);
 
   // ── Shelf Switcher ────────────────────────────────────────────────────────
   function handleShelfChange(newShelf: Shelf) {
@@ -396,15 +485,29 @@ export default function MediaDetailModal({
     setTags(tags.filter((t) => t !== tag));
   }
 
-  const seasonsList: TMDBSeasonData[] = entry.tmdb.seasons && entry.tmdb.seasons.length > 0
-    ? entry.tmdb.seasons
-    : Array.from({ length: entry.tmdb.totalSeasons || 1 }, (_, i) => ({
-        seasonNumber: i + 1,
-        name: `Season ${i + 1}`,
-        episodeCount: entry.tmdb.totalEpisodes
-          ? Math.ceil(entry.tmdb.totalEpisodes / (entry.tmdb.totalSeasons || 1))
-          : 10,
-      }));
+  const seasonsList: TMDBSeasonData[] =
+    currentShowSeasons && currentShowSeasons.length > 0
+      ? currentShowSeasons
+      : Array.from(
+          {
+            length:
+              entry.tmdb.totalSeasons ||
+              getCachedTVSeasons(entry.tmdb.tmdbId)?.totalSeasons ||
+              1,
+          },
+          (_, i) => ({
+            seasonNumber: i + 1,
+            name: `Season ${i + 1}`,
+            episodeCount: entry.tmdb.totalEpisodes
+              ? Math.ceil(
+                  entry.tmdb.totalEpisodes /
+                    (entry.tmdb.totalSeasons ||
+                      getCachedTVSeasons(entry.tmdb.tmdbId)?.totalSeasons ||
+                      1)
+                )
+              : 10,
+          })
+        );
 
   const totalCalculatedEpisodes = seasonsList.reduce((sum, s) => {
     const count = seasonsEpisodesMap[s.seasonNumber]?.length || s.episodeCount || 10;

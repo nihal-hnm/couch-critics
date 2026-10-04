@@ -9,7 +9,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Play,
   CheckCircle2,
@@ -29,6 +29,8 @@ import {
 } from "lucide-react";
 import type { MovieEntry, UserReview, WatchProgress, TMDBSeasonData } from "@/lib/types";
 import { useJournal } from "@/lib/journal-context";
+import { getCachedTVSeasons } from "@/lib/tv-seasons-cache";
+import { getMovieDetails } from "@/lib/tmdb";
 import MediaDetailModal from "./MediaDetailModal";
 
 interface WatchingShelfProps {
@@ -67,13 +69,60 @@ function buildWatchedEpisodes(currentEp: number, seasons?: TMDBSeasonData[]): st
 }
 
 export default function WatchingShelf({ entries }: WatchingShelfProps) {
-  const { updateProgress, moveToShelf, removeEntry } = useJournal();
+  const { updateProgress, moveToShelf, removeEntry, enrichEntrySeasons } = useJournal();
   const [completingId, setCompletingId] = useState<string | null>(null);
   const [rating, setRating] = useState(7);
   const [notes, setNotes] = useState("");
   const [selectedEntry, setSelectedEntry] = useState<MovieEntry | null>(null);
   const [expandedEpisodeShowId, setExpandedEpisodeShowId] = useState<string | null>(null);
   const [activeSeasonMap, setActiveSeasonMap] = useState<Record<string, number | "all">>({});
+  const [enrichedSeasonsMap, setEnrichedSeasonsMap] = useState<Record<string, TMDBSeasonData[]>>({});
+
+  // Fetch TV seasons dynamically when drawer expands if not already loaded
+  useEffect(() => {
+    if (!expandedEpisodeShowId) return;
+    const entry = entries.find((e) => e.id === expandedEpisodeShowId);
+    if (!entry || entry.tmdb.mediaType !== "tv") return;
+    if (entry.tmdb.seasons && entry.tmdb.seasons.length > 1) return;
+
+    // Check pre-baked catalog first (instant)
+    const catalog = getCachedTVSeasons(entry.tmdb.tmdbId);
+    if (catalog?.seasons && catalog.seasons.length > 0) {
+      setEnrichedSeasonsMap((prev) => ({ ...prev, [entry.id]: catalog.seasons }));
+      enrichEntrySeasons(
+        entry.id,
+        catalog.seasons,
+        catalog.totalSeasons,
+        catalog.backdropUrl,
+        catalog.totalEpisodes
+      );
+      return;
+    }
+
+    // Otherwise fetch full details from TMDB
+    let cancelled = false;
+    getMovieDetails(entry.tmdb.tmdbId, "tv")
+      .then((details) => {
+        if (cancelled) return;
+        if (details.seasons && details.seasons.length > 0) {
+          setEnrichedSeasonsMap((prev) => ({ ...prev, [entry.id]: details.seasons! }));
+          enrichEntrySeasons(
+            entry.id,
+            details.seasons,
+            details.totalSeasons || details.seasons.length,
+            details.backdropUrl,
+            details.totalEpisodes
+          );
+        }
+      })
+      .catch((err) => {
+        console.warn("Could not fetch TV seasons for WatchingShelf:", err);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [expandedEpisodeShowId, entries, enrichEntrySeasons]);
 
   function handleProgressChange(entry: MovieEntry, delta: number) {
     const current = entry.progress?.minutesWatched ?? 0;
@@ -221,10 +270,28 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
         {entries.map((entry, index) => {
           const progress = entry.progress;
           const isMovie = entry.tmdb.mediaType === "movie";
+          const showSeasons =
+            (entry.tmdb.seasons && entry.tmdb.seasons.length > 0 ? entry.tmdb.seasons : null) ||
+            enrichedSeasonsMap[entry.id] ||
+            (getCachedTVSeasons(entry.tmdb.tmdbId)?.seasons && getCachedTVSeasons(entry.tmdb.tmdbId)!.seasons.length > 0
+              ? getCachedTVSeasons(entry.tmdb.tmdbId)!.seasons
+              : null);
+
+          const hasInvalidSeason1Overflow =
+            Boolean(showSeasons &&
+            showSeasons.length > 1 &&
+            progress?.watchedEpisodes?.some((code) => {
+              const match = code.match(/^S1E(\d+)$/);
+              if (!match) return false;
+              const ep = parseInt(match[1], 10);
+              const s1Count = showSeasons?.find((s) => s.seasonNumber === 1)?.episodeCount || 10;
+              return ep > s1Count;
+            }));
+
           const watchedEpisodesList =
-            progress?.watchedEpisodes && progress.watchedEpisodes.length > 0
+            progress?.watchedEpisodes && progress.watchedEpisodes.length > 0 && !hasInvalidSeason1Overflow
               ? progress.watchedEpisodes
-              : buildWatchedEpisodes(progress?.currentEpisode ?? 0, entry.tmdb.seasons);
+              : buildWatchedEpisodes(progress?.currentEpisode ?? 0, showSeasons || undefined);
           const watchedEpisodesCount =
             watchedEpisodesList.length > 0
               ? watchedEpisodesList.length
@@ -444,13 +511,29 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
 
                 {/* TV Series: Inline Episode Checklist Drawer */}
                 {!isMovie && isExpanded && (() => {
-                  const availableSeasons = entry.tmdb.seasons && entry.tmdb.seasons.length > 0
-                    ? entry.tmdb.seasons
-                    : Array.from({ length: entry.tmdb.totalSeasons || 1 }, (_, i) => ({
-                        seasonNumber: i + 1,
-                        name: `Season ${i + 1}`,
-                        episodeCount: entry.tmdb.totalEpisodes ? Math.ceil(entry.tmdb.totalEpisodes / (entry.tmdb.totalSeasons || 1)) : 10,
-                      }));
+                  const availableSeasons =
+                    showSeasons && showSeasons.length > 0
+                      ? showSeasons
+                      : Array.from(
+                          {
+                            length:
+                              entry.tmdb.totalSeasons ||
+                              getCachedTVSeasons(entry.tmdb.tmdbId)?.totalSeasons ||
+                              1,
+                          },
+                          (_, i) => ({
+                            seasonNumber: i + 1,
+                            name: `Season ${i + 1}`,
+                            episodeCount: entry.tmdb.totalEpisodes
+                              ? Math.ceil(
+                                  entry.tmdb.totalEpisodes /
+                                    (entry.tmdb.totalSeasons ||
+                                      getCachedTVSeasons(entry.tmdb.tmdbId)?.totalSeasons ||
+                                      1)
+                                )
+                              : 10,
+                          })
+                        );
 
                   const currentSelection = activeSeasonMap[entry.id] ?? "all";
                   const seasonsToDisplay = currentSelection === "all"

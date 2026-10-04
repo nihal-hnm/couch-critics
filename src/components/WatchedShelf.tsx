@@ -37,6 +37,7 @@ import {
 import type { MovieEntry, UserReview } from "@/lib/types";
 import { useJournal } from "@/lib/journal-context";
 import { formatHours } from "@/lib/stats";
+import { getCachedTVSeasons } from "@/lib/tv-seasons-cache";
 import MediaDetailModal from "./MediaDetailModal";
 
 interface WatchedShelfProps {
@@ -232,13 +233,21 @@ export default function WatchedShelf({
               )}
 
               {/* Runtime / Episodes */}
-              {isTV ? (
-                entry.tmdb.totalSeasons ? (
+              {isTV ? (() => {
+                const totalSeasons =
+                  entry.tmdb.totalSeasons ||
+                  getCachedTVSeasons(entry.tmdb.tmdbId)?.totalSeasons ||
+                  entry.tmdb.seasons?.length;
+                return totalSeasons ? (
                   <span className="text-[10px] text-stone-400 font-mono">
-                    {entry.tmdb.totalSeasons} {entry.tmdb.totalSeasons === 1 ? "Season" : "Seasons"}
+                    {totalSeasons} {totalSeasons === 1 ? "Season" : "Seasons"}
                   </span>
-                ) : null
-              ) : entry.tmdb.runtime > 0 ? (
+                ) : (
+                  <span className="text-[10px] text-stone-400 font-mono">
+                    {entry.progress?.totalEpisodes ?? entry.tmdb.totalEpisodes ?? 10} eps
+                  </span>
+                );
+              })() : entry.tmdb.runtime > 0 ? (
                 <span className="text-[10px] text-stone-400 font-mono flex items-center gap-0.5">
                   <Clock className="w-2.5 h-2.5" />
                   {formatHours(entry.tmdb.runtime)}

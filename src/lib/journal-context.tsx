@@ -26,10 +26,12 @@ import {
   useRef,
   type ReactNode,
 } from "react";
-import type { MovieEntry, Shelf, UserReview, WatchProgress } from "./types";
+import type { MovieEntry, Shelf, UserReview, WatchProgress, TMDBSeasonData } from "./types";
 import { getEntries, saveEntries, resetToStarterData } from "./storage";
 import { useAuth } from "./auth-context";
 import { apiClient } from "./api-client";
+import { getCachedTVSeasons } from "./tv-seasons-cache";
+import { getMovieDetails } from "./tmdb";
 
 // ─── API Response Types ─────────────────────────────────────────────────────
 
@@ -64,6 +66,31 @@ interface ApiEntry {
   review?: ApiReview | ApiReview[] | null;
 }
 
+/** Distribute watched episodes count across real seasons */
+function buildInitialWatchedEpisodes(currentEp: number, seasons?: TMDBSeasonData[]): string[] {
+  const codes: string[] = [];
+  if (!currentEp || currentEp <= 0) return codes;
+
+  if (seasons && seasons.length > 0) {
+    let remaining = currentEp;
+    for (const season of seasons) {
+      if (season.seasonNumber <= 0) continue;
+      const count = season.episodeCount || 10;
+      const watchedInThisSeason = Math.min(remaining, count);
+      for (let i = 1; i <= watchedInThisSeason; i++) {
+        codes.push(`S${season.seasonNumber}E${i}`);
+      }
+      remaining -= watchedInThisSeason;
+      if (remaining <= 0) break;
+    }
+  } else {
+    for (let i = 1; i <= currentEp; i++) {
+      codes.push(`S1E${i}`);
+    }
+  }
+  return codes;
+}
+
 /** Map an API entry (flat, snake_case with joined review) to our frontend MovieEntry */
 function apiEntryToMovieEntry(e: ApiEntry): MovieEntry {
   const rawReview = Array.isArray(e.review) ? e.review[0] : e.review;
@@ -77,21 +104,19 @@ function apiEntryToMovieEntry(e: ApiEntry): MovieEntry {
     : undefined;
 
   const isTv = e.media_type === "tv";
-  const totalEps = e.total_episodes ?? (isTv ? 10 : undefined);
+  const cachedTv = isTv ? getCachedTVSeasons(e.tmdb_id) : undefined;
+  const totalEps = e.total_episodes ?? cachedTv?.totalEpisodes ?? (isTv ? 10 : undefined);
   const currentEp =
     e.current_episode ?? (e.shelf === "watched" && isTv ? totalEps : undefined);
   const totalMins =
-    e.total_minutes ?? (isTv ? (totalEps ? totalEps * (e.runtime || 45) : undefined) : e.runtime || 0);
+    e.total_minutes ?? (isTv ? (totalEps ? totalEps * (e.runtime || cachedTv?.runtime || 45) : undefined) : e.runtime || 0);
   const minsWatched =
     e.minutes_watched ?? (e.shelf === "watched" ? totalMins : undefined);
 
-  // Synthesize watched episode codes if not present (e.g. on new device)
+  // Synthesize watched episode codes accurately distributed across real seasons
   let syntheticWatchedEpisodes: string[] | undefined = undefined;
   if (isTv && currentEp && currentEp > 0) {
-    syntheticWatchedEpisodes = [];
-    for (let i = 1; i <= currentEp; i++) {
-      syntheticWatchedEpisodes.push(`S1E${i}`);
-    }
+    syntheticWatchedEpisodes = buildInitialWatchedEpisodes(currentEp, cachedTv?.seasons);
   }
 
   return {
@@ -101,13 +126,16 @@ function apiEntryToMovieEntry(e: ApiEntry): MovieEntry {
       tmdbId: e.tmdb_id,
       title: e.title,
       posterUrl: e.poster_url,
+      backdropUrl: cachedTv?.backdropUrl ?? null,
       releaseYear: e.release_year ?? "",
-      runtime: e.runtime,
+      runtime: e.runtime || cachedTv?.runtime || 0,
       genres: Array.isArray(e.genres) ? e.genres : [],
       director: e.director || "",
       overview: e.overview || "",
       mediaType: (e.media_type as "movie" | "tv") || "movie",
       totalEpisodes: totalEps,
+      totalSeasons: cachedTv?.totalSeasons,
+      seasons: cachedTv?.seasons,
     },
     progress:
       currentEp != null || minsWatched != null || totalEps != null
@@ -178,7 +206,17 @@ type JournalAction =
   | { type: "ENTRY_REMOVED"; payload: string }
   | { type: "ENTRY_MOVED"; payload: { id: string; shelf: Shelf; review?: UserReview } }
   | { type: "PROGRESS_UPDATED"; payload: { id: string; progress: WatchProgress } }
-  | { type: "REVIEW_UPDATED"; payload: { id: string; review: UserReview } };
+  | { type: "REVIEW_UPDATED"; payload: { id: string; review: UserReview } }
+  | {
+      type: "ENTRY_ENRICHED";
+      payload: {
+        id: string;
+        seasons: TMDBSeasonData[];
+        totalSeasons: number;
+        backdropUrl?: string | null;
+        totalEpisodes?: number;
+      };
+    };
 
 // ─── State Shape ────────────────────────────────────────────────────────────
 
@@ -269,6 +307,25 @@ function journalReducer(state: JournalState, action: JournalAction): JournalStat
         ),
       };
 
+    case "ENTRY_ENRICHED":
+      return {
+        ...state,
+        entries: state.entries.map((e) =>
+          e.id === action.payload.id
+            ? {
+                ...e,
+                tmdb: {
+                  ...e.tmdb,
+                  seasons: action.payload.seasons,
+                  totalSeasons: action.payload.totalSeasons,
+                  backdropUrl: action.payload.backdropUrl ?? e.tmdb.backdropUrl,
+                  totalEpisodes: action.payload.totalEpisodes ?? e.tmdb.totalEpisodes,
+                },
+              }
+            : e
+        ),
+      };
+
     default:
       return state;
   }
@@ -284,6 +341,13 @@ interface JournalContextValue {
   moveToShelf: (id: string, shelf: Shelf, review?: UserReview) => void;
   updateProgress: (id: string, progress: WatchProgress) => void;
   updateReview: (id: string, review: UserReview) => void;
+  enrichEntrySeasons: (
+    id: string,
+    seasons: TMDBSeasonData[],
+    totalSeasons: number,
+    backdropUrl?: string | null,
+    totalEpisodes?: number
+  ) => void;
   resetToDemoData: () => void;
 }
 
@@ -328,16 +392,18 @@ export function JournalProvider({ children }: { children: ReactNode }) {
           const resolved = serverEntries.map((serverEntry) => {
             const local =
               localById.get(serverEntry.id) || localByTmdb.get(serverEntry.tmdb?.tmdbId);
+            const cachedTv = serverEntry.tmdb.mediaType === "tv" ? getCachedTVSeasons(serverEntry.tmdb.tmdbId) : undefined;
             if (!local) return serverEntry;
             return {
               ...serverEntry,
               tmdb: {
                 ...serverEntry.tmdb,
-                seasons: local.tmdb?.seasons ?? serverEntry.tmdb?.seasons,
-                backdropUrl: local.tmdb?.backdropUrl ?? serverEntry.tmdb?.backdropUrl,
+                seasons: local.tmdb?.seasons ?? cachedTv?.seasons ?? serverEntry.tmdb?.seasons,
+                totalSeasons: local.tmdb?.totalSeasons ?? cachedTv?.totalSeasons ?? serverEntry.tmdb?.totalSeasons,
+                backdropUrl: local.tmdb?.backdropUrl ?? cachedTv?.backdropUrl ?? serverEntry.tmdb?.backdropUrl,
                 director: local.tmdb?.director || serverEntry.tmdb?.director,
                 overview: serverEntry.tmdb?.overview || local.tmdb?.overview,
-                totalEpisodes: local.tmdb?.totalEpisodes ?? serverEntry.tmdb?.totalEpisodes,
+                totalEpisodes: local.tmdb?.totalEpisodes ?? cachedTv?.totalEpisodes ?? serverEntry.tmdb?.totalEpisodes,
               },
               progress: {
                 ...local.progress,
@@ -375,6 +441,48 @@ export function JournalProvider({ children }: { children: ReactNode }) {
     }
   }, [state.entries, state.isLoaded, user?.id]);
 
+  /**
+   * Background TV enrichment:
+   * For any TV shows that lack full seasons or totalSeasons, fetch from TMDB and enrich state.
+   */
+  useEffect(() => {
+    if (!state.isLoaded || state.entries.length === 0) return;
+
+    const unEnrichedTV = state.entries.filter(
+      (e) =>
+        e.tmdb.mediaType === "tv" &&
+        (!e.tmdb.seasons || e.tmdb.seasons.length <= 1) &&
+        Boolean(e.tmdb.tmdbId)
+    );
+
+    if (unEnrichedTV.length === 0) return;
+
+    let cancelled = false;
+    unEnrichedTV.forEach((entry) => {
+      getMovieDetails(entry.tmdb.tmdbId, "tv")
+        .then((details) => {
+          if (cancelled) return;
+          if (details.seasons && details.seasons.length > 0) {
+            dispatch({
+              type: "ENTRY_ENRICHED",
+              payload: {
+                id: entry.id,
+                seasons: details.seasons,
+                totalSeasons: details.totalSeasons || details.seasons.length,
+                backdropUrl: details.backdropUrl,
+                totalEpisodes: details.totalEpisodes,
+              },
+            });
+          }
+        })
+        .catch(() => {});
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [state.isLoaded, state.entries.length]);
+
   // ─── Actions ────────────────────────────────────────────────────────────
 
   const addEntry = useCallback(
@@ -393,8 +501,9 @@ export function JournalProvider({ children }: { children: ReactNode }) {
               tmdb: {
                 ...entry.tmdb,
                 ...converted.tmdb,
-                seasons: entry.tmdb.seasons,
-                backdropUrl: entry.tmdb.backdropUrl,
+                seasons: entry.tmdb.seasons ?? converted.tmdb.seasons,
+                totalSeasons: entry.tmdb.totalSeasons ?? converted.tmdb.totalSeasons,
+                backdropUrl: entry.tmdb.backdropUrl ?? converted.tmdb.backdropUrl,
               },
               progress: {
                 ...entry.progress,
@@ -511,6 +620,22 @@ export function JournalProvider({ children }: { children: ReactNode }) {
     [isAuthenticated]
   );
 
+  const enrichEntrySeasons = useCallback(
+    (
+      id: string,
+      seasons: TMDBSeasonData[],
+      totalSeasons: number,
+      backdropUrl?: string | null,
+      totalEpisodes?: number
+    ) => {
+      dispatch({
+        type: "ENTRY_ENRICHED",
+        payload: { id, seasons, totalSeasons, backdropUrl, totalEpisodes },
+      });
+    },
+    []
+  );
+
   const resetToDemoData = useCallback(() => {
     const starter = resetToStarterData(user?.id ?? null);
     dispatch({ type: "ENTRIES_LOADED", payload: starter });
@@ -526,6 +651,7 @@ export function JournalProvider({ children }: { children: ReactNode }) {
         moveToShelf,
         updateProgress,
         updateReview,
+        enrichEntrySeasons,
         resetToDemoData,
       }}
     >

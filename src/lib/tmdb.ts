@@ -279,97 +279,180 @@ export async function searchMovies(query: string): Promise<TMDBMovieData[]> {
 /**
  * Fetch full details for a specific movie or TV show.
  */
+import { getCachedTVSeasons } from "./tv-seasons-cache";
+
+// In-memory cache for fast lookups
+const movieDetailsCache = new Map<string, TMDBMovieData>();
+const seasonEpisodesCache = new Map<string, EpisodeItem[]>();
+
+/**
+ * Fetch full details for a specific movie or TV show with multi-tiered caching:
+ * 1. Memory cache
+ * 2. LocalStorage cache
+ * 3. Pre-baked TV seasons catalog
+ * 4. Live TMDB API
+ */
 export async function getMovieDetails(
   tmdbId: number,
   mediaType: "movie" | "tv"
 ): Promise<TMDBMovieData> {
+  const cacheKey = `couch-critics-tmdb-detail-${mediaType}-${tmdbId}`;
+
+  // 1. Memory cache
+  if (movieDetailsCache.has(cacheKey)) {
+    return movieDetailsCache.get(cacheKey)!;
+  }
+
+  // 2. LocalStorage cache
+  if (typeof window !== "undefined") {
+    try {
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        const parsed = JSON.parse(cached) as TMDBMovieData;
+        movieDetailsCache.set(cacheKey, parsed);
+        return parsed;
+      }
+    } catch {}
+  }
+
   const endpoint = mediaType === "movie"
     ? `/movie/${tmdbId}`
     : `/tv/${tmdbId}`;
 
-  const data = await tmdbFetch<TMDBMovieDetails>(endpoint, {
-    append_to_response: "credits",
-    language: "en-US",
-  });
+  try {
+    const data = await tmdbFetch<TMDBMovieDetails>(endpoint, {
+      append_to_response: "credits",
+      language: "en-US",
+    });
 
-  const director =
-    data.credits?.crew.find(
-      (person) =>
-        person.job === "Director" ||
-        person.job === "Creator" ||
-        person.job === "Executive Producer"
-    )?.name ?? "Unknown";
+    const director =
+      data.credits?.crew.find(
+        (person) =>
+          person.job === "Director" ||
+          person.job === "Creator" ||
+          person.job === "Executive Producer"
+      )?.name ?? "Unknown";
 
-  let runtime = 0;
-  if (mediaType === "movie") {
-    runtime = data.runtime ?? 0;
-  } else if (data.episode_run_time && data.episode_run_time.length > 0) {
-    runtime = Math.round(
-      data.episode_run_time.reduce((sum, r) => sum + r, 0) /
-        data.episode_run_time.length
-    );
-  } else if (data.runtime) {
-    runtime = data.runtime;
-  } else {
-    runtime = 45; // sensible TV average default
-  }
-
-  // Format TV seasons with episode counts
-  let seasons: TMDBSeasonData[] | undefined = undefined;
-  let totalEpisodes: number | undefined = undefined;
-  let totalSeasons: number | undefined = undefined;
-
-  if (mediaType === "tv") {
-    totalEpisodes = data.number_of_episodes || 0;
-    totalSeasons = data.number_of_seasons || (data.seasons ? data.seasons.filter(s => s.season_number > 0).length : 1);
-
-    if (data.seasons && data.seasons.length > 0) {
-      seasons = data.seasons
-        .filter((s) => s.season_number > 0) // Filter out specials/season 0 for main list
-        .map((s) => ({
-          seasonNumber: s.season_number,
-          name: s.name || `Season ${s.season_number}`,
-          episodeCount: s.episode_count || 10,
-          posterUrl: s.poster_path ? `${TMDB_IMAGE_BASE}${s.poster_path}` : null,
-          overview: s.overview || "",
-          episodes: Array.from({ length: s.episode_count || 10 }, (_, i) => ({
-            seasonNumber: s.season_number,
-            episodeNumber: i + 1,
-            title: `Episode ${i + 1}`,
-            runtime: runtime || 45,
-          })),
-        }));
+    let runtime = 0;
+    if (mediaType === "movie") {
+      runtime = data.runtime ?? 0;
+    } else if (data.episode_run_time && data.episode_run_time.length > 0) {
+      runtime = Math.round(
+        data.episode_run_time.reduce((sum, r) => sum + r, 0) /
+          data.episode_run_time.length
+      );
+    } else if (data.runtime) {
+      runtime = data.runtime;
+    } else {
+      runtime = 45; // sensible TV average default
     }
-  }
 
-  return {
-    tmdbId: data.id,
-    title: data.title ?? data.name ?? "Unknown Title",
-    posterUrl: data.poster_path
-      ? `${TMDB_IMAGE_BASE}${data.poster_path}`
-      : null,
-    backdropUrl: data.backdrop_path
-      ? `${TMDB_BACKDROP_BASE}${data.backdrop_path}`
-      : null,
-    releaseYear: (data.release_date ?? data.first_air_date ?? "").slice(0, 4) || "N/A",
-    runtime,
-    genres: data.genres.map((g) => g.name),
-    director,
-    overview: data.overview || "No overview available.",
-    mediaType,
-    totalEpisodes,
-    totalSeasons,
-    seasons,
-  };
+    // Format TV seasons with episode counts
+    let seasons: TMDBSeasonData[] | undefined = undefined;
+    let totalEpisodes: number | undefined = undefined;
+    let totalSeasons: number | undefined = undefined;
+
+    if (mediaType === "tv") {
+      totalEpisodes = data.number_of_episodes || 0;
+      totalSeasons = data.number_of_seasons || (data.seasons ? data.seasons.filter(s => s.season_number > 0).length : 1);
+
+      if (data.seasons && data.seasons.length > 0) {
+        seasons = data.seasons
+          .filter((s) => s.season_number > 0) // Filter out specials/season 0 for main list
+          .map((s) => ({
+            seasonNumber: s.season_number,
+            name: s.name || `Season ${s.season_number}`,
+            episodeCount: s.episode_count || 10,
+            posterUrl: s.poster_path ? `${TMDB_IMAGE_BASE}${s.poster_path}` : null,
+            overview: s.overview || "",
+            episodes: Array.from({ length: s.episode_count || 10 }, (_, i) => ({
+              seasonNumber: s.season_number,
+              episodeNumber: i + 1,
+              title: `Episode ${i + 1}`,
+              runtime: runtime || 45,
+            })),
+          }));
+      }
+    }
+
+    const result: TMDBMovieData = {
+      tmdbId: data.id,
+      title: data.title ?? data.name ?? "Unknown Title",
+      posterUrl: data.poster_path
+        ? `${TMDB_IMAGE_BASE}${data.poster_path}`
+        : null,
+      backdropUrl: data.backdrop_path
+        ? `${TMDB_BACKDROP_BASE}${data.backdrop_path}`
+        : null,
+      releaseYear: (data.release_date ?? data.first_air_date ?? "").slice(0, 4) || "N/A",
+      runtime,
+      genres: data.genres.map((g) => g.name),
+      director,
+      overview: data.overview || "No overview available.",
+      mediaType,
+      totalEpisodes,
+      totalSeasons,
+      seasons,
+    };
+
+    movieDetailsCache.set(cacheKey, result);
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify(result));
+      } catch {}
+    }
+    return result;
+  } catch (err) {
+    // 3. Fallback to pre-baked TV catalog if network error
+    if (mediaType === "tv") {
+      const catalogItem = getCachedTVSeasons(tmdbId);
+      if (catalogItem) {
+        const fallbackResult: TMDBMovieData = {
+          tmdbId,
+          title: "TV Series",
+          posterUrl: null,
+          backdropUrl: catalogItem.backdropUrl,
+          releaseYear: "",
+          runtime: catalogItem.runtime,
+          genres: [],
+          director: "",
+          overview: "",
+          mediaType: "tv",
+          totalEpisodes: catalogItem.totalEpisodes,
+          totalSeasons: catalogItem.totalSeasons,
+          seasons: catalogItem.seasons,
+        };
+        return fallbackResult;
+      }
+    }
+    throw err;
+  }
 }
 
 /**
- * Fetch detailed episode data for a TV show season.
+ * Fetch detailed episode data for a TV show season with caching.
  */
 export async function fetchSeasonEpisodes(
   tvTmdbId: number,
   seasonNumber: number
 ): Promise<EpisodeItem[]> {
+  const cacheKey = `couch-critics-tmdb-episodes-${tvTmdbId}-S${seasonNumber}`;
+
+  if (seasonEpisodesCache.has(cacheKey)) {
+    return seasonEpisodesCache.get(cacheKey)!;
+  }
+
+  if (typeof window !== "undefined") {
+    try {
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        const parsed = JSON.parse(cached) as EpisodeItem[];
+        seasonEpisodesCache.set(cacheKey, parsed);
+        return parsed;
+      }
+    } catch {}
+  }
+
   try {
     const data = await tmdbFetch<TMDBSeasonDetailsRaw>(
       `/tv/${tvTmdbId}/season/${seasonNumber}`,
@@ -377,7 +460,7 @@ export async function fetchSeasonEpisodes(
     );
 
     if (data.episodes && data.episodes.length > 0) {
-      return data.episodes.map((ep) => ({
+      const eps: EpisodeItem[] = data.episodes.map((ep) => ({
         seasonNumber: ep.season_number,
         episodeNumber: ep.episode_number,
         title: ep.name || `Episode ${ep.episode_number}`,
@@ -385,16 +468,61 @@ export async function fetchSeasonEpisodes(
         overview: ep.overview || "",
         airDate: ep.air_date,
       }));
+
+      seasonEpisodesCache.set(cacheKey, eps);
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify(eps));
+        } catch {}
+      }
+      return eps;
     }
   } catch (err) {
     console.warn(`Could not fetch episodes for TV ${tvTmdbId} S${seasonNumber}:`, err);
   }
 
-  // Fallback generation if offline / API failure
-  return Array.from({ length: 10 }, (_, i) => ({
+  // Fallback to exact count from catalog if available
+  const catalogItem = getCachedTVSeasons(tvTmdbId);
+  const knownSeason = catalogItem?.seasons.find((s) => s.seasonNumber === seasonNumber);
+  const fallbackLength = knownSeason?.episodeCount || 10;
+
+  return Array.from({ length: fallbackLength }, (_, i) => ({
     seasonNumber,
     episodeNumber: i + 1,
     title: `Episode ${i + 1}`,
-    runtime: 45,
+    runtime: catalogItem?.runtime || 45,
   }));
 }
+
+/**
+ * Distribute a total watched episodes count accurately across real seasons.
+ * e.g., 65 episodes of an 8-season show:
+ * S1 (22 eps) -> S1E1-S1E22
+ * S2 (23 eps) -> S2E1-S2E23
+ * S3 (23 eps) -> S3E1-S3E20
+ */
+export function buildWatchedEpisodes(currentEp: number, seasons?: TMDBSeasonData[]): string[] {
+  const codes: string[] = [];
+  if (!currentEp || currentEp <= 0) return codes;
+
+  if (seasons && seasons.length > 0) {
+    let remaining = currentEp;
+    for (const season of seasons) {
+      if (season.seasonNumber <= 0) continue;
+      const count = season.episodeCount || 10;
+      const watchedInThisSeason = Math.min(remaining, count);
+      for (let i = 1; i <= watchedInThisSeason; i++) {
+        codes.push(`S${season.seasonNumber}E${i}`);
+      }
+      remaining -= watchedInThisSeason;
+      if (remaining <= 0) break;
+    }
+  } else {
+    for (let i = 1; i <= currentEp; i++) {
+      codes.push(`S1E${i}`);
+    }
+  }
+  return codes;
+}
+
+
