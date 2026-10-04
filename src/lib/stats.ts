@@ -43,12 +43,13 @@ export function computeStats(entries: MovieEntry[]): JournalStats {
           0;
         seriesMinutes += entry.progress?.minutesWatched || watchedCount * avgEpRuntime;
       } else if (entry.shelf === "watched") {
-        const watchedCount =
-          entry.progress?.watchedEpisodes?.length ||
+        const totalEps =
           entry.progress?.totalEpisodes ||
           entry.tmdb.totalEpisodes ||
+          entry.progress?.watchedEpisodes?.length ||
           10;
-        seriesMinutes += entry.progress?.minutesWatched || watchedCount * avgEpRuntime;
+        const fullShowMins = entry.progress?.totalMinutes || totalEps * avgEpRuntime;
+        seriesMinutes += fullShowMins;
       }
     }
   }
@@ -57,7 +58,7 @@ export function computeStats(entries: MovieEntry[]): JournalStats {
 
   // Average rating: only count entries that have a review with a rating
   const ratings = watched
-    .filter((e) => e.review?.rating)
+    .filter((e) => e.review?.rating && e.review.rating > 0)
     .map((e) => e.review!.rating);
 
   const averageRating =
@@ -80,9 +81,12 @@ export function computeStats(entries: MovieEntry[]): JournalStats {
   // Watched per month: group by YYYY-MM for the chart
   const monthCounts: Record<string, number> = {};
   watched.forEach((entry) => {
-    if (entry.review?.dateCompleted) {
-      const month = entry.review.dateCompleted.slice(0, 7); // "2024-03"
-      monthCounts[month] = (monthCounts[month] || 0) + 1;
+    const rawDate = entry.review?.dateCompleted || entry.updatedAt || entry.addedAt;
+    if (rawDate) {
+      const month = rawDate.slice(0, 7); // "YYYY-MM"
+      if (/^\d{4}-\d{2}$/.test(month)) {
+        monthCounts[month] = (monthCounts[month] || 0) + 1;
+      }
     }
   });
 

@@ -3,16 +3,16 @@
  * Journal Context — Global State Management (Hybrid: Local + Cloud)
  * =============================================================================
  *
- * This context supports two modes:
- *   1. GUEST MODE (no auth): Works exactly as before — localStorage only.
+ * This context supports two isolated modes:
+ *   1. GUEST MODE (no auth): Uses `couch-critics-guest-entries`.
  *   2. AUTHENTICATED MODE: Fetches from and dispatches mutations to /api/*.
- *      localStorage is used as a fast cache, and the API is the source of truth.
+ *      Each user's cache is strictly scoped to `couch-critics-entries-${user.id}`.
+ *      The API is the source of truth; reviews and ratings are synced seamlessly.
  *
- * MIGRATION STRATEGY:
- * ──────────────────
- * When a guest user logs in, their localStorage entries are NOT automatically
- * synced to the cloud. They start fresh with an empty cloud journal. If you
- * want to add a "merge" feature later, you can POST each local entry to the API.
+ * DATA PRIVACY & MULTI-DEVICE SYNC:
+ * ─────────────────────────────────
+ * Private cloud data is never leaked to guest mode. When signing out or opening
+ * unauthenticated on any mobile device (Android/iOS), user data is never shown.
  */
 
 "use client";
@@ -23,16 +23,25 @@ import {
   useReducer,
   useEffect,
   useCallback,
+  useRef,
   type ReactNode,
 } from "react";
 import type { MovieEntry, Shelf, UserReview, WatchProgress } from "./types";
 import { getEntries, saveEntries, resetToStarterData } from "./storage";
 import { useAuth } from "./auth-context";
-import { apiClient, ApiClientError } from "./api-client";
+import { apiClient } from "./api-client";
 
 // ─── API Response Types ─────────────────────────────────────────────────────
-// The API stores data in a flat, snake_case format. We need to map it to
-// our camelCase MovieEntry type for the frontend.
+
+interface ApiReview {
+  id: string;
+  rating: number;
+  notes: string | null;
+  tags: string[] | null;
+  date_completed: string | null;
+  created_at: string;
+  updated_at: string;
+}
 
 interface ApiEntry {
   id: string;
@@ -52,10 +61,21 @@ interface ApiEntry {
   total_minutes: number | null;
   created_at: string;
   updated_at: string;
+  review?: ApiReview | ApiReview[] | null;
 }
 
-/** Map an API entry (flat, snake_case) to our frontend MovieEntry (nested, camelCase) */
+/** Map an API entry (flat, snake_case with joined review) to our frontend MovieEntry */
 function apiEntryToMovieEntry(e: ApiEntry): MovieEntry {
+  const rawReview = Array.isArray(e.review) ? e.review[0] : e.review;
+  const userReview: UserReview | undefined = rawReview
+    ? {
+        rating: rawReview.rating,
+        notes: rawReview.notes || "",
+        tags: Array.isArray(rawReview.tags) ? rawReview.tags : [],
+        dateCompleted: rawReview.date_completed || e.updated_at || e.created_at,
+      }
+    : undefined;
+
   return {
     id: e.id,
     shelf: e.shelf as Shelf,
@@ -65,13 +85,13 @@ function apiEntryToMovieEntry(e: ApiEntry): MovieEntry {
       posterUrl: e.poster_url,
       releaseYear: e.release_year ?? "",
       runtime: e.runtime,
-      genres: e.genres,
-      director: e.director,
-      overview: e.overview,
-      mediaType: e.media_type as "movie" | "tv",
+      genres: Array.isArray(e.genres) ? e.genres : [],
+      director: e.director || "",
+      overview: e.overview || "",
+      mediaType: (e.media_type as "movie" | "tv") || "movie",
     },
     progress:
-      e.current_episode != null || e.minutes_watched != null
+      e.current_episode != null || e.minutes_watched != null || e.total_episodes != null
         ? {
             currentEpisode: e.current_episode ?? undefined,
             totalEpisodes: e.total_episodes ?? undefined,
@@ -79,6 +99,7 @@ function apiEntryToMovieEntry(e: ApiEntry): MovieEntry {
             totalMinutes: e.total_minutes ?? undefined,
           }
         : undefined,
+    review: userReview,
     addedAt: e.created_at,
     updatedAt: e.updated_at,
   };
@@ -86,16 +107,21 @@ function apiEntryToMovieEntry(e: ApiEntry): MovieEntry {
 
 /** Map a frontend MovieEntry to the API create payload */
 function movieEntryToApiPayload(entry: MovieEntry) {
+  const cleanPoster =
+    entry.tmdb.posterUrl && entry.tmdb.posterUrl.trim() !== ""
+      ? entry.tmdb.posterUrl
+      : null;
+
   return {
     shelf: entry.shelf,
     tmdb_id: entry.tmdb.tmdbId,
     title: entry.tmdb.title,
-    poster_url: entry.tmdb.posterUrl,
+    poster_url: cleanPoster,
     release_year: entry.tmdb.releaseYear || null,
-    runtime: entry.tmdb.runtime,
-    genres: entry.tmdb.genres,
-    director: entry.tmdb.director,
-    overview: entry.tmdb.overview,
+    runtime: entry.tmdb.runtime || 0,
+    genres: entry.tmdb.genres || [],
+    director: entry.tmdb.director || "",
+    overview: entry.tmdb.overview || "",
     media_type: entry.tmdb.mediaType,
     current_episode: entry.progress?.currentEpisode ?? null,
     total_episodes: entry.progress?.totalEpisodes ?? null,
@@ -121,20 +147,6 @@ interface JournalState {
   isLoaded: boolean;
 }
 
-function getInitialJournalState(): JournalState {
-  if (typeof window !== "undefined") {
-    try {
-      const stored = getEntries();
-      if (stored && stored.length > 0) {
-        return { entries: stored, isLoaded: true };
-      }
-    } catch {
-      // ignore SSR or storage errors
-    }
-  }
-  return { entries: [], isLoaded: false };
-}
-
 // ─── Reducer ────────────────────────────────────────────────────────────────
 
 function journalReducer(state: JournalState, action: JournalAction): JournalState {
@@ -154,16 +166,39 @@ function journalReducer(state: JournalState, action: JournalAction): JournalStat
     case "ENTRY_MOVED":
       return {
         ...state,
-        entries: state.entries.map((e) =>
-          e.id === action.payload.id
-            ? {
-                ...e,
-                shelf: action.payload.shelf,
-                review: action.payload.review ?? e.review,
-                updatedAt: new Date().toISOString(),
-              }
-            : e
-        ),
+        entries: state.entries.map((e) => {
+          if (e.id !== action.payload.id) return e;
+          const isMovingToWatched = action.payload.shelf === "watched";
+          let updatedProgress = e.progress;
+
+          if (isMovingToWatched) {
+            if (e.tmdb.mediaType === "tv") {
+              const totalEps = e.progress?.totalEpisodes ?? e.tmdb.totalEpisodes ?? 10;
+              const epRuntime = e.tmdb.runtime || 45;
+              updatedProgress = {
+                ...e.progress,
+                currentEpisode: totalEps,
+                totalEpisodes: totalEps,
+                minutesWatched: totalEps * epRuntime,
+                totalMinutes: totalEps * epRuntime,
+              };
+            } else {
+              updatedProgress = {
+                ...e.progress,
+                minutesWatched: e.tmdb.runtime,
+                totalMinutes: e.tmdb.runtime,
+              };
+            }
+          }
+
+          return {
+            ...e,
+            shelf: action.payload.shelf,
+            review: action.payload.review ?? e.review,
+            progress: updatedProgress,
+            updatedAt: new Date().toISOString(),
+          };
+        }),
       };
 
     case "PROGRESS_UPDATED":
@@ -217,37 +252,42 @@ const JournalContext = createContext<JournalContextValue | null>(null);
 // ─── Provider Component ─────────────────────────────────────────────────────
 
 export function JournalProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(journalReducer, undefined, getInitialJournalState);
+  const [state, dispatch] = useReducer(journalReducer, { entries: [], isLoaded: false });
   const { user, session, isLoading: authLoading } = useAuth();
+  const previousUserIdRef = useRef<string | null | undefined>(undefined);
 
   const isAuthenticated = !!user && !!session;
 
   /**
-   * Load entries: from API if authenticated, from localStorage if guest.
+   * Safe, user-isolated entry loader:
+   *  - If authenticated: uses user-scoped cache & fetches from Supabase.
+   *  - If guest: uses guest storage, never showing prior account data.
    */
   useEffect(() => {
-    if (authLoading) return; // Wait for auth to initialize
+    if (authLoading) return; // Wait for auth initialization
 
-    if (isAuthenticated) {
-      // Fetch from API
+    const currentUserId = user?.id ?? null;
+    previousUserIdRef.current = currentUserId;
+
+    if (isAuthenticated && user?.id) {
+      // 1. Immediately load user-scoped local cache for instant UI rendering
+      const userCache = getEntries(user.id);
+      dispatch({ type: "ENTRIES_LOADED", payload: userCache });
+
+      // 2. Query cloud database (source of truth)
       apiClient
         .get<ApiEntry[]>("/api/entries")
         .then((data) => {
           const serverEntries = data.map(apiEntryToMovieEntry);
-          const localEntries = getEntries();
 
-          if (serverEntries.length === 0) {
-            dispatch({ type: "ENTRIES_LOADED", payload: localEntries });
-            return;
-          }
-
-          // Deep merge server entries with local entries so we never lose
-          // granular watchedEpisodes, seasons, episodeHistory, or rich TMDB data
-          const localById = new Map(localEntries.map((e) => [e.id, e]));
-          const localByTmdb = new Map(localEntries.map((e) => [e.tmdb?.tmdbId, e]));
+          // Deep merge server entries with local cache to retain rich TMDB client fields
+          // like seasons, backdropUrl, and granular watchedEpisodes
+          const localById = new Map(userCache.map((e) => [e.id, e]));
+          const localByTmdb = new Map(userCache.map((e) => [e.tmdb?.tmdbId, e]));
 
           const resolved = serverEntries.map((serverEntry) => {
-            const local = localById.get(serverEntry.id) || localByTmdb.get(serverEntry.tmdb?.tmdbId);
+            const local =
+              localById.get(serverEntry.id) || localByTmdb.get(serverEntry.tmdb?.tmdbId);
             if (!local) return serverEntry;
             return {
               ...serverEntry,
@@ -262,42 +302,38 @@ export function JournalProvider({ children }: { children: ReactNode }) {
               progress: {
                 ...local.progress,
                 ...serverEntry.progress,
-                watchedEpisodes: local.progress?.watchedEpisodes ?? serverEntry.progress?.watchedEpisodes ?? [],
+                watchedEpisodes:
+                  local.progress?.watchedEpisodes ?? serverEntry.progress?.watchedEpisodes ?? [],
                 currentSeason: local.progress?.currentSeason ?? serverEntry.progress?.currentSeason,
-                episodeHistory: local.progress?.episodeHistory ?? serverEntry.progress?.episodeHistory,
+                episodeHistory:
+                  local.progress?.episodeHistory ?? serverEntry.progress?.episodeHistory,
               },
               review: serverEntry.review || local.review,
             };
           });
 
-          // Also include any local-only entries that haven't synced yet
-          const serverTmdbIds = new Set(serverEntries.map((e) => e.tmdb.tmdbId));
-          const localOnly = localEntries.filter((l) => !serverTmdbIds.has(l.tmdb.tmdbId) && !localById.has(l.id));
-          const combined = [...resolved, ...localOnly];
-
-          dispatch({ type: "ENTRIES_LOADED", payload: combined });
+          dispatch({ type: "ENTRIES_LOADED", payload: resolved });
+          saveEntries(resolved, user.id);
         })
         .catch((err) => {
-          console.warn("Entries API unavailable, falling back to local storage:", err);
-          // Fallback to local storage so user data is never lost
-          const stored = getEntries();
-          dispatch({ type: "ENTRIES_LOADED", payload: stored });
+          console.warn("Entries API unavailable, using user local cache:", err);
+          dispatch({ type: "ENTRIES_LOADED", payload: userCache });
         });
     } else {
-      // Guest mode — load from localStorage
-      const stored = getEntries();
-      dispatch({ type: "ENTRIES_LOADED", payload: stored });
+      // Guest mode — load strictly from guest storage key
+      const guestStored = getEntries(null);
+      dispatch({ type: "ENTRIES_LOADED", payload: guestStored });
     }
-  }, [isAuthenticated, authLoading]);
+  }, [isAuthenticated, authLoading, user?.id]);
 
   /**
-   * Always sync to localStorage as a reliable offline cache and safety net.
+   * Persist changes to the appropriate user-scoped cache.
    */
   useEffect(() => {
     if (state.isLoaded) {
-      saveEntries(state.entries);
+      saveEntries(state.entries, user?.id ?? null);
     }
-  }, [state.entries, state.isLoaded]);
+  }, [state.entries, state.isLoaded, user?.id]);
 
   // ─── Actions ────────────────────────────────────────────────────────────
 
@@ -309,9 +345,7 @@ export function JournalProvider({ children }: { children: ReactNode }) {
       if (isAuthenticated) {
         apiClient
           .post<ApiEntry>("/api/entries", movieEntryToApiPayload(entry))
-          .then((created) => {
-            // Replace the optimistic entry with the server-generated one,
-            // but preserve rich TMDB metadata (seasons, backdrop) and watched episodes!
+          .then(async (created) => {
             const converted = apiEntryToMovieEntry(created);
             const preserved: MovieEntry = {
               ...entry,
@@ -329,6 +363,22 @@ export function JournalProvider({ children }: { children: ReactNode }) {
                 currentSeason: entry.progress?.currentSeason ?? 1,
               },
             };
+
+            // If it was added directly to "watched" with a review, persist the review too
+            if (entry.shelf === "watched" && entry.review) {
+              try {
+                await apiClient.post(`/api/entries/${created.id}/review`, {
+                  rating: Math.max(1, Math.min(10, entry.review.rating || 5)),
+                  notes: entry.review.notes || "",
+                  tags: entry.review.tags || [],
+                  date_completed: entry.review.dateCompleted || null,
+                });
+                preserved.review = entry.review;
+              } catch (rErr) {
+                console.warn("Failed to attach initial review to cloud:", rErr);
+              }
+            }
+
             dispatch({ type: "ENTRY_REMOVED", payload: entry.id });
             dispatch({
               type: "ENTRY_ADDED",
@@ -337,7 +387,6 @@ export function JournalProvider({ children }: { children: ReactNode }) {
           })
           .catch((err) => {
             console.warn("Failed to sync entry to cloud database:", err);
-            // Retain the optimistic entry in local state so the movie is never lost
           });
       }
     },
@@ -367,9 +416,9 @@ export function JournalProvider({ children }: { children: ReactNode }) {
             shelf,
             review: review
               ? {
-                  rating: review.rating,
-                  notes: review.notes,
-                  tags: review.tags,
+                  rating: Math.max(1, Math.min(10, review.rating || 5)),
+                  notes: review.notes || "",
+                  tags: review.tags || [],
                   date_completed: review.dateCompleted || null,
                 }
               : undefined,
@@ -409,9 +458,9 @@ export function JournalProvider({ children }: { children: ReactNode }) {
       if (isAuthenticated) {
         apiClient
           .post(`/api/entries/${id}/review`, {
-            rating: review.rating,
-            notes: review.notes,
-            tags: review.tags,
+            rating: Math.max(1, Math.min(10, review.rating || 5)),
+            notes: review.notes || "",
+            tags: review.tags || [],
             date_completed: review.dateCompleted || null,
           })
           .catch((err) => {
@@ -423,9 +472,9 @@ export function JournalProvider({ children }: { children: ReactNode }) {
   );
 
   const resetToDemoData = useCallback(() => {
-    const starter = resetToStarterData();
+    const starter = resetToStarterData(user?.id ?? null);
     dispatch({ type: "ENTRIES_LOADED", payload: starter });
-  }, []);
+  }, [user?.id]);
 
   return (
     <JournalContext.Provider

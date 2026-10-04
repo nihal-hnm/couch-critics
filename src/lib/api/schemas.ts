@@ -26,7 +26,7 @@ export const createEntrySchema = z.object({
   shelf: shelfEnum,
   tmdb_id: z.number().int().positive(),
   title: z.string().min(1, "Title is required").max(500),
-  poster_url: z.string().url().nullable().optional(),
+  poster_url: z.string().url().or(z.literal("")).nullable().optional().transform((v) => v || null),
   release_year: z.string().max(10).nullable().optional(),
   runtime: z.number().int().min(0).default(0),
   genres: z.array(z.string()).default([]),
@@ -48,7 +48,7 @@ export const updateEntrySchema = z
   .object({
     shelf: shelfEnum.optional(),
     title: z.string().min(1).max(500).optional(),
-    poster_url: z.string().url().nullable().optional(),
+    poster_url: z.string().url().or(z.literal("")).nullable().optional().transform((v) => v || null),
     release_year: z.string().max(10).nullable().optional(),
     runtime: z.number().int().min(0).optional(),
     genres: z.array(z.string()).optional(),

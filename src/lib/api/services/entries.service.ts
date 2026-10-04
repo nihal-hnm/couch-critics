@@ -30,10 +30,13 @@ export class EntriesService {
    * List all entries for the authenticated user, optionally filtered by shelf.
    * RLS ensures only the user's own entries are returned.
    */
-  async list(shelf?: string): Promise<EntryRow[]> {
+  async list(shelf?: string): Promise<(EntryRow & { review?: Database["public"]["Tables"]["reviews"]["Row"] | null })[]> {
     let query = this.supabase
       .from("entries")
-      .select("*")
+      .select(`
+        *,
+        review:reviews(*)
+      `)
       .order("updated_at", { ascending: false });
 
     if (shelf) {
@@ -46,7 +49,7 @@ export class EntriesService {
       throw error;
     }
 
-    return data;
+    return (data || []) as unknown as (EntryRow & { review?: Database["public"]["Tables"]["reviews"]["Row"] | null })[];
   }
 
   /**
@@ -139,9 +142,25 @@ export class EntriesService {
     userId: string,
     shelf: string,
     review?: Omit<ReviewInsert, "entry_id" | "user_id">
-  ): Promise<EntryRow> {
-    // Update the shelf
-    const updated = await this.update(entryId, { shelf });
+  ): Promise<EntryRow & { review?: unknown; attachments?: unknown[] }> {
+    const existing = await this.getById(entryId);
+    const updates: EntryUpdate = { shelf };
+
+    if (shelf === "watched") {
+      if (existing.media_type === "tv") {
+        const total = existing.total_episodes || 10;
+        const totalMins = existing.total_minutes || total * (existing.runtime || 45);
+        updates.current_episode = total;
+        updates.total_episodes = total;
+        updates.minutes_watched = totalMins;
+        updates.total_minutes = totalMins;
+      } else {
+        updates.minutes_watched = existing.runtime;
+        updates.total_minutes = existing.runtime;
+      }
+    }
+
+    await this.update(entryId, updates);
 
     // If moving to "watched" and a review is provided, upsert the review
     if (shelf === "watched" && review) {
@@ -158,10 +177,9 @@ export class EntriesService {
 
       if (reviewError) {
         console.error("Failed to save review:", reviewError);
-        // Don't throw — the shelf move succeeded, review is secondary
       }
     }
 
-    return updated;
+    return await this.getById(entryId);
   }
 }

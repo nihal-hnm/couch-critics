@@ -195,28 +195,25 @@ export function computeAnalytics(entries: MovieEntry[]): AnalyticsData {
     } else {
       // TV Series: sum from watched episodes or minutesWatched
       const avgEpRuntime = entry.tmdb.runtime || 45;
+      const totalEps = entry.progress?.totalEpisodes || entry.tmdb.totalEpisodes || 10;
       const watchedCount =
-        entry.progress?.watchedEpisodes?.length ||
-        entry.progress?.currentEpisode ||
-        (entry.shelf === "watched"
-          ? entry.progress?.totalEpisodes || entry.tmdb.totalEpisodes || 10
-          : 0);
-      const tvMins = entry.progress?.minutesWatched || watchedCount * avgEpRuntime;
+        entry.shelf === "watched"
+          ? totalEps
+          : (entry.progress?.watchedEpisodes?.length || entry.progress?.currentEpisode || 0);
+      const tvMins =
+        entry.shelf === "watched"
+          ? (entry.progress?.totalMinutes || totalEps * avgEpRuntime)
+          : (entry.progress?.minutesWatched || watchedCount * avgEpRuntime);
       seriesWatchTimeMins += tvMins;
     }
 
     // ── Episode count ─────────────────────────────────────────────────
     if (entry.tmdb.mediaType === "tv") {
       const eps =
-        entry.progress?.watchedEpisodes?.length ||
-        entry.progress?.currentEpisode ||
-        0;
-      if (entry.shelf === "watched" && eps === 0) {
-        totalEpisodesWatched +=
-          entry.progress?.totalEpisodes || entry.tmdb.totalEpisodes || 10;
-      } else {
-        totalEpisodesWatched += eps;
-      }
+        entry.shelf === "watched"
+          ? (entry.progress?.totalEpisodes || entry.tmdb.totalEpisodes || (entry.progress?.watchedEpisodes?.length || 10))
+          : (entry.progress?.watchedEpisodes?.length || entry.progress?.currentEpisode || 0);
+      totalEpisodesWatched += eps;
     }
 
     // ── Movies / Shows logged ─────────────────────────────────────────
@@ -226,7 +223,7 @@ export function computeAnalytics(entries: MovieEntry[]): AnalyticsData {
     }
 
     // ── Ratings ───────────────────────────────────────────────────────
-    if (entry.review?.rating) {
+    if (entry.review?.rating && entry.review.rating > 0) {
       ratingSum += entry.review.rating;
       ratingCount++;
     }
@@ -241,8 +238,11 @@ export function computeAnalytics(entries: MovieEntry[]): AnalyticsData {
       if (entry.tmdb.mediaType === "movie") {
         genreCounts[genre].watchTimeMins += entry.tmdb.runtime || 0;
       } else {
-        const eps = entry.progress?.currentEpisode ?? 0;
-        genreCounts[genre].watchTimeMins += eps * (entry.tmdb.runtime || 0);
+        const eps =
+          entry.shelf === "watched"
+            ? (entry.progress?.totalEpisodes || entry.tmdb.totalEpisodes || 10)
+            : (entry.progress?.currentEpisode ?? 0);
+        genreCounts[genre].watchTimeMins += eps * (entry.tmdb.runtime || 45);
         genreCounts[genre].episodeCount += eps;
       }
     }
@@ -265,17 +265,17 @@ export function computeAnalytics(entries: MovieEntry[]): AnalyticsData {
   const tvShowsProgress: TVShowEpisodeStats[] = entries
     .filter((e) => e.tmdb.mediaType === "tv")
     .map((e) => {
-      const watchedCount =
-        e.progress?.watchedEpisodes && e.progress.watchedEpisodes.length > 0
-          ? e.progress.watchedEpisodes.length
-          : e.shelf === "watched"
-          ? e.progress?.totalEpisodes || e.tmdb.totalEpisodes || 10
-          : e.progress?.currentEpisode ?? 0;
-
       const total =
         e.progress?.totalEpisodes ||
         e.tmdb.totalEpisodes ||
-        (e.shelf === "watched" ? Math.max(watchedCount, 10) : 10);
+        10;
+
+      const watchedCount =
+        e.shelf === "watched"
+          ? total
+          : (e.progress?.watchedEpisodes && e.progress.watchedEpisodes.length > 0)
+          ? e.progress.watchedEpisodes.length
+          : e.progress?.currentEpisode ?? 0;
 
       const percent = total > 0 ? Math.min(100, Math.round((watchedCount / total) * 100)) : 0;
       const episodeRuntime = e.tmdb.runtime || 45;
