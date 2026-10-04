@@ -76,6 +76,24 @@ function apiEntryToMovieEntry(e: ApiEntry): MovieEntry {
       }
     : undefined;
 
+  const isTv = e.media_type === "tv";
+  const totalEps = e.total_episodes ?? (isTv ? 10 : undefined);
+  const currentEp =
+    e.current_episode ?? (e.shelf === "watched" && isTv ? totalEps : undefined);
+  const totalMins =
+    e.total_minutes ?? (isTv ? (totalEps ? totalEps * (e.runtime || 45) : undefined) : e.runtime || 0);
+  const minsWatched =
+    e.minutes_watched ?? (e.shelf === "watched" ? totalMins : undefined);
+
+  // Synthesize watched episode codes if not present (e.g. on new device)
+  let syntheticWatchedEpisodes: string[] | undefined = undefined;
+  if (isTv && currentEp && currentEp > 0) {
+    syntheticWatchedEpisodes = [];
+    for (let i = 1; i <= currentEp; i++) {
+      syntheticWatchedEpisodes.push(`S1E${i}`);
+    }
+  }
+
   return {
     id: e.id,
     shelf: e.shelf as Shelf,
@@ -89,14 +107,16 @@ function apiEntryToMovieEntry(e: ApiEntry): MovieEntry {
       director: e.director || "",
       overview: e.overview || "",
       mediaType: (e.media_type as "movie" | "tv") || "movie",
+      totalEpisodes: totalEps,
     },
     progress:
-      e.current_episode != null || e.minutes_watched != null || e.total_episodes != null
+      currentEp != null || minsWatched != null || totalEps != null
         ? {
-            currentEpisode: e.current_episode ?? undefined,
-            totalEpisodes: e.total_episodes ?? undefined,
-            minutesWatched: e.minutes_watched ?? undefined,
-            totalMinutes: e.total_minutes ?? undefined,
+            currentEpisode: currentEp ?? undefined,
+            totalEpisodes: totalEps ?? undefined,
+            minutesWatched: minsWatched ?? undefined,
+            totalMinutes: totalMins ?? undefined,
+            watchedEpisodes: syntheticWatchedEpisodes,
           }
         : undefined,
     review: userReview,
@@ -112,6 +132,26 @@ function movieEntryToApiPayload(entry: MovieEntry) {
       ? entry.tmdb.posterUrl
       : null;
 
+  const isTv = entry.tmdb.mediaType === "tv";
+  const totalEps =
+    entry.progress?.totalEpisodes ??
+    entry.tmdb.totalEpisodes ??
+    (isTv ? 10 : null);
+
+  const totalMins =
+    entry.progress?.totalMinutes ??
+    (isTv && totalEps ? totalEps * (entry.tmdb.runtime || 45) : entry.tmdb.runtime || null);
+
+  const currentEp =
+    entry.shelf === "watched" && isTv
+      ? totalEps
+      : entry.progress?.currentEpisode ?? null;
+
+  const minsWatched =
+    entry.shelf === "watched"
+      ? totalMins
+      : entry.progress?.minutesWatched ?? null;
+
   return {
     shelf: entry.shelf,
     tmdb_id: entry.tmdb.tmdbId,
@@ -123,10 +163,10 @@ function movieEntryToApiPayload(entry: MovieEntry) {
     director: entry.tmdb.director || "",
     overview: entry.tmdb.overview || "",
     media_type: entry.tmdb.mediaType,
-    current_episode: entry.progress?.currentEpisode ?? null,
-    total_episodes: entry.progress?.totalEpisodes ?? null,
-    minutes_watched: entry.progress?.minutesWatched ?? null,
-    total_minutes: entry.progress?.totalMinutes ?? null,
+    current_episode: currentEp,
+    total_episodes: totalEps,
+    minutes_watched: minsWatched,
+    total_minutes: totalMins,
   };
 }
 

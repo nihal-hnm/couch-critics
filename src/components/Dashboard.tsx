@@ -230,9 +230,16 @@ export default function Dashboard() {
           totalMins += partial;
         }
       } else {
-        const watchedEpisodes = entry.progress?.watchedEpisodes?.length || entry.progress?.currentEpisode || 0;
         const episodeRuntime = runtime || 45;
-        const sMins = watchedEpisodes * episodeRuntime;
+        const totalEps = entry.progress?.totalEpisodes || entry.tmdb.totalEpisodes || 10;
+        const watchedEpisodes =
+          entry.shelf === "watched"
+            ? totalEps
+            : entry.progress?.watchedEpisodes?.length || entry.progress?.currentEpisode || 0;
+        const sMins =
+          entry.shelf === "watched"
+            ? entry.progress?.totalMinutes || totalEps * episodeRuntime
+            : entry.progress?.minutesWatched || watchedEpisodes * episodeRuntime;
         seriesMins += sMins;
         totalMins += sMins;
       }

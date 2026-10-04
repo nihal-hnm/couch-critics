@@ -27,12 +27,43 @@ import {
   RotateCcw,
   BookmarkPlus,
 } from "lucide-react";
-import type { MovieEntry, UserReview, WatchProgress } from "@/lib/types";
+import type { MovieEntry, UserReview, WatchProgress, TMDBSeasonData } from "@/lib/types";
 import { useJournal } from "@/lib/journal-context";
 import MediaDetailModal from "./MediaDetailModal";
 
 interface WatchingShelfProps {
   entries: MovieEntry[];
+}
+
+function buildWatchedEpisodes(currentEp: number, seasons?: TMDBSeasonData[]): string[] {
+  const codes: string[] = [];
+  if (!currentEp || currentEp <= 0) return codes;
+
+  if (seasons && seasons.length > 0) {
+    let remaining = currentEp;
+    for (const season of seasons) {
+      if (season.seasonNumber <= 0) continue;
+      const count = season.episodeCount || 10;
+      const watchedInThisSeason = Math.min(remaining, count);
+      for (let i = 1; i <= watchedInThisSeason; i++) {
+        codes.push(`S${season.seasonNumber}E${i}`);
+      }
+      remaining -= watchedInThisSeason;
+      if (remaining <= 0) break;
+    }
+  } else {
+    let remaining = currentEp;
+    let s = 1;
+    while (remaining > 0) {
+      const epThisSeason = Math.min(remaining, 10);
+      for (let i = 1; i <= epThisSeason; i++) {
+        codes.push(`S${s}E${i}`);
+      }
+      remaining -= epThisSeason;
+      s++;
+    }
+  }
+  return codes;
 }
 
 export default function WatchingShelf({ entries }: WatchingShelfProps) {
@@ -58,12 +89,17 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
 
   function handleEpisodeChange(entry: MovieEntry, delta: number) {
     const current = entry.progress?.currentEpisode ?? 1;
-    const total = entry.progress?.totalEpisodes ?? 10;
+    const total = entry.progress?.totalEpisodes ?? entry.tmdb.totalEpisodes ?? 10;
     const newValue = Math.max(1, Math.min(total, current + delta));
     const season = entry.progress?.currentSeason ?? 1;
 
-    // Also update watchedEpisodes list
-    const currentWatched = new Set(entry.progress?.watchedEpisodes ?? []);
+    // Use existing watched list or reconstruct based on current progress
+    const currentWatched = new Set(
+      entry.progress?.watchedEpisodes && entry.progress.watchedEpisodes.length > 0
+        ? entry.progress.watchedEpisodes
+        : buildWatchedEpisodes(current, entry.tmdb.seasons)
+    );
+
     if (delta > 0) {
       currentWatched.add(`S${season}E${newValue}`);
     } else {
@@ -82,7 +118,12 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
 
   function handleToggleEpisode(entry: MovieEntry, seasonNum: number, epNum: number) {
     const epCode = `S${seasonNum}E${epNum}`;
-    const watched = new Set(entry.progress?.watchedEpisodes ?? []);
+    const currentWatchedList =
+      entry.progress?.watchedEpisodes && entry.progress.watchedEpisodes.length > 0
+        ? entry.progress.watchedEpisodes
+        : buildWatchedEpisodes(entry.progress?.currentEpisode ?? 0, entry.tmdb.seasons);
+
+    const watched = new Set(currentWatchedList);
 
     if (watched.has(epCode)) {
       watched.delete(epCode);
@@ -101,7 +142,12 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
   }
 
   function handleSelectAllSeason(entry: MovieEntry, seasonNum: number, epCount: number) {
-    const watched = new Set(entry.progress?.watchedEpisodes ?? []);
+    const currentWatchedList =
+      entry.progress?.watchedEpisodes && entry.progress.watchedEpisodes.length > 0
+        ? entry.progress.watchedEpisodes
+        : buildWatchedEpisodes(entry.progress?.currentEpisode ?? 0, entry.tmdb.seasons);
+
+    const watched = new Set(currentWatchedList);
     for (let i = 1; i <= epCount; i++) {
       watched.add(`S${seasonNum}E${i}`);
     }
@@ -116,7 +162,12 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
   }
 
   function handleUnselectAllSeason(entry: MovieEntry, seasonNum: number, epCount: number) {
-    const watched = new Set(entry.progress?.watchedEpisodes ?? []);
+    const currentWatchedList =
+      entry.progress?.watchedEpisodes && entry.progress.watchedEpisodes.length > 0
+        ? entry.progress.watchedEpisodes
+        : buildWatchedEpisodes(entry.progress?.currentEpisode ?? 0, entry.tmdb.seasons);
+
+    const watched = new Set(currentWatchedList);
     for (let i = 1; i <= epCount; i++) {
       watched.delete(`S${seasonNum}E${i}`);
     }
@@ -170,10 +221,14 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
         {entries.map((entry, index) => {
           const progress = entry.progress;
           const isMovie = entry.tmdb.mediaType === "movie";
-          const watchedEpisodesList = progress?.watchedEpisodes ?? [];
-          const watchedEpisodesCount = progress?.watchedEpisodes !== undefined
-            ? watchedEpisodesList.length
-            : (progress?.currentEpisode ?? 0);
+          const watchedEpisodesList =
+            progress?.watchedEpisodes && progress.watchedEpisodes.length > 0
+              ? progress.watchedEpisodes
+              : buildWatchedEpisodes(progress?.currentEpisode ?? 0, entry.tmdb.seasons);
+          const watchedEpisodesCount =
+            watchedEpisodesList.length > 0
+              ? watchedEpisodesList.length
+              : (progress?.currentEpisode ?? 0);
           const totalEpisodesCount = progress?.totalEpisodes ?? entry.tmdb.totalEpisodes ?? 10;
 
           const progressPercent = isMovie

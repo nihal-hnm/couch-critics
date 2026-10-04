@@ -40,7 +40,7 @@ export async function authenticate(
   }
 
   const supabase = createScopedClient(token);
-  const { data, error } = await supabase.auth.getUser();
+  const { data, error } = await supabase.auth.getUser(token);
 
   if (error || !data.user) {
     return Response.json(
