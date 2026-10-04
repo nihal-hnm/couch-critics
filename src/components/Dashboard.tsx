@@ -775,8 +775,8 @@ export default function Dashboard() {
         </div>
       </aside>
 
-      {/* ══ HERO & HEADER SECTION ══════════════════════════════════ */}
-      <div ref={heroRef} className="relative overflow-hidden min-h-[380px] sm:min-h-[440px] pb-6">
+      {/* ══ CINEMATIC MOVING POSTERS HERO BANNER ═══════════════════ */}
+      <div ref={heroRef} className="relative overflow-hidden h-[240px] sm:h-[270px]">
         {/* ══ DYNAMIC MOVING BACKGROUND: MOVIES & SHOWS MARQUEE ══ */}
         <div className="hero-marquee-wrapper" aria-hidden="true">
           {/* Row 1 — Moving Left */}
@@ -784,7 +784,7 @@ export default function Dashboard() {
             {marqueeRow1.map((item, idx) => (
               <div
                 key={`r1-${item.id}-${idx}`}
-                className="hero-poster-card w-28 sm:w-36 md:w-44 h-40 sm:h-52 md:h-60 mx-1.5 sm:mx-2"
+                className="hero-poster-card w-24 sm:w-32 md:w-36 h-28 sm:h-34 md:h-36 mx-1.5 sm:mx-2"
               >
                 <img
                   src={item.posterUrl}
@@ -822,7 +822,7 @@ export default function Dashboard() {
             {marqueeRow2.map((item, idx) => (
               <div
                 key={`r2-${item.id}-${idx}`}
-                className="hero-poster-card w-28 sm:w-36 md:w-44 h-40 sm:h-52 md:h-60 mx-1.5 sm:mx-2"
+                className="hero-poster-card w-24 sm:w-32 md:w-36 h-28 sm:h-34 md:h-36 mx-1.5 sm:mx-2"
               >
                 <img
                   src={item.posterUrl}
@@ -981,28 +981,29 @@ export default function Dashboard() {
             </div>
           </div>
         </header>
+      </div>
 
-        {/* ── Main Hero Content (Focused on Currently Watching) ── */}
-        {activeNav === "watching" && (
-          <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-4 pb-2">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-              <div className="p-3 sm:p-4 rounded-2xl bg-black/40 light:bg-white/75 backdrop-blur-md border border-white/10 light:border-purple-500/20 max-w-xl shadow-xl">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase bg-purple-500/25 text-purple-300 light:text-purple-700 border border-purple-500/40">
-                    <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
-                    In Progress
-                  </span>
-                  <span className="text-xs text-stone-300 light:text-stone-600 font-medium">
-                    &bull; {watching.length} {watching.length === 1 ? "title" : "titles"}
-                  </span>
-                </div>
-                <h2 className="text-3xl sm:text-4xl font-extrabold text-white light:text-stone-900 tracking-tight drop-shadow-md">
-                  Currently Watching
-                </h2>
-                <p className="text-stone-200 light:text-stone-600 text-xs sm:text-sm mt-1 drop-shadow-sm font-medium">
-                  Track series episode by episode, log movie minutes, and keep your screen in sync.
-                </p>
+      {/* ── Main Hero Content (Cleanly Positioned BELOW Moving Background) ── */}
+      {activeNav === "watching" && (
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-2">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+                  In Progress
+                </span>
+                <span className="text-xs text-stone-500 font-medium">
+                  &bull; {watching.length} {watching.length === 1 ? "title" : "titles"}
+                </span>
               </div>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-white text-glow tracking-tight">
+                Currently Watching
+              </h2>
+              <p className="text-stone-400 text-xs sm:text-sm mt-1 max-w-lg">
+                Track series episode by episode, log movie minutes, and keep your screen in sync.
+              </p>
+            </div>
 
               {/* Quick Runtime Metrics Banner: Overall in days & hours, Series and Movies in hours */}
               {watching.length > 0 && (
@@ -1153,7 +1154,6 @@ export default function Dashboard() {
             )}
           </div>
         )}
-      </div>
 
       {/* ══ MAIN CONTENT VIEWS ══════════════════════════════════════ */}
 

@@ -240,14 +240,14 @@ body {
 .hero-marquee-track-left {
   display: flex;
   width: max-content;
-  animation: marqueeScrollLeft 52s linear infinite;
+  animation: marqueeScrollLeft 115s linear infinite;
   will-change: transform;
 }
 
 .hero-marquee-track-right {
   display: flex;
   width: max-content;
-  animation: marqueeScrollRight 58s linear infinite;
+  animation: marqueeScrollRight 130s linear infinite;
   will-change: transform;
 }
 
