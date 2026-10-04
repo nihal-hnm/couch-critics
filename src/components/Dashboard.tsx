@@ -628,7 +628,7 @@ export default function Dashboard() {
                   <span>All Movies</span>
                 </div>
                 <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-stone-800 text-stone-400">
-                  {movies.length}
+                  {watchedMovies.length}
                 </span>
               </button>
 
@@ -648,7 +648,7 @@ export default function Dashboard() {
                   <span>All TV Series</span>
                 </div>
                 <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-stone-800 text-stone-400">
-                  {series.length}
+                  {watchedSeries.length}
                 </span>
               </button>
 
@@ -1284,104 +1284,50 @@ export default function Dashboard() {
         </main>
       )}
 
-      {/* ── View 4: ALL MOVIES (From Burger Bar) ─────────────────── */}
+      {/* ── View 4: ALL MOVIES (From Burger Bar - Watched Only) ───── */}
       {activeNav === "movies" && (
         <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-8">
           <TopReturnBanner
             title="All Movies"
-            subtitle={`Catalog of ${movies.length} films across in-progress, backlog, and watched`}
+            subtitle={`${watchedMovies.length} watched ${watchedMovies.length === 1 ? "movie" : "movies"} in your journal archive`}
             icon={<FilmIcon className="w-4 h-4 text-purple-400" />}
             watchingCount={watching.length}
             onBackToWatching={() => setActiveNav("watching")}
             onOpenMenu={() => setIsBurgerMenuOpen(true)}
           />
 
-          {movies.length > 0 ? (
-            <div className="space-y-8">
-              {watchingMovies.length > 0 && (
-                <section>
-                  <h3 className="text-sm font-semibold text-purple-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <Play className="w-3.5 h-3.5" /> Movies In Progress ({watchingMovies.length})
-                  </h3>
-                  <WatchingShelf entries={watchingMovies} />
-                </section>
-              )}
-
-              {toWatchMovies.length > 0 && (
-                <section>
-                  <h3 className="text-sm font-semibold text-purple-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <BookmarkPlus className="w-3.5 h-3.5" /> Movies To Watch ({toWatchMovies.length})
-                  </h3>
-                  <ToWatchShelf entries={toWatchMovies} />
-                </section>
-              )}
-
-              {watchedMovies.length > 0 && (
-                <section>
-                  <h3 className="text-sm font-semibold text-purple-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <Award className="w-3.5 h-3.5" /> Watched Movies ({watchedMovies.length})
-                  </h3>
-                  <WatchedShelf entries={watchedMovies} defaultMediaType="movie" hideMediaTypeFilter />
-                </section>
-              )}
-            </div>
+          {watchedMovies.length > 0 ? (
+            <WatchedShelf entries={watchedMovies} defaultMediaType="movie" hideMediaTypeFilter />
           ) : (
             <EmptySection
               icon={<FilmIcon className="w-10 h-10 text-purple-500/40" />}
-              title="No movies yet"
-              subtitle="Add a movie to your journal to get started."
+              title="No watched movies yet"
+              subtitle="Mark a movie as watched to add it to your movie archive."
               onAdd={() => setIsSearchOpen(true)}
             />
           )}
         </main>
       )}
 
-      {/* ── View 5: ALL TV SERIES (From Burger Bar) ──────────────── */}
+      {/* ── View 5: ALL TV SERIES (From Burger Bar - Watched Only) ─── */}
       {activeNav === "series" && (
         <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-8">
           <TopReturnBanner
             title="All TV Series"
-            subtitle={`Catalog of ${series.length} shows with episode checklists`}
+            subtitle={`${watchedSeries.length} completed TV ${watchedSeries.length === 1 ? "series" : "series"} in your journal archive`}
             icon={<Tv className="w-4 h-4 text-[#a855f7]" />}
             watchingCount={watching.length}
             onBackToWatching={() => setActiveNav("watching")}
             onOpenMenu={() => setIsBurgerMenuOpen(true)}
           />
 
-          {series.length > 0 ? (
-            <div className="space-y-8">
-              {watchingSeries.length > 0 && (
-                <section>
-                  <h3 className="text-sm font-semibold text-purple-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <Play className="w-3.5 h-3.5" /> Series In Progress ({watchingSeries.length})
-                  </h3>
-                  <WatchingShelf entries={watchingSeries} />
-                </section>
-              )}
-
-              {toWatchSeries.length > 0 && (
-                <section>
-                  <h3 className="text-sm font-semibold text-purple-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <BookmarkPlus className="w-3.5 h-3.5" /> Series To Watch ({toWatchSeries.length})
-                  </h3>
-                  <ToWatchShelf entries={toWatchSeries} />
-                </section>
-              )}
-
-              {watchedSeries.length > 0 && (
-                <section>
-                  <h3 className="text-sm font-semibold text-purple-400/80 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <Award className="w-3.5 h-3.5" /> Completed TV Series ({watchedSeries.length})
-                  </h3>
-                  <WatchedShelf entries={watchedSeries} defaultMediaType="tv" hideMediaTypeFilter />
-                </section>
-              )}
-            </div>
+          {watchedSeries.length > 0 ? (
+            <WatchedShelf entries={watchedSeries} defaultMediaType="tv" hideMediaTypeFilter />
           ) : (
             <EmptySection
               icon={<Tv className="w-10 h-10 text-purple-500/40" />}
-              title="No TV series yet"
-              subtitle="Add a TV show to track episodes and progress."
+              title="No completed TV series yet"
+              subtitle="Mark a TV series as completed or watched to add it to your series archive."
               onAdd={() => setIsSearchOpen(true)}
             />
           )}
