@@ -11,6 +11,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useAuth } from "@/lib/auth-context";
+import Link from "next/link";
 import { LogIn, UserPlus, X, Mail, Lock, Eye, EyeOff, Film } from "lucide-react";
 
 type AuthMode = "login" | "signup";
@@ -258,6 +259,16 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             </>
           )}
         </p>
+
+        <div className="mt-3 pt-3 border-t border-purple-500/15 text-center">
+          <Link
+            href="/login"
+            onClick={onClose}
+            className="text-xs text-purple-400 hover:text-purple-300 font-medium transition-colors"
+          >
+            Open Full Cinematic Sign-in Page &rarr;
+          </Link>
+        </div>
       </div>
     </dialog>
   );
