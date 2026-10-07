@@ -195,14 +195,14 @@ export default function WatchedShelf({
       >
         <div className="flex gap-3.5 p-4">
           {/* Poster with hover lift */}
-          <div className="relative shrink-0 group/poster w-20 h-28 rounded-lg overflow-hidden shadow-md bg-stone-900 border border-stone-800/40">
+          <div className="relative shrink-0 group/poster w-20 aspect-[2/3] rounded-lg overflow-hidden shadow-md bg-stone-900 border border-stone-800/40">
             <MovieImage
               src={entry.tmdb.posterUrl}
               alt={entry.tmdb.title}
               title={entry.tmdb.title}
               mediaType={entry.tmdb.mediaType}
               loading="lazy"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              className="w-full h-full object-contain bg-black/40"
               fallbackIconClassName="w-7 h-7 text-stone-500 mb-1"
             />
             <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-purple-500/15 to-transparent opacity-0 group-hover/poster:opacity-100 transition-opacity duration-300 pointer-events-none" />

@@ -33,6 +33,7 @@ import { getCachedTVSeasons } from "@/lib/tv-seasons-cache";
 import { getMovieDetails } from "@/lib/tmdb";
 import MediaDetailModal from "./MediaDetailModal";
 import { MovieImage } from "./common/MovieImage";
+import { getOptimizedImageUrl } from "@/lib/image-utils";
 
 interface WatchingShelfProps {
   entries: MovieEntry[];
@@ -314,82 +315,112 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
           return (
             <div
               key={entry.id}
-              className="relative rounded-2xl overflow-hidden border border-stone-800/50 group poster-lift bg-[#12100e]"
+              className="relative rounded-2xl overflow-hidden border border-stone-800/50 group poster-lift bg-[#12100e] flex flex-col justify-between"
               style={{ animationDelay: `${index * 80}ms` }}
             >
-              {/* ── Background Poster ──────────────────────────── */}
+              {/* ── Card Header: Ambient Backdrop + Full Poster + Info ── */}
               <div
-                className="relative h-60 overflow-hidden cursor-pointer"
+                className="relative p-4 sm:p-5 overflow-hidden cursor-pointer bg-gradient-to-br from-stone-900/90 to-[#12100e]"
                 onClick={() => setSelectedEntry(entry)}
               >
-                <MovieImage
-                  src={entry.tmdb.posterUrl}
-                  alt={entry.tmdb.title}
-                  title={entry.tmdb.title}
-                  mediaType={entry.tmdb.mediaType}
-                  className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                  fallbackIconClassName="w-16 h-16 text-stone-700"
-                />
-                {/* Warm cinematic gradient overlay */}
-                <div className="absolute inset-0 cinema-gradient-strong" />
-
-                {/* Currently watching badge */}
-                <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-purple-500/20 border border-purple-500/30 backdrop-blur-sm">
-                  <div className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
-                  <span className="text-[10px] font-medium text-purple-200 uppercase tracking-wider flex items-center gap-1">
-                    {isMovie ? <Film className="w-2.5 h-2.5" /> : <Tv className="w-2.5 h-2.5" />}
-                    Now Watching
-                  </span>
-                </div>
-
-                {/* Floating action buttons */}
-                <div
-                  className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <button
-                    onClick={() => handleMoveToBacklog(entry)}
-                    className="p-2 bg-stone-800/90 hover:bg-purple-600/90 rounded-lg text-stone-200 hover:text-white transition-colors backdrop-blur-sm cursor-pointer"
-                    title="Move to To-Watch (Backlog)"
-                  >
-                    <BookmarkPlus className="w-4 h-4 text-purple-400 group-hover:text-white" />
-                  </button>
-                  <button
-                    onClick={() => setCompletingId(entry.id)}
-                    className="p-2 bg-emerald-600/90 rounded-lg text-white hover:bg-emerald-500 transition-colors backdrop-blur-sm"
-                    title="Mark as completed"
-                  >
-                    <CheckCircle2 className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => removeEntry(entry.id)}
-                    className="p-2 bg-red-600/90 rounded-lg text-white hover:bg-red-500 transition-colors backdrop-blur-sm"
-                    title="Remove"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-
-                {/* Title + metadata overlay */}
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-xl font-bold text-white leading-tight">
-                      {entry.tmdb.title}
-                    </h3>
+                {/* Ambient Blurred Backdrop behind the card */}
+                {(entry.tmdb.backdropUrl || entry.tmdb.posterUrl) && (
+                  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                    <img
+                      src={getOptimizedImageUrl(entry.tmdb.backdropUrl || entry.tmdb.posterUrl)}
+                      alt=""
+                      referrerPolicy="no-referrer"
+                      crossOrigin="anonymous"
+                      className="w-full h-full object-cover opacity-15 blur-lg scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#141210] via-[#141210]/80 to-black/50" />
                   </div>
-                  <div className="flex items-center gap-2 mt-1.5 text-sm text-stone-300">
-                    <span>{entry.tmdb.releaseYear}</span>
-                    <ChevronRight className="w-3 h-3 text-stone-600" />
-                    <span>{entry.tmdb.genres.slice(0, 2).join(", ")}</span>
-                    {entry.tmdb.runtime > 0 && (
-                      <>
-                        <ChevronRight className="w-3 h-3 text-stone-600" />
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-3 h-3" />
-                          {isMovie ? `${entry.tmdb.runtime}m` : `~${entry.tmdb.runtime}m/ep`}
-                        </span>
-                      </>
-                    )}
+                )}
+
+                <div className="relative z-10 flex gap-4 sm:gap-5 items-start">
+                  {/* ── FULL UNZOOMED COVER POSTER ── */}
+                  <div className="w-28 sm:w-36 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-white/10 shrink-0 bg-stone-900 group-hover:scale-[1.02] transition-transform duration-300">
+                    <MovieImage
+                      src={entry.tmdb.posterUrl}
+                      alt={entry.tmdb.title}
+                      title={entry.tmdb.title}
+                      mediaType={entry.tmdb.mediaType}
+                      className="w-full h-full object-contain bg-black/40"
+                      fallbackIconClassName="w-12 h-12 text-stone-700"
+                    />
+                  </div>
+
+                  {/* ── Info & Badges & Action Buttons ── */}
+                  <div className="flex-1 min-w-0 flex flex-col justify-between self-stretch">
+                    <div>
+                      {/* Top Row: Badge + Floating Action Buttons */}
+                      <div className="flex items-center justify-between gap-2 mb-2">
+                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-purple-500/20 border border-purple-500/30 backdrop-blur-sm">
+                          <div className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+                          <span className="text-[10px] font-medium text-purple-200 uppercase tracking-wider flex items-center gap-1">
+                            {isMovie ? <Film className="w-2.5 h-2.5" /> : <Tv className="w-2.5 h-2.5" />}
+                            Now Watching
+                          </span>
+                        </div>
+
+                        {/* Quick action buttons */}
+                        <div
+                          className="flex items-center gap-1.5 z-10"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <button
+                            onClick={() => handleMoveToBacklog(entry)}
+                            className="p-1.5 bg-stone-800/80 hover:bg-purple-600/90 rounded-lg text-stone-300 hover:text-white transition-colors backdrop-blur-sm cursor-pointer"
+                            title="Move to To-Watch (Backlog)"
+                          >
+                            <BookmarkPlus className="w-3.5 h-3.5 text-purple-400 group-hover:text-white" />
+                          </button>
+                          <button
+                            onClick={() => setCompletingId(entry.id)}
+                            className="p-1.5 bg-emerald-600/80 rounded-lg text-white hover:bg-emerald-500 transition-colors backdrop-blur-sm cursor-pointer"
+                            title="Mark as completed"
+                          >
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => removeEntry(entry.id)}
+                            className="p-1.5 bg-red-600/80 rounded-lg text-white hover:bg-red-500 transition-colors backdrop-blur-sm cursor-pointer"
+                            title="Remove"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Title */}
+                      <h3 className="text-lg sm:text-xl font-bold text-white leading-tight line-clamp-2 group-hover:text-purple-200 transition-colors">
+                        {entry.tmdb.title}
+                      </h3>
+
+                      {/* Metadata */}
+                      <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-stone-300">
+                        {entry.tmdb.releaseYear && (
+                          <span className="font-mono bg-white/5 px-1.5 py-0.5 rounded border border-white/5">
+                            {entry.tmdb.releaseYear}
+                          </span>
+                        )}
+                        {entry.tmdb.genres?.length > 0 && (
+                          <span>{entry.tmdb.genres.slice(0, 2).join(", ")}</span>
+                        )}
+                        {entry.tmdb.runtime > 0 && (
+                          <span className="flex items-center gap-1 text-stone-400">
+                            <Clock className="w-3 h-3" />
+                            {isMovie ? `${entry.tmdb.runtime}m` : `~${entry.tmdb.runtime}m/ep`}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Hint to open details */}
+                    <div className="mt-3 text-[11px] text-purple-300/70 flex items-center gap-1 font-medium">
+                      <span>Click card for full details</span>
+                      <ChevronRight className="w-3 h-3" />
+                    </div>
                   </div>
                 </div>
               </div>

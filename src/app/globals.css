@@ -258,6 +258,7 @@ body {
   overflow: hidden;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.12);
   background: #141018;
+  aspect-ratio: 2 / 3;
 }
 
 .hero-poster-card img {

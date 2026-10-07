@@ -666,7 +666,7 @@ export default function Dashboard() {
             {marqueeRow1.map((item, idx) => (
               <div
                 key={`r1-${item.id}-${idx}`}
-                className="hero-poster-card w-24 sm:w-32 md:w-36 h-28 sm:h-34 md:h-36 mx-1.5 sm:mx-2 overflow-hidden bg-stone-900"
+                className="hero-poster-card w-24 sm:w-28 md:w-32 aspect-[2/3] mx-1.5 sm:mx-2 overflow-hidden bg-stone-900"
               >
                 <MovieImage
                   src={item.posterUrl}
@@ -706,7 +706,7 @@ export default function Dashboard() {
             {marqueeRow2.map((item, idx) => (
               <div
                 key={`r2-${item.id}-${idx}`}
-                className="hero-poster-card w-24 sm:w-32 md:w-36 h-28 sm:h-34 md:h-36 mx-1.5 sm:mx-2 overflow-hidden bg-stone-900"
+                className="hero-poster-card w-24 sm:w-28 md:w-32 aspect-[2/3] mx-1.5 sm:mx-2 overflow-hidden bg-stone-900"
               >
                 <MovieImage
                   src={item.posterUrl}
@@ -1615,7 +1615,7 @@ function PosterCard({
           alt={entry.tmdb.title}
           title={entry.tmdb.title}
           mediaType={entry.tmdb.mediaType}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-cover transition-transform duration-300"
           fallbackIconClassName="w-8 h-8 text-stone-700"
         />
 

@@ -279,7 +279,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
                 alt={entry.tmdb.title}
                 title={entry.tmdb.title}
                 mediaType={entry.tmdb.mediaType}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                className="w-full h-full object-cover transition-transform duration-300"
                 fallbackIconClassName="w-10 h-10 text-stone-700"
               />
             </div>
