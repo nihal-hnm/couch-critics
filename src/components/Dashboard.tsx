@@ -57,6 +57,7 @@ import ToWatchShelf from "@/components/ToWatchShelf";
 import WatchedShelf from "@/components/WatchedShelf";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
 import MediaDetailModal from "@/components/MediaDetailModal";
+import ChoosingPanelModal from "@/components/ChoosingPanelModal";
 import ThemeToggle from "@/components/ThemeToggle";
 import { computeStats, formatWatchTime, formatDaysAndHours, formatHours } from "@/lib/stats";
 
@@ -89,6 +90,7 @@ export default function Dashboard() {
   const [selectedGenre, setSelectedGenre] = useState<string>("all");
   const [genreShelfFilter, setGenreShelfFilter] = useState<"all" | "watching" | "toWatch" | "watched">("all");
   const [selectedDetailEntry, setSelectedDetailEntry] = useState<MovieEntry | null>(null);
+  const [selectedChoosingItem, setSelectedChoosingItem] = useState<(MarqueeMediaItem & { shelf?: Shelf; entry?: MovieEntry }) | null>(null);
 
   const heroRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -353,66 +355,13 @@ export default function Dashboard() {
     return [...baseList, ...baseList];
   }, [entries]);
 
-  // Click on a marquee poster redirects to the corresponding shelf (watching, toWatch, watched)
+  // Click on a marquee poster opens the Choosing Panel modal directly
   const handleMarqueeItemClick = useCallback(
     (item: MarqueeMediaItem & { shelf?: Shelf; entry?: MovieEntry }) => {
-      // 1. Determine target shelf:
-      // If it has a defined shelf or belongs to user entries, route to that shelf.
-      let targetShelf: Shelf = item.shelf || "toWatch";
-      let matchedEntry: MovieEntry | undefined = item.entry;
-
-      if (!matchedEntry) {
-        matchedEntry = entries.find(
-          (e) =>
-            e.tmdb?.title?.toLowerCase().trim() === item.title.toLowerCase().trim() ||
-            String(e.tmdb?.tmdbId) === item.id.replace("showcase-", "")
-        );
-      }
-
-      if (matchedEntry) {
-        targetShelf = matchedEntry.shelf;
-        setSelectedDetailEntry(matchedEntry);
-      } else {
-        // Construct preview MovieEntry for showcase title so detail modal with Where to Watch opens
-        const rawId = item.id.replace("showcase-", "");
-        const parsedTmdbId = parseInt(rawId, 10);
-        const previewEntry: MovieEntry = {
-          id: item.id,
-          shelf: targetShelf,
-          addedAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          tmdb: {
-            tmdbId: isNaN(parsedTmdbId) ? 0 : parsedTmdbId,
-            title: item.title,
-            mediaType: item.mediaType,
-            releaseYear: item.releaseYear,
-            posterUrl: item.posterUrl,
-            overview: "",
-            genres: [],
-            runtime: 0,
-            director: "",
-          },
-        };
-        setSelectedDetailEntry(previewEntry);
-      }
-
-      // 2. Switch active navigation view to target shelf (watching, toWatch, or watched)
-      setActiveNav(targetShelf);
-
-      // 3. Smoothly scroll down to the main content section
-      setTimeout(() => {
-        const targetEl = document.getElementById("shelves-main-content");
-        if (targetEl) {
-          targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
-        } else if (typeof window !== "undefined") {
-          window.scrollTo({
-            top: 240,
-            behavior: "smooth",
-          });
-        }
-      }, 50);
+      // Directly open the Choosing Panel for this title without any unwanted navigation
+      setSelectedChoosingItem(item);
     },
-    [entries]
+    []
   );
 
 
@@ -756,15 +705,7 @@ export default function Dashboard() {
       {/* ══ CINEMATIC MOVING POSTERS HERO BANNER ═══════════════════ */}
       <div
         ref={heroRef}
-        onClick={() => {
-          // If clicking background area outside posters, smoothly navigate to active shelf section
-          const targetEl = document.getElementById("shelves-main-content");
-          if (targetEl) {
-            targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-        }}
-        className="relative overflow-hidden h-[210px] sm:h-[240px] cursor-pointer"
-        title="Click moving background to explore your watch shelves"
+        className="relative overflow-hidden h-[210px] sm:h-[240px]"
       >
         {/* ══ DYNAMIC MOVING BACKGROUND: 1 SINGLE SET OF POSTERS ══ */}
         <div className="hero-marquee-wrapper" role="region" aria-label="Featured movie and TV posters">
@@ -787,7 +728,7 @@ export default function Dashboard() {
                   }
                 }}
                 className="hero-poster-card w-28 sm:w-32 md:w-36 aspect-[2/3] mx-2 sm:mx-2.5 overflow-hidden bg-stone-900 rounded-xl cursor-pointer"
-                title={`Click to view in ${item.shelf === "watched" ? "Watched" : item.shelf === "watching" ? "Watching" : "To Watch"}: ${item.title}`}
+                title={`Click to choose shelf: ${item.title}`}
               >
                 <MovieImage
                   src={item.posterUrl}
@@ -1598,6 +1539,14 @@ export default function Dashboard() {
         }
         isOpen={!!selectedDetailEntry}
         onClose={() => setSelectedDetailEntry(null)}
+      />
+
+      {/* ── Marquee Choosing Panel Modal ──────────────────────────── */}
+      <ChoosingPanelModal
+        item={selectedChoosingItem}
+        isOpen={!!selectedChoosingItem}
+        onClose={() => setSelectedChoosingItem(null)}
+        onOpenFullDetail={(entry) => setSelectedDetailEntry(entry)}
       />
     </div>
   );
