@@ -271,64 +271,64 @@ export default function Dashboard() {
       .slice(0, 20);
   }, [watched]);
 
-  // Moving Background Marquee: ONLY titles that are NOT watched yet (currently watching + to-watch)
+  // Moving Background Marquee: ONLY "To Watch" backlog titles (strictly excluding watched & watching)
   const marqueeItems = useMemo(() => {
-    // 1. Set of all watched titles/tmdbIds from the user's journal to strictly exclude them
-    const watchedTitleKeys = new Set(
+    // 1. Set of all watched & currently watching titles/tmdbIds from the user's journal to strictly exclude them
+    const excludedTitleKeys = new Set(
       entries
-        .filter((e) => e.shelf === "watched")
+        .filter((e) => e.shelf === "watched" || e.shelf === "watching")
         .map((e) => e.tmdb?.title?.toLowerCase().trim())
         .filter(Boolean)
     );
-    const watchedTmdbIds = new Set(
+    const excludedTmdbIds = new Set(
       entries
-        .filter((e) => e.shelf === "watched" && e.tmdb?.tmdbId)
+        .filter((e) => (e.shelf === "watched" || e.shelf === "watching") && e.tmdb?.tmdbId)
         .map((e) => e.tmdb.tmdbId)
     );
 
-    // 2. User entries that are currently unwatched (Watching + To Watch)
-    const unwatchedUserMedia: (MarqueeMediaItem & { shelf: Shelf; entry?: MovieEntry })[] = entries
-      .filter((e) => e.tmdb?.posterUrl && e.shelf !== "watched")
+    // 2. User entries that are strictly on the "To Watch" shelf
+    const toWatchUserMedia: (MarqueeMediaItem & { shelf: Shelf; entry?: MovieEntry })[] = entries
+      .filter((e) => e.tmdb?.posterUrl && e.shelf === "toWatch")
       .map((e) => ({
         id: e.id,
         title: e.tmdb.title,
         mediaType: e.tmdb.mediaType,
         posterUrl: e.tmdb.posterUrl!,
         releaseYear: e.tmdb.releaseYear,
-        shelf: e.shelf,
+        shelf: "toWatch",
         entry: e,
       }));
 
-    // 3. Showcase / catalog items that are NOT in the user's watched collection
-    const unwatchedShowcase: (MarqueeMediaItem & { shelf: Shelf; entry?: MovieEntry })[] = [];
+    // 3. Showcase / catalog items that are NOT in watched and NOT in watching
+    const toWatchShowcase: (MarqueeMediaItem & { shelf: Shelf; entry?: MovieEntry })[] = [];
     for (const item of SHOWCASE_MEDIA_ITEMS) {
       const itemTitleKey = item.title.toLowerCase().trim();
       const itemTmdbId = parseInt(item.id.replace("showcase-", ""), 10);
 
-      // Strictly exclude if the user already watched this title
+      // Strictly exclude if the user is watching or has already watched this title
       if (
-        watchedTitleKeys.has(itemTitleKey) ||
-        (!isNaN(itemTmdbId) && watchedTmdbIds.has(itemTmdbId))
+        excludedTitleKeys.has(itemTitleKey) ||
+        (!isNaN(itemTmdbId) && excludedTmdbIds.has(itemTmdbId))
       ) {
         continue;
       }
 
-      // Check if user already has this in their unwatched media list
-      const alreadyInUserMedia = unwatchedUserMedia.some(
+      // Check if user already has this in their toWatch media list
+      const alreadyInToWatch = toWatchUserMedia.some(
         (m) =>
           m.title.toLowerCase().trim() === itemTitleKey ||
           (!isNaN(itemTmdbId) && m.entry?.tmdb?.tmdbId === itemTmdbId)
       );
 
-      if (!alreadyInUserMedia) {
-        unwatchedShowcase.push({
+      if (!alreadyInToWatch) {
+        toWatchShowcase.push({
           ...item,
           shelf: "toWatch",
         });
       }
     }
 
-    const allItems = [...unwatchedUserMedia, ...unwatchedShowcase];
+    const allItems = [...toWatchUserMedia, ...toWatchShowcase];
     const seen = new Set<string>();
     const uniqueItems: (MarqueeMediaItem & { shelf: Shelf; entry?: MovieEntry })[] = [];
     for (const item of allItems) {
@@ -353,13 +353,11 @@ export default function Dashboard() {
     return [...baseList, ...baseList];
   }, [entries]);
 
-  // Click on a marquee poster redirects to the corresponding shelf (watching, toWatch, watched)
+  // Click on a marquee poster redirects to the "To Watch" backlog section
   const handleMarqueeItemClick = useCallback(
     (item: MarqueeMediaItem & { shelf?: Shelf; entry?: MovieEntry }) => {
-      const targetShelf: Shelf = item.shelf || "watching";
-
-      // 1. Switch active view to that shelf section
-      setActiveNav(targetShelf);
+      // 1. Switch active view directly to the "To Watch" backlog section
+      setActiveNav("toWatch");
 
       // 2. If it's a known entry, open its detail modal
       if (item.entry) {
@@ -375,7 +373,7 @@ export default function Dashboard() {
         }
       }
 
-      // 3. Smoothly scroll down past the hero banner to the shelf section
+      // 3. Smoothly scroll down past the hero banner to the To Watch section
       if (typeof window !== "undefined") {
         const heroHeight = heroRef.current ? heroRef.current.offsetHeight : 230;
         window.scrollTo({
@@ -735,13 +733,7 @@ export default function Dashboard() {
                 key={`m-${item.id}-${idx}`}
                 onClick={() => handleMarqueeItemClick(item)}
                 className="hero-poster-card w-28 sm:w-32 md:w-36 aspect-[2/3] mx-2 sm:mx-2.5 overflow-hidden bg-stone-900 rounded-xl cursor-pointer"
-                title={`Click to view in ${
-                  item.shelf === "toWatch"
-                    ? "To Watch Backlog"
-                    : item.shelf === "watched"
-                    ? "Watched Archive"
-                    : "Currently Watching"
-                }: ${item.title}`}
+                title={`Click to view in To Watch: ${item.title}`}
               >
                 <MovieImage
                   src={item.posterUrl}
