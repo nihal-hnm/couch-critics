@@ -353,37 +353,68 @@ export default function Dashboard() {
     return [...baseList, ...baseList];
   }, [entries]);
 
-  // Click on a marquee poster redirects to the "To Watch" backlog section
+  // Click on a marquee poster redirects to the corresponding shelf (watching, toWatch, watched)
   const handleMarqueeItemClick = useCallback(
     (item: MarqueeMediaItem & { shelf?: Shelf; entry?: MovieEntry }) => {
-      // 1. Switch active view directly to the "To Watch" backlog section
-      setActiveNav("toWatch");
+      // 1. Determine target shelf:
+      // If it has a defined shelf or belongs to user entries, route to that shelf.
+      let targetShelf: Shelf = item.shelf || "toWatch";
+      let matchedEntry: MovieEntry | undefined = item.entry;
 
-      // 2. If it's a known entry, open its detail modal
-      if (item.entry) {
-        setSelectedDetailEntry(item.entry);
-      } else {
-        const found = entries.find(
+      if (!matchedEntry) {
+        matchedEntry = entries.find(
           (e) =>
-            e.tmdb?.title?.toLowerCase() === item.title.toLowerCase() ||
+            e.tmdb?.title?.toLowerCase().trim() === item.title.toLowerCase().trim() ||
             String(e.tmdb?.tmdbId) === item.id.replace("showcase-", "")
         );
-        if (found) {
-          setSelectedDetailEntry(found);
-        }
       }
 
-      // 3. Smoothly scroll down past the hero banner to the To Watch section
-      if (typeof window !== "undefined") {
-        const heroHeight = heroRef.current ? heroRef.current.offsetHeight : 230;
-        window.scrollTo({
-          top: heroHeight + 20,
-          behavior: "smooth",
-        });
+      if (matchedEntry) {
+        targetShelf = matchedEntry.shelf;
+        setSelectedDetailEntry(matchedEntry);
+      } else {
+        // Construct preview MovieEntry for showcase title so detail modal with Where to Watch opens
+        const rawId = item.id.replace("showcase-", "");
+        const parsedTmdbId = parseInt(rawId, 10);
+        const previewEntry: MovieEntry = {
+          id: item.id,
+          shelf: targetShelf,
+          addedAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          tmdb: {
+            tmdbId: isNaN(parsedTmdbId) ? 0 : parsedTmdbId,
+            title: item.title,
+            mediaType: item.mediaType,
+            releaseYear: item.releaseYear,
+            posterUrl: item.posterUrl,
+            overview: "",
+            genres: [],
+            runtime: 0,
+            director: "",
+          },
+        };
+        setSelectedDetailEntry(previewEntry);
       }
+
+      // 2. Switch active navigation view to target shelf (watching, toWatch, or watched)
+      setActiveNav(targetShelf);
+
+      // 3. Smoothly scroll down to the main content section
+      setTimeout(() => {
+        const targetEl = document.getElementById("shelves-main-content");
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else if (typeof window !== "undefined") {
+          window.scrollTo({
+            top: 240,
+            behavior: "smooth",
+          });
+        }
+      }, 50);
     },
     [entries]
   );
+
 
   // Journey data — group by year
   const journeyYears = useMemo(() => {
@@ -723,7 +754,18 @@ export default function Dashboard() {
       </aside>
 
       {/* ══ CINEMATIC MOVING POSTERS HERO BANNER ═══════════════════ */}
-      <div ref={heroRef} className="relative overflow-hidden h-[210px] sm:h-[240px]">
+      <div
+        ref={heroRef}
+        onClick={() => {
+          // If clicking background area outside posters, smoothly navigate to active shelf section
+          const targetEl = document.getElementById("shelves-main-content");
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }}
+        className="relative overflow-hidden h-[210px] sm:h-[240px] cursor-pointer"
+        title="Click moving background to explore your watch shelves"
+      >
         {/* ══ DYNAMIC MOVING BACKGROUND: 1 SINGLE SET OF POSTERS ══ */}
         <div className="hero-marquee-wrapper" role="region" aria-label="Featured movie and TV posters">
           {/* Single Continuous Row — Moving Left */}
@@ -731,9 +773,21 @@ export default function Dashboard() {
             {marqueeItems.map((item, idx) => (
               <div
                 key={`m-${item.id}-${idx}`}
-                onClick={() => handleMarqueeItemClick(item)}
+                role="button"
+                tabIndex={0}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleMarqueeItemClick(item);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleMarqueeItemClick(item);
+                  }
+                }}
                 className="hero-poster-card w-28 sm:w-32 md:w-36 aspect-[2/3] mx-2 sm:mx-2.5 overflow-hidden bg-stone-900 rounded-xl cursor-pointer"
-                title={`Click to view in To Watch: ${item.title}`}
+                title={`Click to view in ${item.shelf === "watched" ? "Watched" : item.shelf === "watching" ? "Watching" : "To Watch"}: ${item.title}`}
               >
                 <MovieImage
                   src={item.posterUrl}
@@ -741,7 +795,7 @@ export default function Dashboard() {
                   title={item.title}
                   mediaType={item.mediaType}
                   loading="eager"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover pointer-events-none"
                 />
               </div>
             ))}
@@ -757,9 +811,9 @@ export default function Dashboard() {
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[250px] bg-[#5c0f92]/10 rounded-full blur-[100px] pointer-events-none" />
 
         {/* ── Header ─────────────────────────────────────────── */}
-        <header className="relative z-10">
+        <header className="relative z-20 pointer-events-none">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 pointer-events-auto">
               {/* Burger Menu Button */}
               <button
                 onClick={() => setIsBurgerMenuOpen(true)}
@@ -810,7 +864,7 @@ export default function Dashboard() {
             </div>
 
             {/* Header Right Actions */}
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 pointer-events-auto">
               {/* Light / Dark Mode Toggle */}
               <ThemeToggle variant="button" />
 
@@ -874,6 +928,9 @@ export default function Dashboard() {
           </div>
         </header>
       </div>
+
+      {/* ── Main Shelves Container Anchor ── */}
+      <div id="shelves-main-content" className="scroll-mt-4" />
 
       {/* ── Main Hero Content (Cleanly Positioned BELOW Moving Background) ── */}
       {activeNav === "watching" && (

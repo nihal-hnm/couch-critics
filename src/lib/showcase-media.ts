@@ -229,20 +229,7 @@ export const SHOWCASE_MEDIA_ITEMS: MarqueeMediaItem[] = [
     "posterUrl": "https://image.tmdb.org/t/p/w500/seN6rRfN0I6n8iDXjlSMk1QjNcq.jpg",
     "releaseYear": "2011"
   },
-  {
-    "id": "showcase-84958",
-    "title": "Loki",
-    "mediaType": "tv",
-    "posterUrl": "https://image.tmdb.org/t/p/w500/voHUmlvjysv623nMNo29g819pLs.jpg",
-    "releaseYear": "2021"
-  },
-  {
-    "id": "showcase-85552",
-    "title": "Euphoria",
-    "mediaType": "tv",
-    "posterUrl": "https://image.tmdb.org/t/p/w500/3Q0hd3heuW4cmXDME09kW0AZRI2.jpg",
-    "releaseYear": "2019"
-  },
+
   {
     "id": "showcase-278",
     "title": "The Shawshank Redemption",
