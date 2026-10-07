@@ -34,6 +34,7 @@ import {
 import type { TMDBMovieData, Shelf } from "@/lib/types";
 import { searchMovies, getMovieDetails, TMDBError } from "@/lib/tmdb";
 import { useJournal } from "@/lib/journal-context";
+import { MovieImage } from "./common/MovieImage";
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -252,17 +253,16 @@ export default function SearchModal({
                   style={{ animationDelay: `${idx * 40}ms` }}
                 >
                   {/* Poster thumbnail */}
-                  {movie.posterUrl ? (
-                    <img
+                  <div className="w-16 h-24 rounded-lg overflow-hidden shrink-0 bg-stone-900 border border-stone-800/40 group-hover:shadow-lg group-hover:shadow-purple-500/10 transition-shadow">
+                    <MovieImage
                       src={movie.posterUrl}
                       alt={`${movie.title} poster`}
-                      className="w-16 h-24 rounded-lg object-cover shrink-0 group-hover:shadow-lg group-hover:shadow-purple-500/10 transition-shadow"
+                      title={movie.title}
+                      mediaType={movie.mediaType}
+                      className="w-full h-full object-cover"
+                      fallbackIconClassName="w-6 h-6 text-zinc-600"
                     />
-                  ) : (
-                    <div className="w-16 h-24 rounded-lg bg-zinc-800 flex items-center justify-center shrink-0 border border-zinc-700/30">
-                      <Film className="w-6 h-6 text-zinc-600" />
-                    </div>
-                  )}
+                  </div>
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">

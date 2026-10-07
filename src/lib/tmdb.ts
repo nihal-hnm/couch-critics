@@ -407,10 +407,11 @@ export async function getMovieDetails(
     if (mediaType === "tv") {
       const catalogItem = getCachedTVSeasons(tmdbId);
       if (catalogItem) {
+        const fallbackPoster = catalogItem.seasons?.find((s) => s.posterUrl)?.posterUrl || null;
         const fallbackResult: TMDBMovieData = {
           tmdbId,
           title: "TV Series",
-          posterUrl: null,
+          posterUrl: fallbackPoster,
           backdropUrl: catalogItem.backdropUrl,
           releaseYear: "",
           runtime: catalogItem.runtime,

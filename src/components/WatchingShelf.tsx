@@ -32,6 +32,7 @@ import { useJournal } from "@/lib/journal-context";
 import { getCachedTVSeasons } from "@/lib/tv-seasons-cache";
 import { getMovieDetails } from "@/lib/tmdb";
 import MediaDetailModal from "./MediaDetailModal";
+import { MovieImage } from "./common/MovieImage";
 
 interface WatchingShelfProps {
   entries: MovieEntry[];
@@ -321,17 +322,14 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                 className="relative h-60 overflow-hidden cursor-pointer"
                 onClick={() => setSelectedEntry(entry)}
               >
-                {entry.tmdb.posterUrl ? (
-                  <img
-                    src={entry.tmdb.posterUrl}
-                    alt={entry.tmdb.title}
-                    className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center">
-                    <Film className="w-16 h-16 text-stone-700" />
-                  </div>
-                )}
+                <MovieImage
+                  src={entry.tmdb.posterUrl}
+                  alt={entry.tmdb.title}
+                  title={entry.tmdb.title}
+                  mediaType={entry.tmdb.mediaType}
+                  className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                  fallbackIconClassName="w-16 h-16 text-stone-700"
+                />
                 {/* Warm cinematic gradient overlay */}
                 <div className="absolute inset-0 cinema-gradient-strong" />
 

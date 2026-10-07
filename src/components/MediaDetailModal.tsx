@@ -42,6 +42,8 @@ import type { MovieEntry, Shelf, UserReview, WatchProgress, EpisodeItem, TMDBSea
 import { useJournal } from "@/lib/journal-context";
 import { fetchSeasonEpisodes, getMovieDetails, buildWatchedEpisodes } from "@/lib/tmdb";
 import { getCachedTVSeasons } from "@/lib/tv-seasons-cache";
+import { MovieImage } from "./common/MovieImage";
+import { getOptimizedImageUrl } from "@/lib/image-utils";
 
 interface MediaDetailModalProps {
   entry: MovieEntry | null;
@@ -529,8 +531,10 @@ export default function MediaDetailModal({
         <div className="relative h-48 sm:h-64 shrink-0 overflow-hidden">
           {entry.tmdb.backdropUrl || entry.tmdb.posterUrl ? (
             <img
-              src={entry.tmdb.backdropUrl || entry.tmdb.posterUrl || ""}
+              src={getOptimizedImageUrl(entry.tmdb.backdropUrl || entry.tmdb.posterUrl || "")}
               alt={entry.tmdb.title}
+              referrerPolicy="no-referrer"
+              crossOrigin="anonymous"
               className="w-full h-full object-cover object-center filter brightness-50"
             />
           ) : (
@@ -551,11 +555,15 @@ export default function MediaDetailModal({
           {/* Media Info Overlay */}
           <div className="absolute bottom-4 left-4 right-4 flex items-end gap-4 sm:gap-6">
             {entry.tmdb.posterUrl && (
-              <img
-                src={entry.tmdb.posterUrl}
-                alt={entry.tmdb.title}
-                className="w-24 sm:w-32 aspect-[2/3] object-cover rounded-xl shadow-2xl border border-white/10 shrink-0 hidden xs:block"
-              />
+              <div className="w-24 sm:w-32 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-white/10 shrink-0 hidden xs:block bg-stone-900">
+                <MovieImage
+                  src={entry.tmdb.posterUrl}
+                  alt={entry.tmdb.title}
+                  title={entry.tmdb.title}
+                  mediaType={entry.tmdb.mediaType}
+                  className="w-full h-full object-cover"
+                />
+              </div>
             )}
             <div className="flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-2 mb-1.5">

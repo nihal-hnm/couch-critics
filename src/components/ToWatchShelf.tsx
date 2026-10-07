@@ -29,6 +29,8 @@ import {
 import type { MovieEntry } from "@/lib/types";
 import { useJournal } from "@/lib/journal-context";
 import MediaDetailModal from "./MediaDetailModal";
+import { MovieImage } from "./common/MovieImage";
+import { getOptimizedImageUrl } from "@/lib/image-utils";
 
 interface ToWatchShelfProps {
   entries: MovieEntry[];
@@ -188,8 +190,10 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
           {pickedMovie.tmdb.posterUrl && (
             <div className="absolute inset-0">
               <img
-                src={pickedMovie.tmdb.posterUrl}
+                src={getOptimizedImageUrl(pickedMovie.tmdb.posterUrl)}
                 alt=""
+                referrerPolicy="no-referrer"
+                crossOrigin="anonymous"
                 className="w-full h-full object-cover opacity-10 blur-2xl"
               />
               <div className="absolute inset-0 bg-[#0a0a0a]/80" />
@@ -210,17 +214,16 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
             </div>
 
             <div className="flex gap-4">
-              {pickedMovie.tmdb.posterUrl ? (
-                <img
+              <div className="w-24 h-36 rounded-xl overflow-hidden shadow-lg shadow-black/50 shrink-0 bg-stone-900 border border-stone-800/40">
+                <MovieImage
                   src={pickedMovie.tmdb.posterUrl}
                   alt={pickedMovie.tmdb.title}
-                  className="w-24 h-36 rounded-xl object-cover shadow-lg shadow-black/50"
+                  title={pickedMovie.tmdb.title}
+                  mediaType={pickedMovie.tmdb.mediaType}
+                  className="w-full h-full object-cover"
+                  fallbackIconClassName="w-8 h-8 text-stone-600"
                 />
-              ) : (
-                <div className="w-24 h-36 rounded-xl bg-stone-800 flex items-center justify-center">
-                  <Film className="w-8 h-8 text-stone-600" />
-                </div>
-              )}
+              </div>
               <div className="flex-1">
                 <h3 className="text-lg font-bold text-white">
                   {pickedMovie.tmdb.title}
@@ -270,17 +273,16 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
             style={{ animationDelay: `${index * 50}ms` }}
           >
             {/* Poster */}
-            {entry.tmdb.posterUrl ? (
-              <img
+            <div className="w-full aspect-[2/3] bg-stone-900 overflow-hidden">
+              <MovieImage
                 src={entry.tmdb.posterUrl}
                 alt={entry.tmdb.title}
-                className="w-full aspect-[2/3] object-cover group-hover:scale-105 transition-transform duration-300"
+                title={entry.tmdb.title}
+                mediaType={entry.tmdb.mediaType}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                fallbackIconClassName="w-10 h-10 text-stone-700"
               />
-            ) : (
-              <div className="w-full aspect-[2/3] bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center">
-                <Film className="w-10 h-10 text-stone-700" />
-              </div>
-            )}
+            </div>
 
             {/* Hover overlay — warm gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">

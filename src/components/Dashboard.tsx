@@ -73,6 +73,8 @@ export type NavKey =
 
 import Link from "next/link";
 import { SHOWCASE_MEDIA_ITEMS, type MarqueeMediaItem } from "@/lib/showcase-media";
+import { MovieImage } from "./common/MovieImage";
+import { getOptimizedImageUrl } from "@/lib/image-utils";
 
 export default function Dashboard() {
   const { entries, isLoaded } = useJournal();
@@ -664,11 +666,13 @@ export default function Dashboard() {
             {marqueeRow1.map((item, idx) => (
               <div
                 key={`r1-${item.id}-${idx}`}
-                className="hero-poster-card w-24 sm:w-32 md:w-36 h-28 sm:h-34 md:h-36 mx-1.5 sm:mx-2"
+                className="hero-poster-card w-24 sm:w-32 md:w-36 h-28 sm:h-34 md:h-36 mx-1.5 sm:mx-2 overflow-hidden bg-stone-900"
               >
-                <img
+                <MovieImage
                   src={item.posterUrl}
-                  alt=""
+                  alt={item.title}
+                  title={item.title}
+                  mediaType={item.mediaType}
                   loading="eager"
                   className="w-full h-full object-cover"
                 />
@@ -702,11 +706,13 @@ export default function Dashboard() {
             {marqueeRow2.map((item, idx) => (
               <div
                 key={`r2-${item.id}-${idx}`}
-                className="hero-poster-card w-24 sm:w-32 md:w-36 h-28 sm:h-34 md:h-36 mx-1.5 sm:mx-2"
+                className="hero-poster-card w-24 sm:w-32 md:w-36 h-28 sm:h-34 md:h-36 mx-1.5 sm:mx-2 overflow-hidden bg-stone-900"
               >
-                <img
+                <MovieImage
                   src={item.posterUrl}
-                  alt=""
+                  alt={item.title}
+                  title={item.title}
+                  mediaType={item.mediaType}
                   loading="eager"
                   className="w-full h-full object-cover"
                 />
@@ -1603,18 +1609,15 @@ function PosterCard({
       className="poster-card group stagger-item cursor-pointer hover:scale-[1.03] transition-all"
       style={{ animationDelay: `${index * 30}ms` }}
     >
-      <div className="poster-card-image relative overflow-hidden">
-        {entry.tmdb.posterUrl ? (
-          <img
-            src={entry.tmdb.posterUrl}
-            alt={entry.tmdb.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center">
-            {isTV ? <Tv className="w-8 h-8 text-stone-700" /> : <FilmIcon className="w-8 h-8 text-stone-700" />}
-          </div>
-        )}
+      <div className="poster-card-image relative overflow-hidden bg-stone-900">
+        <MovieImage
+          src={entry.tmdb.posterUrl}
+          alt={entry.tmdb.title}
+          title={entry.tmdb.title}
+          mediaType={entry.tmdb.mediaType}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          fallbackIconClassName="w-8 h-8 text-stone-700"
+        />
 
         {/* Media type badge */}
         <div className="absolute top-1.5 left-1.5 z-10">

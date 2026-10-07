@@ -39,6 +39,7 @@ import { useJournal } from "@/lib/journal-context";
 import { formatHours } from "@/lib/stats";
 import { getCachedTVSeasons } from "@/lib/tv-seasons-cache";
 import MediaDetailModal from "./MediaDetailModal";
+import { MovieImage } from "./common/MovieImage";
 
 interface WatchedShelfProps {
   entries: MovieEntry[];
@@ -194,22 +195,18 @@ export default function WatchedShelf({
       >
         <div className="flex gap-3.5 p-4">
           {/* Poster with hover lift */}
-          {entry.tmdb.posterUrl ? (
-            <div className="relative shrink-0 group/poster">
-              <img
-                src={entry.tmdb.posterUrl}
-                alt={entry.tmdb.title}
-                loading="lazy"
-                className="w-20 h-28 rounded-lg object-cover group-hover:scale-105 transition-transform duration-300 shadow-md bg-stone-900"
-              />
-              <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-purple-500/15 to-transparent opacity-0 group-hover/poster:opacity-100 transition-opacity duration-300" />
-            </div>
-          ) : (
-            <div className="w-20 h-28 rounded-lg bg-stone-800 flex flex-col items-center justify-center shrink-0 border border-stone-700/30 text-stone-500">
-              {isTV ? <Tv className="w-7 h-7 mb-1" /> : <Film className="w-7 h-7 mb-1" />}
-              <span className="text-[10px] uppercase font-mono">No Poster</span>
-            </div>
-          )}
+          <div className="relative shrink-0 group/poster w-20 h-28 rounded-lg overflow-hidden shadow-md bg-stone-900 border border-stone-800/40">
+            <MovieImage
+              src={entry.tmdb.posterUrl}
+              alt={entry.tmdb.title}
+              title={entry.tmdb.title}
+              mediaType={entry.tmdb.mediaType}
+              loading="lazy"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              fallbackIconClassName="w-7 h-7 text-stone-500 mb-1"
+            />
+            <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-purple-500/15 to-transparent opacity-0 group-hover/poster:opacity-100 transition-opacity duration-300 pointer-events-none" />
+          </div>
 
           {/* Info */}
           <div className="flex-1 min-w-0">

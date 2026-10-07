@@ -48,6 +48,7 @@ import {
   type TVShowEpisodeStats,
 } from "@/lib/analytics";
 import MediaDetailModal from "./MediaDetailModal";
+import { MovieImage } from "./common/MovieImage";
 
 // ─── Props ──────────────────────────────────────────────────────────────────
 
@@ -302,17 +303,16 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
                     className="p-4 rounded-xl bg-stone-900/60 border border-stone-800/80 hover:border-purple-500/30 transition-all cursor-pointer group flex gap-4"
                   >
                     {/* Poster thumbnail */}
-                    {show.posterUrl ? (
-                      <img
+                    <div className="w-16 h-24 rounded-lg overflow-hidden shrink-0 shadow-md bg-stone-900 border border-stone-800/40">
+                      <MovieImage
                         src={show.posterUrl}
                         alt={show.title}
-                        className="w-16 h-24 rounded-lg object-cover shadow-md shrink-0 group-hover:scale-105 transition-transform"
+                        title={show.title}
+                        mediaType="tv"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        fallbackIconClassName="w-6 h-6 text-stone-600"
                       />
-                    ) : (
-                      <div className="w-16 h-24 rounded-lg bg-stone-800 flex items-center justify-center shrink-0">
-                        <Tv className="w-6 h-6 text-stone-600" />
-                      </div>
-                    )}
+                    </div>
 
                     {/* Progress Info */}
                     <div className="flex-1 min-w-0 flex flex-col justify-between">
@@ -647,19 +647,16 @@ function HistoryCard({
       style={{ animationDelay: `${index * 30}ms` }}
     >
       {/* Poster */}
-      <div className="aspect-[2/3] relative overflow-hidden">
-        {entry.tmdb.posterUrl ? (
-          <img
-            src={entry.tmdb.posterUrl}
-            alt={entry.tmdb.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            loading="lazy"
-          />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center">
-            <Film className="w-6 h-6 text-stone-700" />
-          </div>
-        )}
+      <div className="aspect-[2/3] relative overflow-hidden bg-stone-900">
+        <MovieImage
+          src={entry.tmdb.posterUrl}
+          alt={entry.tmdb.title}
+          title={entry.tmdb.title}
+          mediaType={entry.tmdb.mediaType}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          fallbackIconClassName="w-6 h-6 text-stone-700"
+          loading="lazy"
+        />
 
         {/* Media type badge */}
         <div className="absolute top-1.5 left-1.5">

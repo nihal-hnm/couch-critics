@@ -125,7 +125,7 @@ function apiEntryToMovieEntry(e: ApiEntry): MovieEntry {
     tmdb: {
       tmdbId: e.tmdb_id,
       title: e.title,
-      posterUrl: e.poster_url,
+      posterUrl: e.poster_url || cachedTv?.seasons?.find((s) => s.posterUrl)?.posterUrl || null,
       backdropUrl: cachedTv?.backdropUrl ?? null,
       releaseYear: e.release_year ?? "",
       runtime: e.runtime || cachedTv?.runtime || 0,
