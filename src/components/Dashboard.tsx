@@ -271,11 +271,24 @@ export default function Dashboard() {
       .slice(0, 20);
   }, [watched]);
 
-  // Moving Background Marquee: single continuous set of curated & user-synced posters
+  // Moving Background Marquee: ONLY titles that are NOT watched yet (currently watching + to-watch)
   const marqueeItems = useMemo(() => {
-    // Map user entries with posters
-    const userMedia: (MarqueeMediaItem & { shelf: Shelf; entry?: MovieEntry })[] = entries
-      .filter((e) => e.tmdb?.posterUrl)
+    // 1. Set of all watched titles/tmdbIds from the user's journal to strictly exclude them
+    const watchedTitleKeys = new Set(
+      entries
+        .filter((e) => e.shelf === "watched")
+        .map((e) => e.tmdb?.title?.toLowerCase().trim())
+        .filter(Boolean)
+    );
+    const watchedTmdbIds = new Set(
+      entries
+        .filter((e) => e.shelf === "watched" && e.tmdb?.tmdbId)
+        .map((e) => e.tmdb.tmdbId)
+    );
+
+    // 2. User entries that are currently unwatched (Watching + To Watch)
+    const unwatchedUserMedia: (MarqueeMediaItem & { shelf: Shelf; entry?: MovieEntry })[] = entries
+      .filter((e) => e.tmdb?.posterUrl && e.shelf !== "watched")
       .map((e) => ({
         id: e.id,
         title: e.tmdb.title,
@@ -286,43 +299,36 @@ export default function Dashboard() {
         entry: e,
       }));
 
-    // Map showcase items and associate with user entries or matching shelf
-    const showcaseWithShelf = SHOWCASE_MEDIA_ITEMS.map((item) => {
-      const match = entries.find(
-        (e) =>
-          e.tmdb?.title?.toLowerCase() === item.title.toLowerCase() ||
-          String(e.tmdb?.tmdbId) === item.id.replace("showcase-", "")
-      );
-      if (match) {
-        return {
-          ...item,
-          shelf: match.shelf,
-          entry: match,
-        };
-      }
-      let defaultShelf: Shelf = "watched";
-      const titleLower = item.title.toLowerCase();
-      if (
-        titleLower.includes("breaking bad") ||
-        titleLower.includes("bear") ||
-        titleLower.includes("suits")
-      ) {
-        defaultShelf = "watching";
-      } else if (
-        titleLower.includes("challengers") ||
-        titleLower.includes("arcane") ||
-        titleLower.includes("blade runner") ||
-        titleLower.includes("last of us")
-      ) {
-        defaultShelf = "toWatch";
-      }
-      return {
-        ...item,
-        shelf: defaultShelf,
-      };
-    });
+    // 3. Showcase / catalog items that are NOT in the user's watched collection
+    const unwatchedShowcase: (MarqueeMediaItem & { shelf: Shelf; entry?: MovieEntry })[] = [];
+    for (const item of SHOWCASE_MEDIA_ITEMS) {
+      const itemTitleKey = item.title.toLowerCase().trim();
+      const itemTmdbId = parseInt(item.id.replace("showcase-", ""), 10);
 
-    const allItems = [...userMedia, ...showcaseWithShelf];
+      // Strictly exclude if the user already watched this title
+      if (
+        watchedTitleKeys.has(itemTitleKey) ||
+        (!isNaN(itemTmdbId) && watchedTmdbIds.has(itemTmdbId))
+      ) {
+        continue;
+      }
+
+      // Check if user already has this in their unwatched media list
+      const alreadyInUserMedia = unwatchedUserMedia.some(
+        (m) =>
+          m.title.toLowerCase().trim() === itemTitleKey ||
+          (!isNaN(itemTmdbId) && m.entry?.tmdb?.tmdbId === itemTmdbId)
+      );
+
+      if (!alreadyInUserMedia) {
+        unwatchedShowcase.push({
+          ...item,
+          shelf: "toWatch",
+        });
+      }
+    }
+
+    const allItems = [...unwatchedUserMedia, ...unwatchedShowcase];
     const seen = new Set<string>();
     const uniqueItems: (MarqueeMediaItem & { shelf: Shelf; entry?: MovieEntry })[] = [];
     for (const item of allItems) {
@@ -332,14 +338,14 @@ export default function Dashboard() {
       }
     }
 
-    // Interleave movies and TV shows for visual variety
-    const movies = uniqueItems.filter((i) => i.mediaType === "movie");
+    // Interleave TV shows and movies for visual variety
     const shows = uniqueItems.filter((i) => i.mediaType === "tv");
+    const movies = uniqueItems.filter((i) => i.mediaType === "movie");
     const interleaved: typeof uniqueItems = [];
-    const maxLen = Math.max(movies.length, shows.length);
+    const maxLen = Math.max(shows.length, movies.length);
     for (let i = 0; i < maxLen; i++) {
-      if (movies[i]) interleaved.push(movies[i]);
       if (shows[i]) interleaved.push(shows[i]);
+      if (movies[i]) interleaved.push(movies[i]);
     }
 
     const baseList = interleaved.length > 0 ? interleaved : uniqueItems;
