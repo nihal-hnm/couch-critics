@@ -35,6 +35,7 @@ import type { TMDBMovieData, Shelf } from "@/lib/types";
 import { searchMovies, getMovieDetails, TMDBError } from "@/lib/tmdb";
 import { useJournal } from "@/lib/journal-context";
 import { MovieImage } from "./common/MovieImage";
+import { WhereToWatch } from "./common/WhereToWatch";
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -281,6 +282,14 @@ export default function SearchModal({
                       {movie.genres.length > 0 &&
                         ` · ${movie.genres.slice(0, 3).join(", ")}`}
                     </p>
+                    <div className="mt-1" onClick={(e) => e.stopPropagation()}>
+                      <WhereToWatch
+                        tmdbId={movie.tmdbId}
+                        title={movie.title}
+                        mediaType={movie.mediaType}
+                        variant="compact"
+                      />
+                    </div>
                     <p className="text-xs text-zinc-600 line-clamp-2 mt-1">
                       {movie.overview}
                     </p>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" rx="20" fill="#0b0e14"/>
+  <rect x="18" y="22" width="64" height="20" rx="4" fill="#FBC02D"/>
+  <text x="50" y="37" font-family="-apple-system, sans-serif" font-weight="900" font-size="12" fill="#000000" text-anchor="middle" letter-spacing="1">JUST</text>
+  <rect x="18" y="48" width="64" height="20" rx="4" fill="#FBC02D"/>
+  <text x="50" y="63" font-family="-apple-system, sans-serif" font-weight="900" font-size="11" fill="#000000" text-anchor="middle" letter-spacing="1">WATCH</text>
+  <path d="M45 74l10 5-10 5z" fill="#FBC02D"/>
+</svg>

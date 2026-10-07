@@ -34,6 +34,7 @@ import { getMovieDetails } from "@/lib/tmdb";
 import MediaDetailModal from "./MediaDetailModal";
 import { MovieImage } from "./common/MovieImage";
 import { getOptimizedImageUrl } from "@/lib/image-utils";
+import { WhereToWatch } from "./common/WhereToWatch";
 
 interface WatchingShelfProps {
   entries: MovieEntry[];
@@ -414,10 +415,20 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                           </span>
                         )}
                       </div>
+
+                      {/* Where to Watch */}
+                      <div className="mt-2.5" onClick={(e) => e.stopPropagation()}>
+                        <WhereToWatch
+                          tmdbId={entry.tmdb.tmdbId}
+                          title={entry.tmdb.title}
+                          mediaType={entry.tmdb.mediaType}
+                          variant="compact"
+                        />
+                      </div>
                     </div>
 
                     {/* Hint to open details */}
-                    <div className="mt-3 text-[11px] text-purple-300/70 flex items-center gap-1 font-medium">
+                    <div className="mt-2.5 text-[11px] text-purple-300/70 flex items-center gap-1 font-medium">
                       <span>Click card for full details</span>
                       <ChevronRight className="w-3 h-3" />
                     </div>

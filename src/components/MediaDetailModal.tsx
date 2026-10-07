@@ -44,6 +44,7 @@ import { fetchSeasonEpisodes, getMovieDetails, buildWatchedEpisodes } from "@/li
 import { getCachedTVSeasons } from "@/lib/tv-seasons-cache";
 import { MovieImage } from "./common/MovieImage";
 import { getOptimizedImageUrl } from "@/lib/image-utils";
+import { WhereToWatch } from "./common/WhereToWatch";
 
 interface MediaDetailModalProps {
   entry: MovieEntry | null;
@@ -745,6 +746,14 @@ export default function MediaDetailModal({
                 </div>
               </div>
 
+              {/* Where to Watch / OTT Streaming Availability */}
+              <WhereToWatch
+                tmdbId={entry.tmdb.tmdbId}
+                title={entry.tmdb.title}
+                mediaType="tv"
+                variant="full"
+              />
+
               {/* Overall Series Progress Bar */}
               <div className="space-y-1.5 bg-stone-900/60 p-3 rounded-xl border border-stone-800/80">
                 <div className="flex items-center justify-between text-xs">
@@ -1100,6 +1109,14 @@ export default function MediaDetailModal({
                   {entry.tmdb.overview || "No synopsis available."}
                 </p>
               </div>
+
+              {/* Where to Watch / OTT Streaming Availability */}
+              <WhereToWatch
+                tmdbId={entry.tmdb.tmdbId}
+                title={entry.tmdb.title}
+                mediaType={entry.tmdb.mediaType}
+                variant="full"
+              />
 
               {/* If movie on watching shelf: progress slider */}
               {entry.shelf === "watching" && !isTV && (

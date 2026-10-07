@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" rx="20" fill="#FF4500"/>
+  <text x="44" y="62" font-family="-apple-system, sans-serif" font-weight="900" font-size="34" fill="#FFFFFF" text-anchor="middle" letter-spacing="-1">aha</text>
+  <text x="76" y="60" font-family="-apple-system, sans-serif" font-weight="900" font-size="32" fill="#FFFFFF" text-anchor="middle">!</text>
+</svg>

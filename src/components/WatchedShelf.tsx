@@ -40,6 +40,7 @@ import { formatHours } from "@/lib/stats";
 import { getCachedTVSeasons } from "@/lib/tv-seasons-cache";
 import MediaDetailModal from "./MediaDetailModal";
 import { MovieImage } from "./common/MovieImage";
+import { WhereToWatch } from "./common/WhereToWatch";
 
 interface WatchedShelfProps {
   entries: MovieEntry[];
@@ -296,6 +297,16 @@ export default function WatchedShelf({
                 <RotateCcw className="w-2.5 h-2.5" />
                 Unwatch
               </button>
+            </div>
+
+            {/* Where to Watch */}
+            <div className="mt-2.5" onClick={(e) => e.stopPropagation()}>
+              <WhereToWatch
+                tmdbId={entry.tmdb.tmdbId}
+                title={entry.tmdb.title}
+                mediaType={entry.tmdb.mediaType}
+                variant="compact"
+              />
             </div>
 
             {/* Tags */}

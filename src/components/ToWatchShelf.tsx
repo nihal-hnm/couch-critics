@@ -31,6 +31,7 @@ import { useJournal } from "@/lib/journal-context";
 import MediaDetailModal from "./MediaDetailModal";
 import { MovieImage } from "./common/MovieImage";
 import { getOptimizedImageUrl } from "@/lib/image-utils";
+import { WhereToWatch } from "./common/WhereToWatch";
 
 interface ToWatchShelfProps {
   entries: MovieEntry[];
@@ -238,6 +239,16 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
                     {pickedMovie.tmdb.runtime} min
                   </p>
                 )}
+
+                <div className="mt-2.5">
+                  <WhereToWatch
+                    tmdbId={pickedMovie.tmdb.tmdbId}
+                    title={pickedMovie.tmdb.title}
+                    mediaType={pickedMovie.tmdb.mediaType}
+                    variant="compact"
+                  />
+                </div>
+
                 <div className="flex gap-2 mt-4">
                   <button
                     onClick={() => {
@@ -293,6 +304,15 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
                 {entry.tmdb.releaseYear}
                 {entry.tmdb.runtime > 0 && ` · ${entry.tmdb.runtime}m`}
               </p>
+
+              <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+                <WhereToWatch
+                  tmdbId={entry.tmdb.tmdbId}
+                  title={entry.tmdb.title}
+                  mediaType={entry.tmdb.mediaType}
+                  variant="compact"
+                />
+              </div>
 
               <div className="flex gap-1.5 mt-2.5" onClick={(e) => e.stopPropagation()}>
                 <button
