@@ -219,36 +219,35 @@ body {
 
 .hero-marquee-wrapper {
   position: absolute;
-  inset: -30px -60px -30px -60px;
+  inset: -10px -60px -10px -60px;
   overflow: hidden;
-  opacity: 0.85;
+  opacity: 0.92;
   filter: contrast(1.08) brightness(0.96) saturate(1.15);
-  pointer-events: none;
+  pointer-events: auto;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   justify-content: center;
-  gap: 16px;
-  transform: rotate(-1.5deg) scale(1.04);
+  transform: rotate(-1deg) scale(1.02);
+  z-index: 5;
 }
 
 [data-theme="light"] .hero-marquee-wrapper,
 .light .hero-marquee-wrapper {
-  opacity: 0.72;
+  opacity: 0.8;
   filter: contrast(1.04) brightness(0.98) saturate(1.1);
 }
 
 .hero-marquee-track-left {
   display: flex;
   width: max-content;
-  animation: marqueeScrollLeft 115s linear infinite;
+  align-items: center;
+  animation: marqueeScrollLeft 100s linear infinite;
   will-change: transform;
 }
 
-.hero-marquee-track-right {
-  display: flex;
-  width: max-content;
-  animation: marqueeScrollRight 130s linear infinite;
-  will-change: transform;
+.hero-marquee-track-left:hover {
+  animation-play-state: paused;
 }
 
 .hero-poster-card {
@@ -259,6 +258,15 @@ body {
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.12);
   background: #141018;
   aspect-ratio: 2 / 3;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 250ms ease, border-color 250ms ease;
+}
+
+.hero-poster-card:hover {
+  transform: scale(1.08) translateY(-4px);
+  box-shadow: 0 20px 35px -5px rgba(147, 51, 234, 0.35), 0 0 0 2px rgba(168, 85, 247, 0.6);
+  z-index: 10;
 }
 
 .hero-poster-card img {
@@ -266,16 +274,6 @@ body {
   height: 100%;
   object-fit: cover;
   display: block;
-}
-
-.hero-poster-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.15) 45%, transparent 75%);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 0.5rem;
 }
 
 /* Fallback poster grid */

@@ -271,10 +271,10 @@ export default function Dashboard() {
       .slice(0, 20);
   }, [watched]);
 
-  // Moving Background Marquee: curated & user-synced movies and TV shows
-  const { marqueeRow1, marqueeRow2 } = useMemo(() => {
-    // Map user entries that have posters
-    const userMedia: MarqueeMediaItem[] = entries
+  // Moving Background Marquee: single continuous set of curated & user-synced posters
+  const marqueeItems = useMemo(() => {
+    // Map user entries with posters
+    const userMedia: (MarqueeMediaItem & { shelf: Shelf; entry?: MovieEntry })[] = entries
       .filter((e) => e.tmdb?.posterUrl)
       .map((e) => ({
         id: e.id,
@@ -282,11 +282,49 @@ export default function Dashboard() {
         mediaType: e.tmdb.mediaType,
         posterUrl: e.tmdb.posterUrl!,
         releaseYear: e.tmdb.releaseYear,
+        shelf: e.shelf,
+        entry: e,
       }));
 
-    const allItems = [...userMedia, ...SHOWCASE_MEDIA_ITEMS];
+    // Map showcase items and associate with user entries or matching shelf
+    const showcaseWithShelf = SHOWCASE_MEDIA_ITEMS.map((item) => {
+      const match = entries.find(
+        (e) =>
+          e.tmdb?.title?.toLowerCase() === item.title.toLowerCase() ||
+          String(e.tmdb?.tmdbId) === item.id.replace("showcase-", "")
+      );
+      if (match) {
+        return {
+          ...item,
+          shelf: match.shelf,
+          entry: match,
+        };
+      }
+      let defaultShelf: Shelf = "watched";
+      const titleLower = item.title.toLowerCase();
+      if (
+        titleLower.includes("breaking bad") ||
+        titleLower.includes("bear") ||
+        titleLower.includes("suits")
+      ) {
+        defaultShelf = "watching";
+      } else if (
+        titleLower.includes("challengers") ||
+        titleLower.includes("arcane") ||
+        titleLower.includes("blade runner") ||
+        titleLower.includes("last of us")
+      ) {
+        defaultShelf = "toWatch";
+      }
+      return {
+        ...item,
+        shelf: defaultShelf,
+      };
+    });
+
+    const allItems = [...userMedia, ...showcaseWithShelf];
     const seen = new Set<string>();
-    const uniqueItems: MarqueeMediaItem[] = [];
+    const uniqueItems: (MarqueeMediaItem & { shelf: Shelf; entry?: MovieEntry })[] = [];
     for (const item of allItems) {
       if (!seen.has(item.posterUrl)) {
         seen.add(item.posterUrl);
@@ -294,31 +332,54 @@ export default function Dashboard() {
       }
     }
 
-    const movieItems = uniqueItems.filter((i) => i.mediaType === "movie");
-    const showItems = uniqueItems.filter((i) => i.mediaType === "tv");
-
-    const row1Items: MarqueeMediaItem[] = [];
-    const row2Items: MarqueeMediaItem[] = [];
-    const maxLen = Math.max(movieItems.length, showItems.length);
-
+    // Interleave movies and TV shows for visual variety
+    const movies = uniqueItems.filter((i) => i.mediaType === "movie");
+    const shows = uniqueItems.filter((i) => i.mediaType === "tv");
+    const interleaved: typeof uniqueItems = [];
+    const maxLen = Math.max(movies.length, shows.length);
     for (let i = 0; i < maxLen; i++) {
-      if (i % 2 === 0) {
-        if (movieItems[i]) row1Items.push(movieItems[i]);
-        if (showItems[i]) row2Items.push(showItems[i]);
-      } else {
-        if (showItems[i]) row1Items.push(showItems[i]);
-        if (movieItems[i]) row2Items.push(movieItems[i]);
-      }
+      if (movies[i]) interleaved.push(movies[i]);
+      if (shows[i]) interleaved.push(shows[i]);
     }
 
-    const baseRow1 = row1Items.length >= 6 ? row1Items : [...row1Items, ...SHOWCASE_MEDIA_ITEMS.slice(0, 8)];
-    const baseRow2 = row2Items.length >= 6 ? row2Items : [...row2Items, ...SHOWCASE_MEDIA_ITEMS.slice(8)];
-
-    return {
-      marqueeRow1: [...baseRow1, ...baseRow1],
-      marqueeRow2: [...baseRow2, ...baseRow2],
-    };
+    const baseList = interleaved.length > 0 ? interleaved : uniqueItems;
+    // Duplicate once for seamless infinite marquee loop
+    return [...baseList, ...baseList];
   }, [entries]);
+
+  // Click on a marquee poster redirects to the corresponding shelf (watching, toWatch, watched)
+  const handleMarqueeItemClick = useCallback(
+    (item: MarqueeMediaItem & { shelf?: Shelf; entry?: MovieEntry }) => {
+      const targetShelf: Shelf = item.shelf || "watching";
+
+      // 1. Switch active view to that shelf section
+      setActiveNav(targetShelf);
+
+      // 2. If it's a known entry, open its detail modal
+      if (item.entry) {
+        setSelectedDetailEntry(item.entry);
+      } else {
+        const found = entries.find(
+          (e) =>
+            e.tmdb?.title?.toLowerCase() === item.title.toLowerCase() ||
+            String(e.tmdb?.tmdbId) === item.id.replace("showcase-", "")
+        );
+        if (found) {
+          setSelectedDetailEntry(found);
+        }
+      }
+
+      // 3. Smoothly scroll down past the hero banner to the shelf section
+      if (typeof window !== "undefined") {
+        const heroHeight = heroRef.current ? heroRef.current.offsetHeight : 230;
+        window.scrollTo({
+          top: heroHeight + 20,
+          behavior: "smooth",
+        });
+      }
+    },
+    [entries]
+  );
 
   // Journey data — group by year
   const journeyYears = useMemo(() => {
@@ -658,15 +719,23 @@ export default function Dashboard() {
       </aside>
 
       {/* ══ CINEMATIC MOVING POSTERS HERO BANNER ═══════════════════ */}
-      <div ref={heroRef} className="relative overflow-hidden h-[240px] sm:h-[270px]">
-        {/* ══ DYNAMIC MOVING BACKGROUND: MOVIES & SHOWS MARQUEE ══ */}
-        <div className="hero-marquee-wrapper" aria-hidden="true">
-          {/* Row 1 — Moving Left */}
+      <div ref={heroRef} className="relative overflow-hidden h-[210px] sm:h-[240px]">
+        {/* ══ DYNAMIC MOVING BACKGROUND: 1 SINGLE SET OF POSTERS ══ */}
+        <div className="hero-marquee-wrapper" role="region" aria-label="Featured movie and TV posters">
+          {/* Single Continuous Row — Moving Left */}
           <div className="hero-marquee-track-left">
-            {marqueeRow1.map((item, idx) => (
+            {marqueeItems.map((item, idx) => (
               <div
-                key={`r1-${item.id}-${idx}`}
-                className="hero-poster-card w-24 sm:w-28 md:w-32 aspect-[2/3] mx-1.5 sm:mx-2 overflow-hidden bg-stone-900"
+                key={`m-${item.id}-${idx}`}
+                onClick={() => handleMarqueeItemClick(item)}
+                className="hero-poster-card w-28 sm:w-32 md:w-36 aspect-[2/3] mx-2 sm:mx-2.5 overflow-hidden bg-stone-900 rounded-xl cursor-pointer"
+                title={`Click to view in ${
+                  item.shelf === "toWatch"
+                    ? "To Watch Backlog"
+                    : item.shelf === "watched"
+                    ? "Watched Archive"
+                    : "Currently Watching"
+                }: ${item.title}`}
               >
                 <MovieImage
                   src={item.posterUrl}
@@ -676,67 +745,6 @@ export default function Dashboard() {
                   loading="eager"
                   className="w-full h-full object-cover"
                 />
-                <div className="hero-poster-overlay">
-                  <div className="flex items-center justify-between">
-                    <span
-                      className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider backdrop-blur-md shadow-sm ${
-                        item.mediaType === "tv"
-                          ? "bg-purple-600/90 text-purple-100 border border-purple-400/40"
-                          : "bg-indigo-600/90 text-indigo-100 border border-indigo-400/40"
-                      }`}
-                    >
-                      {item.mediaType === "tv" ? "TV Show" : "Movie"}
-                    </span>
-                    {item.releaseYear && (
-                      <span className="text-[9px] font-mono text-stone-300 font-semibold bg-black/60 px-1 rounded">
-                        {item.releaseYear}
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-[11px] font-bold text-white truncate drop-shadow-md">
-                    {item.title}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Row 2 — Moving Right */}
-          <div className="hero-marquee-track-right">
-            {marqueeRow2.map((item, idx) => (
-              <div
-                key={`r2-${item.id}-${idx}`}
-                className="hero-poster-card w-24 sm:w-28 md:w-32 aspect-[2/3] mx-1.5 sm:mx-2 overflow-hidden bg-stone-900"
-              >
-                <MovieImage
-                  src={item.posterUrl}
-                  alt={item.title}
-                  title={item.title}
-                  mediaType={item.mediaType}
-                  loading="eager"
-                  className="w-full h-full object-cover"
-                />
-                <div className="hero-poster-overlay">
-                  <div className="flex items-center justify-between">
-                    <span
-                      className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider backdrop-blur-md shadow-sm ${
-                        item.mediaType === "tv"
-                          ? "bg-purple-600/90 text-purple-100 border border-purple-400/40"
-                          : "bg-indigo-600/90 text-indigo-100 border border-indigo-400/40"
-                      }`}
-                    >
-                      {item.mediaType === "tv" ? "TV Show" : "Movie"}
-                    </span>
-                    {item.releaseYear && (
-                      <span className="text-[9px] font-mono text-stone-300 font-semibold bg-black/60 px-1 rounded">
-                        {item.releaseYear}
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-[11px] font-bold text-white truncate drop-shadow-md">
-                    {item.title}
-                  </div>
-                </div>
               </div>
             ))}
           </div>

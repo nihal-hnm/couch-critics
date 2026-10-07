@@ -6,12 +6,16 @@
  * hero marquees, and Netflix-style authentication pages.
  */
 
+import type { Shelf, MovieEntry } from "./types";
+
 export interface MarqueeMediaItem {
   id: string;
   title: string;
   mediaType: "movie" | "tv";
   posterUrl: string;
   releaseYear: string;
+  shelf?: Shelf;
+  entry?: MovieEntry;
 }
 
 export const SHOWCASE_MEDIA_ITEMS: MarqueeMediaItem[] = [
