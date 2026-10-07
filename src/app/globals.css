@@ -242,7 +242,7 @@ body {
   display: flex;
   width: max-content;
   align-items: center;
-  animation: marqueeScrollLeft 60s linear infinite;
+  animation: marqueeScrollLeft 40s linear infinite;
   will-change: transform;
 }
 
