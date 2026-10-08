@@ -630,7 +630,7 @@ export default function WatchedShelf({
             </div>
 
             {sortedMovies.length > 0 ? (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
                 {sortedMovies.map((entry, idx) => renderCard(entry, idx))}
               </div>
             ) : (
@@ -655,7 +655,7 @@ export default function WatchedShelf({
             </div>
 
             {sortedSeries.length > 0 ? (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
                 {sortedSeries.map((entry, idx) => renderCard(entry, idx))}
               </div>
             ) : (
@@ -669,7 +669,7 @@ export default function WatchedShelf({
         /* Mode B: Filtered or Combined Single Grid */
         <div>
           {combinedEntries.length > 0 ? (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
               {combinedEntries.map((entry, idx) => renderCard(entry, idx))}
             </div>
           ) : (

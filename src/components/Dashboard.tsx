@@ -875,7 +875,7 @@ export default function Dashboard() {
 
       {/* ── Main Hero Content (Cleanly Positioned BELOW Moving Background) ── */}
       {activeNav === "watching" && (
-        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-2">
+        <div className="relative z-10 max-w-[1800px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 mb-2">
@@ -1049,7 +1049,7 @@ export default function Dashboard() {
 
       {/* ── View 1: CURRENTLY WATCHING (Primary Home Screen) ─────── */}
       {activeNav === "watching" && (
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-8">
+        <main className="max-w-[1800px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
           {watching.length > 0 ? (
             filteredWatching.length > 0 ? (
               <WatchingShelf entries={filteredWatching} />
@@ -1120,7 +1120,7 @@ export default function Dashboard() {
 
       {/* ── View 2: TO WATCH BACKLOG (From Burger Bar) ───────────── */}
       {activeNav === "toWatch" && (
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+        <main className="max-w-[1800px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
           <TopReturnBanner
             title="To Watch Backlog"
             subtitle="Your wishlist of movies and TV series waiting to be watched"
@@ -1135,7 +1135,7 @@ export default function Dashboard() {
 
       {/* ── View 3: WATCHED ARCHIVE & REVIEWS (From Burger Bar) ──── */}
       {activeNav === "watched" && (
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+        <main className="max-w-[1800px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
           <TopReturnBanner
             title="Watched Archive &amp; Reviews"
             subtitle={`${watchedMovies.length} ${watchedMovies.length === 1 ? "movie" : "movies"} and ${watchedSeries.length} completed TV ${watchedSeries.length === 1 ? "series" : "series"} (${watched.length} total)`}
@@ -1150,7 +1150,7 @@ export default function Dashboard() {
 
       {/* ── View 4: ALL MOVIES (From Burger Bar - Watched Only) ───── */}
       {activeNav === "movies" && (
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-8">
+        <main className="max-w-[1800px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
           <TopReturnBanner
             title="All Movies"
             subtitle={`${watchedMovies.length} watched ${watchedMovies.length === 1 ? "movie" : "movies"} in your journal archive`}
@@ -1175,7 +1175,7 @@ export default function Dashboard() {
 
       {/* ── View 5: ALL TV SERIES (From Burger Bar - Watched Only) ─── */}
       {activeNav === "series" && (
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-8">
+        <main className="max-w-[1800px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
           <TopReturnBanner
             title="All TV Series"
             subtitle={`${watchedSeries.length} completed TV ${watchedSeries.length === 1 ? "series" : "series"} in your journal archive`}
@@ -1200,7 +1200,7 @@ export default function Dashboard() {
 
       {/* ── View 6: BROWSE BY GENRE (From Burger Bar) ──────────────── */}
       {activeNav === "genres" && (
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+        <main className="max-w-[1800px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
           <TopReturnBanner
             title="Browse by Genre"
             subtitle={`Explore ${entries.length} titles across ${allGenres.length} genres with watch time tracking`}
@@ -1358,7 +1358,7 @@ export default function Dashboard() {
 
           {/* Titles Grid or Empty State */}
           {displayedGenreEntries.length > 0 ? (
-            <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+            <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8">
               {displayedGenreEntries.map((entry, idx) => (
                 <PosterCard
                   key={entry.id}
@@ -1403,7 +1403,7 @@ export default function Dashboard() {
 
       {/* ── View 7: WATCH ANALYTICS (From Burger Bar) ────────────── */}
       {activeNav === "stats" && (
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+        <main className="max-w-[1800px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
           <TopReturnBanner
             title="Watch Analytics"
             subtitle="Consumption metrics, individual movie vs series minutes, and genre distribution"
@@ -1418,7 +1418,7 @@ export default function Dashboard() {
 
       {/* ── View 7: MY JOURNEY (From Burger Bar) ─────────────────── */}
       {activeNav === "journey" && (
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+        <main className="max-w-[1800px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
           <TopReturnBanner
             title="My Journey"
             subtitle="A timeline of the stories experienced across the years"
@@ -1439,7 +1439,7 @@ export default function Dashboard() {
                       {yearEntries.length} {yearEntries.length === 1 ? "title" : "titles"}
                     </span>
                   </div>
-                  <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+                  <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8">
                     {yearEntries.map((entry, idx) => (
                       <PosterCard
                         key={entry.id}
@@ -1466,7 +1466,7 @@ export default function Dashboard() {
 
       {/* ── View 8: FAVORITES (From Burger Bar) ──────────────────── */}
       {activeNav === "favorites" && (
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+        <main className="max-w-[1800px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
           <TopReturnBanner
             title="My Favorites"
             subtitle="Films and shows you rated 8/10 or higher"
@@ -1477,7 +1477,7 @@ export default function Dashboard() {
           />
 
           {favorites.length > 0 ? (
-            <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
               {favorites.map((entry, idx) => (
                 <PosterCard
                   key={entry.id}

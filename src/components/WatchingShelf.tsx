@@ -150,7 +150,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
 
   return (
     <>
-      <div className="grid gap-6 md:grid-cols-2 items-start">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 items-start">
         {entries.map((entry, index) => {
           const progress = entry.progress;
           const isMovie = entry.tmdb.mediaType === "movie";
