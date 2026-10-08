@@ -382,12 +382,12 @@ export default function Dashboard() {
 
   if (!isLoaded) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-[#0B0B0F]">
         <div className="flex flex-col items-center gap-3">
-          <div className="p-4 rounded-2xl bg-purple-500/10 animate-glow">
-            <FilmIcon className="w-8 h-8 text-purple-400 animate-pulse" />
+          <div className="p-4 rounded-2xl bg-[#E50914]/15">
+            <FilmIcon className="w-8 h-8 text-[#E50914] animate-pulse" />
           </div>
-          <p className="text-sm text-stone-500">Loading your journal...</p>
+          <p className="text-sm text-[#A1A1AA]">Loading your journal...</p>
         </div>
       </div>
     );
@@ -406,22 +406,22 @@ export default function Dashboard() {
 
       {/* Drawer Panel */}
       <aside
-        className={`fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-[#12100e] border-r border-purple-500/20 z-50 flex flex-col shadow-2xl shadow-black/90 transform transition-transform duration-300 ease-out ${
+        className={`fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-[#15151C] border-r border-[#292932] z-50 flex flex-col shadow-2xl shadow-black/90 transform transition-transform duration-300 ease-out ${
           isBurgerMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         aria-label="Side Navigation Menu"
       >
         {/* Drawer Header */}
-        <div className="p-5 border-b border-white/10 flex items-center justify-between bg-black/40">
+        <div className="p-5 border-b border-[#292932] flex items-center justify-between bg-black/40">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-purple-500/20 border border-purple-500/30">
-              <FilmIcon className="w-5 h-5 text-purple-400" />
+            <div className="p-2 rounded-xl bg-[#E50914]/15 border border-[#E50914]/30">
+              <FilmIcon className="w-5 h-5 text-[#E50914]" />
             </div>
             <div>
               <h2 className="text-base font-bold text-white font-mono uppercase tracking-wider">
                 COUCH CRITICS
               </h2>
-              <p className="text-[10px] text-purple-400/80 tracking-widest uppercase">
+              <p className="text-[10px] text-[#A1A1AA] tracking-widest uppercase">
                 Navigation Menu
               </p>
             </div>
@@ -449,17 +449,17 @@ export default function Dashboard() {
               }}
               className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
                 activeNav === "watching"
-                  ? "bg-gradient-to-r from-purple-500/25 to-[#5c0f92]/25 text-purple-200 border border-purple-500/30 shadow-lg shadow-purple-500/10"
-                  : "text-stone-300 hover:text-white hover:bg-white/5"
+                  ? "bg-[#E50914] text-white shadow-lg shadow-[#E50914]/20"
+                  : "text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5"
               }`}
             >
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-purple-500/20 text-purple-400">
+                <div className={`p-2 rounded-lg ${activeNav === "watching" ? "bg-white/20 text-white" : "bg-[#0B0B0F] border border-[#292932] text-[#E50914]"}`}>
                   <Play className="w-4 h-4 fill-current" />
                 </div>
                 <span className="text-left">Currently Watching</span>
               </div>
-              <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-purple-500/20 text-purple-300 border border-purple-500/30">
+              <span className={`px-2 py-0.5 rounded-full text-xs font-mono ${activeNav === "watching" ? "bg-white/20 text-white" : "bg-[#0B0B0F] text-[#A1A1AA] border border-[#292932]"}`}>
                 {watching.length}
               </span>
             </button>
