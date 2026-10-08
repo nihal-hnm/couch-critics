@@ -111,13 +111,35 @@ export default function MediaDetailModal({
     if (!entry || entry.tmdb.mediaType !== "tv") return;
 
     const catalog = getCachedTVSeasons(entry.tmdb.tmdbId);
+
+    // Check if entry.tmdb.seasons already has detailed episodes with real names
+    const entryHasRichEpisodes =
+      entry.tmdb.seasons &&
+      entry.tmdb.seasons.some(
+        (s) =>
+          s.episodes &&
+          s.episodes.length > 0 &&
+          s.episodes.some((e) => e.title && !e.title.toLowerCase().startsWith("episode "))
+      );
+
+    const catalogHasRichEpisodes =
+      catalog?.seasons &&
+      catalog.seasons.some(
+        (s) =>
+          s.episodes &&
+          s.episodes.length > 0 &&
+          s.episodes.some((e) => e.title && !e.title.toLowerCase().startsWith("episode "))
+      );
+
     let resolvedSeasons: TMDBSeasonData[] =
-      entry.tmdb.seasons && entry.tmdb.seasons.length > 1
+      entryHasRichEpisodes && entry.tmdb.seasons
         ? entry.tmdb.seasons
-        : catalog?.seasons && catalog.seasons.length > 0
+        : catalogHasRichEpisodes && catalog?.seasons
         ? catalog.seasons
         : entry.tmdb.seasons && entry.tmdb.seasons.length > 0
         ? entry.tmdb.seasons
+        : catalog?.seasons && catalog.seasons.length > 0
+        ? catalog.seasons
         : [];
 
     function populateSeasons(seasons: TMDBSeasonData[]) {
@@ -126,7 +148,17 @@ export default function MediaDetailModal({
       // Initialize immediate fallback or existing data for each season
       const initialMap: Record<number, EpisodeItem[]> = {};
       seasons.forEach((s) => {
-        if (s.episodes && s.episodes.length > 0) {
+        const catalogSeason = catalog?.seasons.find((cs) => cs.seasonNumber === s.seasonNumber);
+        const hasRichEpisodes =
+          s.episodes &&
+          s.episodes.length > 0 &&
+          s.episodes.some((e) => e.title && !e.title.toLowerCase().startsWith("episode "));
+
+        if (hasRichEpisodes && s.episodes) {
+          initialMap[s.seasonNumber] = s.episodes;
+        } else if (catalogSeason?.episodes && catalogSeason.episodes.length > 0) {
+          initialMap[s.seasonNumber] = catalogSeason.episodes;
+        } else if (s.episodes && s.episodes.length > 0) {
           initialMap[s.seasonNumber] = s.episodes;
         } else {
           const count = s.episodeCount || 10;
@@ -140,10 +172,10 @@ export default function MediaDetailModal({
       });
       setSeasonsEpisodesMap(initialMap);
 
-      // Fetch detailed episode data for all seasons in background from TMDB
+      // Fetch detailed episode data for all seasons in background via TMDB/TVmaze
       seasons.forEach((s) => {
         setLoadingSeasons((prev) => ({ ...prev, [s.seasonNumber]: true }));
-        fetchSeasonEpisodes(entry!.tmdb.tmdbId, s.seasonNumber)
+        fetchSeasonEpisodes(entry!.tmdb.tmdbId, s.seasonNumber, entry!.tmdb.title)
           .then((eps) => {
             if (eps && eps.length > 0) {
               setSeasonsEpisodesMap((prev) => ({
@@ -163,7 +195,7 @@ export default function MediaDetailModal({
 
     if (resolvedSeasons.length > 0) {
       populateSeasons(resolvedSeasons);
-      if (catalog && (!entry.tmdb.seasons || entry.tmdb.seasons.length <= 1)) {
+      if (catalog && (!entryHasRichEpisodes || !entry.tmdb.seasons || entry.tmdb.seasons.length <= 1)) {
         enrichEntrySeasons(
           entry.id,
           catalog.seasons,

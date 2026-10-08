@@ -145,10 +145,22 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
     const entry = entries.find((e) => e.id === expandedEpisodeShowId);
     if (!entry || entry.tmdb.mediaType !== "tv") return;
 
+    const catalog = getCachedTVSeasons(entry.tmdb.tmdbId);
+    const catalogHasRichEpisodes =
+      catalog?.seasons &&
+      catalog.seasons.some(
+        (s) =>
+          s.episodes &&
+          s.episodes.length > 0 &&
+          s.episodes.some((e) => e.title && !e.title.toLowerCase().startsWith("episode "))
+      );
+
     const seasons =
       enrichedSeasonsMap[entry.id] ||
-      entry.tmdb.seasons ||
-      getCachedTVSeasons(entry.tmdb.tmdbId)?.seasons ||
+      (catalogHasRichEpisodes && catalog?.seasons
+        ? catalog.seasons
+        : entry.tmdb.seasons) ||
+      catalog?.seasons ||
       [];
 
     if (!seasons || seasons.length === 0) return;
@@ -159,7 +171,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
     Promise.all(
       seasons.map(async (s) => {
         try {
-          const eps = await fetchSeasonEpisodes(entry.tmdb.tmdbId, s.seasonNumber);
+          const eps = await fetchSeasonEpisodes(entry.tmdb.tmdbId, s.seasonNumber, entry.tmdb.title);
           return { seasonNumber: s.seasonNumber, eps };
         } catch {
           return { seasonNumber: s.seasonNumber, eps: [] as EpisodeItem[] };
