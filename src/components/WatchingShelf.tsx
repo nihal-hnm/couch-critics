@@ -9,28 +9,23 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Play,
   CheckCircle2,
   Trash2,
   ChevronRight,
-  ChevronDown,
   Film,
   Tv,
   Clock,
   Minus,
   Plus,
-  Check,
   ListVideo,
-  Sparkles,
-  RotateCcw,
   BookmarkPlus,
 } from "lucide-react";
-import type { MovieEntry, UserReview, WatchProgress, TMDBSeasonData, EpisodeItem } from "@/lib/types";
+import type { MovieEntry, UserReview, TMDBSeasonData } from "@/lib/types";
 import { useJournal } from "@/lib/journal-context";
 import { getCachedTVSeasons } from "@/lib/tv-seasons-cache";
-import { getMovieDetails, fetchSeasonEpisodes } from "@/lib/tmdb";
 import MediaDetailModal from "./MediaDetailModal";
 import { MovieImage } from "./common/MovieImage";
 import { getOptimizedImageUrl } from "@/lib/image-utils";
@@ -72,134 +67,11 @@ function buildWatchedEpisodes(currentEp: number, seasons?: TMDBSeasonData[]): st
 }
 
 export default function WatchingShelf({ entries }: WatchingShelfProps) {
-  const { updateProgress, moveToShelf, removeEntry, enrichEntrySeasons } = useJournal();
+  const { updateProgress, moveToShelf, removeEntry } = useJournal();
   const [completingId, setCompletingId] = useState<string | null>(null);
   const [rating, setRating] = useState(7);
   const [notes, setNotes] = useState("");
   const [selectedEntry, setSelectedEntry] = useState<MovieEntry | null>(null);
-  const [expandedEpisodeShowId, setExpandedEpisodeShowId] = useState<string | null>(null);
-  const [activeSeasonMap, setActiveSeasonMap] = useState<Record<string, number | "all">>({});
-  const [enrichedSeasonsMap, setEnrichedSeasonsMap] = useState<Record<string, TMDBSeasonData[]>>({});
-
-  // Fetch TV seasons dynamically when drawer expands if not already loaded
-  useEffect(() => {
-    if (!expandedEpisodeShowId) return;
-    const entry = entries.find((e) => e.id === expandedEpisodeShowId);
-    if (!entry || entry.tmdb.mediaType !== "tv") return;
-    if (entry.tmdb.seasons && entry.tmdb.seasons.length > 1) return;
-
-    // Check pre-baked catalog first (instant)
-    const catalog = getCachedTVSeasons(entry.tmdb.tmdbId);
-    if (catalog?.seasons && catalog.seasons.length > 0) {
-      setEnrichedSeasonsMap((prev) => ({ ...prev, [entry.id]: catalog.seasons }));
-      enrichEntrySeasons(
-        entry.id,
-        catalog.seasons,
-        catalog.totalSeasons,
-        catalog.backdropUrl,
-        catalog.totalEpisodes
-      );
-      return;
-    }
-
-    // Otherwise fetch full details from TMDB
-    let cancelled = false;
-    getMovieDetails(entry.tmdb.tmdbId, "tv")
-      .then((details) => {
-        if (cancelled) return;
-        if (details.seasons && details.seasons.length > 0) {
-          setEnrichedSeasonsMap((prev) => ({ ...prev, [entry.id]: details.seasons! }));
-          enrichEntrySeasons(
-            entry.id,
-            details.seasons,
-            details.totalSeasons || details.seasons.length,
-            details.backdropUrl,
-            details.totalEpisodes
-          );
-        }
-      })
-      .catch((err) => {
-        console.warn("Could not fetch TV seasons for WatchingShelf:", err);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [expandedEpisodeShowId, entries, enrichEntrySeasons]);
-
-  const [shelfEpisodesMap, setShelfEpisodesMap] = useState<Record<string, Record<number, EpisodeItem[]>>>({});
-  const [, setLoadingEpisodesMap] = useState<Record<string, boolean>>({});
-  const [viewModeMap, setViewModeMap] = useState<Record<string, "detailed" | "compact">>({});
-  const [expandedOverviewCodes, setExpandedOverviewCodes] = useState<Record<string, boolean>>({});
-
-  function toggleOverview(epCode: string) {
-    setExpandedOverviewCodes((prev) => ({
-      ...prev,
-      [epCode]: !prev[epCode],
-    }));
-  }
-
-  // Fetch detailed episode names & overviews for the expanded TV show
-  useEffect(() => {
-    if (!expandedEpisodeShowId) return;
-    const entry = entries.find((e) => e.id === expandedEpisodeShowId);
-    if (!entry || entry.tmdb.mediaType !== "tv") return;
-
-    const catalog = getCachedTVSeasons(entry.tmdb.tmdbId);
-    const catalogHasRichEpisodes =
-      catalog?.seasons &&
-      catalog.seasons.some(
-        (s) =>
-          s.episodes &&
-          s.episodes.length > 0 &&
-          s.episodes.some((e) => e.title && !e.title.toLowerCase().startsWith("episode "))
-      );
-
-    const seasons =
-      enrichedSeasonsMap[entry.id] ||
-      (catalogHasRichEpisodes && catalog?.seasons
-        ? catalog.seasons
-        : entry.tmdb.seasons) ||
-      catalog?.seasons ||
-      [];
-
-    if (!seasons || seasons.length === 0) return;
-
-    let cancelled = false;
-    setLoadingEpisodesMap((prev) => ({ ...prev, [entry.id]: true }));
-
-    Promise.all(
-      seasons.map(async (s) => {
-        try {
-          const eps = await fetchSeasonEpisodes(entry.tmdb.tmdbId, s.seasonNumber, entry.tmdb.title);
-          return { seasonNumber: s.seasonNumber, eps };
-        } catch {
-          return { seasonNumber: s.seasonNumber, eps: [] as EpisodeItem[] };
-        }
-      })
-    )
-      .then((results) => {
-        if (cancelled) return;
-        setShelfEpisodesMap((prev) => {
-          const showMap = { ...(prev[entry.id] || {}) };
-          results.forEach(({ seasonNumber, eps }) => {
-            if (eps && eps.length > 0) {
-              showMap[seasonNumber] = eps;
-            }
-          });
-          return { ...prev, [entry.id]: showMap };
-        });
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setLoadingEpisodesMap((prev) => ({ ...prev, [entry.id]: false }));
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [expandedEpisodeShowId, entries, enrichedSeasonsMap]);
 
   function handleProgressChange(entry: MovieEntry, delta: number) {
     const current = entry.progress?.minutesWatched ?? 0;
@@ -242,81 +114,6 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
     });
   }
 
-  function handleToggleEpisode(entry: MovieEntry, seasonNum: number, epNum: number, episodeTitle?: string) {
-    const epCode = `S${seasonNum}E${epNum}`;
-    const currentWatchedList =
-      entry.progress?.watchedEpisodes && entry.progress.watchedEpisodes.length > 0
-        ? entry.progress.watchedEpisodes
-        : buildWatchedEpisodes(entry.progress?.currentEpisode ?? 0, entry.tmdb.seasons);
-
-    const watched = new Set(currentWatchedList);
-    const newHistory = [...(entry.progress?.episodeHistory ?? [])];
-
-    if (watched.has(epCode)) {
-      watched.delete(epCode);
-    } else {
-      watched.add(epCode);
-      newHistory.unshift({
-        id: crypto.randomUUID(),
-        seasonNumber: seasonNum,
-        episodeNumber: epNum,
-        episodeTitle: episodeTitle || `Episode ${epNum}`,
-        runtimeMinutes: entry.tmdb.runtime || 45,
-        watchedAt: new Date().toISOString(),
-      });
-    }
-
-    const watchedArray = Array.from(watched);
-    updateProgress(entry.id, {
-      ...(entry.progress ?? {}),
-      currentSeason: seasonNum,
-      currentEpisode: watchedArray.length,
-      watchedEpisodes: watchedArray,
-      episodeHistory: newHistory.slice(0, 50),
-      minutesWatched: watchedArray.length * (entry.tmdb.runtime || 45),
-    });
-  }
-
-  function handleSelectAllSeason(entry: MovieEntry, seasonNum: number, epCount: number) {
-    const currentWatchedList =
-      entry.progress?.watchedEpisodes && entry.progress.watchedEpisodes.length > 0
-        ? entry.progress.watchedEpisodes
-        : buildWatchedEpisodes(entry.progress?.currentEpisode ?? 0, entry.tmdb.seasons);
-
-    const watched = new Set(currentWatchedList);
-    for (let i = 1; i <= epCount; i++) {
-      watched.add(`S${seasonNum}E${i}`);
-    }
-    const watchedArray = Array.from(watched);
-    updateProgress(entry.id, {
-      ...(entry.progress ?? {}),
-      currentSeason: seasonNum,
-      currentEpisode: watchedArray.length,
-      watchedEpisodes: watchedArray,
-      minutesWatched: watchedArray.length * (entry.tmdb.runtime || 45),
-    });
-  }
-
-  function handleUnselectAllSeason(entry: MovieEntry, seasonNum: number, epCount: number) {
-    const currentWatchedList =
-      entry.progress?.watchedEpisodes && entry.progress.watchedEpisodes.length > 0
-        ? entry.progress.watchedEpisodes
-        : buildWatchedEpisodes(entry.progress?.currentEpisode ?? 0, entry.tmdb.seasons);
-
-    const watched = new Set(currentWatchedList);
-    for (let i = 1; i <= epCount; i++) {
-      watched.delete(`S${seasonNum}E${i}`);
-    }
-    const watchedArray = Array.from(watched);
-    updateProgress(entry.id, {
-      ...(entry.progress ?? {}),
-      currentSeason: seasonNum,
-      currentEpisode: watchedArray.length,
-      watchedEpisodes: watchedArray,
-      minutesWatched: watchedArray.length * (entry.tmdb.runtime || 45),
-    });
-  }
-
   function handleMoveToBacklog(entry: MovieEntry) {
     moveToShelf(entry.id, "toWatch");
   }
@@ -353,13 +150,12 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
 
   return (
     <>
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2 items-start">
         {entries.map((entry, index) => {
           const progress = entry.progress;
           const isMovie = entry.tmdb.mediaType === "movie";
           const showSeasons =
             (entry.tmdb.seasons && entry.tmdb.seasons.length > 0 ? entry.tmdb.seasons : null) ||
-            enrichedSeasonsMap[entry.id] ||
             (getCachedTVSeasons(entry.tmdb.tmdbId)?.seasons && getCachedTVSeasons(entry.tmdb.tmdbId)!.seasons.length > 0
               ? getCachedTVSeasons(entry.tmdb.tmdbId)!.seasons
               : null);
@@ -394,8 +190,6 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
             : totalEpisodesCount
             ? Math.round((watchedEpisodesCount / totalEpisodesCount) * 100)
             : 0;
-
-          const isExpanded = expandedEpisodeShowId === entry.id;
 
           return (
             <div
@@ -608,337 +402,26 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                     {!isMovie && (
                       <button
                         type="button"
-                        onClick={() =>
-                          setExpandedEpisodeShowId(isExpanded ? null : entry.id)
-                        }
-                        className="text-xs text-[#A1A1AA] hover:text-[#F5F5F5] flex items-center gap-1 transition-colors font-medium cursor-pointer"
+                        onClick={() => setSelectedEntry(entry)}
+                        className="text-xs text-[#A1A1AA] hover:text-[#F5F5F5] flex items-center gap-1.5 transition-colors font-medium cursor-pointer px-2.5 py-1.5 rounded-lg hover:bg-white/5 border border-transparent hover:border-[#292932]"
+                        title="Open Episode Guide & Checklist"
                       >
-                        <ListVideo className="w-3.5 h-3.5" />
-                        <span className="hidden sm:inline">{isExpanded ? "Hide" : "Episodes"}</span>
-                        <ChevronDown
-                          className={`w-3.5 h-3.5 transition-transform ${
-                            isExpanded ? "rotate-180" : ""
-                          }`}
-                        />
+                        <ListVideo className="w-3.5 h-3.5 text-[#E50914]" />
+                        <span>Episodes</span>
                       </button>
                     )}
 
                     <button
                       type="button"
                       onClick={() => setSelectedEntry(entry)}
-                      className="text-xs text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+                      className="text-xs text-[#A1A1AA] hover:text-white transition-colors cursor-pointer flex items-center gap-1 px-2.5 py-1.5 rounded-lg hover:bg-white/5 border border-transparent hover:border-[#292932]"
+                      title="View full details"
                     >
-                      Details &rarr;
+                      <span>Details</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
-
-                {/* TV Series: Inline Episode Checklist Drawer */}
-                {!isMovie && isExpanded && (() => {
-                  const availableSeasons =
-                    showSeasons && showSeasons.length > 0
-                      ? showSeasons
-                      : Array.from(
-                          {
-                            length:
-                              entry.tmdb.totalSeasons ||
-                              getCachedTVSeasons(entry.tmdb.tmdbId)?.totalSeasons ||
-                              1,
-                          },
-                          (_, i) => ({
-                            seasonNumber: i + 1,
-                            name: `Season ${i + 1}`,
-                            episodeCount: entry.tmdb.totalEpisodes
-                              ? Math.ceil(
-                                  entry.tmdb.totalEpisodes /
-                                    (entry.tmdb.totalSeasons ||
-                                      getCachedTVSeasons(entry.tmdb.tmdbId)?.totalSeasons ||
-                                      1)
-                                )
-                              : 10,
-                          })
-                        );
-
-                  const currentSelection = activeSeasonMap[entry.id] ?? "all";
-                  const seasonsToDisplay = currentSelection === "all"
-                    ? availableSeasons
-                    : availableSeasons.filter(s => s.seasonNumber === currentSelection);
-
-                  return (
-                    <div className="pt-3 space-y-3 border-t border-stone-800/80 animate-in fade-in duration-200">
-                      {/* Season selector tabs & View mode toggle */}
-                      <div className="flex items-center justify-between gap-2 flex-wrap">
-                        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar flex-1 min-w-0">
-                          <button
-                            type="button"
-                            onClick={() => setActiveSeasonMap(prev => ({ ...prev, [entry.id]: "all" }))}
-                            className={`px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap transition-colors ${
-                              currentSelection === "all"
-                                ? "bg-[#E50914] text-white font-bold shadow-sm"
-                                : "bg-[#0B0B0F] text-[#A1A1AA] hover:text-white border border-[#292932]"
-                            }`}
-                          >
-                            All Seasons ({availableSeasons.length})
-                          </button>
-                          {availableSeasons.map((s) => {
-                            const isSel = currentSelection === s.seasonNumber;
-                            return (
-                              <button
-                                key={s.seasonNumber}
-                                type="button"
-                                onClick={() => setActiveSeasonMap(prev => ({ ...prev, [entry.id]: s.seasonNumber }))}
-                                className={`px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap transition-colors ${
-                                  isSel
-                                    ? "bg-[#E50914] text-white font-bold shadow-sm"
-                                    : "bg-[#0B0B0F] text-[#A1A1AA] hover:text-white border border-[#292932]"
-                                }`}
-                              >
-                                S{s.seasonNumber}
-                              </button>
-                            );
-                          })}
-                        </div>
-
-                        {/* View Mode Toggle: Detailed (Name + Overview) vs Compact */}
-                        <div className="flex items-center gap-1 shrink-0 bg-stone-950 p-0.5 rounded-lg border border-stone-800">
-                          <button
-                            type="button"
-                            onClick={() => setViewModeMap(prev => ({ ...prev, [entry.id]: "detailed" }))}
-                            className={`px-2 py-0.5 rounded text-[10px] font-medium transition-colors ${
-                              viewModeMap[entry.id] !== "compact"
-                                ? "bg-[#E50914] text-white font-bold"
-                                : "text-stone-400 hover:text-white"
-                            }`}
-                            title="Detailed view: Episode name & overview"
-                          >
-                            Detailed
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setViewModeMap(prev => ({ ...prev, [entry.id]: "compact" }))}
-                            className={`px-2 py-0.5 rounded text-[10px] font-medium transition-colors ${
-                              viewModeMap[entry.id] === "compact"
-                                ? "bg-[#E50914] text-white font-bold"
-                                : "text-stone-400 hover:text-white"
-                            }`}
-                            title="Compact view: Grid numbers"
-                          >
-                            Compact
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Display each season and its episodes */}
-                      <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
-                        {seasonsToDisplay.map((season) => {
-                          const sNum = season.seasonNumber;
-                          const epCount = season.episodeCount || 10;
-                          let watchedInSeason = 0;
-                          for (let i = 1; i <= epCount; i++) {
-                            if (watchedEpisodesList.includes(`S${sNum}E${i}`)) {
-                              watchedInSeason++;
-                            }
-                          }
-
-                          const seasonEps = shelfEpisodesMap[entry.id]?.[sNum];
-                          const episodeList: EpisodeItem[] = seasonEps && seasonEps.length > 0
-                            ? seasonEps
-                            : Array.from({ length: epCount }, (_, i) => ({
-                                seasonNumber: sNum,
-                                episodeNumber: i + 1,
-                                title: `Episode ${i + 1}`,
-                                runtime: entry.tmdb.runtime || 45,
-                                overview: "",
-                              }));
-
-                          const isCompact = viewModeMap[entry.id] === "compact";
-
-                          return (
-                            <div key={sNum} className="space-y-2 bg-stone-950/60 p-2.5 rounded-xl border border-stone-800/80">
-                              {/* Header with Season Title and Select / Unselect All */}
-                              <div className="flex items-center justify-between">
-                                <p className="text-[11px] text-stone-300 uppercase tracking-wider font-bold">
-                                  {season.name || `Season ${sNum}`} ({watchedInSeason}/{epCount} eps)
-                                </p>
-                                <div className="flex items-center gap-1.5">
-                                  <button
-                                    type="button"
-                                    onClick={() => handleSelectAllSeason(entry, sNum, epCount)}
-                                    className="px-2 py-0.5 rounded text-[10px] font-medium bg-[#E50914]/15 hover:bg-[#E50914]/25 text-[#F5F5F5] border border-[#E50914]/30 transition-colors"
-                                  >
-                                    Select All
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => handleUnselectAllSeason(entry, sNum, epCount)}
-                                    className="px-2 py-0.5 rounded text-[10px] font-medium bg-stone-800 hover:bg-stone-700 text-stone-300 border border-stone-700 transition-colors"
-                                  >
-                                    Unselect All
-                                  </button>
-                                </div>
-                              </div>
-
-                              {/* Episode List */}
-                              {isCompact ? (
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
-                                  {episodeList.map((ep) => {
-                                    const eNum = ep.episodeNumber;
-                                    const code = `S${sNum}E${eNum}`;
-                                    const isWatched = watchedEpisodesList.includes(code);
-
-                                    return (
-                                      <button
-                                        key={code}
-                                        type="button"
-                                        title={ep.overview ? `${ep.title}: ${ep.overview}` : ep.title}
-                                        onClick={() => handleToggleEpisode(entry, sNum, eNum, ep.title)}
-                                        className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium text-left border transition-all ${
-                                          isWatched
-                                            ? "bg-[#E50914]/15 text-[#F5F5F5] border-[#E50914]/40"
-                                            : "bg-stone-900 text-stone-400 border-stone-800 hover:border-stone-700"
-                                        }`}
-                                      >
-                                        <div
-                                          className={`w-3.5 h-3.5 rounded flex items-center justify-center shrink-0 ${
-                                            isWatched ? "bg-[#E50914] text-white" : "border border-[#292932]"
-                                          }`}
-                                        >
-                                          {isWatched && <Check className="w-2.5 h-2.5 stroke-[3]" />}
-                                        </div>
-                                        <span className="truncate">Ep {eNum}</span>
-                                      </button>
-                                    );
-                                  })}
-                                </div>
-                              ) : (
-                                <div className="space-y-1.5">
-                                  {episodeList.map((ep) => {
-                                    const eNum = ep.episodeNumber;
-                                    const code = `S${sNum}E${eNum}`;
-                                    const isWatched = watchedEpisodesList.includes(code);
-                                    const isOverviewOpen = !!expandedOverviewCodes[code];
-
-                                    return (
-                                      <div
-                                        key={code}
-                                        className={`p-2.5 rounded-xl border transition-all ${
-                                          isWatched
-                                            ? "bg-[#E50914]/12 border-[#E50914]/30 text-white shadow-sm"
-                                            : "bg-[#0B0B0F] border-[#292932] text-[#A1A1AA] hover:border-[#3D3D4C]"
-                                        }`}
-                                      >
-                                        <div className="flex items-center justify-between gap-2.5">
-                                          <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                                            <button
-                                              type="button"
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleToggleEpisode(entry, sNum, eNum, ep.title);
-                                              }}
-                                              className={`w-4 h-4 sm:w-5 sm:h-5 rounded-md flex items-center justify-center shrink-0 transition-all cursor-pointer ${
-                                                isWatched
-                                                  ? "bg-[#E50914] text-white font-bold"
-                                                  : "border border-[#292932] hover:border-[#E50914] bg-[#0B0B0F]"
-                                              }`}
-                                              aria-label={isWatched ? `Mark episode ${eNum} unwatched` : `Mark episode ${eNum} watched`}
-                                            >
-                                              {isWatched ? <Check className="w-3 h-3 stroke-[3]" /> : null}
-                                            </button>
-
-                                            <div
-                                              className="min-w-0 flex-1 cursor-pointer flex items-center gap-1.5"
-                                              onClick={() => toggleOverview(code)}
-                                              title={isOverviewOpen ? "Click to hide overview" : "Click to view overview"}
-                                            >
-                                              <span className="text-[#E50914] font-mono text-[11px] font-bold px-1.5 py-0.2 rounded bg-[#E50914]/12 border border-[#E50914]/25 shrink-0">
-                                                E{eNum}
-                                              </span>
-                                              <span
-                                                className={`text-xs font-semibold truncate ${
-                                                  isWatched ? "text-white" : "text-[#F5F5F5]"
-                                                }`}
-                                              >
-                                                {ep.title}
-                                              </span>
-                                            </div>
-                                          </div>
-
-                                          <div className="flex items-center gap-2 shrink-0">
-                                            {ep.runtime ? (
-                                              <span className="text-[10px] text-stone-500 hidden xs:flex items-center gap-1 font-mono">
-                                                <Clock className="w-2.5 h-2.5" />
-                                                {ep.runtime}m
-                                              </span>
-                                            ) : null}
-
-                                            {/* Dropdown Toggle Button for Overview */}
-                                            <button
-                                              type="button"
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                toggleOverview(code);
-                                              }}
-                                              className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium transition-all border cursor-pointer ${
-                                                isOverviewOpen
-                                                  ? "bg-[#E50914]/15 text-[#F5F5F5] border-[#E50914]/40 shadow-sm"
-                                                  : "bg-stone-800/80 text-stone-300 hover:text-white hover:bg-stone-700/80 border-stone-700/60"
-                                              }`}
-                                              title={isOverviewOpen ? "Collapse overview" : "Watch episode overview"}
-                                            >
-                                              <span>Overview</span>
-                                              <ChevronDown
-                                                className={`w-3 h-3 transition-transform duration-200 ${
-                                                  isOverviewOpen ? "rotate-180 text-[#E50914]" : "text-stone-400"
-                                                }`}
-                                              />
-                                            </button>
-                                          </div>
-                                        </div>
-
-                                        {/* Dropdown Content: Episode Overview & Air Date */}
-                                        {isOverviewOpen && (
-                                          <div className="mt-2.5 pt-2.5 border-t border-stone-800/70 pl-7 pr-1 animate-in fade-in slide-in-from-top-1 duration-200">
-                                            <p className="text-[11px] text-stone-300 leading-relaxed">
-                                              {ep.overview || (
-                                                <span className="text-stone-500 italic text-[10px]">
-                                                  No synopsis overview available for this episode.
-                                                </span>
-                                              )}
-                                            </p>
-
-                                            <div className="flex items-center gap-3 mt-1.5 text-[10px] text-stone-500 flex-wrap">
-                                              {ep.airDate && <span>Aired: {ep.airDate}</span>}
-                                              {ep.runtime && (
-                                                <span className="flex items-center gap-1">
-                                                  <Clock className="w-2.5 h-2.5" />
-                                                  Runtime: {ep.runtime} min
-                                                </span>
-                                              )}
-                                            </div>
-                                          </div>
-                                        )}
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-
-                      {/* Link to Open Full Modal */}
-                      <button
-                        type="button"
-                        onClick={() => setSelectedEntry(entry)}
-                        className="w-full py-1.5 px-3 rounded-lg text-xs font-semibold text-[#F5F5F5] hover:text-white bg-[#E50914]/15 hover:bg-[#E50914]/25 border border-[#E50914]/30 transition-all flex items-center justify-center gap-1.5"
-                      >
-                        <ListVideo className="w-3.5 h-3.5" />
-                        Open Full Episode Guide &amp; Overviews &rarr;
-                      </button>
-                    </div>
-                  );
-                })()}
               </div>
 
               {/* ── Quick Complete Modal ───────────────────────── */}
