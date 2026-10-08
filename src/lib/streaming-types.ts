@@ -18,6 +18,8 @@ export type StreamingPlatformId =
   | "lionsgate"
   | "mubi"
   | "aha"
+  | "sunnxt"
+  | "hoichoi"
   | "other";
 
 export interface StreamingPlatform {

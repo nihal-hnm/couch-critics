@@ -127,6 +127,22 @@ export const PLATFORM_CONFIGS: Record<StreamingPlatformId, PlatformConfig> = {
     accentColor: "#FF4500",
     searchUrlTemplate: (q) => `https://www.aha.video/search?q=${encodeURIComponent(q)}`,
   },
+  sunnxt: {
+    id: "sunnxt",
+    name: "Sun NXT",
+    shortName: "Sun NXT",
+    logo: "/images/ott/sun-nxt.svg",
+    accentColor: "#F37021",
+    searchUrlTemplate: (q) => `https://www.sunnxt.com/search?q=${encodeURIComponent(q)}`,
+  },
+  hoichoi: {
+    id: "hoichoi",
+    name: "Hoichoi",
+    shortName: "Hoichoi",
+    logo: "/images/ott/hoichoi.svg",
+    accentColor: "#D32F2F",
+    searchUrlTemplate: (q) => `https://www.hoichoi.tv/search?q=${encodeURIComponent(q)}`,
+  },
   other: {
     id: "other",
     name: "Streaming Service",
@@ -1492,6 +1508,204 @@ export const VERIFIED_TITLE_REGISTRY: Record<string, TitleWatchInfo> = {
       },
     ],
   },
+
+  // Asur
+  "101895": {
+    tmdbId: 101895,
+    title: "Asur",
+    type: "series",
+    primaryPlatform: "JioHotstar",
+    watchNowUrl: "https://www.hotstar.com/in/shows/asur/1260142851",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/asur-welcome-to-your-dark-side",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "JioHotstar",
+        platformId: "hotstar",
+        logo: PLATFORM_CONFIGS.hotstar.logo,
+        url: "https://www.hotstar.com/in/shows/asur/1260142851",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Farzi
+  "218151": {
+    tmdbId: 218151,
+    title: "Farzi",
+    type: "series",
+    primaryPlatform: "Amazon Prime Video",
+    watchNowUrl: "https://www.primevideo.com/detail/0QNDJ70K96E64BVD4FUX8XF4Z6/",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/farzi",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Prime Video",
+        platformId: "prime",
+        logo: PLATFORM_CONFIGS.prime.logo,
+        url: "https://www.primevideo.com/detail/0QNDJ70K96E64BVD4FUX8XF4Z6/",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Special OPS
+  "101344": {
+    tmdbId: 101344,
+    title: "Special OPS",
+    type: "series",
+    primaryPlatform: "JioHotstar",
+    watchNowUrl: "https://www.hotstar.com/in/shows/special-ops/1260022894",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/special-ops",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "JioHotstar",
+        platformId: "hotstar",
+        logo: PLATFORM_CONFIGS.hotstar.logo,
+        url: "https://www.hotstar.com/in/shows/special-ops/1260022894",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Taaza Khabar
+  "203832": {
+    tmdbId: 203832,
+    title: "Taaza Khabar",
+    type: "series",
+    primaryPlatform: "JioHotstar",
+    watchNowUrl: "https://www.hotstar.com/in/shows/taaza-khabar/1260124373",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/taaza-khabar",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "JioHotstar",
+        platformId: "hotstar",
+        logo: PLATFORM_CONFIGS.hotstar.logo,
+        url: "https://www.hotstar.com/in/shows/taaza-khabar/1260124373",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Criminal Justice
+  "88177": {
+    tmdbId: 88177,
+    title: "Criminal Justice",
+    type: "series",
+    primaryPlatform: "JioHotstar",
+    watchNowUrl: "https://www.hotstar.com/in/shows/criminal-justice/1260004267",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/criminal-justice",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "JioHotstar",
+        platformId: "hotstar",
+        logo: PLATFORM_CONFIGS.hotstar.logo,
+        url: "https://www.hotstar.com/in/shows/criminal-justice/1260004267",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Aarya
+  "104753": {
+    tmdbId: 104753,
+    title: "Aarya",
+    type: "series",
+    primaryPlatform: "JioHotstar",
+    watchNowUrl: "https://www.hotstar.com/in/shows/aarya/1260028094",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/aarya",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "JioHotstar",
+        platformId: "hotstar",
+        logo: PLATFORM_CONFIGS.hotstar.logo,
+        url: "https://www.hotstar.com/in/shows/aarya/1260028094",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Delhi Crime
+  "85141": {
+    tmdbId: 85141,
+    title: "Delhi Crime",
+    type: "series",
+    primaryPlatform: "Netflix",
+    watchNowUrl: "https://www.netflix.com/title/81076756",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/delhi-crime",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Netflix",
+        platformId: "netflix",
+        logo: PLATFORM_CONFIGS.netflix.logo,
+        url: "https://www.netflix.com/title/81076756",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // TVF Aspirants
+  "121404": {
+    tmdbId: 121404,
+    title: "Aspirants",
+    type: "series",
+    primaryPlatform: "Amazon Prime Video",
+    watchNowUrl: "https://www.primevideo.com/detail/0QJ1W7W65Y7R2T8N3M0K6L9P5O/",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/tvf-aspirants",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Prime Video",
+        platformId: "prime",
+        logo: PLATFORM_CONFIGS.prime.logo,
+        url: "https://www.primevideo.com/detail/0QJ1W7W65Y7R2T8N3M0K6L9P5O/",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // TVF Pitchers
+  "63180": {
+    tmdbId: 63180,
+    title: "TVF Pitchers",
+    type: "series",
+    primaryPlatform: "ZEE5",
+    watchNowUrl: "https://www.zee5.com/tv-shows/details/pitchers/0-6-4z5250428",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/tvf-pitchers",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "ZEE5",
+        platformId: "zee5",
+        logo: PLATFORM_CONFIGS.zee5.logo,
+        url: "https://www.zee5.com/tv-shows/details/pitchers/0-6-4z5250428",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
 };
 
 /**
@@ -1549,6 +1763,8 @@ export function matchProviderNameToPlatform(providerName: string): PlatformConfi
   if (norm.includes("lionsgate")) return PLATFORM_CONFIGS.lionsgate;
   if (norm.includes("mubi")) return PLATFORM_CONFIGS.mubi;
   if (norm.includes("aha")) return PLATFORM_CONFIGS.aha;
+  if (norm.includes("sun nxt") || norm.includes("sunnxt")) return PLATFORM_CONFIGS.sunnxt;
+  if (norm.includes("hoichoi")) return PLATFORM_CONFIGS.hoichoi;
 
   return PLATFORM_CONFIGS.other;
 }
