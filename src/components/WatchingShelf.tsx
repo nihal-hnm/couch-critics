@@ -130,6 +130,14 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
   const [shelfEpisodesMap, setShelfEpisodesMap] = useState<Record<string, Record<number, EpisodeItem[]>>>({});
   const [, setLoadingEpisodesMap] = useState<Record<string, boolean>>({});
   const [viewModeMap, setViewModeMap] = useState<Record<string, "detailed" | "compact">>({});
+  const [expandedOverviewCodes, setExpandedOverviewCodes] = useState<Record<string, boolean>>({});
+
+  function toggleOverview(epCode: string) {
+    setExpandedOverviewCodes((prev) => ({
+      ...prev,
+      [epCode]: !prev[epCode],
+    }));
+  }
 
   // Fetch detailed episode names & overviews for the expanded TV show
   useEffect(() => {
@@ -796,36 +804,39 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                                     const eNum = ep.episodeNumber;
                                     const code = `S${sNum}E${eNum}`;
                                     const isWatched = watchedEpisodesList.includes(code);
+                                    const isOverviewOpen = !!expandedOverviewCodes[code];
 
                                     return (
                                       <div
                                         key={code}
-                                        onClick={() => handleToggleEpisode(entry, sNum, eNum, ep.title)}
-                                        className={`p-2.5 rounded-xl border transition-all cursor-pointer flex items-start gap-2.5 ${
+                                        className={`p-2.5 rounded-xl border transition-all ${
                                           isWatched
                                             ? "bg-purple-500/15 border-purple-500/35 text-white shadow-sm"
                                             : "bg-stone-900/60 border-stone-800/80 text-stone-300 hover:border-stone-700 hover:bg-stone-900"
                                         }`}
                                       >
-                                        <button
-                                          type="button"
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleToggleEpisode(entry, sNum, eNum, ep.title);
-                                          }}
-                                          className={`w-4 h-4 sm:w-5 sm:h-5 rounded-md flex items-center justify-center shrink-0 mt-0.5 transition-all ${
-                                            isWatched
-                                              ? "bg-[#5c0f92] text-white font-bold"
-                                              : "border border-stone-700 hover:border-purple-400 bg-stone-950/60"
-                                          }`}
-                                          aria-label={isWatched ? `Mark episode ${eNum} unwatched` : `Mark episode ${eNum} watched`}
-                                        >
-                                          {isWatched ? <Check className="w-3 h-3 stroke-[3]" /> : null}
-                                        </button>
+                                        <div className="flex items-center justify-between gap-2.5">
+                                          <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                                            <button
+                                              type="button"
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleToggleEpisode(entry, sNum, eNum, ep.title);
+                                              }}
+                                              className={`w-4 h-4 sm:w-5 sm:h-5 rounded-md flex items-center justify-center shrink-0 transition-all cursor-pointer ${
+                                                isWatched
+                                                  ? "bg-[#5c0f92] text-white font-bold"
+                                                  : "border border-stone-700 hover:border-purple-400 bg-stone-950/60"
+                                              }`}
+                                              aria-label={isWatched ? `Mark episode ${eNum} unwatched` : `Mark episode ${eNum} watched`}
+                                            >
+                                              {isWatched ? <Check className="w-3 h-3 stroke-[3]" /> : null}
+                                            </button>
 
-                                        <div className="min-w-0 flex-1">
-                                          <div className="flex items-center justify-between gap-2">
-                                            <div className="flex items-center gap-1.5 min-w-0">
+                                            <div
+                                              className="min-w-0 flex-1 cursor-pointer flex items-center gap-1.5"
+                                              onClick={() => handleToggleEpisode(entry, sNum, eNum, ep.title)}
+                                            >
                                               <span className="text-purple-400 font-mono text-[11px] font-bold px-1.5 py-0.2 rounded bg-purple-500/15 border border-purple-500/25 shrink-0">
                                                 E{eNum}
                                               </span>
@@ -837,29 +848,62 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                                                 {ep.title}
                                               </span>
                                             </div>
+                                          </div>
+
+                                          <div className="flex items-center gap-2 shrink-0">
                                             {ep.runtime ? (
-                                              <span className="text-[10px] text-stone-500 shrink-0 flex items-center gap-1 font-mono">
+                                              <span className="text-[10px] text-stone-500 hidden xs:flex items-center gap-1 font-mono">
                                                 <Clock className="w-2.5 h-2.5" />
                                                 {ep.runtime}m
                                               </span>
                                             ) : null}
+
+                                            {/* Dropdown Toggle Button for Overview */}
+                                            <button
+                                              type="button"
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                toggleOverview(code);
+                                              }}
+                                              className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium transition-all border cursor-pointer ${
+                                                isOverviewOpen
+                                                  ? "bg-purple-500/25 text-purple-200 border-purple-500/40 shadow-sm"
+                                                  : "bg-stone-800/80 text-stone-300 hover:text-white hover:bg-stone-700/80 border-stone-700/60"
+                                              }`}
+                                              title={isOverviewOpen ? "Collapse overview" : "Watch episode overview"}
+                                            >
+                                              <span>Overview</span>
+                                              <ChevronDown
+                                                className={`w-3 h-3 transition-transform duration-200 ${
+                                                  isOverviewOpen ? "rotate-180 text-purple-400" : "text-stone-400"
+                                                }`}
+                                              />
+                                            </button>
                                           </div>
-
-                                          {/* Episode Overview */}
-                                          <p className="text-[11px] text-stone-400 mt-1 line-clamp-2 leading-relaxed">
-                                            {ep.overview || (
-                                              <span className="text-stone-500 italic text-[10px]">
-                                                No overview available for this episode.
-                                              </span>
-                                            )}
-                                          </p>
-
-                                          {ep.airDate && (
-                                            <p className="text-[10px] text-stone-500 mt-0.5">
-                                              Aired {ep.airDate}
-                                            </p>
-                                          )}
                                         </div>
+
+                                        {/* Dropdown Content: Episode Overview & Air Date */}
+                                        {isOverviewOpen && (
+                                          <div className="mt-2.5 pt-2.5 border-t border-stone-800/70 pl-7 pr-1 animate-in fade-in slide-in-from-top-1 duration-200">
+                                            <p className="text-[11px] text-stone-300 leading-relaxed">
+                                              {ep.overview || (
+                                                <span className="text-stone-500 italic text-[10px]">
+                                                  No synopsis overview available for this episode.
+                                                </span>
+                                              )}
+                                            </p>
+
+                                            <div className="flex items-center gap-3 mt-1.5 text-[10px] text-stone-500 flex-wrap">
+                                              {ep.airDate && <span>Aired: {ep.airDate}</span>}
+                                              {ep.runtime && (
+                                                <span className="flex items-center gap-1">
+                                                  <Clock className="w-2.5 h-2.5" />
+                                                  Runtime: {ep.runtime} min
+                                                </span>
+                                              )}
+                                            </div>
+                                          </div>
+                                        )}
                                       </div>
                                     );
                                   })}
