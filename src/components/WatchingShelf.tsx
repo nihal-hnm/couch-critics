@@ -835,7 +835,8 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
 
                                             <div
                                               className="min-w-0 flex-1 cursor-pointer flex items-center gap-1.5"
-                                              onClick={() => handleToggleEpisode(entry, sNum, eNum, ep.title)}
+                                              onClick={() => toggleOverview(code)}
+                                              title={isOverviewOpen ? "Click to hide overview" : "Click to view overview"}
                                             >
                                               <span className="text-purple-400 font-mono text-[11px] font-bold px-1.5 py-0.2 rounded bg-purple-500/15 border border-purple-500/25 shrink-0">
                                                 E{eNum}

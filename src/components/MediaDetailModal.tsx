@@ -1048,9 +1048,8 @@ export default function MediaDetailModal({
                                         </button>
                                         <div
                                           className="min-w-0 flex-1 cursor-pointer flex items-center gap-2 flex-wrap"
-                                          onClick={() =>
-                                            handleToggleEpisode(seasonNumber, ep.episodeNumber, ep.title)
-                                          }
+                                          onClick={() => toggleOverview(epCode)}
+                                          title={isOverviewOpen ? "Click to hide overview" : "Click to view overview"}
                                         >
                                           <span className="text-purple-400 font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-purple-500/15 border border-purple-500/20 shrink-0">
                                             E{ep.episodeNumber}
