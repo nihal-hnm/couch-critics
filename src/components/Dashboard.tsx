@@ -772,16 +772,16 @@ export default function Dashboard() {
               {/* Logo / Brand */}
               <div
                 onClick={() => setActiveNav("watching")}
-                className="flex items-center gap-2.5 cursor-pointer group"
+                className="flex items-center gap-2.5 cursor-pointer group px-3 py-1.5 rounded-xl bg-[#15151C] border border-[#292932] shadow-sm backdrop-blur-md transition-all hover:border-[#3D3D4C]"
               >
-                <div className="p-2 rounded-xl bg-[#15151C] border border-[#292932] shadow-md shadow-black/40 group-hover:border-[#E50914]/50 transition-colors">
+                <div className="p-1.5 rounded-lg bg-[#E50914]/15 border border-[#E50914]/30">
                   <FilmIcon className="w-5 h-5 text-[#E50914]" />
                 </div>
                 <div>
-                  <h1 className="text-base sm:text-lg font-bold text-white tracking-wider uppercase font-mono group-hover:text-white transition-colors">
+                  <h1 className="text-sm sm:text-base font-bold text-[#F5F5F5] tracking-wider uppercase font-mono group-hover:text-[#E50914] transition-colors leading-tight">
                     COUCH CRITICS
                   </h1>
-                  <p className="text-[10px] text-[#A1A1AA] font-medium tracking-widest uppercase">
+                  <p className="text-[10px] text-[#A1A1AA] font-medium tracking-widest uppercase leading-tight">
                     {activeNav === "watching"
                       ? "Currently Watching"
                       : activeNav === "toWatch"
@@ -904,7 +904,7 @@ export default function Dashboard() {
                       <Clock className="w-4 h-4" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-[#111116] dark:text-white font-mono">
+                      <div className="text-xs font-bold font-mono text-[#F5F5F5]">
                         {formatDaysAndHours(stats.totalWatchTimeMins)}
                       </div>
                       <div className="text-[10px] text-[#A1A1AA]">Overall Time</div>
@@ -913,11 +913,11 @@ export default function Dashboard() {
 
                   {/* Series Time in Hours */}
                   <div className="glass-card px-3.5 py-2 border border-[#292932] flex items-center gap-2.5">
-                    <div className="p-1.5 rounded-lg bg-black/5 dark:bg-white/5 text-[#111116] dark:text-[#F5F5F5]">
+                    <div className="p-1.5 rounded-lg bg-[#E50914]/10 text-[#E50914]">
                       <Tv className="w-4 h-4" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-[#111116] dark:text-white font-mono">
+                      <div className="text-xs font-bold font-mono text-[#F5F5F5]">
                         {formatHours(stats.seriesMinutes)}
                       </div>
                       <div className="text-[10px] text-[#A1A1AA]">Series Time</div>
@@ -926,11 +926,11 @@ export default function Dashboard() {
 
                   {/* Movie Time in Hours */}
                   <div className="glass-card px-3.5 py-2 border border-[#292932] flex items-center gap-2.5">
-                    <div className="p-1.5 rounded-lg bg-black/5 dark:bg-white/5 text-[#111116] dark:text-[#F5F5F5]">
+                    <div className="p-1.5 rounded-lg bg-[#E50914]/10 text-[#E50914]">
                       <FilmIcon className="w-4 h-4" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-[#111116] dark:text-white font-mono">
+                      <div className="text-xs font-bold font-mono text-[#F5F5F5]">
                         {formatHours(stats.movieMinutes)}
                       </div>
                       <div className="text-[10px] text-[#A1A1AA]">Movie Time</div>

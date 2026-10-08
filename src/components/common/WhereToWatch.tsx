@@ -114,7 +114,7 @@ export function WhereToWatch({
             title="Search streaming availability on JustWatch"
             aria-label={`Search where to watch ${title} on JustWatch`}
           >
-            <span className="text-stone-400">Stream:</span>
+            <span className="text-[#A1A1AA] font-medium">Stream:</span>
             <span className="text-[#E50914] group-hover/jw:underline">Check JustWatch ↗</span>
           </a>
         </div>
@@ -123,7 +123,7 @@ export function WhereToWatch({
 
     return (
       <div className={`flex items-center flex-wrap gap-1.5 ${className}`}>
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-[#A1A1AA] shrink-0">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-[#A1A1AA] shrink-0">
           Watch on:
         </span>
         <div className="flex items-center flex-wrap gap-1.5">
@@ -134,7 +134,7 @@ export function WhereToWatch({
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#15151C] hover:bg-stone-800 border border-[#292932] hover:border-[#E50914]/40 text-[11px] font-medium text-[#A1A1AA] hover:text-white transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] shadow-sm cursor-pointer group/btn"
+              className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#15151C] hover:bg-stone-800 border border-[#292932] hover:border-[#E50914]/40 text-[11px] font-semibold text-[#F5F5F5] hover:text-white transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] shadow-sm cursor-pointer group/btn"
               title={`Watch ${title} on ${platform.name}`}
               aria-label={`Watch ${title} on ${platform.name}`}
             >
@@ -144,7 +144,7 @@ export function WhereToWatch({
                 loading="lazy"
                 className="w-3.5 h-3.5 object-contain rounded shrink-0"
               />
-              <span className="group-hover/btn:text-white transition-colors">
+              <span className="font-semibold text-[#F5F5F5] group-hover/btn:text-white transition-colors">
                 {platform.name}
               </span>
               {platform.category && platform.category !== "subscription" && (

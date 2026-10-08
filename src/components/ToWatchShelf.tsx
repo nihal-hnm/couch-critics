@@ -197,7 +197,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
                 crossOrigin="anonymous"
                 className="w-full h-full object-cover opacity-10 blur-2xl"
               />
-              <div className="absolute inset-0 bg-white/90 dark:bg-[#0B0B0F]/90" />
+              <div className="absolute inset-0 spotlight-scrim" />
             </div>
           )}
 

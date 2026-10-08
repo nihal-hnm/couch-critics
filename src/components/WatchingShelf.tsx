@@ -418,13 +418,13 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                       crossOrigin="anonymous"
                       className="w-full h-full object-cover blur-lg scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-white via-white/85 to-white/50 dark:from-[#15151C] dark:via-[#15151C]/80 dark:to-black/50" />
+                    <div className="absolute inset-0 card-ambient-scrim pointer-events-none" />
                   </div>
                 )}
 
                 <div className="relative z-10 flex gap-4 sm:gap-5 items-start">
                   {/* ── FULL UNZOOMED COVER POSTER ── */}
-                  <div className="w-28 sm:w-36 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-black/10 dark:border-white/10 shrink-0 bg-[#0B0B0F] group-hover:scale-[1.02] transition-transform duration-300">
+                  <div className="w-28 sm:w-36 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-[#292932] shrink-0 bg-[#0B0B0F] group-hover:scale-[1.02] transition-transform duration-300">
                     <MovieImage
                       src={entry.tmdb.posterUrl}
                       alt={entry.tmdb.title}
@@ -485,7 +485,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                       {/* Metadata */}
                       <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-[#A1A1AA]">
                         {entry.tmdb.releaseYear && (
-                          <span className="font-mono bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-[#292932]/30">
+                          <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-black/5 border border-[#292932]/30 text-[#F5F5F5]">
                             {entry.tmdb.releaseYear}
                           </span>
                         )}
@@ -539,7 +539,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                       </span>
                     ) : (
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-white">
+                        <span className="font-semibold text-[#F5F5F5]">
                           S{progress?.currentSeason || 1}:E{progress?.currentEpisode || 1}
                         </span>
                         <span className="text-xs text-[#A1A1AA]">

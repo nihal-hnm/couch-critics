@@ -17,7 +17,16 @@
 
 @import "tailwindcss";
 
-/* ─── Design System Tokens ────────────────────────────────────────────────── */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *, .dark, .dark *));
+
+/* ─── Ambient Scrim Helpers ──────────────────────────────────────────────── */
+.card-ambient-scrim {
+  background: linear-gradient(to top, rgba(21, 21, 28, 0.98) 0%, rgba(21, 21, 28, 0.8) 50%, rgba(11, 11, 15, 0.4) 100%);
+}
+
+.spotlight-scrim {
+  background: rgba(11, 11, 15, 0.9);
+}
 @theme inline {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
@@ -1231,6 +1240,25 @@ body {
 
 .light .poster-card-info {
   background: #FFFFFF !important;
+}
+
+.light .card-ambient-scrim {
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.85) 50%, rgba(255, 255, 255, 0.4) 100%) !important;
+}
+
+.light .spotlight-scrim {
+  background: rgba(255, 255, 255, 0.92) !important;
+}
+
+/* Emerald action buttons and tags in light mode */
+.light [class*="text-emerald-300"],
+.light [class*="text-emerald-400"] {
+  color: #047857 !important;
+}
+
+.light [class*="bg-emerald-950"] {
+  background-color: #ECFDF5 !important;
+  border-color: #A7F3D0 !important;
 }
 
 /* Hover transitions */
