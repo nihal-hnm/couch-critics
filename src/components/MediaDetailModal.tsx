@@ -1104,7 +1104,7 @@ export default function MediaDetailModal({
                                         <span
                                           className={`text-[10px] px-2 py-0.5 rounded font-semibold uppercase tracking-wider hidden xs:inline-block ${
                                             isWatched
-                                              ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
+                                              ? "bg-[#E50914]/15 text-[#F5F5F5] border border-[#E50914]/40"
                                               : "bg-stone-800 text-stone-500"
                                           }`}
                                         >
@@ -1120,7 +1120,7 @@ export default function MediaDetailModal({
                                           }}
                                           className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all border cursor-pointer ${
                                             isOverviewOpen
-                                              ? "bg-purple-500/25 text-purple-200 border-purple-500/40 shadow-sm"
+                                              ? "bg-[#E50914]/15 text-[#F5F5F5] border-[#E50914]/40 shadow-sm"
                                               : "bg-stone-800/80 text-stone-300 hover:text-white hover:bg-stone-700/80 border-stone-700/60"
                                           }`}
                                           title={isOverviewOpen ? "Collapse overview" : "Watch episode overview"}
@@ -1128,7 +1128,7 @@ export default function MediaDetailModal({
                                           <span>Overview</span>
                                           <ChevronDown
                                             className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                                              isOverviewOpen ? "rotate-180 text-purple-400" : "text-stone-400"
+                                              isOverviewOpen ? "rotate-180 text-[#E50914]" : "text-stone-400"
                                             }`}
                                           />
                                         </button>
@@ -1180,7 +1180,7 @@ export default function MediaDetailModal({
                 {entry.tmdb.genres.map((genre) => (
                   <span
                     key={genre}
-                    className="px-3 py-1 text-xs rounded-full bg-stone-900 text-purple-200 border border-stone-800"
+                    className="px-3 py-1 text-xs rounded-full bg-[#15151C] text-[#F5F5F5] border border-[#292932]"
                   >
                     {genre}
                   </span>
@@ -1210,7 +1210,7 @@ export default function MediaDetailModal({
                 <div className="p-4 rounded-xl bg-stone-900/60 border border-stone-800 space-y-3">
                   <div className="flex justify-between items-center text-sm">
                     <span className="font-semibold text-white">Movie Watch Progress</span>
-                    <span className="text-purple-400 font-semibold">
+                    <span className="text-[#E50914] font-semibold">
                       {entry.progress?.minutesWatched ?? 0} / {entry.tmdb.runtime || 120} min
                     </span>
                   </div>
@@ -1226,7 +1226,7 @@ export default function MediaDetailModal({
                         totalMinutes: entry.tmdb.runtime || 120,
                       })
                     }
-                    className="w-full accent-purple-500 cursor-pointer"
+                    className="w-full accent-[#E50914] cursor-pointer"
                   />
                   <div className="flex justify-between">
                     <button

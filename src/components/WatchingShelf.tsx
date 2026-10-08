@@ -706,7 +706,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                             onClick={() => setViewModeMap(prev => ({ ...prev, [entry.id]: "detailed" }))}
                             className={`px-2 py-0.5 rounded text-[10px] font-medium transition-colors ${
                               viewModeMap[entry.id] !== "compact"
-                                ? "bg-purple-600 text-white font-bold"
+                                ? "bg-[#E50914] text-white font-bold"
                                 : "text-stone-400 hover:text-white"
                             }`}
                             title="Detailed view: Episode name & overview"
@@ -718,7 +718,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                             onClick={() => setViewModeMap(prev => ({ ...prev, [entry.id]: "compact" }))}
                             className={`px-2 py-0.5 rounded text-[10px] font-medium transition-colors ${
                               viewModeMap[entry.id] === "compact"
-                                ? "bg-purple-600 text-white font-bold"
+                                ? "bg-[#E50914] text-white font-bold"
                                 : "text-stone-400 hover:text-white"
                             }`}
                             title="Compact view: Grid numbers"
@@ -764,7 +764,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                                   <button
                                     type="button"
                                     onClick={() => handleSelectAllSeason(entry, sNum, epCount)}
-                                    className="px-2 py-0.5 rounded text-[10px] font-medium bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/25 transition-colors"
+                                    className="px-2 py-0.5 rounded text-[10px] font-medium bg-[#E50914]/15 hover:bg-[#E50914]/25 text-[#F5F5F5] border border-[#E50914]/30 transition-colors"
                                   >
                                     Select All
                                   </button>
@@ -794,7 +794,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                                         onClick={() => handleToggleEpisode(entry, sNum, eNum, ep.title)}
                                         className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium text-left border transition-all ${
                                           isWatched
-                                            ? "bg-purple-500/20 text-purple-200 border-purple-500/30"
+                                            ? "bg-[#E50914]/15 text-[#F5F5F5] border-[#E50914]/40"
                                             : "bg-stone-900 text-stone-400 border-stone-800 hover:border-stone-700"
                                         }`}
                                       >
@@ -880,7 +880,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                                               }}
                                               className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium transition-all border cursor-pointer ${
                                                 isOverviewOpen
-                                                  ? "bg-purple-500/25 text-purple-200 border-purple-500/40 shadow-sm"
+                                                  ? "bg-[#E50914]/15 text-[#F5F5F5] border-[#E50914]/40 shadow-sm"
                                                   : "bg-stone-800/80 text-stone-300 hover:text-white hover:bg-stone-700/80 border-stone-700/60"
                                               }`}
                                               title={isOverviewOpen ? "Collapse overview" : "Watch episode overview"}
@@ -888,7 +888,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                                               <span>Overview</span>
                                               <ChevronDown
                                                 className={`w-3 h-3 transition-transform duration-200 ${
-                                                  isOverviewOpen ? "rotate-180 text-purple-400" : "text-stone-400"
+                                                  isOverviewOpen ? "rotate-180 text-[#E50914]" : "text-stone-400"
                                                 }`}
                                               />
                                             </button>
@@ -931,7 +931,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                       <button
                         type="button"
                         onClick={() => setSelectedEntry(entry)}
-                        className="w-full py-1.5 px-3 rounded-lg text-xs font-semibold text-purple-300 hover:text-purple-100 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 transition-all flex items-center justify-center gap-1.5"
+                        className="w-full py-1.5 px-3 rounded-lg text-xs font-semibold text-[#F5F5F5] hover:text-white bg-[#E50914]/15 hover:bg-[#E50914]/25 border border-[#E50914]/30 transition-all flex items-center justify-center gap-1.5"
                       >
                         <ListVideo className="w-3.5 h-3.5" />
                         Open Full Episode Guide &amp; Overviews &rarr;
@@ -957,7 +957,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                         onClick={() => setRating(i + 1)}
                         className={`text-lg transition-colors ${
                           i < rating
-                            ? "text-purple-400"
+                            ? "text-[#F5C542]"
                             : "text-stone-700 hover:text-stone-500"
                         }`}
                       >
@@ -970,7 +970,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                     placeholder="Quick thoughts (optional)..."
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    className="w-full max-w-xs bg-stone-900 border border-stone-700 rounded-xl p-3 text-sm text-white placeholder-stone-500 resize-none h-20 outline-none focus:border-purple-500/50 transition-colors"
+                    className="w-full max-w-xs bg-stone-900 border border-stone-700 rounded-xl p-3 text-sm text-white placeholder-stone-500 resize-none h-20 outline-none focus:border-[#E50914]/50 transition-colors"
                   />
 
                   <div className="flex gap-3 mt-4">

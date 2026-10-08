@@ -510,15 +510,15 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
 
         {/* ── Filtered Watch History Grid ─────────────────────────── */}
         {analytics.filteredEntries.length > 0 && (
-          <div className="glass-card p-6 stagger-item space-y-4" style={{ animationDelay: "360ms" }}>
+          <div className="glass-card p-6 stagger-item space-y-4 border border-[#292932]" style={{ animationDelay: "360ms" }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Eye className="w-4 h-4 text-purple-400/60" />
+                <Eye className="w-4 h-4 text-[#A1A1AA]" />
                 <h3 className="text-sm font-semibold text-white">
                   {selectedGenre ? `${selectedGenre} — ` : ""}Watch History
                 </h3>
               </div>
-              <span className="text-xs text-stone-500">
+              <span className="text-xs text-[#A1A1AA]">
                 {analytics.filteredEntries.length} entries • click to open details
               </span>
             </div>
@@ -547,14 +547,14 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
 
         {/* ── Empty filter state ──────────────────────────────────── */}
         {analytics.filteredEntries.length === 0 && entries.length > 0 && (
-          <div className="glass-card p-10 text-center stagger-item" style={{ animationDelay: "360ms" }}>
-            <div className="inline-flex p-4 rounded-2xl bg-purple-500/8 mb-4">
-              <BarChart3 className="w-8 h-8 text-purple-500/30" />
+          <div className="glass-card p-10 text-center stagger-item border border-[#292932]" style={{ animationDelay: "360ms" }}>
+            <div className="inline-flex p-4 rounded-2xl bg-white/5 border border-[#292932] mb-4">
+              <BarChart3 className="w-8 h-8 text-[#A1A1AA]/50" />
             </div>
-            <h3 className="text-lg font-semibold text-zinc-300 mb-1">
+            <h3 className="text-lg font-semibold text-[#F5F5F5] mb-1">
               No matches found
             </h3>
-            <p className="text-sm text-zinc-500 max-w-sm mx-auto">
+            <p className="text-sm text-[#A1A1AA] max-w-sm mx-auto">
               {selectedGenre
                 ? `No entries found for "${selectedGenre}" in this time period.`
                 : "No entries found for this time period."}
@@ -562,7 +562,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
             {selectedGenre && (
               <button
                 onClick={clearGenre}
-                className="mt-4 px-4 py-2 text-sm text-purple-400 border border-purple-500/20 rounded-lg hover:bg-purple-500/10 transition-colors"
+                className="mt-4 px-4 py-2 text-sm text-[#E50914] border border-[#E50914]/30 rounded-lg hover:bg-[#E50914]/10 transition-colors cursor-pointer"
               >
                 Clear genre filter
               </button>
@@ -603,20 +603,20 @@ function StatCard({
   return (
     <div
       id={id}
-      className="glass-card p-5 stagger-item relative overflow-hidden group"
+      className="glass-card p-5 stagger-item relative overflow-hidden group border border-[#292932]"
       style={{ animationDelay: `${delay}ms` }}
     >
       <div
         className={`absolute -top-8 -right-8 w-24 h-24 rounded-full blur-2xl transition-colors duration-500 ${
           accentStar
-            ? "bg-yellow-500/10 group-hover:bg-yellow-500/15"
-            : "bg-purple-500/10 group-hover:bg-purple-500/15"
+            ? "bg-[#F5C542]/5 group-hover:bg-[#F5C542]/10"
+            : "bg-[#E50914]/5 group-hover:bg-[#E50914]/10"
         }`}
       />
       <div className="relative">
         <div
           className={`flex items-center gap-2 mb-2 ${
-            accentStar ? "text-yellow-400/80" : "text-purple-400/80"
+            accentStar ? "text-[#F5C542]" : "text-[#A1A1AA]"
           }`}
         >
           {icon}
@@ -625,7 +625,7 @@ function StatCard({
           </span>
         </div>
         <p className="text-2xl font-bold text-white">{value}</p>
-        <p className="text-xs text-zinc-500 mt-1">{detail}</p>
+        <p className="text-xs text-[#A1A1AA] mt-1">{detail}</p>
       </div>
     </div>
   );
@@ -647,11 +647,11 @@ function HistoryCard({
   return (
     <div
       onClick={onClick}
-      className="group rounded-xl overflow-hidden border border-white/[0.04] bg-zinc-900/50 hover:border-purple-500/30 transition-all duration-300 stagger-item cursor-pointer hover:scale-[1.02]"
+      className="group rounded-xl overflow-hidden border border-[#292932] bg-[#15151C] hover:border-[#E50914]/50 transition-all duration-300 stagger-item cursor-pointer hover:scale-[1.02]"
       style={{ animationDelay: `${index * 30}ms` }}
     >
       {/* Poster */}
-      <div className="aspect-[2/3] relative overflow-hidden bg-stone-900">
+      <div className="aspect-[2/3] relative overflow-hidden bg-[#0B0B0F]">
         <MovieImage
           src={entry.tmdb.posterUrl}
           alt={entry.tmdb.title}
@@ -664,7 +664,7 @@ function HistoryCard({
 
         {/* Media type badge */}
         <div className="absolute top-1.5 left-1.5">
-          <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-sm text-[10px] text-stone-300 border border-white/10">
+          <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-black/70 backdrop-blur-sm text-[10px] text-[#A1A1AA] border border-[#292932]">
             {isTV ? <Tv className="w-2.5 h-2.5" /> : <Film className="w-2.5 h-2.5" />}
             {isTV ? "TV" : "Film"}
           </span>
@@ -673,8 +673,8 @@ function HistoryCard({
         {/* Rating badge */}
         {entry.review?.rating && (
           <div className="absolute top-1.5 right-1.5">
-            <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-sm text-[10px] text-purple-400 border border-purple-500/20">
-              <Star className="w-2.5 h-2.5 fill-purple-400" />
+            <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-black/70 backdrop-blur-sm text-[10px] text-[#F5C542] border border-[#292932]">
+              <Star className="w-2.5 h-2.5 fill-[#F5C542]" />
               {entry.review.rating}
             </span>
           </div>
@@ -683,7 +683,7 @@ function HistoryCard({
         {/* Shelf indicator */}
         {entry.shelf === "watching" && (
           <div className="absolute bottom-1.5 left-1.5">
-            <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-purple-500/20 backdrop-blur-sm text-[10px] text-purple-300 border border-purple-500/20">
+            <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-[#E50914] text-white text-[10px] shadow-sm">
               <Play className="w-2.5 h-2.5" />
               Watching
             </span>
@@ -692,23 +692,23 @@ function HistoryCard({
 
         {/* Hover overlay with click prompt */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-2">
-          <span className="text-[10px] text-purple-300 font-medium">Click to view</span>
+          <span className="text-[10px] text-white font-medium">Click to view</span>
         </div>
       </div>
 
       {/* Info */}
       <div className="p-2">
-        <p className="text-xs font-medium text-white truncate group-hover:text-purple-200 transition-colors">
+        <p className="text-xs font-medium text-white truncate group-hover:text-[#E50914] transition-colors">
           {entry.tmdb.title}
         </p>
         <div className="flex items-center gap-1.5 mt-0.5">
           {entry.tmdb.releaseYear && (
-            <span className="text-[10px] text-stone-500">
+            <span className="text-[10px] text-[#A1A1AA]">
               {entry.tmdb.releaseYear}
             </span>
           )}
           {isTV && entry.progress?.currentEpisode && (
-            <span className="text-[10px] text-purple-500/80 font-mono">
+            <span className="text-[10px] text-[#A1A1AA] font-mono">
               Ep {entry.progress.currentEpisode}
               {entry.progress.totalEpisodes
                 ? `/${entry.progress.totalEpisodes}`
@@ -716,7 +716,7 @@ function HistoryCard({
             </span>
           )}
           {!isTV && entry.tmdb.runtime > 0 && (
-            <span className="text-[10px] text-stone-600">
+            <span className="text-[10px] text-[#A1A1AA]">
               {entry.tmdb.runtime}m
             </span>
           )}
@@ -732,13 +732,13 @@ function AnalyticsEmptyState() {
   return (
     <div className="text-center py-20" id="analytics-empty">
       <div className="relative inline-block">
-        <Flame className="w-16 h-16 mx-auto text-purple-500/20 mb-4 animate-float" />
-        <div className="absolute inset-0 w-16 h-16 mx-auto rounded-full bg-purple-500/5 blur-xl" />
+        <Flame className="w-16 h-16 mx-auto text-[#A1A1AA]/30 mb-4 animate-float" />
+        <div className="absolute inset-0 w-16 h-16 mx-auto rounded-full bg-[#E50914]/5 blur-xl" />
       </div>
-      <h3 className="text-xl font-semibold text-zinc-300">
+      <h3 className="text-xl font-semibold text-[#F5F5F5]">
         No analytics yet
       </h3>
-      <p className="text-zinc-500 mt-2 text-sm max-w-sm mx-auto leading-relaxed">
+      <p className="text-[#A1A1AA] mt-2 text-sm max-w-sm mx-auto leading-relaxed">
         Start adding movies and TV shows to your journal to see your viewing
         analytics come to life.
       </p>

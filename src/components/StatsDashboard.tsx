@@ -55,13 +55,13 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
     return (
       <div className="text-center py-20">
         <div className="relative inline-block">
-          <Flame className="w-16 h-16 mx-auto text-purple-500/20 mb-4 animate-float" />
-          <div className="absolute inset-0 w-16 h-16 mx-auto rounded-full bg-purple-500/5 blur-xl" />
+          <Flame className="w-16 h-16 mx-auto text-[#A1A1AA]/30 mb-4 animate-float" />
+          <div className="absolute inset-0 w-16 h-16 mx-auto rounded-full bg-[#E50914]/5 blur-xl" />
         </div>
-        <h3 className="text-xl font-semibold text-zinc-300">
+        <h3 className="text-xl font-semibold text-[#F5F5F5]">
           No stats yet
         </h3>
-        <p className="text-zinc-500 mt-2 text-sm max-w-sm mx-auto leading-relaxed">
+        <p className="text-[#A1A1AA] mt-2 text-sm max-w-sm mx-auto leading-relaxed">
           Start adding movies to your journal to see your viewing analytics
           come to life.
         </p>
@@ -75,13 +75,13 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         {/* Total Watch Time */}
         <div
-          className="glass-card p-5 stagger-item relative overflow-hidden group"
+          className="glass-card p-5 stagger-item relative overflow-hidden group border border-[#292932]"
           style={{ animationDelay: "0ms" }}
         >
-          {/* Warm ambient glow */}
-          <div className="absolute -top-8 -right-8 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/15 transition-colors duration-500" />
+          {/* Subtle ambient glow */}
+          <div className="absolute -top-8 -right-8 w-24 h-24 bg-[#E50914]/5 rounded-full blur-2xl group-hover:bg-[#E50914]/10 transition-colors duration-500" />
           <div className="relative">
-            <div className="flex items-center gap-2 text-purple-400/80 mb-2">
+            <div className="flex items-center gap-2 text-[#A1A1AA] mb-2">
               <Clock className="w-4 h-4" />
               <span className="text-xs uppercase tracking-wider font-medium">
                 Watch Time
@@ -90,10 +90,10 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
             <p className="text-2xl font-bold text-white">
               {formatDaysAndHours(stats.totalWatchTimeMins)}
             </p>
-            <p className="text-xs text-zinc-500 mt-1">
+            <p className="text-xs text-[#A1A1AA] mt-1">
               Overall time ({Math.round(stats.totalWatchTimeMins / 60)}h total)
             </p>
-            <div className="flex items-center gap-2 mt-2 pt-2 border-t border-purple-500/10 text-[11px] text-purple-300/80 font-mono">
+            <div className="flex items-center gap-2 mt-2 pt-2 border-t border-[#292932] text-[11px] text-[#A1A1AA] font-mono">
               <span>🎬 {formatHours(stats.movieMinutes)} movie</span>
               <span>•</span>
               <span>📺 {formatHours(stats.seriesMinutes)} series</span>
@@ -103,12 +103,12 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
 
         {/* Movies Watched */}
         <div
-          className="glass-card p-5 stagger-item relative overflow-hidden group"
+          className="glass-card p-5 stagger-item relative overflow-hidden group border border-[#292932]"
           style={{ animationDelay: "60ms" }}
         >
-          <div className="absolute -top-8 -right-8 w-24 h-24 bg-purple-500/8 rounded-full blur-2xl group-hover:bg-purple-500/12 transition-colors duration-500" />
+          <div className="absolute -top-8 -right-8 w-24 h-24 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-colors duration-500" />
           <div className="relative">
-            <div className="flex items-center gap-2 text-purple-400/80 mb-2">
+            <div className="flex items-center gap-2 text-[#A1A1AA] mb-2">
               <Film className="w-4 h-4" />
               <span className="text-xs uppercase tracking-wider font-medium">
                 Completed
@@ -117,30 +117,30 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
             <p className="text-2xl font-bold text-white">
               {stats.totalWatched}
             </p>
-            <p className="text-xs text-zinc-500 mt-1">
-              <span className="text-purple-400/60">{watchingCount}</span> watching · <span className="text-purple-400/60">{toWatchCount}</span> queued
+            <p className="text-xs text-[#A1A1AA] mt-1">
+              <span className="text-[#F5F5F5] font-semibold">{watchingCount}</span> watching · <span className="text-[#F5F5F5] font-semibold">{toWatchCount}</span> queued
             </p>
           </div>
         </div>
 
         {/* Average Rating */}
         <div
-          className="glass-card p-5 stagger-item relative overflow-hidden group"
+          className="glass-card p-5 stagger-item relative overflow-hidden group border border-[#292932]"
           style={{ animationDelay: "120ms" }}
         >
-          <div className="absolute -top-8 -right-8 w-24 h-24 bg-purple-500/8 rounded-full blur-2xl group-hover:bg-purple-500/12 transition-colors duration-500" />
+          <div className="absolute -top-8 -right-8 w-24 h-24 bg-[#F5C542]/5 rounded-full blur-2xl group-hover:bg-[#F5C542]/10 transition-colors duration-500" />
           <div className="relative">
-            <div className="flex items-center gap-2 text-purple-400/80 mb-2">
-              <Star className="w-4 h-4" />
+            <div className="flex items-center gap-2 text-[#F5C542] mb-2">
+              <Star className="w-4 h-4 fill-[#F5C542]" />
               <span className="text-xs uppercase tracking-wider font-medium">
                 Avg Rating
               </span>
             </div>
             <p className="text-2xl font-bold text-white">
               {stats.averageRating > 0 ? stats.averageRating.toFixed(1) : "—"}
-              <span className="text-sm font-normal text-zinc-500">/10</span>
+              <span className="text-sm font-normal text-[#A1A1AA]">/10</span>
             </p>
-            <p className="text-xs text-zinc-500 mt-1">
+            <p className="text-xs text-[#A1A1AA] mt-1">
               across {stats.totalWatched} reviews
             </p>
           </div>
@@ -148,12 +148,12 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
 
         {/* Top Genre — with mini donut */}
         <div
-          className="glass-card p-5 stagger-item relative overflow-hidden group"
+          className="glass-card p-5 stagger-item relative overflow-hidden group border border-[#292932]"
           style={{ animationDelay: "180ms" }}
         >
-          <div className="absolute -top-8 -right-8 w-24 h-24 bg-purple-500/8 rounded-full blur-2xl group-hover:bg-purple-500/12 transition-colors duration-500" />
+          <div className="absolute -top-8 -right-8 w-24 h-24 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-colors duration-500" />
           <div className="relative">
-            <div className="flex items-center gap-2 text-purple-400/80 mb-2">
+            <div className="flex items-center gap-2 text-[#A1A1AA] mb-2">
               <Award className="w-4 h-4" />
               <span className="text-xs uppercase tracking-wider font-medium">
                 Top Genre
@@ -169,13 +169,13 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
                   <circle
                     cx="18" cy="18" r="15"
                     fill="none"
-                    stroke="rgba(217, 170, 119, 0.1)"
+                    stroke="#292932"
                     strokeWidth="4"
                   />
                   <circle
                     cx="18" cy="18" r="15"
                     fill="none"
-                    stroke="rgb(245, 158, 11)"
+                    stroke="#F5C542"
                     strokeWidth="4"
                     strokeDasharray={`${(stats.favoriteGenres[0].count / entries.length) * 94.2} 94.2`}
                     strokeLinecap="round"
@@ -185,7 +185,7 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
                 </svg>
               )}
             </div>
-            <p className="text-xs text-zinc-500 mt-1">
+            <p className="text-xs text-[#A1A1AA] mt-1">
               {stats.favoriteGenres[0]?.count ?? 0} titles in this genre
             </p>
           </div>
@@ -195,11 +195,11 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
       {/* ── Genre Distribution ──────────────────────────────── */}
       {stats.favoriteGenres.length > 0 && (
         <div
-          className="glass-card p-5 stagger-item"
+          className="glass-card p-5 stagger-item border border-[#292932]"
           style={{ animationDelay: "240ms" }}
         >
           <div className="flex items-center gap-2 mb-4">
-            <TrendingUp className="w-4 h-4 text-purple-400/60" />
+            <TrendingUp className="w-4 h-4 text-[#A1A1AA]" />
             <h3 className="text-sm font-semibold text-white">
               Genre Distribution
             </h3>
@@ -211,20 +211,20 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
                 key={genre}
                 className="flex items-center gap-3 group/bar"
               >
-                <span className="text-xs text-zinc-400 w-28 truncate text-right group-hover/bar:text-purple-300/80 transition-colors">
+                <span className="text-xs text-[#A1A1AA] w-28 truncate text-right group-hover/bar:text-white transition-colors">
                   {genre}
                 </span>
-                <div className="flex-1 h-5 bg-zinc-800/50 rounded-full overflow-hidden">
+                <div className="flex-1 h-5 bg-[#0B0B0F] rounded-full overflow-hidden border border-[#292932]">
                   <div
                     className="h-full rounded-full transition-all duration-700 ease-out"
                     style={{
                       width: `${(count / maxGenreCount) * 100}%`,
-                      background: `linear-gradient(90deg, rgba(245, 158, 11, ${0.6 - idx * 0.05}), rgba(217, 170, 119, ${0.4 - idx * 0.03}))`,
+                      backgroundColor: idx === 0 ? "#E50914" : idx < 3 ? "#F5C542" : "#292932",
                       animationDelay: `${idx * 100}ms`,
                     }}
                   />
                 </div>
-                <span className="text-xs text-zinc-600 w-8 group-hover/bar:text-zinc-400 transition-colors">
+                <span className="text-xs text-[#A1A1AA] w-8 group-hover/bar:text-white transition-colors font-mono">
                   {count}
                 </span>
               </div>
@@ -236,11 +236,11 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
       {/* ── Monthly Activity ────────────────────────────────── */}
       {stats.watchedPerMonth.length > 0 && (
         <div
-          className="glass-card p-5 stagger-item"
+          className="glass-card p-5 stagger-item border border-[#292932]"
           style={{ animationDelay: "300ms" }}
         >
           <div className="flex items-center gap-2 mb-4">
-            <Calendar className="w-4 h-4 text-purple-400/60" />
+            <Calendar className="w-4 h-4 text-[#A1A1AA]" />
             <h3 className="text-sm font-semibold text-white">
               Monthly Activity
             </h3>
@@ -259,20 +259,20 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
                   key={month}
                   className="flex-1 flex flex-col items-center gap-1 group/bar"
                 >
-                  <span className="text-[10px] text-zinc-600 group-hover/bar:text-purple-400/80 transition-colors">
+                  <span className="text-[10px] text-[#A1A1AA] group-hover/bar:text-white transition-colors">
                     {count}
                   </span>
-                  <div className="w-full bg-zinc-800/30 rounded-t-md overflow-hidden flex-1 flex items-end">
+                  <div className="w-full bg-[#0B0B0F] rounded-t-md overflow-hidden flex-1 flex items-end border-t border-x border-[#292932]">
                     <div
                       className="w-full rounded-t-md transition-all duration-700 ease-out group-hover/bar:opacity-90"
                       style={{
                         height: `${Math.max(4, heightPercent)}%`,
-                        background: `linear-gradient(to top, rgba(245, 158, 11, 0.5), rgba(217, 170, 119, 0.25))`,
+                        backgroundColor: "#E50914",
                         animationDelay: `${idx * 80}ms`,
                       }}
                     />
                   </div>
-                  <span className="text-[10px] text-zinc-600 group-hover/bar:text-zinc-400 transition-colors">
+                  <span className="text-[10px] text-[#A1A1AA] group-hover/bar:text-white transition-colors">
                     {month.slice(5)} {/* Show MM only */}
                   </span>
                 </div>
@@ -281,14 +281,14 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
           </div>
 
           {/* Summary footer */}
-          <div className="flex items-center justify-between mt-4 pt-3 border-t border-purple-500/8">
-            <div className="flex items-center gap-1.5 text-xs text-zinc-500">
-              <Eye className="w-3 h-3 text-purple-500/40" />
+          <div className="flex items-center justify-between mt-4 pt-3 border-t border-[#292932]">
+            <div className="flex items-center gap-1.5 text-xs text-[#A1A1AA]">
+              <Eye className="w-3 h-3 text-[#A1A1AA]" />
               {stats.watchedPerMonth.length} months tracked
             </div>
-            <div className="text-xs text-zinc-500">
+            <div className="text-xs text-[#A1A1AA]">
               Most active:{" "}
-              <span className="text-purple-400/70">
+              <span className="text-[#F5F5F5] font-semibold">
                 {stats.watchedPerMonth.reduce((max, m) => m.count > max.count ? m : max, stats.watchedPerMonth[0])?.month ?? "—"}
               </span>
             </div>

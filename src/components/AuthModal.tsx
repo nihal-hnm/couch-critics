@@ -260,11 +260,11 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           )}
         </p>
 
-        <div className="mt-3 pt-3 border-t border-purple-500/15 text-center">
+        <div className="mt-3 pt-3 border-t border-[#292932] text-center">
           <Link
             href="/login"
             onClick={onClose}
-            className="text-xs text-purple-400 hover:text-purple-300 font-medium transition-colors"
+            className="text-xs text-[#E50914] hover:text-[#FF3B3B] font-medium transition-colors"
           >
             Open Full Cinematic Sign-in Page &rarr;
           </Link>

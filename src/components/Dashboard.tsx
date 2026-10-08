@@ -1154,7 +1154,7 @@ export default function Dashboard() {
           <TopReturnBanner
             title="All Movies"
             subtitle={`${watchedMovies.length} watched ${watchedMovies.length === 1 ? "movie" : "movies"} in your journal archive`}
-            icon={<FilmIcon className="w-4 h-4 text-purple-400" />}
+            icon={<FilmIcon className="w-4 h-4 text-[#E50914]" />}
             watchingCount={watching.length}
             onBackToWatching={() => setActiveNav("watching")}
             onOpenMenu={() => setIsBurgerMenuOpen(true)}
@@ -1164,7 +1164,7 @@ export default function Dashboard() {
             <WatchedShelf entries={watchedMovies} defaultMediaType="movie" hideMediaTypeFilter />
           ) : (
             <EmptySection
-              icon={<FilmIcon className="w-10 h-10 text-purple-500/40" />}
+              icon={<FilmIcon className="w-10 h-10 text-[#A1A1AA]/30" />}
               title="No watched movies yet"
               subtitle="Mark a movie as watched to add it to your movie archive."
               onAdd={() => setIsSearchOpen(true)}
@@ -1179,7 +1179,7 @@ export default function Dashboard() {
           <TopReturnBanner
             title="All TV Series"
             subtitle={`${watchedSeries.length} completed TV ${watchedSeries.length === 1 ? "series" : "series"} in your journal archive`}
-            icon={<Tv className="w-4 h-4 text-[#a855f7]" />}
+            icon={<Tv className="w-4 h-4 text-[#E50914]" />}
             watchingCount={watching.length}
             onBackToWatching={() => setActiveNav("watching")}
             onOpenMenu={() => setIsBurgerMenuOpen(true)}
@@ -1189,7 +1189,7 @@ export default function Dashboard() {
             <WatchedShelf entries={watchedSeries} defaultMediaType="tv" hideMediaTypeFilter />
           ) : (
             <EmptySection
-              icon={<Tv className="w-10 h-10 text-purple-500/40" />}
+              icon={<Tv className="w-10 h-10 text-[#A1A1AA]/30" />}
               title="No completed TV series yet"
               subtitle="Mark a TV series as completed or watched to add it to your series archive."
               onAdd={() => setIsSearchOpen(true)}
