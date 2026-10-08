@@ -36,18 +36,52 @@
 
   /* Cinema Accents */
   --color-cinema-purple: #E50914;
-  --color-purple-glow: rgba(229, 9, 20, 0.25);
+  --color-purple-glow: rgba(229, 9, 20, 0.2);
   --color-gold: #F5C542;
-  --color-warm-surface: rgba(229, 9, 20, 0.08);
+  --color-warm-surface: rgba(229, 9, 20, 0.06);
   --color-warm-border: #292932;
-  --color-warm-hover: rgba(255, 255, 255, 0.05);
+  --color-warm-hover: rgba(255, 255, 255, 0.04);
+
+  /* Remap stone palette so stone utilities strictly match Midnight Cinema */
+  --color-stone-950: #0B0B0F;
+  --color-stone-900: #15151C;
+  --color-stone-850: #1A1A24;
+  --color-stone-800: #20202B;
+  --color-stone-700: #292932;
+  --color-stone-600: #3D3D4C;
+  --color-stone-500: #71717A;
+  --color-stone-400: #A1A1AA;
+  --color-stone-300: #D4D4D8;
+  --color-stone-200: #E4E4E7;
+  --color-stone-100: #F5F5F5;
+  --color-stone-50: #FAFAFA;
+
+  /* Remap zinc / neutral */
+  --color-zinc-950: #0B0B0F;
+  --color-zinc-900: #15151C;
+  --color-zinc-800: #20202B;
+  --color-zinc-700: #292932;
+  --color-zinc-600: #3D3D4C;
+  --color-zinc-500: #71717A;
+  --color-zinc-400: #A1A1AA;
+  --color-zinc-300: #D4D4D8;
+  --color-zinc-200: #E4E4E7;
+  --color-zinc-100: #F5F5F5;
+
+  /* Remap ratings and star elements to #F5C542 */
+  --color-amber-300: #FCD34D;
+  --color-amber-400: #F5C542;
+  --color-amber-500: #F5C542;
+  --color-yellow-300: #FCD34D;
+  --color-yellow-400: #F5C542;
+  --color-yellow-500: #F5C542;
 
   /* Remap purple palette to restrained Midnight Cinema tokens */
   --color-purple-50: #FAFAFA;
   --color-purple-100: #F5F5F5;
   --color-purple-200: #E4E4E7;
   --color-purple-300: #A1A1AA;
-  --color-purple-400: #FF3B3B;
+  --color-purple-400: #A1A1AA;
   --color-purple-500: #E50914;
   --color-purple-600: #E50914;
   --color-purple-700: #C10711;
@@ -167,7 +201,7 @@ body {
 .glass-card-hover:hover {
   background: var(--card-hover-bg);
   border-color: var(--card-hover-border);
-  box-shadow: 0 8px 32px rgba(217, 170, 119, 0.06);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 /* Stronger glass for headers / sticky elements */

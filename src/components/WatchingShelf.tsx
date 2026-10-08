@@ -337,10 +337,10 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
   if (entries.length === 0) {
     return (
       <div className="text-center py-20">
-        <div className="inline-flex p-4 rounded-2xl bg-purple-500/8 mb-4">
-          <Play className="w-10 h-10 text-purple-500/40" />
+        <div className="inline-flex p-4 rounded-2xl bg-[#15151C] border border-[#292932] mb-4 text-[#E50914]">
+          <Play className="w-10 h-10 fill-current" />
         </div>
-        <h3 className="text-xl font-semibold text-stone-300">
+        <h3 className="text-xl font-semibold text-white">
           Nothing playing right now
         </h3>
         <p className="text-stone-500 mt-2 text-sm max-w-sm mx-auto">
@@ -440,9 +440,9 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                     <div>
                       {/* Top Row: Badge + Floating Action Buttons */}
                       <div className="flex items-center justify-between gap-2 mb-2">
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-purple-500/20 border border-purple-500/30 backdrop-blur-sm">
-                          <div className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
-                          <span className="text-[10px] font-medium text-purple-200 uppercase tracking-wider flex items-center gap-1">
+                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#E50914]/12 border border-[#E50914]/25 backdrop-blur-sm">
+                          <div className="w-1.5 h-1.5 rounded-full bg-[#E50914] animate-pulse" />
+                          <span className="text-[10px] font-medium text-[#E50914] uppercase tracking-wider flex items-center gap-1">
                             {isMovie ? <Film className="w-2.5 h-2.5" /> : <Tv className="w-2.5 h-2.5" />}
                             Now Watching
                           </span>
@@ -455,10 +455,10 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                         >
                           <button
                             onClick={() => handleMoveToBacklog(entry)}
-                            className="p-1.5 bg-stone-800/80 hover:bg-purple-600/90 rounded-lg text-stone-300 hover:text-white transition-colors backdrop-blur-sm cursor-pointer"
+                            className="p-1.5 bg-[#15151C] hover:bg-[#1E1E26] border border-[#292932] rounded-lg text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
                             title="Move to To-Watch (Backlog)"
                           >
-                            <BookmarkPlus className="w-3.5 h-3.5 text-purple-400 group-hover:text-white" />
+                            <BookmarkPlus className="w-3.5 h-3.5 text-[#E50914]" />
                           </button>
                           <button
                             onClick={() => setCompletingId(entry.id)}
@@ -478,7 +478,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-lg sm:text-xl font-bold text-white leading-tight line-clamp-2 group-hover:text-purple-200 transition-colors">
+                      <h3 className="text-lg sm:text-xl font-bold text-white leading-tight line-clamp-2 group-hover:text-white transition-colors">
                         {entry.tmdb.title}
                       </h3>
 
@@ -512,7 +512,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                     </div>
 
                     {/* Hint to open details */}
-                    <div className="mt-2.5 text-[11px] text-purple-300/70 flex items-center gap-1 font-medium">
+                    <div className="mt-2.5 text-[11px] text-[#A1A1AA] flex items-center gap-1 font-medium">
                       <span>Click card for full details</span>
                       <ChevronRight className="w-3 h-3" />
                     </div>
@@ -521,11 +521,11 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
               </div>
 
               {/* ── Progress Section ───────────────────────────── */}
-              <div className="p-4 space-y-3 bg-[#141210]">
-                {/* Warm purple progress bar */}
-                <div className="w-full bg-stone-800/80 rounded-full h-1.5 overflow-hidden">
+              <div className="p-4 space-y-3 bg-[#15151C] border-t border-[#292932]">
+                {/* Midnight Cinema progress bar */}
+                <div className="w-full bg-[#0B0B0F] border border-[#292932] rounded-full h-1.5 overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-purple-500 to-[#5c0f92] rounded-full transition-all duration-500"
+                    className="h-full bg-[#E50914] rounded-full transition-all duration-500"
                     style={{ width: `${Math.min(100, progressPercent)}%` }}
                   />
                 </div>
@@ -534,7 +534,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                 <div className="flex items-center justify-between">
                   <div className="text-sm">
                     {isMovie ? (
-                      <span className="text-stone-300">
+                      <span className="text-[#A1A1AA]">
                         {progress?.minutesWatched ?? 0} / {progress?.totalMinutes ?? entry.tmdb.runtime ?? 120} min
                       </span>
                     ) : (
@@ -542,7 +542,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                         <span className="font-semibold text-white">
                           S{progress?.currentSeason || 1}:E{progress?.currentEpisode || 1}
                         </span>
-                        <span className="text-xs text-stone-400">
+                        <span className="text-xs text-[#A1A1AA]">
                           ({watchedEpisodesCount} of {totalEpisodesCount} eps)
                         </span>
                       </div>
@@ -556,12 +556,12 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                           ? handleProgressChange(entry, -15)
                           : handleEpisodeChange(entry, -1)
                       }
-                      className="p-1.5 rounded-lg bg-stone-800 text-stone-300 hover:text-white hover:bg-stone-700 transition-colors"
+                      className="p-1.5 rounded-lg bg-[#0B0B0F] border border-[#292932] text-[#A1A1AA] hover:text-white hover:bg-[#1E1E26] transition-colors"
                       title={isMovie ? "Rewind 15m" : "Previous episode"}
                     >
                       <Minus className="w-3.5 h-3.5" />
                     </button>
-                    <span className="text-sm font-semibold text-purple-400 min-w-[3rem] text-center">
+                    <span className="text-sm font-semibold text-[#E50914] min-w-[3rem] text-center font-mono">
                       {progressPercent}%
                     </span>
                     <button
@@ -570,7 +570,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                           ? handleProgressChange(entry, 15)
                           : handleEpisodeChange(entry, 1)
                       }
-                      className="p-1.5 rounded-lg bg-stone-800 text-stone-300 hover:text-white hover:bg-stone-700 transition-colors"
+                      className="p-1.5 rounded-lg bg-[#0B0B0F] border border-[#292932] text-[#A1A1AA] hover:text-white hover:bg-[#1E1E26] transition-colors"
                       title={isMovie ? "Forward 15m" : "Next episode"}
                     >
                       <Plus className="w-3.5 h-3.5" />
@@ -579,16 +579,16 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                 </div>
 
                 {/* ── Watching Options Bar: Move to To-Watch, Complete, and Details ── */}
-                <div className="pt-2.5 border-t border-stone-800/80 flex items-center justify-between gap-2">
+                <div className="pt-2.5 border-t border-[#292932] flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     {/* To Watch Option */}
                     <button
                       type="button"
                       onClick={() => handleMoveToBacklog(entry)}
-                      className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-purple-300 hover:text-white bg-purple-500/10 hover:bg-purple-600/30 border border-purple-500/25 hover:border-purple-500/50 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                      className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-[#A1A1AA] hover:text-white bg-[#0B0B0F] hover:bg-[#1E1E26] border border-[#292932] transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
                       title="Move to To-Watch shelf (Backlog)"
                     >
-                      <BookmarkPlus className="w-3.5 h-3.5 text-purple-400" />
+                      <BookmarkPlus className="w-3.5 h-3.5 text-[#E50914]" />
                       <span>To Watch</span>
                     </button>
 
@@ -611,7 +611,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                         onClick={() =>
                           setExpandedEpisodeShowId(isExpanded ? null : entry.id)
                         }
-                        className="text-xs text-purple-400/90 hover:text-purple-300 flex items-center gap-1 transition-colors font-medium cursor-pointer"
+                        className="text-xs text-[#A1A1AA] hover:text-[#F5F5F5] flex items-center gap-1 transition-colors font-medium cursor-pointer"
                       >
                         <ListVideo className="w-3.5 h-3.5" />
                         <span className="hidden sm:inline">{isExpanded ? "Hide" : "Episodes"}</span>
@@ -626,7 +626,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                     <button
                       type="button"
                       onClick={() => setSelectedEntry(entry)}
-                      className="text-xs text-stone-400 hover:text-white transition-colors cursor-pointer"
+                      className="text-xs text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
                     >
                       Details &rarr;
                     </button>
@@ -674,8 +674,8 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                             onClick={() => setActiveSeasonMap(prev => ({ ...prev, [entry.id]: "all" }))}
                             className={`px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap transition-colors ${
                               currentSelection === "all"
-                                ? "bg-purple-600 text-white font-bold"
-                                : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
+                                ? "bg-[#E50914] text-white font-bold shadow-sm"
+                                : "bg-[#0B0B0F] text-[#A1A1AA] hover:text-white border border-[#292932]"
                             }`}
                           >
                             All Seasons ({availableSeasons.length})
@@ -689,8 +689,8 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                                 onClick={() => setActiveSeasonMap(prev => ({ ...prev, [entry.id]: s.seasonNumber }))}
                                 className={`px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap transition-colors ${
                                   isSel
-                                    ? "bg-purple-600 text-white font-bold"
-                                    : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
+                                    ? "bg-[#E50914] text-white font-bold shadow-sm"
+                                    : "bg-[#0B0B0F] text-[#A1A1AA] hover:text-white border border-[#292932]"
                                 }`}
                               >
                                 S{s.seasonNumber}
@@ -800,7 +800,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                                       >
                                         <div
                                           className={`w-3.5 h-3.5 rounded flex items-center justify-center shrink-0 ${
-                                            isWatched ? "bg-[#5c0f92] text-white" : "border border-stone-600"
+                                            isWatched ? "bg-[#E50914] text-white" : "border border-[#292932]"
                                           }`}
                                         >
                                           {isWatched && <Check className="w-2.5 h-2.5 stroke-[3]" />}
@@ -823,8 +823,8 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                                         key={code}
                                         className={`p-2.5 rounded-xl border transition-all ${
                                           isWatched
-                                            ? "bg-purple-500/15 border-purple-500/35 text-white shadow-sm"
-                                            : "bg-stone-900/60 border-stone-800/80 text-stone-300 hover:border-stone-700 hover:bg-stone-900"
+                                            ? "bg-[#E50914]/12 border-[#E50914]/30 text-white shadow-sm"
+                                            : "bg-[#0B0B0F] border-[#292932] text-[#A1A1AA] hover:border-[#3D3D4C]"
                                         }`}
                                       >
                                         <div className="flex items-center justify-between gap-2.5">
@@ -837,8 +837,8 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                                               }}
                                               className={`w-4 h-4 sm:w-5 sm:h-5 rounded-md flex items-center justify-center shrink-0 transition-all cursor-pointer ${
                                                 isWatched
-                                                  ? "bg-[#5c0f92] text-white font-bold"
-                                                  : "border border-stone-700 hover:border-purple-400 bg-stone-950/60"
+                                                  ? "bg-[#E50914] text-white font-bold"
+                                                  : "border border-[#292932] hover:border-[#E50914] bg-[#0B0B0F]"
                                               }`}
                                               aria-label={isWatched ? `Mark episode ${eNum} unwatched` : `Mark episode ${eNum} watched`}
                                             >
@@ -850,12 +850,12 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                                               onClick={() => toggleOverview(code)}
                                               title={isOverviewOpen ? "Click to hide overview" : "Click to view overview"}
                                             >
-                                              <span className="text-purple-400 font-mono text-[11px] font-bold px-1.5 py-0.2 rounded bg-purple-500/15 border border-purple-500/25 shrink-0">
+                                              <span className="text-[#E50914] font-mono text-[11px] font-bold px-1.5 py-0.2 rounded bg-[#E50914]/12 border border-[#E50914]/25 shrink-0">
                                                 E{eNum}
                                               </span>
                                               <span
                                                 className={`text-xs font-semibold truncate ${
-                                                  isWatched ? "text-white" : "text-stone-200"
+                                                  isWatched ? "text-white" : "text-[#F5F5F5]"
                                                 }`}
                                               >
                                                 {ep.title}
