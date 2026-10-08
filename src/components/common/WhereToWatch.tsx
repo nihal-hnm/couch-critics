@@ -147,6 +147,11 @@ export function WhereToWatch({
               <span className="group-hover/btn:text-purple-200 transition-colors">
                 {platform.name}
               </span>
+              {platform.category && platform.category !== "subscription" && (
+                <span className="text-[8px] uppercase tracking-wider px-1 py-0.2 rounded bg-stone-800 text-stone-400 font-mono">
+                  {platform.category}
+                </span>
+              )}
             </a>
           ))}
           {platforms.length > 3 && (
@@ -217,6 +222,11 @@ export function WhereToWatch({
                 <span className="group-hover:text-purple-200 transition-colors font-medium">
                   {platform.name}
                 </span>
+                {platform.category && platform.category !== "subscription" && (
+                  <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-stone-800/90 text-stone-400 font-mono border border-stone-700/50">
+                    {platform.category}
+                  </span>
+                )}
                 <ExternalLink className="w-3 h-3 text-stone-500 group-hover:text-purple-400 transition-colors ml-0.5" />
               </a>
             ))}

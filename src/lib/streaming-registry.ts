@@ -185,7 +185,7 @@ export const VERIFIED_TITLE_REGISTRY: Record<string, TitleWatchInfo> = {
     title: "Severance",
     type: "series",
     primaryPlatform: "Apple TV+",
-    watchNowUrl: "https://tv.apple.com/us/show/severance/umc.cmc.1srk2goyh2q2zdxcx60pfw63q",
+    watchNowUrl: "https://tv.apple.com/in/show/severance/umc.cmc.1srk2goyh2q2zdxcx60pfw63q",
     justWatchUrl: "https://www.justwatch.com/in/tv-show/severance",
     region: "IN",
     isVerified: true,
@@ -194,7 +194,7 @@ export const VERIFIED_TITLE_REGISTRY: Record<string, TitleWatchInfo> = {
         name: "Apple TV+",
         platformId: "appletv",
         logo: PLATFORM_CONFIGS.appletv.logo,
-        url: "https://tv.apple.com/us/show/severance/umc.cmc.1srk2goyh2q2zdxcx60pfw63q",
+        url: "https://tv.apple.com/in/show/severance/umc.cmc.1srk2goyh2q2zdxcx60pfw63q",
         category: "subscription",
         isPrimary: true,
       },
@@ -436,13 +436,6 @@ export const VERIFIED_TITLE_REGISTRY: Record<string, TitleWatchInfo> = {
         url: "https://www.netflix.com/title/70195800",
         category: "subscription",
         isPrimary: true,
-      },
-      {
-        name: "Prime Video",
-        platformId: "prime",
-        logo: PLATFORM_CONFIGS.prime.logo,
-        url: "https://www.primevideo.com/detail/0O9O64N36M0G6Z26R5GZ67F6HJ/",
-        category: "subscription",
       },
     ],
   },
@@ -715,17 +708,17 @@ export const VERIFIED_TITLE_REGISTRY: Record<string, TitleWatchInfo> = {
     tmdbId: 680,
     title: "Pulp Fiction",
     type: "movie",
-    primaryPlatform: "JioHotstar",
-    watchNowUrl: "https://www.hotstar.com/in/movies/pulp-fiction/1260014290",
+    primaryPlatform: "Lionsgate Play",
+    watchNowUrl: "https://www.lionsgateplay.com/movies/pulp-fiction",
     justWatchUrl: "https://www.justwatch.com/in/movie/pulp-fiction",
     region: "IN",
     isVerified: true,
     platforms: [
       {
-        name: "JioHotstar",
-        platformId: "hotstar",
-        logo: PLATFORM_CONFIGS.hotstar.logo,
-        url: "https://www.hotstar.com/in/movies/pulp-fiction/1260014290",
+        name: "Lionsgate Play",
+        platformId: "lionsgate",
+        logo: PLATFORM_CONFIGS.lionsgate.logo,
+        url: "https://www.lionsgateplay.com/movies/pulp-fiction",
         category: "subscription",
         isPrimary: true,
       },
@@ -734,6 +727,13 @@ export const VERIFIED_TITLE_REGISTRY: Record<string, TitleWatchInfo> = {
         platformId: "prime",
         logo: PLATFORM_CONFIGS.prime.logo,
         url: "https://www.primevideo.com/detail/0N9B8V7C6X5Z4A3S2D1F0G9H8J/",
+        category: "rent",
+      },
+      {
+        name: "Apple TV+",
+        platformId: "appletv",
+        logo: PLATFORM_CONFIGS.appletv.logo,
+        url: "https://tv.apple.com/in/movie/pulp-fiction/umc.cmc.4b8m147z10i7l8m7j9k0l1m2n",
         category: "rent",
       },
     ],
@@ -764,6 +764,731 @@ export const VERIFIED_TITLE_REGISTRY: Record<string, TitleWatchInfo> = {
         logo: PLATFORM_CONFIGS.prime.logo,
         url: "https://www.primevideo.com/detail/0M9L8K7J6H5G4F3D2S1A0P9O8I/",
         category: "rent",
+      },
+    ],
+  },
+
+  // The Last of Us
+  "100088": {
+    tmdbId: 100088,
+    title: "The Last of Us",
+    type: "series",
+    primaryPlatform: "JioHotstar",
+    watchNowUrl: "https://www.hotstar.com/in/shows/the-last-of-us/1260128389",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/the-last-of-us",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "JioHotstar",
+        platformId: "hotstar",
+        logo: PLATFORM_CONFIGS.hotstar.logo,
+        url: "https://www.hotstar.com/in/shows/the-last-of-us/1260128389",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // The Boys
+  "76479": {
+    tmdbId: 76479,
+    title: "The Boys",
+    type: "series",
+    primaryPlatform: "Amazon Prime Video",
+    watchNowUrl: "https://www.primevideo.com/detail/0K4V8R9N3F6L3781R50S5T6P28/",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/the-boys",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Prime Video",
+        platformId: "prime",
+        logo: PLATFORM_CONFIGS.prime.logo,
+        url: "https://www.primevideo.com/detail/0K4V8R9N3F6L3781R50S5T6P28/",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Shōgun
+  "126308": {
+    tmdbId: 126308,
+    title: "Shōgun",
+    type: "series",
+    primaryPlatform: "JioHotstar",
+    watchNowUrl: "https://www.hotstar.com/in/shows/shogun/1271261391",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/shogun-2024",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "JioHotstar",
+        platformId: "hotstar",
+        logo: PLATFORM_CONFIGS.hotstar.logo,
+        url: "https://www.hotstar.com/in/shows/shogun/1271261391",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Arcane
+  "94605": {
+    tmdbId: 94605,
+    title: "Arcane",
+    type: "series",
+    primaryPlatform: "Netflix",
+    watchNowUrl: "https://www.netflix.com/title/81436901",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/arcane-league-of-legends",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Netflix",
+        platformId: "netflix",
+        logo: PLATFORM_CONFIGS.netflix.logo,
+        url: "https://www.netflix.com/title/81436901",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Ted Lasso
+  "97546": {
+    tmdbId: 97546,
+    title: "Ted Lasso",
+    type: "series",
+    primaryPlatform: "Apple TV+",
+    watchNowUrl: "https://tv.apple.com/in/show/ted-lasso/umc.cmc.vtoh0mn0xn7t3c643b7qgcdv",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/ted-lasso",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Apple TV+",
+        platformId: "appletv",
+        logo: PLATFORM_CONFIGS.appletv.logo,
+        url: "https://tv.apple.com/in/show/ted-lasso/umc.cmc.vtoh0mn0xn7t3c643b7qgcdv",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // The Office
+  "2316": {
+    tmdbId: 2316,
+    title: "The Office",
+    type: "series",
+    primaryPlatform: "JioHotstar",
+    watchNowUrl: "https://www.hotstar.com/in/shows/the-office/1260000030",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/the-office",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "JioHotstar",
+        platformId: "hotstar",
+        logo: PLATFORM_CONFIGS.hotstar.logo,
+        url: "https://www.hotstar.com/in/shows/the-office/1260000030",
+        category: "subscription",
+        isPrimary: true,
+      },
+      {
+        name: "Netflix",
+        platformId: "netflix",
+        logo: PLATFORM_CONFIGS.netflix.logo,
+        url: "https://www.netflix.com/title/70136120",
+        category: "subscription",
+      },
+      {
+        name: "Prime Video",
+        platformId: "prime",
+        logo: PLATFORM_CONFIGS.prime.logo,
+        url: "https://www.primevideo.com/detail/0N6A0Z8V6X3Q2W1E5R7T9Y4U2I/",
+        category: "subscription",
+      },
+    ],
+  },
+
+  // Friends
+  "1668": {
+    tmdbId: 1668,
+    title: "Friends",
+    type: "series",
+    primaryPlatform: "Netflix",
+    watchNowUrl: "https://www.netflix.com/title/70153404",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/friends",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Netflix",
+        platformId: "netflix",
+        logo: PLATFORM_CONFIGS.netflix.logo,
+        url: "https://www.netflix.com/title/70153404",
+        category: "subscription",
+        isPrimary: true,
+      },
+      {
+        name: "JioHotstar",
+        platformId: "hotstar",
+        logo: PLATFORM_CONFIGS.hotstar.logo,
+        url: "https://www.hotstar.com/in/shows/friends/1260000028",
+        category: "subscription",
+      },
+    ],
+  },
+
+  // True Detective
+  "46648": {
+    tmdbId: 46648,
+    title: "True Detective",
+    type: "series",
+    primaryPlatform: "JioHotstar",
+    watchNowUrl: "https://www.hotstar.com/in/shows/true-detective/1260006282",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/true-detective",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "JioHotstar",
+        platformId: "hotstar",
+        logo: PLATFORM_CONFIGS.hotstar.logo,
+        url: "https://www.hotstar.com/in/shows/true-detective/1260006282",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // The Sopranos
+  "1398": {
+    tmdbId: 1398,
+    title: "The Sopranos",
+    type: "series",
+    primaryPlatform: "JioHotstar",
+    watchNowUrl: "https://www.hotstar.com/in/shows/the-sopranos/1260000035",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/the-sopranos",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "JioHotstar",
+        platformId: "hotstar",
+        logo: PLATFORM_CONFIGS.hotstar.logo,
+        url: "https://www.hotstar.com/in/shows/the-sopranos/1260000035",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // The Wire
+  "1438": {
+    tmdbId: 1438,
+    title: "The Wire",
+    type: "series",
+    primaryPlatform: "JioHotstar",
+    watchNowUrl: "https://www.hotstar.com/in/shows/the-wire/1260000036",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/the-wire",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "JioHotstar",
+        platformId: "hotstar",
+        logo: PLATFORM_CONFIGS.hotstar.logo,
+        url: "https://www.hotstar.com/in/shows/the-wire/1260000036",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Fleabag
+  "67070": {
+    tmdbId: 67070,
+    title: "Fleabag",
+    type: "series",
+    primaryPlatform: "Amazon Prime Video",
+    watchNowUrl: "https://www.primevideo.com/detail/0P6F4N3L2M0G6Z26R5GZ67F6HJ/",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/fleabag",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Prime Video",
+        platformId: "prime",
+        logo: PLATFORM_CONFIGS.prime.logo,
+        url: "https://www.primevideo.com/detail/0P6F4N3L2M0G6Z26R5GZ67F6HJ/",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Fallout
+  "66082": {
+    tmdbId: 66082,
+    title: "Fallout",
+    type: "series",
+    primaryPlatform: "Amazon Prime Video",
+    watchNowUrl: "https://www.primevideo.com/detail/0HAQ0DYP1D20J4Z7Y2BGB6X72P/",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/fallout",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Prime Video",
+        platformId: "prime",
+        logo: PLATFORM_CONFIGS.prime.logo,
+        url: "https://www.primevideo.com/detail/0HAQ0DYP1D20J4Z7Y2BGB6X72P/",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Peaky Blinders
+  "60574": {
+    tmdbId: 60574,
+    title: "Peaky Blinders",
+    type: "series",
+    primaryPlatform: "Netflix",
+    watchNowUrl: "https://www.netflix.com/title/80002479",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/peaky-blinders",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Netflix",
+        platformId: "netflix",
+        logo: PLATFORM_CONFIGS.netflix.logo,
+        url: "https://www.netflix.com/title/80002479",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Mindhunter
+  "67744": {
+    tmdbId: 67744,
+    title: "Mindhunter",
+    type: "series",
+    primaryPlatform: "Netflix",
+    watchNowUrl: "https://www.netflix.com/title/80114855",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/mindhunter",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Netflix",
+        platformId: "netflix",
+        logo: PLATFORM_CONFIGS.netflix.logo,
+        url: "https://www.netflix.com/title/80114855",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Black Mirror
+  "42009": {
+    tmdbId: 42009,
+    title: "Black Mirror",
+    type: "series",
+    primaryPlatform: "Netflix",
+    watchNowUrl: "https://www.netflix.com/title/70264888",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/black-mirror",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Netflix",
+        platformId: "netflix",
+        logo: PLATFORM_CONFIGS.netflix.logo,
+        url: "https://www.netflix.com/title/70264888",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Narcos
+  "63351": {
+    tmdbId: 63351,
+    title: "Narcos",
+    type: "series",
+    primaryPlatform: "Netflix",
+    watchNowUrl: "https://www.netflix.com/title/80025172",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/narcos",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Netflix",
+        platformId: "netflix",
+        logo: PLATFORM_CONFIGS.netflix.logo,
+        url: "https://www.netflix.com/title/80025172",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Squid Game
+  "93405": {
+    tmdbId: 93405,
+    title: "Squid Game",
+    type: "series",
+    primaryPlatform: "Netflix",
+    watchNowUrl: "https://www.netflix.com/title/81040344",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/squid-game",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Netflix",
+        platformId: "netflix",
+        logo: PLATFORM_CONFIGS.netflix.logo,
+        url: "https://www.netflix.com/title/81040344",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // How I Met Your Mother
+  "1100": {
+    tmdbId: 1100,
+    title: "How I Met Your Mother",
+    type: "series",
+    primaryPlatform: "JioHotstar",
+    watchNowUrl: "https://www.hotstar.com/in/shows/how-i-met-your-mother/1260000029",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/how-i-met-your-mother",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "JioHotstar",
+        platformId: "hotstar",
+        logo: PLATFORM_CONFIGS.hotstar.logo,
+        url: "https://www.hotstar.com/in/shows/how-i-met-your-mother/1260000029",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Modern Family
+  "1421": {
+    tmdbId: 1421,
+    title: "Modern Family",
+    type: "series",
+    primaryPlatform: "JioHotstar",
+    watchNowUrl: "https://www.hotstar.com/in/shows/modern-family/1260000031",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/modern-family",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "JioHotstar",
+        platformId: "hotstar",
+        logo: PLATFORM_CONFIGS.hotstar.logo,
+        url: "https://www.hotstar.com/in/shows/modern-family/1260000031",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // The White Lotus
+  "119256": {
+    tmdbId: 119256,
+    title: "The White Lotus",
+    type: "series",
+    primaryPlatform: "JioHotstar",
+    watchNowUrl: "https://www.hotstar.com/in/shows/the-white-lotus/1260064971",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/the-white-lotus",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "JioHotstar",
+        platformId: "hotstar",
+        logo: PLATFORM_CONFIGS.hotstar.logo,
+        url: "https://www.hotstar.com/in/shows/the-white-lotus/1260064971",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Yellowstone
+  "73586": {
+    tmdbId: 73586,
+    title: "Yellowstone",
+    type: "series",
+    primaryPlatform: "JioHotstar",
+    watchNowUrl: "https://www.hotstar.com/in/shows/yellowstone/1260114092",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/yellowstone",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "JioHotstar",
+        platformId: "hotstar",
+        logo: PLATFORM_CONFIGS.hotstar.logo,
+        url: "https://www.hotstar.com/in/shows/yellowstone/1260114092",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Slow Horses
+  "116977": {
+    tmdbId: 116977,
+    title: "Slow Horses",
+    type: "series",
+    primaryPlatform: "Apple TV+",
+    watchNowUrl: "https://tv.apple.com/in/show/slow-horses/umc.cmc.2szz3f9kh1qnvsm55n872xuvb",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/slow-horses",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Apple TV+",
+        platformId: "appletv",
+        logo: PLATFORM_CONFIGS.appletv.logo,
+        url: "https://tv.apple.com/in/show/slow-horses/umc.cmc.2szz3f9kh1qnvsm55n872xuvb",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Silo
+  "125988": {
+    tmdbId: 125988,
+    title: "Silo",
+    type: "series",
+    primaryPlatform: "Apple TV+",
+    watchNowUrl: "https://tv.apple.com/in/show/silo/umc.cmc.3yksgc857v0wunvgnl3umq56",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/silo",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Apple TV+",
+        platformId: "appletv",
+        logo: PLATFORM_CONFIGS.appletv.logo,
+        url: "https://tv.apple.com/in/show/silo/umc.cmc.3yksgc857v0wunvgnl3umq56",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Panchayat
+  "101352": {
+    tmdbId: 101352,
+    title: "Panchayat",
+    type: "series",
+    primaryPlatform: "Amazon Prime Video",
+    watchNowUrl: "https://www.primevideo.com/detail/0QJYZV3M69RFF321Y5T1N6L27W/",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/panchayat",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Prime Video",
+        platformId: "prime",
+        logo: PLATFORM_CONFIGS.prime.logo,
+        url: "https://www.primevideo.com/detail/0QJYZV3M69RFF321Y5T1N6L27W/",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Mirzapur
+  "82596": {
+    tmdbId: 82596,
+    title: "Mirzapur",
+    type: "series",
+    primaryPlatform: "Amazon Prime Video",
+    watchNowUrl: "https://www.primevideo.com/detail/0PDOKATHJ07X193YJDF5098X8K/",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/mirzapur",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Prime Video",
+        platformId: "prime",
+        logo: PLATFORM_CONFIGS.prime.logo,
+        url: "https://www.primevideo.com/detail/0PDOKATHJ07X193YJDF5098X8K/",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // The Family Man
+  "92398": {
+    tmdbId: 92398,
+    title: "The Family Man",
+    type: "series",
+    primaryPlatform: "Amazon Prime Video",
+    watchNowUrl: "https://www.primevideo.com/detail/0S3D0S4Y4C4D8J5A1E2F3G4H5I/",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/the-family-man",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Prime Video",
+        platformId: "prime",
+        logo: PLATFORM_CONFIGS.prime.logo,
+        url: "https://www.primevideo.com/detail/0S3D0S4Y4C4D8J5A1E2F3G4H5I/",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Paatal Lok
+  "103233": {
+    tmdbId: 103233,
+    title: "Paatal Lok",
+    type: "series",
+    primaryPlatform: "Amazon Prime Video",
+    watchNowUrl: "https://www.primevideo.com/detail/0H7J8K9L0P1Q2W3E4R5T6Y7U8I/",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/paatal-lok",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Prime Video",
+        platformId: "prime",
+        logo: PLATFORM_CONFIGS.prime.logo,
+        url: "https://www.primevideo.com/detail/0H7J8K9L0P1Q2W3E4R5T6Y7U8I/",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Sacred Games
+  "79352": {
+    tmdbId: 79352,
+    title: "Sacred Games",
+    type: "series",
+    primaryPlatform: "Netflix",
+    watchNowUrl: "https://www.netflix.com/title/80115328",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/sacred-games",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Netflix",
+        platformId: "netflix",
+        logo: PLATFORM_CONFIGS.netflix.logo,
+        url: "https://www.netflix.com/title/80115328",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Kota Factory
+  "93563": {
+    tmdbId: 93563,
+    title: "Kota Factory",
+    type: "series",
+    primaryPlatform: "Netflix",
+    watchNowUrl: "https://www.netflix.com/title/81249783",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/kota-factory",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "Netflix",
+        platformId: "netflix",
+        logo: PLATFORM_CONFIGS.netflix.logo,
+        url: "https://www.netflix.com/title/81249783",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Scam 1992: The Harshad Mehta Story
+  "110903": {
+    tmdbId: 110903,
+    title: "Scam 1992: The Harshad Mehta Story",
+    type: "series",
+    primaryPlatform: "SonyLIV",
+    watchNowUrl: "https://www.sonyliv.com/shows/scam-1992-the-harshad-mehta-story-1700000292",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/scam-1992-the-harshad-mehta-story",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "SonyLIV",
+        platformId: "sonyliv",
+        logo: PLATFORM_CONFIGS.sonyliv.logo,
+        url: "https://www.sonyliv.com/shows/scam-1992-the-harshad-mehta-story-1700000292",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Gullak
+  "91896": {
+    tmdbId: 91896,
+    title: "Gullak",
+    type: "series",
+    primaryPlatform: "SonyLIV",
+    watchNowUrl: "https://www.sonyliv.com/shows/gullak-1700000078",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/gullak",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "SonyLIV",
+        platformId: "sonyliv",
+        logo: PLATFORM_CONFIGS.sonyliv.logo,
+        url: "https://www.sonyliv.com/shows/gullak-1700000078",
+        category: "subscription",
+        isPrimary: true,
+      },
+    ],
+  },
+
+  // Rocket Boys
+  "154190": {
+    tmdbId: 154190,
+    title: "Rocket Boys",
+    type: "series",
+    primaryPlatform: "SonyLIV",
+    watchNowUrl: "https://www.sonyliv.com/shows/rocket-boys-1700000806",
+    justWatchUrl: "https://www.justwatch.com/in/tv-show/rocket-boys",
+    region: "IN",
+    isVerified: true,
+    platforms: [
+      {
+        name: "SonyLIV",
+        platformId: "sonyliv",
+        logo: PLATFORM_CONFIGS.sonyliv.logo,
+        url: "https://www.sonyliv.com/shows/rocket-boys-1700000806",
+        category: "subscription",
+        isPrimary: true,
       },
     ],
   },
@@ -807,10 +1532,16 @@ export function matchProviderNameToPlatform(providerName: string): PlatformConfi
   const norm = providerName.toLowerCase();
   if (norm.includes("netflix")) return PLATFORM_CONFIGS.netflix;
   if (norm.includes("prime") || norm.includes("amazon")) return PLATFORM_CONFIGS.prime;
-  if (norm.includes("hotstar") || norm.includes("jio")) return PLATFORM_CONFIGS.hotstar;
-  if (norm.includes("apple")) return PLATFORM_CONFIGS.appletv;
-  if (norm.includes("disney")) return PLATFORM_CONFIGS.disney;
-  if (norm.includes("youtube")) return PLATFORM_CONFIGS.youtube;
+  if (
+    norm.includes("hotstar") ||
+    norm.includes("jio") ||
+    norm.includes("jiocinema") ||
+    norm.includes("disney")
+  ) {
+    return PLATFORM_CONFIGS.hotstar;
+  }
+  if (norm.includes("apple") || norm.includes("itunes")) return PLATFORM_CONFIGS.appletv;
+  if (norm.includes("youtube") || norm.includes("google")) return PLATFORM_CONFIGS.youtube;
   if (norm.includes("sony") || norm.includes("liv")) return PLATFORM_CONFIGS.sonyliv;
   if (norm.includes("zee")) return PLATFORM_CONFIGS.zee5;
   if (norm.includes("mx player") || norm.includes("mxplayer")) return PLATFORM_CONFIGS.mxplayer;
