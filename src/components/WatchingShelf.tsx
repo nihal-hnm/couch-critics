@@ -400,31 +400,31 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
           return (
             <div
               key={entry.id}
-              className="relative rounded-2xl overflow-hidden border border-stone-800/50 group poster-lift bg-[#12100e] flex flex-col justify-between"
+              className="relative rounded-2xl overflow-hidden border border-[#292932] group poster-lift bg-[#15151C] flex flex-col justify-between shadow-lg"
               style={{ animationDelay: `${index * 80}ms` }}
             >
               {/* ── Card Header: Ambient Backdrop + Full Poster + Info ── */}
               <div
-                className="relative p-4 sm:p-5 overflow-hidden cursor-pointer bg-gradient-to-br from-stone-900/90 to-[#12100e]"
+                className="relative p-4 sm:p-5 overflow-hidden cursor-pointer bg-[#15151C]"
                 onClick={() => setSelectedEntry(entry)}
               >
                 {/* Ambient Blurred Backdrop behind the card */}
                 {(entry.tmdb.backdropUrl || entry.tmdb.posterUrl) && (
-                  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20 dark:opacity-15">
                     <img
                       src={getOptimizedImageUrl(entry.tmdb.backdropUrl || entry.tmdb.posterUrl)}
                       alt=""
                       referrerPolicy="no-referrer"
                       crossOrigin="anonymous"
-                      className="w-full h-full object-cover opacity-15 blur-lg scale-110"
+                      className="w-full h-full object-cover blur-lg scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#141210] via-[#141210]/80 to-black/50" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-white via-white/85 to-white/50 dark:from-[#15151C] dark:via-[#15151C]/80 dark:to-black/50" />
                   </div>
                 )}
 
                 <div className="relative z-10 flex gap-4 sm:gap-5 items-start">
                   {/* ── FULL UNZOOMED COVER POSTER ── */}
-                  <div className="w-28 sm:w-36 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-white/10 shrink-0 bg-stone-900 group-hover:scale-[1.02] transition-transform duration-300">
+                  <div className="w-28 sm:w-36 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-black/10 dark:border-white/10 shrink-0 bg-[#0B0B0F] group-hover:scale-[1.02] transition-transform duration-300">
                     <MovieImage
                       src={entry.tmdb.posterUrl}
                       alt={entry.tmdb.title}
@@ -478,14 +478,14 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-lg sm:text-xl font-bold text-white leading-tight line-clamp-2 group-hover:text-white transition-colors">
+                      <h3 className="text-lg sm:text-xl font-bold text-[#F5F5F5] leading-tight line-clamp-2 transition-colors">
                         {entry.tmdb.title}
                       </h3>
 
                       {/* Metadata */}
-                      <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-stone-300">
+                      <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-[#A1A1AA]">
                         {entry.tmdb.releaseYear && (
-                          <span className="font-mono bg-white/5 px-1.5 py-0.5 rounded border border-white/5">
+                          <span className="font-mono bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-[#292932]/30">
                             {entry.tmdb.releaseYear}
                           </span>
                         )}
@@ -493,7 +493,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                           <span>{entry.tmdb.genres.slice(0, 2).join(", ")}</span>
                         )}
                         {entry.tmdb.runtime > 0 && (
-                          <span className="flex items-center gap-1 text-stone-400">
+                          <span className="flex items-center gap-1 text-[#A1A1AA]">
                             <Clock className="w-3 h-3" />
                             {isMovie ? `${entry.tmdb.runtime}m` : `~${entry.tmdb.runtime}m/ep`}
                           </span>

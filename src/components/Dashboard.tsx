@@ -904,7 +904,7 @@ export default function Dashboard() {
                       <Clock className="w-4 h-4" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-white font-mono">
+                      <div className="text-xs font-bold text-[#111116] dark:text-white font-mono">
                         {formatDaysAndHours(stats.totalWatchTimeMins)}
                       </div>
                       <div className="text-[10px] text-[#A1A1AA]">Overall Time</div>
@@ -913,11 +913,11 @@ export default function Dashboard() {
 
                   {/* Series Time in Hours */}
                   <div className="glass-card px-3.5 py-2 border border-[#292932] flex items-center gap-2.5">
-                    <div className="p-1.5 rounded-lg bg-white/5 text-[#F5F5F5]">
+                    <div className="p-1.5 rounded-lg bg-black/5 dark:bg-white/5 text-[#111116] dark:text-[#F5F5F5]">
                       <Tv className="w-4 h-4" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-white font-mono">
+                      <div className="text-xs font-bold text-[#111116] dark:text-white font-mono">
                         {formatHours(stats.seriesMinutes)}
                       </div>
                       <div className="text-[10px] text-[#A1A1AA]">Series Time</div>
@@ -926,11 +926,11 @@ export default function Dashboard() {
 
                   {/* Movie Time in Hours */}
                   <div className="glass-card px-3.5 py-2 border border-[#292932] flex items-center gap-2.5">
-                    <div className="p-1.5 rounded-lg bg-white/5 text-[#F5F5F5]">
+                    <div className="p-1.5 rounded-lg bg-black/5 dark:bg-white/5 text-[#111116] dark:text-[#F5F5F5]">
                       <FilmIcon className="w-4 h-4" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-white font-mono">
+                      <div className="text-xs font-bold text-[#111116] dark:text-white font-mono">
                         {formatHours(stats.movieMinutes)}
                       </div>
                       <div className="text-[10px] text-[#A1A1AA]">Movie Time</div>

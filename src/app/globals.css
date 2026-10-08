@@ -1076,32 +1076,54 @@ body {
   color-scheme: light;
 }
 
-/* Text adaptations in light mode */
-.light h1:not([class*="from-purple"], [class*="from-purple"] *),
-.light h2:not([class*="from-purple"], [class*="from-purple"] *),
-.light h3:not([class*="from-purple"], [class*="from-purple"] *),
-.light h4:not([class*="from-purple"], [class*="from-purple"] *),
-.light .text-white:not(button[class*="from-purple"], button[class*="from-purple"] *,
-  button[class*="bg-purple-600"], button[class*="bg-purple-600"] *,
-  [class*="bg-gradient-to-r from-purple"], [class*="bg-gradient-to-r from-purple"] *,
-  .keep-white, .keep-white *) {
+/* Headings in light mode */
+.light h1:not([class*="bg-[#E50914]"] *, [class*="bg-red-"] *, .keep-white, .keep-white *),
+.light h2:not([class*="bg-[#E50914]"] *, [class*="bg-red-"] *, .keep-white, .keep-white *),
+.light h3:not([class*="bg-[#E50914]"] *, [class*="bg-red-"] *, .keep-white, .keep-white *),
+.light h4:not([class*="bg-[#E50914]"] *, [class*="bg-red-"] *, .keep-white, .keep-white *) {
   color: #111116 !important;
 }
 
-.light .text-stone-100:not(button[class*="from-purple"] *, .keep-white *),
-.light .text-stone-200:not(button[class*="from-purple"] *, .keep-white *) {
+/* Primary text in light mode */
+.light .text-white:not(
+  [class*="bg-[#E50914]"], [class*="bg-[#E50914]"] *,
+  [class*="bg-[#FF3B3B]"], [class*="bg-[#FF3B3B]"] *,
+  [class*="bg-red-"], [class*="bg-red-"] *,
+  [class*="bg-emerald-"], [class*="bg-emerald-"] *,
+  .keep-white, .keep-white *
+),
+.light [class*="text-[#F5F5F5]"]:not(
+  [class*="bg-[#E50914]"], [class*="bg-[#E50914]"] *,
+  [class*="bg-[#FF3B3B]"], [class*="bg-[#FF3B3B]"] *,
+  [class*="bg-red-"], [class*="bg-red-"] *,
+  [class*="bg-emerald-"], [class*="bg-emerald-"] *,
+  .keep-white, .keep-white *
+) {
+  color: #111116 !important;
+}
+
+/* Secondary & muted text in light mode */
+.light .text-stone-100:not([class*="bg-[#E50914]"] *, .keep-white *),
+.light .text-stone-200:not([class*="bg-[#E50914]"] *, .keep-white *) {
   color: #1E1E26 !important;
 }
 
-.light .text-stone-300:not(button[class*="from-purple"] *, .keep-white *) {
+.light .text-stone-300:not([class*="bg-[#E50914]"] *, .keep-white *) {
   color: #3F3F46 !important;
 }
 
-.light .text-stone-400:not(button[class*="from-purple"] *, .keep-white *) {
+.light .text-stone-400:not([class*="bg-[#E50914]"] *, .keep-white *),
+.light [class*="text-[#A1A1AA]"]:not(
+  [class*="bg-[#E50914]"], [class*="bg-[#E50914]"] *,
+  [class*="bg-[#FF3B3B]"], [class*="bg-[#FF3B3B]"] *,
+  [class*="bg-red-"], [class*="bg-red-"] *,
+  [class*="bg-emerald-"], [class*="bg-emerald-"] *,
+  .keep-white, .keep-white *
+) {
   color: #71717A !important;
 }
 
-.light .text-stone-500:not(button[class*="from-purple"] *, .keep-white *) {
+.light .text-stone-500:not([class*="bg-[#E50914]"] *, .keep-white *) {
   color: #A1A1AA !important;
 }
 
@@ -1119,10 +1141,11 @@ body {
 /* Modals & Dialogs in light mode */
 .light [role="dialog"],
 .light .modal-panel,
-.light .glass-card {
-  background: var(--glass-bg);
-  border-color: var(--glass-border);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+.light .glass-card,
+.light .auth-modal-content {
+  background: var(--glass-bg) !important;
+  border-color: var(--glass-border) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06) !important;
 }
 
 /* Inputs, textareas, selects */
@@ -1139,7 +1162,7 @@ body {
   color: #A1A1AA !important;
 }
 
-/* Surfaces and cards in light mode */
+/* Surfaces and cards in light mode — comprehensive mapping */
 .light .hero-stat-card {
   background: rgba(255, 255, 255, 0.85) !important;
   border-color: #E4E4E7 !important;
@@ -1151,9 +1174,15 @@ body {
   border-color: #D4D4D8 !important;
 }
 
+/* Dark cards & surfaces become clean white in light mode */
 .light .bg-stone-900,
 .light .bg-stone-950,
-.light .bg-stone-800 {
+.light .bg-stone-800,
+.light [class*="bg-[#15151C]"]:not([class*="bg-[#E50914]"] *, [class*="bg-red-"] *),
+.light [class*="bg-[#12100e]"],
+.light [class*="bg-[#141210]"],
+.light [class*="bg-[#1A1A24]"],
+.light [class*="bg-[#1a1a24]"] {
   background-color: #FFFFFF !important;
   border-color: #E4E4E7 !important;
   color: #111116;
@@ -1161,23 +1190,89 @@ body {
 
 .light [class*="bg-stone-900/"],
 .light [class*="bg-stone-950/"],
-.light [class*="bg-stone-800/"] {
-  background-color: rgba(255, 255, 255, 0.9) !important;
+.light [class*="bg-stone-800/"],
+.light [class*="bg-[#15151C]/"] {
+  background-color: rgba(255, 255, 255, 0.95) !important;
   border-color: #E4E4E7 !important;
 }
 
+/* Dark nested panels, search inputs, progress tracks become soft light-grey */
+.light [class*="bg-[#0B0B0F]"]:not([class*="bg-[#E50914]"] *, [class*="bg-red-"] *),
+.light [class*="bg-[#0b0b0f]"],
+.light [class*="bg-black/40"],
+.light [class*="bg-black/50"],
+.light [class*="bg-black/60"] {
+  background-color: #F4F4F6 !important;
+}
+
+/* Gradients inside cards become clean white */
+.light [class*="from-stone-900/90 to-[#12100e]"],
+.light [class*="from-stone-900/90"],
+.light [class*="to-[#12100e]"] {
+  background-image: none !important;
+  background-color: #FFFFFF !important;
+}
+
+/* All dark borders map to subtle light borders */
+.light [class*="border-[#292932]"],
+.light [class*="border-[#3D3D4C]"],
+.light [class*="border-[#3A3A48]"],
 .light [class*="border-stone-800"],
 .light [class*="border-stone-700"],
 .light [class*="border-white/"] {
   border-color: #E4E4E7 !important;
 }
 
-.light [class*="bg-white/"] {
-  background-color: rgba(0, 0, 0, 0.04) !important;
+/* Subtle translucent white surfaces become subtle dark-tint surfaces */
+.light [class*="bg-white/5"],
+.light [class*="bg-white/10"] {
+  background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
 .light .poster-card-info {
   background: #FFFFFF !important;
+}
+
+/* Hover transitions */
+.light [class*="hover:bg-[#1E1E26]"]:hover,
+.light [class*="hover:bg-[#1e1e26]"]:hover,
+.light [class*="hover:bg-[#1A1A24]"]:hover,
+.light [class*="hover:bg-[#191924]"]:hover,
+.light [class*="hover:bg-[#1c1c26]"]:hover {
+  background-color: #EAEAEF !important;
+}
+
+.light [class*="hover:text-[#F5F5F5]"]:hover,
+.light [class*="hover:text-white"]:hover:not(
+  [class*="bg-[#E50914]"], [class*="bg-[#E50914]"] *,
+  [class*="bg-red-"], [class*="bg-red-"] *,
+  [class*="bg-emerald-"], [class*="bg-emerald-"] *
+) {
+  color: #111116 !important;
+}
+
+/* Ensure active red accent buttons ALWAYS keep bright white text and red bg */
+.light [class*="bg-[#E50914]"],
+.light button[class*="bg-[#E50914]"],
+.light [class*="bg-[#E50914]"] * {
+  color: #FFFFFF !important;
+}
+
+.light [class*="bg-[#E50914]"] {
+  background-color: #E50914 !important;
+}
+
+.light [class*="bg-[#E50914]"]:hover,
+.light button[class*="bg-[#E50914]"]:hover {
+  background-color: #FF3B3B !important;
+}
+
+/* Ensure rating stars stay gold in light mode */
+.light .text-\[\#F5C542\],
+.light [class*="text-[#F5C542]"],
+.light [class*="fill-[#F5C542]"] {
+  color: #B45309 !important;
+  fill: #B45309 !important;
 }
 
 .light .user-menu-dropdown {
@@ -1206,13 +1301,13 @@ body {
 }
 
 .light .theme-segmented-container button[aria-pressed="true"] {
-  background-color: rgba(229, 9, 20, 0.12) !important;
-  border-color: rgba(229, 9, 20, 0.35) !important;
-  color: #E50914 !important;
+  background-color: #E50914 !important;
+  border-color: #E50914 !important;
+  color: #FFFFFF !important;
 }
 
 .light .text-glow {
-  text-shadow: 0 2px 10px rgba(229, 9, 20, 0.25) !important;
+  text-shadow: none !important;
 }
 
 /* ─── Strategic Accent Polish in Light Mode ────────────────────────────────── */
