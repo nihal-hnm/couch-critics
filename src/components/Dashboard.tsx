@@ -752,8 +752,8 @@ export default function Dashboard() {
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[250px] bg-black/40 rounded-full blur-[100px] pointer-events-none" />
 
         {/* ── Header ─────────────────────────────────────────── */}
-        <header className="relative z-20 pointer-events-none">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-4 flex items-center justify-between">
+        <header className="relative z-20 pointer-events-none w-full">
+          <div className="w-full px-4 sm:px-6 lg:px-8 pt-5 pb-4 flex items-center justify-between">
             <div className="flex items-center gap-3 pointer-events-auto">
               {/* Burger Menu Button */}
               <button
