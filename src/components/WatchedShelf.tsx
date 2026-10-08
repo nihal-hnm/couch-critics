@@ -173,11 +173,11 @@ export default function WatchedShelf({
           <Star
             key={i}
             className={`w-3 h-3 transition-colors ${
-              i < rating ? "text-purple-400 fill-purple-400" : "text-zinc-700"
+              i < rating ? "text-[#F5C542] fill-[#F5C542]" : "text-[#292932]"
             }`}
           />
         ))}
-        <span className="ml-1.5 text-xs text-purple-400/90 font-mono font-semibold">
+        <span className="ml-1.5 text-xs text-[#F5C542] font-mono font-semibold">
           {rating}/10
         </span>
       </div>
@@ -196,7 +196,7 @@ export default function WatchedShelf({
       >
         <div className="flex gap-3.5 p-4">
           {/* Poster with hover lift */}
-          <div className="relative shrink-0 group/poster w-20 aspect-[2/3] rounded-lg overflow-hidden shadow-md bg-stone-900 border border-stone-800/40">
+          <div className="relative shrink-0 group/poster w-20 aspect-[2/3] rounded-lg overflow-hidden shadow-md bg-[#15151C] border border-[#292932]">
             <MovieImage
               src={entry.tmdb.posterUrl}
               alt={entry.tmdb.title}
@@ -206,7 +206,7 @@ export default function WatchedShelf({
               className="w-full h-full object-contain bg-black/40"
               fallbackIconClassName="w-7 h-7 text-stone-500 mb-1"
             />
-            <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-purple-500/15 to-transparent opacity-0 group-hover/poster:opacity-100 transition-opacity duration-300 pointer-events-none" />
+            <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-[#E50914]/10 to-transparent opacity-0 group-hover/poster:opacity-100 transition-opacity duration-300 pointer-events-none" />
           </div>
 
           {/* Info */}
@@ -216,8 +216,8 @@ export default function WatchedShelf({
               <span
                 className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 ${
                   isTV
-                    ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
-                    : "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
+                    ? "bg-[#15151C] text-[#F5F5F5] border border-[#292932]"
+                    : "bg-[#15151C] text-[#A1A1AA] border border-[#292932]"
                 }`}
               >
                 {isTV ? <Tv className="w-2.5 h-2.5" /> : <Film className="w-2.5 h-2.5" />}
@@ -225,7 +225,7 @@ export default function WatchedShelf({
               </span>
 
               {entry.tmdb.releaseYear && (
-                <span className="text-[10px] font-mono text-stone-400 bg-white/5 px-1.5 py-0.5 rounded border border-white/5">
+                <span className="text-[10px] font-mono text-[#A1A1AA] bg-white/5 px-1.5 py-0.5 rounded border border-[#292932]">
                   {entry.tmdb.releaseYear}
                 </span>
               )}
@@ -253,7 +253,7 @@ export default function WatchedShelf({
               ) : null}
             </div>
 
-            <h4 className="font-bold text-white text-sm sm:text-base truncate group-hover:text-purple-300 transition-colors">
+            <h4 className="font-bold text-[#F5F5F5] text-sm sm:text-base truncate group-hover:text-[#E50914] transition-colors">
               {entry.tmdb.title}
             </h4>
 
@@ -278,7 +278,7 @@ export default function WatchedShelf({
             <div className="flex items-center gap-2.5 mt-2 flex-wrap">
               {entry.review?.dateCompleted && (
                 <p className="flex items-center gap-1 text-[11px] text-stone-400">
-                  <Calendar className="w-3 h-3 text-purple-400/60" />
+                  <Calendar className="w-3 h-3 text-[#A1A1AA]" />
                   {new Date(entry.review.dateCompleted).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
@@ -291,7 +291,7 @@ export default function WatchedShelf({
                   e.stopPropagation();
                   moveToShelf(entry.id, "toWatch");
                 }}
-                className="flex items-center gap-1 text-[11px] font-medium text-purple-300/90 hover:text-white bg-purple-500/10 hover:bg-purple-500/25 px-2 py-0.5 rounded-md border border-purple-500/25 transition-all cursor-pointer"
+                className="flex items-center gap-1 text-[11px] font-medium text-[#A1A1AA] hover:text-[#F5F5F5] bg-white/5 hover:bg-white/10 px-2 py-0.5 rounded-md border border-[#292932] transition-all cursor-pointer"
                 title="Move back to backlog"
               >
                 <RotateCcw className="w-2.5 h-2.5" />
@@ -315,7 +315,7 @@ export default function WatchedShelf({
                 {entry.review.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="flex items-center gap-0.5 text-[10px] bg-purple-500/10 text-purple-300 px-1.5 py-0.5 rounded-md border border-purple-500/15"
+                    className="flex items-center gap-0.5 text-[10px] bg-white/5 text-[#A1A1AA] px-1.5 py-0.5 rounded-md border border-[#292932]"
                   >
                     <Tag className="w-2.5 h-2.5" />
                     {tag}
@@ -329,21 +329,21 @@ export default function WatchedShelf({
           <div className="flex flex-col gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => startEditing(entry)}
-              className="p-1.5 rounded-lg text-stone-400 hover:text-purple-300 hover:bg-purple-500/15 transition-all cursor-pointer"
+              className="p-1.5 rounded-lg text-stone-400 hover:text-[#F5F5F5] hover:bg-white/10 transition-all cursor-pointer"
               title="Edit review & rating"
             >
               <Edit3 className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => moveToShelf(entry.id, "watching")}
-              className="p-1.5 rounded-lg text-stone-400 hover:text-purple-300 hover:bg-purple-500/15 transition-all cursor-pointer"
+              className="p-1.5 rounded-lg text-stone-400 hover:text-[#E50914] hover:bg-[#E50914]/10 transition-all cursor-pointer"
               title="Watch again"
             >
               <Play className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => removeEntry(entry.id)}
-              className="p-1.5 rounded-lg text-stone-400 hover:text-red-400 hover:bg-red-500/15 transition-all cursor-pointer"
+              className="p-1.5 rounded-lg text-stone-400 hover:text-[#FF3B3B] hover:bg-[#E50914]/10 transition-all cursor-pointer"
               title="Remove from journal"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -354,7 +354,7 @@ export default function WatchedShelf({
         {/* Review Notes Preview */}
         {entry.review?.notes && (
           <div className="px-4 pb-3">
-            <p className="text-xs text-stone-300/90 italic leading-relaxed border-t border-purple-500/10 pt-2.5 line-clamp-2">
+            <p className="text-xs text-[#A1A1AA] italic leading-relaxed border-t border-[#292932] pt-2.5 line-clamp-2">
               &ldquo;{entry.review.notes}&rdquo;
             </p>
           </div>
@@ -363,11 +363,11 @@ export default function WatchedShelf({
         {/* ── Inline Edit Mode ── */}
         {editingId === entry.id && (
           <div
-            className="border-t border-purple-500/20 p-4 space-y-3 bg-purple-950/20 animate-in slide-in-from-top-2 duration-200"
+            className="border-t border-[#292932] p-4 space-y-3 bg-[#0B0B0F]/60 animate-in slide-in-from-top-2 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             <div>
-              <label className="text-[11px] text-purple-300 font-semibold uppercase tracking-wider">
+              <label className="text-[11px] text-[#A1A1AA] font-semibold uppercase tracking-wider">
                 Rating (1 - 10)
               </label>
               <div className="flex gap-1 mt-1">
@@ -376,32 +376,32 @@ export default function WatchedShelf({
                     key={i}
                     onClick={() => setEditRating(i + 1)}
                     className={`text-lg transition-all duration-150 hover:scale-110 cursor-pointer ${
-                      i < editRating ? "text-purple-400" : "text-stone-700 hover:text-stone-500"
+                      i < editRating ? "text-[#F5C542]" : "text-[#292932] hover:text-[#F5C542]/50"
                     }`}
                   >
                     ★
                   </button>
                 ))}
-                <span className="ml-2 text-sm text-purple-300 self-center font-mono font-bold">
+                <span className="ml-2 text-sm text-[#F5C542] self-center font-mono font-bold">
                   {editRating}/10
                 </span>
               </div>
             </div>
 
             <div>
-              <label className="text-[11px] text-purple-300 font-semibold uppercase tracking-wider">
+              <label className="text-[11px] text-[#A1A1AA] font-semibold uppercase tracking-wider">
                 Notes &amp; Takeaways
               </label>
               <textarea
                 value={editNotes}
                 onChange={(e) => setEditNotes(e.target.value)}
                 placeholder="What stuck with you? What would you tell a friend?"
-                className="w-full mt-1 bg-black/50 border border-purple-500/20 rounded-lg p-2.5 text-xs text-white placeholder-stone-500 resize-none h-20 outline-none focus:border-purple-500/40"
+                className="w-full mt-1 bg-[#0B0B0F] border border-[#292932] rounded-lg p-2.5 text-xs text-[#F5F5F5] placeholder-[#A1A1AA]/50 resize-none h-20 outline-none focus:border-[#E50914]/60"
               />
             </div>
 
             <div>
-              <label className="text-[11px] text-purple-300 font-semibold uppercase tracking-wider">
+              <label className="text-[11px] text-[#A1A1AA] font-semibold uppercase tracking-wider">
                 Tags (comma-separated)
               </label>
               <input
@@ -409,21 +409,21 @@ export default function WatchedShelf({
                 value={editTags}
                 onChange={(e) => setEditTags(e.target.value)}
                 placeholder="mind-bending, comfort-watch, masterpiece"
-                className="w-full mt-1 bg-black/50 border border-purple-500/20 rounded-lg px-3 py-2 text-xs text-white placeholder-stone-500 outline-none focus:border-purple-500/40"
+                className="w-full mt-1 bg-[#0B0B0F] border border-[#292932] rounded-lg px-3 py-2 text-xs text-[#F5F5F5] placeholder-[#A1A1AA]/50 outline-none focus:border-[#E50914]/60"
               />
             </div>
 
             <div className="flex gap-2 justify-end pt-1">
               <button
                 onClick={() => setEditingId(null)}
-                className="flex items-center gap-1.5 text-xs text-stone-400 hover:text-white px-3 py-1.5 rounded-lg hover:bg-white/5 transition-all cursor-pointer"
+                className="flex items-center gap-1.5 text-xs text-[#A1A1AA] hover:text-white px-3 py-1.5 rounded-lg hover:bg-white/5 transition-all cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
                 Cancel
               </button>
               <button
                 onClick={() => saveEdit(entry.id, entry.review)}
-                className="flex items-center gap-1.5 text-xs bg-purple-600 hover:bg-purple-500 text-white font-semibold px-3 py-1.5 rounded-lg transition-all shadow-md cursor-pointer"
+                className="flex items-center gap-1.5 text-xs bg-[#E50914] hover:bg-[#FF3B3B] text-white font-semibold px-3 py-1.5 rounded-lg transition-all shadow-md cursor-pointer"
               >
                 <Save className="w-3.5 h-3.5" />
                 Save Review
@@ -438,10 +438,10 @@ export default function WatchedShelf({
   // ─── Empty State ───────────────────────────────────────────────────────────
   if (totalCount === 0) {
     return (
-      <div className="text-center py-20 glass-card rounded-2xl border border-purple-500/15">
+      <div className="text-center py-20 glass-card rounded-2xl border border-[#292932]">
         <div className="relative inline-block">
-          <Award className="w-16 h-16 mx-auto text-purple-500/30 mb-4 animate-float" />
-          <div className="absolute inset-0 w-16 h-16 mx-auto rounded-full bg-purple-500/10 blur-xl" />
+          <Award className="w-16 h-16 mx-auto text-[#A1A1AA]/40 mb-4 animate-float" />
+          <div className="absolute inset-0 w-16 h-16 mx-auto rounded-full bg-[#E50914]/5 blur-xl" />
         </div>
         <h3 className="text-xl font-bold text-white">No Watched Titles Yet</h3>
         <p className="text-stone-400 mt-2 text-sm max-w-md mx-auto leading-relaxed">
@@ -454,7 +454,7 @@ export default function WatchedShelf({
   return (
     <div className="space-y-6">
       {/* ── Control Bar: Media Filter, Search & Sorter ──────────────────────── */}
-      <div className="glass-card p-4 rounded-2xl border border-purple-500/20 space-y-4">
+      <div className="glass-card p-4 rounded-2xl border border-[#292932] space-y-4">
         {/* Top Row: Type Pills & Sorter */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           {/* Media Type Tabs (All | Movies | TV Series) */}
@@ -464,8 +464,8 @@ export default function WatchedShelf({
                 onClick={() => setMediaFilter("all")}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
                   mediaFilter === "all"
-                    ? "bg-purple-600 text-white shadow-md shadow-purple-500/25"
-                    : "text-stone-400 hover:text-white bg-white/5 hover:bg-white/10"
+                    ? "bg-[#E50914] text-white shadow-md shadow-black/40"
+                    : "text-[#A1A1AA] hover:text-white bg-white/5 hover:bg-white/10"
                 }`}
               >
                 <span>All Titles</span>
@@ -478,8 +478,8 @@ export default function WatchedShelf({
                 onClick={() => setMediaFilter("movie")}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
                   mediaFilter === "movie"
-                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/25"
-                    : "text-stone-400 hover:text-white bg-white/5 hover:bg-white/10"
+                    ? "bg-[#E50914] text-white shadow-md shadow-black/40"
+                    : "text-[#A1A1AA] hover:text-white bg-white/5 hover:bg-white/10"
                 }`}
               >
                 <Film className="w-3.5 h-3.5" />
@@ -493,8 +493,8 @@ export default function WatchedShelf({
                 onClick={() => setMediaFilter("tv")}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
                   mediaFilter === "tv"
-                    ? "bg-purple-600 text-white shadow-md shadow-purple-500/25"
-                    : "text-stone-400 hover:text-white bg-white/5 hover:bg-white/10"
+                    ? "bg-[#E50914] text-white shadow-md shadow-black/40"
+                    : "text-[#A1A1AA] hover:text-white bg-white/5 hover:bg-white/10"
                 }`}
               >
                 <Tv className="w-3.5 h-3.5" />
@@ -510,13 +510,13 @@ export default function WatchedShelf({
           <div className="flex items-center gap-2.5 ml-auto flex-wrap">
             {/* View Layout Toggle (only when viewing "all" and both types exist) */}
             {mediaFilter === "all" && movieCount > 0 && seriesCount > 0 && (
-              <div className="flex items-center bg-black/30 p-0.5 rounded-xl border border-white/10">
+              <div className="flex items-center bg-black/40 p-0.5 rounded-xl border border-[#292932]">
                 <button
                   onClick={() => setViewLayout("grouped")}
                   className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1 cursor-pointer ${
                     viewLayout === "grouped"
-                      ? "bg-purple-500/25 text-purple-200 border border-purple-500/30 shadow-sm"
-                      : "text-stone-400 hover:text-white"
+                      ? "bg-[#E50914] text-white shadow-sm"
+                      : "text-[#A1A1AA] hover:text-white"
                   }`}
                   title="Grouped: Separate Movies & TV Series sections"
                 >
@@ -527,8 +527,8 @@ export default function WatchedShelf({
                   onClick={() => setViewLayout("combined")}
                   className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1 cursor-pointer ${
                     viewLayout === "combined"
-                      ? "bg-purple-500/25 text-purple-200 border border-purple-500/30 shadow-sm"
-                      : "text-stone-400 hover:text-white"
+                      ? "bg-[#E50914] text-white shadow-sm"
+                      : "text-[#A1A1AA] hover:text-white"
                   }`}
                   title="Unified: Single timeline grid"
                 >
@@ -539,8 +539,8 @@ export default function WatchedShelf({
             )}
 
             {/* Sort Dropdown / Pills */}
-            <div className="flex items-center gap-1 bg-black/30 p-0.5 rounded-xl border border-white/10">
-              <span className="text-[10px] font-bold text-stone-500 uppercase px-2">Sort:</span>
+            <div className="flex items-center gap-1 bg-black/40 p-0.5 rounded-xl border border-[#292932]">
+              <span className="text-[10px] font-bold text-[#A1A1AA] uppercase px-2">Sort:</span>
               {(
                 [
                   { key: "recent", label: "Recent" },
@@ -554,8 +554,8 @@ export default function WatchedShelf({
                   onClick={() => setSortBy(key)}
                   className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-all cursor-pointer ${
                     sortBy === key
-                      ? "bg-purple-600 text-white shadow-sm"
-                      : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
+                      ? "bg-[#E50914] text-white shadow-sm"
+                      : "text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5"
                   }`}
                 >
                   {label}
@@ -566,16 +566,16 @@ export default function WatchedShelf({
         </div>
 
         {/* Bottom Row: Search Input & Summary Count */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1 border-t border-white/5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1 border-t border-[#292932]">
           {/* Quick Search */}
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-stone-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#A1A1AA]" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by title, director, or tag..."
-              className="w-full pl-9 pr-8 py-1.5 rounded-xl bg-black/40 border border-white/10 text-xs text-white placeholder-stone-500 focus:outline-none focus:border-purple-500/40"
+              className="w-full pl-9 pr-8 py-1.5 rounded-xl bg-black/40 border border-[#292932] text-xs text-[#F5F5F5] placeholder-[#A1A1AA]/50 focus:outline-none focus:border-[#E50914]/50"
             />
             {searchQuery && (
               <button
@@ -588,22 +588,22 @@ export default function WatchedShelf({
           </div>
 
           {/* Accurate Dynamic Counter Text */}
-          <div className="text-xs text-stone-400 font-medium">
+          <div className="text-xs text-[#A1A1AA] font-medium">
             {mediaFilter === "all" ? (
               <span>
-                Archive: <strong className="text-purple-300 font-mono">{totalCount}</strong> titles (
-                <strong className="text-indigo-300 font-mono">{movieCount}</strong> {movieCount === 1 ? "Movie" : "Movies"},{" "}
-                <strong className="text-purple-300 font-mono">{seriesCount}</strong> {seriesCount === 1 ? "TV Series" : "TV Series"})
+                Archive: <strong className="text-[#F5F5F5] font-mono">{totalCount}</strong> titles (
+                <strong className="text-[#A1A1AA] font-mono">{movieCount}</strong> {movieCount === 1 ? "Movie" : "Movies"},{" "}
+                <strong className="text-[#A1A1AA] font-mono">{seriesCount}</strong> {seriesCount === 1 ? "TV Series" : "TV Series"})
               </span>
             ) : mediaFilter === "movie" ? (
               <span>
-                Showing <strong className="text-indigo-300 font-mono">{sortedMovies.length}</strong> of{" "}
-                <strong className="text-white font-mono">{movieCount}</strong> {movieCount === 1 ? "watched movie" : "watched movies"}
+                Showing <strong className="text-[#F5F5F5] font-mono">{sortedMovies.length}</strong> of{" "}
+                <strong className="text-[#F5F5F5] font-mono">{movieCount}</strong> {movieCount === 1 ? "watched movie" : "watched movies"}
               </span>
             ) : (
               <span>
-                Showing <strong className="text-purple-300 font-mono">{sortedSeries.length}</strong> of{" "}
-                <strong className="text-white font-mono">{seriesCount}</strong> completed TV {seriesCount === 1 ? "series" : "series"}
+                Showing <strong className="text-[#F5F5F5] font-mono">{sortedSeries.length}</strong> of{" "}
+                <strong className="text-[#F5F5F5] font-mono">{seriesCount}</strong> completed TV {seriesCount === 1 ? "series" : "series"}
               </span>
             )}
           </div>
@@ -617,13 +617,13 @@ export default function WatchedShelf({
         <div className="space-y-8">
           {/* Section 1: Watched Movies */}
           <section className="space-y-4">
-            <div className="flex items-center justify-between border-b border-purple-500/15 pb-2.5">
+            <div className="flex items-center justify-between border-b border-[#292932] pb-2.5">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <div className="p-1.5 rounded-lg bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
+                <div className="p-1.5 rounded-lg bg-white/5 text-[#A1A1AA] border border-[#292932]">
                   <Film className="w-4 h-4" />
                 </div>
                 <span>Watched Movies</span>
-                <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-white/5 text-[#A1A1AA] border border-[#292932]">
                   {sortedMovies.length} {sortedMovies.length === 1 ? "film" : "films"}
                 </span>
               </h3>
@@ -634,7 +634,7 @@ export default function WatchedShelf({
                 {sortedMovies.map((entry, idx) => renderCard(entry, idx))}
               </div>
             ) : (
-              <div className="p-6 text-center glass-card rounded-xl border border-white/5 text-stone-500 text-xs">
+              <div className="p-6 text-center glass-card rounded-xl border border-[#292932] text-[#A1A1AA] text-xs">
                 {searchQuery ? "No movies matched your search." : "No watched movies yet."}
               </div>
             )}
@@ -642,13 +642,13 @@ export default function WatchedShelf({
 
           {/* Section 2: Completed TV Series */}
           <section className="space-y-4">
-            <div className="flex items-center justify-between border-b border-purple-500/15 pb-2.5">
+            <div className="flex items-center justify-between border-b border-[#292932] pb-2.5">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <div className="p-1.5 rounded-lg bg-purple-500/20 text-purple-400 border border-purple-500/30">
+                <div className="p-1.5 rounded-lg bg-white/5 text-[#A1A1AA] border border-[#292932]">
                   <Tv className="w-4 h-4" />
                 </div>
                 <span>Completed TV Series</span>
-                <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-white/5 text-[#A1A1AA] border border-[#292932]">
                   {sortedSeries.length} {sortedSeries.length === 1 ? "series" : "series"}
                 </span>
               </h3>
@@ -659,7 +659,7 @@ export default function WatchedShelf({
                 {sortedSeries.map((entry, idx) => renderCard(entry, idx))}
               </div>
             ) : (
-              <div className="p-6 text-center glass-card rounded-xl border border-white/5 text-stone-500 text-xs">
+              <div className="p-6 text-center glass-card rounded-xl border border-[#292932] text-[#A1A1AA] text-xs">
                 {searchQuery ? "No TV series matched your search." : "No completed TV series yet."}
               </div>
             )}
@@ -673,14 +673,14 @@ export default function WatchedShelf({
               {combinedEntries.map((entry, idx) => renderCard(entry, idx))}
             </div>
           ) : (
-            <div className="p-12 text-center glass-card rounded-2xl border border-purple-500/15">
-              <p className="text-stone-400 text-sm">
+            <div className="p-12 text-center glass-card rounded-2xl border border-[#292932]">
+              <p className="text-[#A1A1AA] text-sm">
                 No titles found matching your filter or search query.
               </p>
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="mt-3 text-xs text-purple-400 hover:text-purple-300 font-semibold underline cursor-pointer"
+                  className="mt-3 text-xs text-[#E50914] hover:text-[#FF3B3B] font-semibold underline cursor-pointer"
                 >
                   Clear search query
                 </button>
