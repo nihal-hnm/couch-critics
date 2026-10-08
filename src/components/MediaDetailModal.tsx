@@ -1017,16 +1017,16 @@ export default function MediaDetailModal({
                                     onClick={() =>
                                       handleToggleEpisode(seasonNumber, ep.episodeNumber, ep.title)
                                     }
-                                    className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer ${
+                                    className={`flex items-start justify-between p-3.5 rounded-xl border transition-all cursor-pointer ${
                                       isWatched
                                         ? "bg-purple-500/10 border-purple-500/30 text-white"
                                         : "bg-stone-900/60 border-stone-800/80 text-stone-400 hover:border-stone-700 hover:bg-stone-900"
                                     }`}
                                   >
-                                    <div className="flex items-center gap-3 min-w-0">
+                                    <div className="flex items-start gap-3 min-w-0 flex-1">
                                       <button
                                         type="button"
-                                        className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 transition-all ${
+                                        className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 mt-0.5 transition-all ${
                                           isWatched
                                             ? "bg-[#5c0f92] text-white font-bold"
                                             : "border border-stone-700 hover:border-purple-400"
@@ -1034,30 +1034,38 @@ export default function MediaDetailModal({
                                       >
                                         {isWatched ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : null}
                                       </button>
-                                      <div className="min-w-0">
-                                        <p
-                                          className={`text-sm font-medium truncate ${
-                                            isWatched ? "text-white" : "text-stone-300"
-                                          }`}
-                                        >
-                                          <span className="text-purple-400 font-mono text-xs font-bold mr-2">
+                                      <div className="min-w-0 flex-1">
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                          <span className="text-purple-400 font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-purple-500/15 border border-purple-500/20">
                                             E{ep.episodeNumber}
                                           </span>
-                                          {ep.title}
+                                          <span
+                                            className={`text-sm font-semibold ${
+                                              isWatched ? "text-white" : "text-stone-200"
+                                            }`}
+                                          >
+                                            {ep.title}
+                                          </span>
+                                        </div>
+
+                                        {/* Episode Overview */}
+                                        <p className="text-xs text-stone-300/90 mt-1.5 leading-relaxed">
+                                          {ep.overview || (
+                                            <span className="text-stone-500 italic text-[11px]">
+                                              No overview available for this episode.
+                                            </span>
+                                          )}
                                         </p>
-                                        {ep.overview ? (
-                                          <p className="text-xs text-stone-500 truncate max-w-xl mt-0.5">
-                                            {ep.overview}
-                                          </p>
-                                        ) : ep.airDate ? (
-                                          <p className="text-[11px] text-stone-500 mt-0.5">
+
+                                        {ep.airDate && (
+                                          <p className="text-[11px] text-stone-500 mt-1">
                                             Aired {ep.airDate}
                                           </p>
-                                        ) : null}
+                                        )}
                                       </div>
                                     </div>
 
-                                    <div className="flex items-center gap-3 shrink-0 ml-3">
+                                    <div className="flex items-center gap-3 shrink-0 ml-3 self-start mt-0.5">
                                       <span className="text-xs text-stone-500 flex items-center gap-1">
                                         <Clock className="w-3 h-3" />
                                         {ep.runtime || entry.tmdb.runtime || 45}m

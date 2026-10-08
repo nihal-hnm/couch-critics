@@ -27,10 +27,10 @@ import {
   RotateCcw,
   BookmarkPlus,
 } from "lucide-react";
-import type { MovieEntry, UserReview, WatchProgress, TMDBSeasonData } from "@/lib/types";
+import type { MovieEntry, UserReview, WatchProgress, TMDBSeasonData, EpisodeItem } from "@/lib/types";
 import { useJournal } from "@/lib/journal-context";
 import { getCachedTVSeasons } from "@/lib/tv-seasons-cache";
-import { getMovieDetails } from "@/lib/tmdb";
+import { getMovieDetails, fetchSeasonEpisodes } from "@/lib/tmdb";
 import MediaDetailModal from "./MediaDetailModal";
 import { MovieImage } from "./common/MovieImage";
 import { getOptimizedImageUrl } from "@/lib/image-utils";
@@ -127,6 +127,60 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
     };
   }, [expandedEpisodeShowId, entries, enrichEntrySeasons]);
 
+  const [shelfEpisodesMap, setShelfEpisodesMap] = useState<Record<string, Record<number, EpisodeItem[]>>>({});
+  const [, setLoadingEpisodesMap] = useState<Record<string, boolean>>({});
+  const [viewModeMap, setViewModeMap] = useState<Record<string, "detailed" | "compact">>({});
+
+  // Fetch detailed episode names & overviews for the expanded TV show
+  useEffect(() => {
+    if (!expandedEpisodeShowId) return;
+    const entry = entries.find((e) => e.id === expandedEpisodeShowId);
+    if (!entry || entry.tmdb.mediaType !== "tv") return;
+
+    const seasons =
+      enrichedSeasonsMap[entry.id] ||
+      entry.tmdb.seasons ||
+      getCachedTVSeasons(entry.tmdb.tmdbId)?.seasons ||
+      [];
+
+    if (!seasons || seasons.length === 0) return;
+
+    let cancelled = false;
+    setLoadingEpisodesMap((prev) => ({ ...prev, [entry.id]: true }));
+
+    Promise.all(
+      seasons.map(async (s) => {
+        try {
+          const eps = await fetchSeasonEpisodes(entry.tmdb.tmdbId, s.seasonNumber);
+          return { seasonNumber: s.seasonNumber, eps };
+        } catch {
+          return { seasonNumber: s.seasonNumber, eps: [] as EpisodeItem[] };
+        }
+      })
+    )
+      .then((results) => {
+        if (cancelled) return;
+        setShelfEpisodesMap((prev) => {
+          const showMap = { ...(prev[entry.id] || {}) };
+          results.forEach(({ seasonNumber, eps }) => {
+            if (eps && eps.length > 0) {
+              showMap[seasonNumber] = eps;
+            }
+          });
+          return { ...prev, [entry.id]: showMap };
+        });
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoadingEpisodesMap((prev) => ({ ...prev, [entry.id]: false }));
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [expandedEpisodeShowId, entries, enrichedSeasonsMap]);
+
   function handleProgressChange(entry: MovieEntry, delta: number) {
     const current = entry.progress?.minutesWatched ?? 0;
     const total = entry.progress?.totalMinutes ?? entry.tmdb.runtime ?? 120;
@@ -168,7 +222,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
     });
   }
 
-  function handleToggleEpisode(entry: MovieEntry, seasonNum: number, epNum: number) {
+  function handleToggleEpisode(entry: MovieEntry, seasonNum: number, epNum: number, episodeTitle?: string) {
     const epCode = `S${seasonNum}E${epNum}`;
     const currentWatchedList =
       entry.progress?.watchedEpisodes && entry.progress.watchedEpisodes.length > 0
@@ -176,11 +230,20 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
         : buildWatchedEpisodes(entry.progress?.currentEpisode ?? 0, entry.tmdb.seasons);
 
     const watched = new Set(currentWatchedList);
+    const newHistory = [...(entry.progress?.episodeHistory ?? [])];
 
     if (watched.has(epCode)) {
       watched.delete(epCode);
     } else {
       watched.add(epCode);
+      newHistory.unshift({
+        id: crypto.randomUUID(),
+        seasonNumber: seasonNum,
+        episodeNumber: epNum,
+        episodeTitle: episodeTitle || `Episode ${epNum}`,
+        runtimeMinutes: entry.tmdb.runtime || 45,
+        watchedAt: new Date().toISOString(),
+      });
     }
 
     const watchedArray = Array.from(watched);
@@ -189,6 +252,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
       currentSeason: seasonNum,
       currentEpisode: watchedArray.length,
       watchedEpisodes: watchedArray,
+      episodeHistory: newHistory.slice(0, 50),
       minutesWatched: watchedArray.length * (entry.tmdb.runtime || 45),
     });
   }
@@ -582,40 +646,70 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
 
                   return (
                     <div className="pt-3 space-y-3 border-t border-stone-800/80 animate-in fade-in duration-200">
-                      {/* Season selector tabs */}
-                      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar">
-                        <button
-                          type="button"
-                          onClick={() => setActiveSeasonMap(prev => ({ ...prev, [entry.id]: "all" }))}
-                          className={`px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap transition-colors ${
-                            currentSelection === "all"
-                              ? "bg-purple-600 text-white font-bold"
-                              : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
-                          }`}
-                        >
-                          All Seasons ({availableSeasons.length})
-                        </button>
-                        {availableSeasons.map((s) => {
-                          const isSel = currentSelection === s.seasonNumber;
-                          return (
-                            <button
-                              key={s.seasonNumber}
-                              type="button"
-                              onClick={() => setActiveSeasonMap(prev => ({ ...prev, [entry.id]: s.seasonNumber }))}
-                              className={`px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap transition-colors ${
-                                isSel
-                                  ? "bg-purple-600 text-white font-bold"
-                                  : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
-                              }`}
-                            >
-                              S{s.seasonNumber}
-                            </button>
-                          );
-                        })}
+                      {/* Season selector tabs & View mode toggle */}
+                      <div className="flex items-center justify-between gap-2 flex-wrap">
+                        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar flex-1 min-w-0">
+                          <button
+                            type="button"
+                            onClick={() => setActiveSeasonMap(prev => ({ ...prev, [entry.id]: "all" }))}
+                            className={`px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap transition-colors ${
+                              currentSelection === "all"
+                                ? "bg-purple-600 text-white font-bold"
+                                : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
+                            }`}
+                          >
+                            All Seasons ({availableSeasons.length})
+                          </button>
+                          {availableSeasons.map((s) => {
+                            const isSel = currentSelection === s.seasonNumber;
+                            return (
+                              <button
+                                key={s.seasonNumber}
+                                type="button"
+                                onClick={() => setActiveSeasonMap(prev => ({ ...prev, [entry.id]: s.seasonNumber }))}
+                                className={`px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap transition-colors ${
+                                  isSel
+                                    ? "bg-purple-600 text-white font-bold"
+                                    : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
+                                }`}
+                              >
+                                S{s.seasonNumber}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* View Mode Toggle: Detailed (Name + Overview) vs Compact */}
+                        <div className="flex items-center gap-1 shrink-0 bg-stone-950 p-0.5 rounded-lg border border-stone-800">
+                          <button
+                            type="button"
+                            onClick={() => setViewModeMap(prev => ({ ...prev, [entry.id]: "detailed" }))}
+                            className={`px-2 py-0.5 rounded text-[10px] font-medium transition-colors ${
+                              viewModeMap[entry.id] !== "compact"
+                                ? "bg-purple-600 text-white font-bold"
+                                : "text-stone-400 hover:text-white"
+                            }`}
+                            title="Detailed view: Episode name & overview"
+                          >
+                            Detailed
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setViewModeMap(prev => ({ ...prev, [entry.id]: "compact" }))}
+                            className={`px-2 py-0.5 rounded text-[10px] font-medium transition-colors ${
+                              viewModeMap[entry.id] === "compact"
+                                ? "bg-purple-600 text-white font-bold"
+                                : "text-stone-400 hover:text-white"
+                            }`}
+                            title="Compact view: Grid numbers"
+                          >
+                            Compact
+                          </button>
+                        </div>
                       </div>
 
                       {/* Display each season and its episodes */}
-                      <div className="space-y-3 max-h-64 overflow-y-auto pr-1">
+                      <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
                         {seasonsToDisplay.map((season) => {
                           const sNum = season.seasonNumber;
                           const epCount = season.episodeCount || 10;
@@ -626,8 +720,21 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                             }
                           }
 
+                          const seasonEps = shelfEpisodesMap[entry.id]?.[sNum];
+                          const episodeList: EpisodeItem[] = seasonEps && seasonEps.length > 0
+                            ? seasonEps
+                            : Array.from({ length: epCount }, (_, i) => ({
+                                seasonNumber: sNum,
+                                episodeNumber: i + 1,
+                                title: `Episode ${i + 1}`,
+                                runtime: entry.tmdb.runtime || 45,
+                                overview: "",
+                              }));
+
+                          const isCompact = viewModeMap[entry.id] === "compact";
+
                           return (
-                            <div key={sNum} className="space-y-1.5 bg-stone-950/60 p-2.5 rounded-xl border border-stone-800/80">
+                            <div key={sNum} className="space-y-2 bg-stone-950/60 p-2.5 rounded-xl border border-stone-800/80">
                               {/* Header with Season Title and Select / Unselect All */}
                               <div className="flex items-center justify-between">
                                 <p className="text-[11px] text-stone-300 uppercase tracking-wider font-bold">
@@ -651,36 +758,113 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                                 </div>
                               </div>
 
-                              {/* Episode Checklist Grid */}
-                              <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
-                                {Array.from({ length: epCount }, (_, i) => {
-                                  const eNum = i + 1;
-                                  const code = `S${sNum}E${eNum}`;
-                                  const isWatched = watchedEpisodesList.includes(code);
+                              {/* Episode List */}
+                              {isCompact ? (
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                                  {episodeList.map((ep) => {
+                                    const eNum = ep.episodeNumber;
+                                    const code = `S${sNum}E${eNum}`;
+                                    const isWatched = watchedEpisodesList.includes(code);
 
-                                  return (
-                                    <button
-                                      key={code}
-                                      type="button"
-                                      onClick={() => handleToggleEpisode(entry, sNum, eNum)}
-                                      className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium text-left border transition-all ${
-                                        isWatched
-                                          ? "bg-purple-500/20 text-purple-200 border-purple-500/30"
-                                          : "bg-stone-900 text-stone-400 border-stone-800 hover:border-stone-700"
-                                      }`}
-                                    >
-                                      <div
-                                        className={`w-3.5 h-3.5 rounded flex items-center justify-center shrink-0 ${
-                                          isWatched ? "bg-[#5c0f92] text-white" : "border border-stone-600"
+                                    return (
+                                      <button
+                                        key={code}
+                                        type="button"
+                                        title={ep.overview ? `${ep.title}: ${ep.overview}` : ep.title}
+                                        onClick={() => handleToggleEpisode(entry, sNum, eNum, ep.title)}
+                                        className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium text-left border transition-all ${
+                                          isWatched
+                                            ? "bg-purple-500/20 text-purple-200 border-purple-500/30"
+                                            : "bg-stone-900 text-stone-400 border-stone-800 hover:border-stone-700"
                                         }`}
                                       >
-                                        {isWatched && <Check className="w-2.5 h-2.5 stroke-[3]" />}
+                                        <div
+                                          className={`w-3.5 h-3.5 rounded flex items-center justify-center shrink-0 ${
+                                            isWatched ? "bg-[#5c0f92] text-white" : "border border-stone-600"
+                                          }`}
+                                        >
+                                          {isWatched && <Check className="w-2.5 h-2.5 stroke-[3]" />}
+                                        </div>
+                                        <span className="truncate">Ep {eNum}</span>
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              ) : (
+                                <div className="space-y-1.5">
+                                  {episodeList.map((ep) => {
+                                    const eNum = ep.episodeNumber;
+                                    const code = `S${sNum}E${eNum}`;
+                                    const isWatched = watchedEpisodesList.includes(code);
+
+                                    return (
+                                      <div
+                                        key={code}
+                                        onClick={() => handleToggleEpisode(entry, sNum, eNum, ep.title)}
+                                        className={`p-2.5 rounded-xl border transition-all cursor-pointer flex items-start gap-2.5 ${
+                                          isWatched
+                                            ? "bg-purple-500/15 border-purple-500/35 text-white shadow-sm"
+                                            : "bg-stone-900/60 border-stone-800/80 text-stone-300 hover:border-stone-700 hover:bg-stone-900"
+                                        }`}
+                                      >
+                                        <button
+                                          type="button"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleToggleEpisode(entry, sNum, eNum, ep.title);
+                                          }}
+                                          className={`w-4 h-4 sm:w-5 sm:h-5 rounded-md flex items-center justify-center shrink-0 mt-0.5 transition-all ${
+                                            isWatched
+                                              ? "bg-[#5c0f92] text-white font-bold"
+                                              : "border border-stone-700 hover:border-purple-400 bg-stone-950/60"
+                                          }`}
+                                          aria-label={isWatched ? `Mark episode ${eNum} unwatched` : `Mark episode ${eNum} watched`}
+                                        >
+                                          {isWatched ? <Check className="w-3 h-3 stroke-[3]" /> : null}
+                                        </button>
+
+                                        <div className="min-w-0 flex-1">
+                                          <div className="flex items-center justify-between gap-2">
+                                            <div className="flex items-center gap-1.5 min-w-0">
+                                              <span className="text-purple-400 font-mono text-[11px] font-bold px-1.5 py-0.2 rounded bg-purple-500/15 border border-purple-500/25 shrink-0">
+                                                E{eNum}
+                                              </span>
+                                              <span
+                                                className={`text-xs font-semibold truncate ${
+                                                  isWatched ? "text-white" : "text-stone-200"
+                                                }`}
+                                              >
+                                                {ep.title}
+                                              </span>
+                                            </div>
+                                            {ep.runtime ? (
+                                              <span className="text-[10px] text-stone-500 shrink-0 flex items-center gap-1 font-mono">
+                                                <Clock className="w-2.5 h-2.5" />
+                                                {ep.runtime}m
+                                              </span>
+                                            ) : null}
+                                          </div>
+
+                                          {/* Episode Overview */}
+                                          <p className="text-[11px] text-stone-400 mt-1 line-clamp-2 leading-relaxed">
+                                            {ep.overview || (
+                                              <span className="text-stone-500 italic text-[10px]">
+                                                No overview available for this episode.
+                                              </span>
+                                            )}
+                                          </p>
+
+                                          {ep.airDate && (
+                                            <p className="text-[10px] text-stone-500 mt-0.5">
+                                              Aired {ep.airDate}
+                                            </p>
+                                          )}
+                                        </div>
                                       </div>
-                                      <span className="truncate">Ep {eNum}</span>
-                                    </button>
-                                  );
-                                })}
-                              </div>
+                                    );
+                                  })}
+                                </div>
+                              )}
                             </div>
                           );
                         })}
