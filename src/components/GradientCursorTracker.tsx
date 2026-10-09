@@ -17,11 +17,8 @@ export default function GradientCursorTracker() {
   const { theme } = useTheme();
   const wrapperRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
-  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
-
     const wrapper = wrapperRef.current;
     const ring = ringRef.current;
     if (!wrapper || !ring) return;
@@ -108,15 +105,14 @@ export default function GradientCursorTracker() {
     };
   }, []);
 
-  if (!isClient) return null;
-
   const isDark = theme === "dark";
 
   return (
     <div
       ref={wrapperRef}
+      id="gradient-cursor-tracker"
       aria-hidden="true"
-      className="pointer-events-none fixed top-0 left-0 z-50 opacity-0 transition-opacity duration-300"
+      className="pointer-events-none fixed top-0 left-0 z-50 opacity-0 transition-opacity duration-150"
       style={{
         willChange: "transform",
         transform: "translate3d(-2000px, -2000px, 0)",
