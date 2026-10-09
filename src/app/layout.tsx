@@ -19,6 +19,7 @@ import { Inter } from "next/font/google";
 import { AuthProvider } from "@/lib/auth-context";
 import { JournalProvider } from "@/lib/journal-context";
 import { ThemeProvider } from "@/lib/theme-context";
+import GradientCursorTracker from "@/components/GradientCursorTracker";
 import "./globals.css";
 
 /**
@@ -59,7 +60,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
          */}
         <ThemeProvider>
           <AuthProvider>
-            <JournalProvider>{children}</JournalProvider>
+            <JournalProvider>
+              <GradientCursorTracker />
+              {children}
+            </JournalProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

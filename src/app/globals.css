@@ -639,6 +639,20 @@ body {
   }
 }
 
+/* ─── Gradient Cursor Tracking Utilities ───────────────────────────────────── */
+@keyframes cursor-pulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+.cursor-spotlight-active {
+  position: relative;
+}
+
 .animate-in {
   animation-duration: 300ms;
   animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
