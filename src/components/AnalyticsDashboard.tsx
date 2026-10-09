@@ -143,28 +143,37 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
         {/* ── Stat Cards ─────────────────────────────────────────── */}
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
           <StatCard
-            icon={<Timer className="w-4 h-4" />}
+            icon={<Timer className="w-4 h-4 text-cyan-400" />}
             label="Hours Watched"
             value={formatHours(analytics.totalHoursWatched)}
             detail={formatHoursVerbose(analytics.totalWatchTimeMins)}
             delay={0}
             id="stat-hours"
+            glowColor="bg-cyan-500/10 group-hover:bg-cyan-500/20"
+            borderColor="group-hover:border-cyan-500/40"
+            iconColor="text-cyan-400"
           />
           <StatCard
-            icon={<ListVideo className="w-4 h-4" />}
+            icon={<ListVideo className="w-4 h-4 text-purple-400" />}
             label="Episodes Watched"
             value={analytics.totalEpisodesWatched.toLocaleString()}
             detail={`across ${analytics.tvShowsProgress.length} TV series`}
             delay={60}
             id="stat-episodes"
+            glowColor="bg-purple-500/10 group-hover:bg-purple-500/20"
+            borderColor="group-hover:border-purple-500/40"
+            iconColor="text-purple-400"
           />
           <StatCard
-            icon={<Clapperboard className="w-4 h-4" />}
+            icon={<Clapperboard className="w-4 h-4 text-indigo-400" />}
             label="Movies Logged"
             value={analytics.totalMoviesLogged.toLocaleString()}
             detail={`${analytics.totalEntries} total titles`}
             delay={120}
             id="stat-movies"
+            glowColor="bg-indigo-500/10 group-hover:bg-indigo-500/20"
+            borderColor="group-hover:border-indigo-500/40"
+            iconColor="text-indigo-400"
           />
           <StatCard
             icon={<Star className="w-4 h-4 text-[#F5C542]" />}
@@ -174,6 +183,9 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
             delay={180}
             id="stat-rating"
             accentStar
+            glowColor="bg-[#F5C542]/10 group-hover:bg-[#F5C542]/20"
+            borderColor="group-hover:border-[#F5C542]/40"
+            iconColor="text-[#F5C542]"
           />
         </div>
 
@@ -198,11 +210,11 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
             </div>
             <div className="flex items-center gap-4 text-xs font-medium">
               <span className="flex items-center gap-1.5 text-[#F5F5F5]">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#E50914]" />
+                <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
                 Movies: {analytics.totalWatchTimeMins > 0 ? Math.round((analytics.movieWatchTimeMins / analytics.totalWatchTimeMins) * 100) : 0}%
               </span>
               <span className="flex items-center gap-1.5 text-[#A1A1AA]">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#F5C542]" />
+                <span className="w-2.5 h-2.5 rounded-full bg-purple-500" />
                 Series: {analytics.totalWatchTimeMins > 0 ? Math.round((analytics.seriesWatchTimeMins / analytics.totalWatchTimeMins) * 100) : 0}%
               </span>
             </div>
@@ -211,14 +223,14 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
           {/* Dual Proportional Split Bar */}
           <div className="w-full bg-[#0B0B0F] rounded-full h-3 overflow-hidden flex border border-[#292932]">
             <div
-              className="h-full bg-[#E50914] transition-all duration-500"
+              className="h-full bg-indigo-500 transition-all duration-500"
               style={{
                 width: `${analytics.totalWatchTimeMins > 0 ? (analytics.movieWatchTimeMins / analytics.totalWatchTimeMins) * 100 : 50}%`,
               }}
               title={`Movies: ${analytics.movieWatchTimeMins.toLocaleString()} min`}
             />
             <div
-              className="h-full bg-[#F5C542] transition-all duration-500"
+              className="h-full bg-purple-500 transition-all duration-500"
               style={{
                 width: `${analytics.totalWatchTimeMins > 0 ? (analytics.seriesWatchTimeMins / analytics.totalWatchTimeMins) * 100 : 50}%`,
               }}
@@ -229,13 +241,13 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
           {/* Individual Detailed Metric Cards */}
           <div className="grid gap-4 sm:grid-cols-2 pt-1">
             {/* Movie Minutes Card */}
-            <div className="p-4 rounded-xl bg-[#15151C] border border-[#292932] flex items-center justify-between">
+            <div className="p-4 rounded-xl bg-[#15151C] border border-[#292932] hover:border-indigo-500/30 transition-colors flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-3 rounded-xl bg-white/5 text-[#E50914] border border-[#292932]">
+                <div className="p-3 rounded-xl bg-indigo-950/30 text-indigo-400 border border-indigo-500/20">
                   <Clapperboard className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="text-xs uppercase tracking-wider text-[#A1A1AA] font-medium">
+                  <p className="text-xs uppercase tracking-wider text-indigo-400/90 font-medium">
                     Movie Minutes
                   </p>
                   <p className="text-2xl font-bold text-white">
@@ -249,13 +261,13 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
             </div>
 
             {/* Series Minutes Card */}
-            <div className="p-4 rounded-xl bg-[#15151C] border border-[#292932] flex items-center justify-between">
+            <div className="p-4 rounded-xl bg-[#15151C] border border-[#292932] hover:border-purple-500/30 transition-colors flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-3 rounded-xl bg-white/5 text-[#F5C542] border border-[#292932]">
+                <div className="p-3 rounded-xl bg-purple-950/30 text-purple-400 border border-purple-500/20">
                   <Tv className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="text-xs uppercase tracking-wider text-[#A1A1AA] font-medium">
+                  <p className="text-xs uppercase tracking-wider text-purple-400/90 font-medium">
                     Series Minutes
                   </p>
                   <p className="text-2xl font-bold text-white">
@@ -591,6 +603,9 @@ function StatCard({
   delay,
   id,
   accentStar = false,
+  glowColor,
+  borderColor,
+  iconColor,
 }: {
   icon: React.ReactNode;
   label: string;
@@ -599,28 +614,34 @@ function StatCard({
   delay: number;
   id: string;
   accentStar?: boolean;
+  glowColor?: string;
+  borderColor?: string;
+  iconColor?: string;
 }) {
   return (
     <div
       id={id}
-      className="glass-card p-5 stagger-item relative overflow-hidden group border border-[#292932]"
+      className={`glass-card p-5 stagger-item relative overflow-hidden group border border-[#292932] transition-colors duration-300 ${
+        borderColor || "group-hover:border-[#E50914]/30"
+      }`}
       style={{ animationDelay: `${delay}ms` }}
     >
       <div
-        className={`absolute -top-8 -right-8 w-24 h-24 rounded-full blur-2xl transition-colors duration-500 ${
-          accentStar
+        className={`absolute -top-8 -right-8 w-24 h-24 rounded-full blur-2xl transition-all duration-500 ${
+          glowColor ||
+          (accentStar
             ? "bg-[#F5C542]/5 group-hover:bg-[#F5C542]/10"
-            : "bg-[#E50914]/5 group-hover:bg-[#E50914]/10"
+            : "bg-[#E50914]/5 group-hover:bg-[#E50914]/10")
         }`}
       />
       <div className="relative">
         <div
           className={`flex items-center gap-2 mb-2 ${
-            accentStar ? "text-[#F5C542]" : "text-[#A1A1AA]"
+            iconColor || (accentStar ? "text-[#F5C542]" : "text-[#A1A1AA]")
           }`}
         >
           {icon}
-          <span className="text-xs uppercase tracking-wider font-medium">
+          <span className="text-xs uppercase tracking-wider font-medium text-[#A1A1AA]">
             {label}
           </span>
         </div>

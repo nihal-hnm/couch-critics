@@ -108,7 +108,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
               placeholder="Filter by title or genre..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 glass-card text-sm text-[#F5F5F5] placeholder-[#A1A1AA]/50 outline-none focus:border-[#E50914]/40 transition-colors border border-[#292932]"
+              className="w-full pl-10 pr-4 py-2.5 glass-card text-sm text-[#F5F5F5] placeholder-[#A1A1AA]/50 outline-none focus:border-amber-500/50 transition-colors border border-[#292932]"
               id="towatch-search"
             />
           </div>
@@ -118,7 +118,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm transition-all cursor-pointer ${
               showFilters
-                ? "bg-[#E50914] text-white border-[#E50914]"
+                ? "bg-amber-500/20 text-amber-400 border-amber-500/50 font-medium"
                 : "glass-card text-[#A1A1AA] hover:text-white border-[#292932]"
             }`}
           >
@@ -130,9 +130,9 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
           <button
             onClick={pickRandom}
             disabled={filteredEntries.length === 0}
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#E50914] hover:bg-[#FF3B3B] text-white rounded-xl text-sm font-medium transition-all shadow-md shadow-black/40 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 rounded-xl text-sm font-semibold transition-all shadow-md shadow-amber-950/40 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
-            <Shuffle className="w-4 h-4" />
+            <Shuffle className="w-4 h-4 text-stone-950" />
             Pick for Tonight
           </button>
         </div>
@@ -147,7 +147,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
               <select
                 value={genreFilter}
                 onChange={(e) => setGenreFilter(e.target.value)}
-                className="bg-[#0B0B0F] border border-[#292932] rounded-lg px-3 py-2 text-sm text-[#F5F5F5] outline-none focus:border-[#E50914]/50"
+                className="bg-[#0B0B0F] border border-[#292932] rounded-lg px-3 py-2 text-sm text-[#F5F5F5] outline-none focus:border-amber-500/50"
               >
                 <option value="">All Genres</option>
                 {allGenres.map((genre) => (
@@ -165,7 +165,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
               <select
                 value={maxRuntime}
                 onChange={(e) => setMaxRuntime(Number(e.target.value))}
-                className="bg-[#0B0B0F] border border-[#292932] rounded-lg px-3 py-2 text-sm text-[#F5F5F5] outline-none focus:border-[#E50914]/50"
+                className="bg-[#0B0B0F] border border-[#292932] rounded-lg px-3 py-2 text-sm text-[#F5F5F5] outline-none focus:border-amber-500/50"
               >
                 <option value={0}>Any length</option>
                 <option value={90}>≤ 90 min (quick watch)</option>
@@ -186,7 +186,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
 
       {/* ── Picked Movie Spotlight ──────────────────────────── */}
       {pickedMovie && (
-        <div className="relative p-5 rounded-2xl overflow-hidden border border-[#292932] bg-[#15151C] animate-in zoom-in-95 duration-300">
+        <div className="relative p-5 rounded-2xl border border-amber-500/30 bg-[#15151C] overflow-hidden animate-in zoom-in-95 duration-300">
           {/* Ambient backdrop from the picked poster */}
           {pickedMovie.tmdb.posterUrl && (
             <div className="absolute inset-0">
@@ -208,8 +208,8 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
               <X className="w-4 h-4" />
             </button>
 
-            <div className="flex items-center gap-2 mb-3 text-[#E50914]">
-              <Sparkles className="w-4 h-4" />
+            <div className="flex items-center gap-2 mb-3 text-amber-400">
+              <Sparkles className="w-4 h-4 text-amber-400" />
               <span className="text-sm font-semibold">Tonight&apos;s Pick</span>
             </div>
 
