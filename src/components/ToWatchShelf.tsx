@@ -194,7 +194,6 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
                 src={getOptimizedImageUrl(pickedMovie.tmdb.posterUrl)}
                 alt=""
                 referrerPolicy="no-referrer"
-                crossOrigin="anonymous"
                 className="w-full h-full object-cover opacity-10 blur-2xl"
               />
               <div className="absolute inset-0 spotlight-scrim" />

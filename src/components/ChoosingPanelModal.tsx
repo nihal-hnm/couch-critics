@@ -236,7 +236,6 @@ export default function ChoosingPanelModal({
               src={getOptimizedImageUrl(displayBackdrop)}
               alt={displayTitle}
               referrerPolicy="no-referrer"
-              crossOrigin="anonymous"
               className="w-full h-full object-cover object-center filter brightness-[0.45] scale-105"
             />
           )}

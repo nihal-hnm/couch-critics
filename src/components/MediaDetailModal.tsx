@@ -575,7 +575,6 @@ export default function MediaDetailModal({
               src={getOptimizedImageUrl(entry.tmdb.backdropUrl || entry.tmdb.posterUrl || "")}
               alt={entry.tmdb.title}
               referrerPolicy="no-referrer"
-              crossOrigin="anonymous"
               className="w-full h-full object-cover object-center filter brightness-50"
             />
           ) : (

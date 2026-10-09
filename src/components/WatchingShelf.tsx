@@ -209,7 +209,6 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                       src={getOptimizedImageUrl(entry.tmdb.backdropUrl || entry.tmdb.posterUrl)}
                       alt=""
                       referrerPolicy="no-referrer"
-                      crossOrigin="anonymous"
                       className="w-full h-full object-cover blur-lg scale-110"
                     />
                     <div className="absolute inset-0 card-ambient-scrim pointer-events-none" />

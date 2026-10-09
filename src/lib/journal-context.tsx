@@ -211,9 +211,10 @@ type JournalAction =
       type: "ENTRY_ENRICHED";
       payload: {
         id: string;
-        seasons: TMDBSeasonData[];
-        totalSeasons: number;
+        seasons?: TMDBSeasonData[];
+        totalSeasons?: number;
         backdropUrl?: string | null;
+        posterUrl?: string | null;
         totalEpisodes?: number;
       };
     };
@@ -316,9 +317,10 @@ function journalReducer(state: JournalState, action: JournalAction): JournalStat
                 ...e,
                 tmdb: {
                   ...e.tmdb,
-                  seasons: action.payload.seasons,
-                  totalSeasons: action.payload.totalSeasons,
+                  seasons: action.payload.seasons ?? e.tmdb.seasons,
+                  totalSeasons: action.payload.totalSeasons ?? e.tmdb.totalSeasons,
                   backdropUrl: action.payload.backdropUrl ?? e.tmdb.backdropUrl,
+                  posterUrl: action.payload.posterUrl ?? e.tmdb.posterUrl,
                   totalEpisodes: action.payload.totalEpisodes ?? e.tmdb.totalEpisodes,
                 },
               }
@@ -343,10 +345,11 @@ interface JournalContextValue {
   updateReview: (id: string, review: UserReview) => void;
   enrichEntrySeasons: (
     id: string,
-    seasons: TMDBSeasonData[],
-    totalSeasons: number,
+    seasons?: TMDBSeasonData[],
+    totalSeasons?: number,
     backdropUrl?: string | null,
-    totalEpisodes?: number
+    totalEpisodes?: number,
+    posterUrl?: string | null
   ) => void;
   resetToDemoData: () => void;
 }
@@ -442,38 +445,37 @@ export function JournalProvider({ children }: { children: ReactNode }) {
   }, [state.entries, state.isLoaded, user?.id]);
 
   /**
-   * Background TV enrichment:
-   * For any TV shows that lack full seasons or totalSeasons, fetch from TMDB and enrich state.
+   * Background media & poster enrichment:
+   * Restores posters for any entries missing posterUrl and enriches TV shows with full seasons.
    */
   useEffect(() => {
     if (!state.isLoaded || state.entries.length === 0) return;
 
-    const unEnrichedTV = state.entries.filter(
+    const unEnriched = state.entries.filter(
       (e) =>
-        e.tmdb.mediaType === "tv" &&
-        (!e.tmdb.seasons || e.tmdb.seasons.length <= 1) &&
-        Boolean(e.tmdb.tmdbId)
+        Boolean(e.tmdb.tmdbId) &&
+        (!e.tmdb.posterUrl ||
+          (e.tmdb.mediaType === "tv" && (!e.tmdb.seasons || e.tmdb.seasons.length <= 1)))
     );
 
-    if (unEnrichedTV.length === 0) return;
+    if (unEnriched.length === 0) return;
 
     let cancelled = false;
-    unEnrichedTV.forEach((entry) => {
-      getMovieDetails(entry.tmdb.tmdbId, "tv")
+    unEnriched.forEach((entry) => {
+      getMovieDetails(entry.tmdb.tmdbId, entry.tmdb.mediaType)
         .then((details) => {
           if (cancelled) return;
-          if (details.seasons && details.seasons.length > 0) {
-            dispatch({
-              type: "ENTRY_ENRICHED",
-              payload: {
-                id: entry.id,
-                seasons: details.seasons,
-                totalSeasons: details.totalSeasons || details.seasons.length,
-                backdropUrl: details.backdropUrl,
-                totalEpisodes: details.totalEpisodes,
-              },
-            });
-          }
+          dispatch({
+            type: "ENTRY_ENRICHED",
+            payload: {
+              id: entry.id,
+              seasons: details.seasons,
+              totalSeasons: details.totalSeasons || details.seasons?.length,
+              backdropUrl: details.backdropUrl || entry.tmdb.backdropUrl,
+              posterUrl: details.posterUrl || entry.tmdb.posterUrl,
+              totalEpisodes: details.totalEpisodes || entry.tmdb.totalEpisodes,
+            },
+          });
         })
         .catch(() => {});
     });
@@ -623,14 +625,15 @@ export function JournalProvider({ children }: { children: ReactNode }) {
   const enrichEntrySeasons = useCallback(
     (
       id: string,
-      seasons: TMDBSeasonData[],
-      totalSeasons: number,
+      seasons?: TMDBSeasonData[],
+      totalSeasons?: number,
       backdropUrl?: string | null,
-      totalEpisodes?: number
+      totalEpisodes?: number,
+      posterUrl?: string | null
     ) => {
       dispatch({
         type: "ENTRY_ENRICHED",
-        payload: { id, seasons, totalSeasons, backdropUrl, totalEpisodes },
+        payload: { id, seasons, totalSeasons, backdropUrl, totalEpisodes, posterUrl },
       });
     },
     []
