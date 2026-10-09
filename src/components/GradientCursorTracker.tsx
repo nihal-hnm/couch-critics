@@ -6,15 +6,15 @@ import { useTheme } from "@/lib/theme-context";
 /**
  * GradientCursorTracker
  *
- * Cinematic dual-layer cursor tracking system for Couch Critics:
- *  1. Ambient Radial Spotlight: A broad 650px gradient that sweeps across
- *     the canvas, casting soft cinematic red & warm gold illumination.
- *  2. Interactive Follower Orb: A GPU-accelerated glowing gradient ring that
- *     glides with smooth spring physics, expanding over clickable elements
- *     and reacting to clicks.
+ * Cinematic real-time cursor tracking system for Couch Critics:
+ *  1. Ambient Radial Spotlight: 600px GPU-accelerated atmospheric gradient
+ *     that tracks the mouse cursor with zero lag and 1:1 matching speed.
+ *  2. Interactive Cursor Orb: Sleek red/gold illuminated ring positioned
+ *     directly in lockstep with the cursor, scaling dynamically over
+ *     interactive buttons and clicks with smooth micro-animations.
  *
- * Designed with 100% pointer-events-none and zero layout shifts.
- * Automatically disabled on mobile/touch screens via (pointer: fine) check.
+ * 100% pointer-events-none, hardware-accelerated via translate3d compositor layers,
+ * zero layout shift, and disabled on touch devices.
  */
 export default function GradientCursorTracker() {
   const { theme } = useTheme();
@@ -32,147 +32,132 @@ export default function GradientCursorTracker() {
     const orb = orbRef.current;
     if (!spotlight || !orb) return;
 
-    let mouseX = -1000;
-    let mouseY = -1000;
-    let currentX = -1000;
-    let currentY = -1000;
     let isVisible = false;
     let isHoveringInteractive = false;
     let isMouseDown = false;
-    let animationFrameId: number;
 
-    const isDark = theme === "dark";
-
-    const updateSpotlight = (x: number, y: number) => {
-      if (!spotlight) return;
-      if (isDark) {
-        spotlight.style.background = `radial-gradient(650px circle at ${x}px ${y}px, rgba(229, 9, 20, 0.08) 0%, rgba(245, 197, 66, 0.025) 35%, transparent 70%)`;
+    const updateScale = () => {
+      if (!orb) return;
+      if (isMouseDown) {
+        orb.style.scale = "0.85";
+      } else if (isHoveringInteractive) {
+        orb.style.scale = "1.55";
       } else {
-        spotlight.style.background = `radial-gradient(550px circle at ${x}px ${y}px, rgba(229, 9, 20, 0.045) 0%, rgba(229, 9, 20, 0.01) 40%, transparent 65%)`;
+        orb.style.scale = "1";
       }
     };
 
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
+    const handlePointerMove = (e: PointerEvent) => {
+      const x = e.clientX;
+      const y = e.clientY;
 
       if (!isVisible) {
         isVisible = true;
-        currentX = mouseX;
-        currentY = mouseY;
         spotlight.style.opacity = "1";
         orb.style.opacity = "1";
       }
 
-      // Check if hovering an interactive element
+      // 1:1 Instant GPU translation with zero latency - perfectly matching cursor speed
+      const transform = `translate3d(${x}px, ${y}px, 0)`;
+      spotlight.style.transform = transform;
+      orb.style.transform = transform;
+
+      // Check if hovering an interactive element (button, link, input, etc.)
       const target = e.target as HTMLElement | null;
       if (target) {
-        const interactive = target.closest(
+        const interactive = !!target.closest(
           "button, a, input, select, textarea, [role='button'], .cursor-pointer, [data-interactive='true']"
         );
-        isHoveringInteractive = !!interactive;
+        if (interactive !== isHoveringInteractive) {
+          isHoveringInteractive = interactive;
+          updateScale();
+        }
       }
 
-      // Update CSS variables on documentElement for optional card border reflections
-      document.documentElement.style.setProperty("--cursor-x", `${mouseX}px`);
-      document.documentElement.style.setProperty("--cursor-y", `${mouseY}px`);
+      // Update CSS variables for any local card reflections
+      document.documentElement.style.setProperty("--cursor-x", `${x}px`);
+      document.documentElement.style.setProperty("--cursor-y", `${y}px`);
     };
 
-    const handleMouseDown = () => {
+    const handlePointerDown = () => {
       isMouseDown = true;
+      updateScale();
     };
 
-    const handleMouseUp = () => {
+    const handlePointerUp = () => {
       isMouseDown = false;
+      updateScale();
     };
 
-    const handleMouseLeave = () => {
+    const handlePointerLeave = () => {
       isVisible = false;
       if (spotlight) spotlight.style.opacity = "0";
       if (orb) orb.style.opacity = "0";
     };
 
-    const handleMouseEnter = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      currentX = mouseX;
-      currentY = mouseY;
+    const handlePointerEnter = (e: PointerEvent) => {
       isVisible = true;
-      if (spotlight) spotlight.style.opacity = "1";
-      if (orb) orb.style.opacity = "1";
-    };
-
-    // Physics render loop (Smooth Lerp at 60/120fps)
-    const render = () => {
-      if (isVisible) {
-        // Lerp position for buttery trailing physics
-        const lerpFactor = 0.22;
-        currentX += (mouseX - currentX) * lerpFactor;
-        currentY += (mouseY - currentY) * lerpFactor;
-
-        // Update ambient spotlight (exact mouse coordinate)
-        updateSpotlight(mouseX, mouseY);
-
-        // Update follower orb position and scale
-        let scale = 1;
-        if (isMouseDown) {
-          scale = 0.8;
-        } else if (isHoveringInteractive) {
-          scale = 1.6;
-        }
-
-        orb.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) translate(-50%, -50%) scale(${scale})`;
+      const x = e.clientX;
+      const y = e.clientY;
+      const transform = `translate3d(${x}px, ${y}px, 0)`;
+      if (spotlight) {
+        spotlight.style.transform = transform;
+        spotlight.style.opacity = "1";
       }
-
-      animationFrameId = requestAnimationFrame(render);
+      if (orb) {
+        orb.style.transform = transform;
+        orb.style.opacity = "1";
+      }
     };
 
-    // Attach event listeners
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    window.addEventListener("mousedown", handleMouseDown, { passive: true });
-    window.addEventListener("mouseup", handleMouseUp, { passive: true });
-    document.documentElement.addEventListener("mouseleave", handleMouseLeave);
-    document.documentElement.addEventListener("mouseenter", handleMouseEnter);
-
-    render();
+    // Attach high-precision pointer event listeners
+    window.addEventListener("pointermove", handlePointerMove, { passive: true });
+    window.addEventListener("pointerdown", handlePointerDown, { passive: true });
+    window.addEventListener("pointerup", handlePointerUp, { passive: true });
+    document.documentElement.addEventListener("pointerleave", handlePointerLeave);
+    document.documentElement.addEventListener("pointerenter", handlePointerEnter);
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mousedown", handleMouseDown);
-      window.removeEventListener("mouseup", handleMouseUp);
-      document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
-      document.documentElement.removeEventListener("mouseenter", handleMouseEnter);
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("pointerup", handlePointerUp);
+      document.documentElement.removeEventListener("pointerleave", handlePointerLeave);
+      document.documentElement.removeEventListener("pointerenter", handlePointerEnter);
     };
-  }, [theme]);
+  }, []);
 
   const isDark = theme === "dark";
 
   return (
     <>
-      {/* ── 1. Ambient Background Gradient Spotlight ── */}
+      {/* ── 1. Ambient Background Gradient Spotlight (GPU Accelerated, 1:1 Speed) ── */}
       <div
         ref={spotlightRef}
         aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-500 opacity-0"
-        style={{ willChange: "background, opacity" }}
-      />
-
-      {/* ── 2. Cinematic Interactive Follower Orb ── */}
-      <div
-        ref={orbRef}
-        aria-hidden="true"
-        className={`pointer-events-none fixed top-0 left-0 z-40 transition-opacity duration-300 opacity-0 rounded-full w-7 h-7 ${
-          isDark
-            ? "border border-[#E50914]/40 shadow-[0_0_16px_rgba(229,9,20,0.35)]"
-            : "border border-[#E50914]/30 shadow-[0_0_12px_rgba(229,9,20,0.2)]"
-        }`}
+        className="pointer-events-none fixed top-0 left-0 w-[600px] h-[600px] -ml-[300px] -mt-[300px] rounded-full z-0 opacity-0 transition-opacity duration-300"
         style={{
           willChange: "transform, opacity",
           background: isDark
-            ? "radial-gradient(circle, rgba(229, 9, 20, 0.4) 0%, rgba(245, 197, 66, 0.15) 50%, transparent 80%)"
-            : "radial-gradient(circle, rgba(229, 9, 20, 0.25) 0%, rgba(245, 197, 66, 0.08) 50%, transparent 80%)",
-          transition: "transform 0.08s ease-out, opacity 0.3s ease",
+            ? "radial-gradient(circle at center, rgba(229, 9, 20, 0.08) 0%, rgba(245, 197, 66, 0.02) 40%, transparent 70%)"
+            : "radial-gradient(circle at center, rgba(229, 9, 20, 0.04) 0%, rgba(229, 9, 20, 0.01) 40%, transparent 68%)",
+        }}
+      />
+
+      {/* ── 2. Cinematic Cursor Follower Orb (Lockstep with cursor speed) ── */}
+      <div
+        ref={orbRef}
+        aria-hidden="true"
+        className={`pointer-events-none fixed top-0 left-0 w-7 h-7 -ml-3.5 -mt-3.5 rounded-full z-40 opacity-0 transition-opacity duration-200 ${
+          isDark
+            ? "border border-[#E50914]/40 shadow-[0_0_14px_rgba(229,9,20,0.35)]"
+            : "border border-[#E50914]/30 shadow-[0_0_10px_rgba(229,9,20,0.2)]"
+        }`}
+        style={{
+          willChange: "transform, scale, opacity",
+          background: isDark
+            ? "radial-gradient(circle at center, rgba(229, 9, 20, 0.35) 0%, rgba(245, 197, 66, 0.12) 55%, transparent 80%)"
+            : "radial-gradient(circle at center, rgba(229, 9, 20, 0.2) 0%, rgba(245, 197, 66, 0.08) 55%, transparent 80%)",
+          transition: "scale 0.15s ease-out, opacity 0.2s ease",
         }}
       />
     </>
