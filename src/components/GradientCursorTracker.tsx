@@ -6,13 +6,12 @@ import { useTheme } from "@/lib/theme-context";
 /**
  * GradientCursorTracker
  *
- * Cinematic unified gradient cursor tracking system:
- * - Single root wrapper positioned at the exact mouse coordinates in real-time.
- * - Both the atmospheric radial gradient aura and the sleek illuminated
- *   cursor ring are mounted within the SAME container layer, guaranteeing
- *   they are 100% physically locked together at all times with 0ms latency.
- * - Floats at z-50 above cards and content with pointer-events-none.
- * - Unconditionally responsive to any mouse movement on all desktop devices.
+ * Cinematic subtle gradient cursor tracking system:
+ * - Broad, evenly dispersed 650px ambient radial gradient aura with gentle color stops.
+ * - Prevents color from concentrating at one hotspot by distributing soft crimson
+ *   and warm gold hues smoothly across a wide radius.
+ * - Delicate, ultra-thin 16px precision cursor ring that moves in 100% lockstep unison.
+ * - Hardware accelerated at z-50 with zero pointer event interference.
  */
 export default function GradientCursorTracker() {
   const { theme } = useTheme();
@@ -36,7 +35,7 @@ export default function GradientCursorTracker() {
       if (isMouseDown) {
         ring.style.transform = "scale(0.85)";
       } else if (isHovering) {
-        ring.style.transform = "scale(1.45)";
+        ring.style.transform = "scale(1.4)";
       } else {
         ring.style.transform = "scale(1)";
       }
@@ -48,7 +47,7 @@ export default function GradientCursorTracker() {
         wrapper.style.opacity = "1";
       }
 
-      // 1:1 Instant GPU translation - moving the gradient aura and cursor ring together
+      // 1:1 Instant GPU translation - moving gradient aura and cursor ring together
       wrapper.style.transform = `translate3d(${x}px, ${y}px, 0)`;
 
       document.documentElement.style.setProperty("--cursor-x", `${x}px`);
@@ -117,45 +116,42 @@ export default function GradientCursorTracker() {
     <div
       ref={wrapperRef}
       aria-hidden="true"
-      className="pointer-events-none fixed top-0 left-0 z-50 opacity-0 transition-opacity duration-200"
+      className="pointer-events-none fixed top-0 left-0 z-50 opacity-0 transition-opacity duration-300"
       style={{
         willChange: "transform",
         transform: "translate3d(-2000px, -2000px, 0)",
       }}
     >
-      {/* ── 1. Atmospheric Radial Gradient Aura (Centered 100% on Cursor) ── */}
+      {/* ── 1. Broad, Evenly Dispersed Ambient Radial Gradient Aura (650px subtle spread) ── */}
       <div
         className="pointer-events-none rounded-full"
         style={{
           position: "absolute",
-          left: -175,
-          top: -175,
-          width: 350,
-          height: 350,
-          filter: "blur(20px)",
+          left: -325,
+          top: -325,
+          width: 650,
+          height: 650,
           background: isDark
-            ? "radial-gradient(circle at center, rgba(229, 9, 20, 0.22) 0%, rgba(245, 197, 66, 0.08) 40%, rgba(229, 9, 20, 0.03) 65%, transparent 75%)"
-            : "radial-gradient(circle at center, rgba(229, 9, 20, 0.15) 0%, rgba(245, 197, 66, 0.07) 45%, rgba(229, 9, 20, 0.02) 65%, transparent 75%)",
+            ? "radial-gradient(circle at center, rgba(229, 9, 20, 0.08) 0%, rgba(229, 9, 20, 0.05) 25%, rgba(245, 197, 66, 0.03) 50%, rgba(245, 197, 66, 0.01) 75%, transparent 100%)"
+            : "radial-gradient(circle at center, rgba(229, 9, 20, 0.045) 0%, rgba(229, 9, 20, 0.03) 25%, rgba(245, 197, 66, 0.02) 50%, rgba(245, 197, 66, 0.008) 75%, transparent 100%)",
         }}
       />
 
-      {/* ── 2. Crisp Illuminated Cursor Focal Ring (Centered 100% on Cursor) ── */}
+      {/* ── 2. Subtle Precision Cursor Follower (Delicate 16px Hairline Ring) ── */}
       <div
         ref={ringRef}
         className="pointer-events-none rounded-full transition-transform duration-150 ease-out"
         style={{
           position: "absolute",
-          left: -11,
-          top: -11,
-          width: 22,
-          height: 22,
-          border: isDark ? "2px solid rgba(229, 9, 20, 0.9)" : "2px solid rgba(229, 9, 20, 0.8)",
+          left: -8,
+          top: -8,
+          width: 16,
+          height: 16,
+          border: isDark ? "1px solid rgba(229, 9, 20, 0.4)" : "1px solid rgba(229, 9, 20, 0.3)",
+          background: isDark ? "rgba(229, 9, 20, 0.06)" : "rgba(229, 9, 20, 0.04)",
           boxShadow: isDark
-            ? "0 0 16px rgba(229, 9, 20, 0.65), 0 0 6px rgba(245, 197, 66, 0.4)"
-            : "0 0 12px rgba(229, 9, 20, 0.45), 0 0 4px rgba(245, 197, 66, 0.3)",
-          background: isDark
-            ? "radial-gradient(circle, rgba(229, 9, 20, 0.5) 0%, rgba(245, 197, 66, 0.2) 60%, transparent 85%)"
-            : "radial-gradient(circle, rgba(229, 9, 20, 0.3) 0%, rgba(245, 197, 66, 0.15) 60%, transparent 85%)",
+            ? "0 0 10px rgba(229, 9, 20, 0.25)"
+            : "0 0 8px rgba(229, 9, 20, 0.15)",
         }}
       />
     </div>
