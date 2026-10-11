@@ -569,33 +569,33 @@ export default function MediaDetailModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* ── Banner Header ─────────────────────────────────────── */}
-        <div className="relative h-48 sm:h-64 shrink-0 overflow-hidden">
+        <div className="relative h-48 sm:h-64 shrink-0 overflow-hidden keep-white">
           {entry.tmdb.backdropUrl || entry.tmdb.posterUrl ? (
             <img
               src={getOptimizedImageUrl(entry.tmdb.backdropUrl || entry.tmdb.posterUrl || "")}
               alt={entry.tmdb.title}
               referrerPolicy="no-referrer"
-              className="w-full h-full object-cover object-center filter brightness-50"
+              className="w-full h-full object-cover object-center filter brightness-60"
             />
           ) : (
             <div className="w-full h-full bg-[#15151C]" />
           )}
 
-          <div className="absolute inset-0 bg-gradient-to-t from-[#15151C] via-[#15151C]/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/25 pointer-events-none" />
 
           {/* Close button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 rounded-full bg-black/60 text-[#A1A1AA] hover:text-white hover:bg-black/80 transition-colors backdrop-blur-sm border border-[#292932] cursor-pointer"
+            className="absolute top-4 right-4 p-2 rounded-full bg-black/60 text-stone-200 hover:text-white hover:bg-black/80 transition-colors backdrop-blur-md border border-white/10 cursor-pointer z-10"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
           </button>
 
           {/* Media Info Overlay */}
-          <div className="absolute bottom-4 left-4 right-4 flex items-end gap-4 sm:gap-6">
+          <div className="absolute bottom-4 left-4 right-4 flex items-end gap-4 sm:gap-6 keep-white z-10">
             {entry.tmdb.posterUrl && (
-              <div className="w-24 sm:w-32 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-[#292932] shrink-0 hidden xs:block bg-[#0B0B0F]">
+              <div className="w-24 sm:w-32 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-white/10 shrink-0 hidden xs:block bg-[#0B0B0F]">
                 <MovieImage
                   src={entry.tmdb.posterUrl}
                   alt={entry.tmdb.title}
@@ -605,33 +605,33 @@ export default function MediaDetailModal({
                 />
               </div>
             )}
-            <div className="flex-1 min-w-0">
-              <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-white/5 text-[#A1A1AA] border border-[#292932] flex items-center gap-1">
-                  {isTV ? <Tv className="w-3 h-3" /> : <Film className="w-3 h-3" />}
+            <div className="flex-1 min-w-0 keep-white">
+              <div className="flex flex-wrap items-center gap-2 mb-1.5 keep-white">
+                <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-white/10 text-white border border-white/15 flex items-center gap-1 backdrop-blur-sm">
+                  {isTV ? <Tv className="w-3 h-3 text-[#E50914]" /> : <Film className="w-3 h-3 text-[#E50914]" />}
                   {isTV ? "TV Series" : "Movie"}
                 </span>
-                <span className="text-xs text-stone-300">{entry.tmdb.releaseYear}</span>
+                <span className="text-xs text-stone-300 font-medium">{entry.tmdb.releaseYear}</span>
                 {entry.tmdb.runtime > 0 && (
-                  <span className="text-xs text-stone-400 flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
+                  <span className="text-xs text-stone-300 flex items-center gap-1">
+                    <Clock className="w-3 h-3 text-stone-400" />
                     {isTV ? `~${entry.tmdb.runtime}m / ep` : `${entry.tmdb.runtime}m`}
                   </span>
                 )}
                 {entry.review?.rating && (
-                  <span className="flex items-center gap-1 text-xs text-[#F5C542] font-semibold bg-white/5 px-2 py-0.5 rounded border border-[#292932]">
+                  <span className="flex items-center gap-1 text-xs text-[#F5C542] font-semibold bg-black/40 px-2 py-0.5 rounded border border-[#F5C542]/30 backdrop-blur-sm">
                     <Star className="w-3 h-3 fill-[#F5C542]" />
                     {entry.review.rating}/10
                   </span>
                 )}
               </div>
-              <h2 className="text-xl sm:text-3xl font-bold text-white truncate leading-tight">
+              <h2 className="text-xl sm:text-3xl font-extrabold text-white truncate leading-tight drop-shadow-md">
                 {entry.tmdb.title}
               </h2>
               {entry.tmdb.director && (
-                <p className="text-xs text-stone-400 mt-0.5">
+                <p className="text-xs text-stone-300 mt-1">
                   {isTV ? "Created by" : "Directed by"}{" "}
-                  <span className="text-stone-300 font-medium">{entry.tmdb.director}</span>
+                  <span className="text-white font-semibold">{entry.tmdb.director}</span>
                 </p>
               )}
             </div>
@@ -642,10 +642,11 @@ export default function MediaDetailModal({
         <div className="px-4 sm:px-6 py-3 border-b border-[#292932] bg-[#15151C] flex flex-wrap items-center justify-between gap-3 shrink-0">
           {/* Shelf Switcher & Unwatch button */}
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 bg-[#0B0B0F] p-1 rounded-xl border border-[#292932]">
+            <span className="text-xs text-stone-400 font-medium hidden sm:inline">Shelf:</span>
+            <div className="flex items-center gap-1 bg-[#0B0B0F] p-1 rounded-xl border border-[#292932]">
               <button
                 onClick={() => handleShelfChange("watching")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   entry.shelf === "watching"
                     ? "bg-[#E50914] text-white shadow-sm"
                     : "text-[#A1A1AA] hover:text-white"
@@ -656,7 +657,7 @@ export default function MediaDetailModal({
               </button>
               <button
                 onClick={() => handleShelfChange("toWatch")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   entry.shelf === "toWatch"
                     ? "bg-[#E50914] text-white shadow-sm"
                     : "text-[#A1A1AA] hover:text-white"
@@ -667,7 +668,7 @@ export default function MediaDetailModal({
               </button>
               <button
                 onClick={() => handleShelfChange("watched")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   entry.shelf === "watched"
                     ? "bg-white/15 text-white shadow-sm"
                     : "text-[#A1A1AA] hover:text-white"
@@ -677,19 +678,6 @@ export default function MediaDetailModal({
                 Watched
               </button>
             </div>
-
-            {/* Move to To-Watch Action Button for Watching entries */}
-            {entry.shelf === "watching" && (
-              <button
-                type="button"
-                onClick={() => handleShelfChange("toWatch")}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-[#A1A1AA] hover:text-white bg-white/5 hover:bg-white/10 border border-[#292932] transition-all shadow-sm cursor-pointer"
-                title="Move to To-Watch backlog"
-              >
-                <BookmarkPlus className="w-3.5 h-3.5" />
-                Move to To-Watch
-              </button>
-            )}
 
             {/* Unwatch Action Button */}
             {entry.shelf === "watched" && (
@@ -706,13 +694,13 @@ export default function MediaDetailModal({
           </div>
 
           {/* Modal View Tabs */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 bg-[#0B0B0F] p-1 rounded-xl border border-[#292932]">
             {isTV && (
               <button
                 onClick={() => setActiveTab("episodes")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                   activeTab === "episodes"
-                    ? "bg-[#E50914] text-white"
+                    ? "bg-[#E50914] text-white shadow-sm"
                     : "text-[#A1A1AA] hover:text-white"
                 }`}
               >
@@ -722,9 +710,9 @@ export default function MediaDetailModal({
             )}
             <button
               onClick={() => setActiveTab("overview")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                 activeTab === "overview"
-                  ? "bg-[#E50914] text-white"
+                  ? "bg-[#E50914] text-white shadow-sm"
                   : "text-[#A1A1AA] hover:text-white"
               }`}
             >
@@ -732,9 +720,9 @@ export default function MediaDetailModal({
             </button>
             <button
               onClick={() => setActiveTab("review")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                 activeTab === "review"
-                  ? "bg-[#E50914] text-white"
+                  ? "bg-[#E50914] text-white shadow-sm"
                   : "text-[#A1A1AA] hover:text-white"
               }`}
             >

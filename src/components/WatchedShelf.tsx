@@ -438,13 +438,13 @@ export default function WatchedShelf({
   // ─── Empty State ───────────────────────────────────────────────────────────
   if (totalCount === 0) {
     return (
-      <div className="text-center py-20 glass-card rounded-2xl border border-[#292932]">
-        <div className="relative inline-block">
-          <Award className="w-16 h-16 mx-auto text-[#A1A1AA]/40 mb-4 animate-float" />
-          <div className="absolute inset-0 w-16 h-16 mx-auto rounded-full bg-[#E50914]/5 blur-xl" />
+      <div className="text-center py-20 liquid-glass-card rounded-3xl relative overflow-hidden max-w-lg mx-auto">
+        <div className="glass-specular" />
+        <div className="w-16 h-16 mx-auto rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-center mb-4 text-[#A1A1AA]">
+          <Award className="w-8 h-8 text-[#A1A1AA]" />
         </div>
-        <h3 className="text-xl font-bold text-white">No Watched Titles Yet</h3>
-        <p className="text-stone-400 mt-2 text-sm max-w-md mx-auto leading-relaxed">
+        <h3 className="text-xl font-bold text-white tracking-tight">No Watched Titles Yet</h3>
+        <p className="text-[#A1A1AA] mt-2 text-sm max-w-md mx-auto leading-relaxed px-4">
           Complete a movie or TV series from your &ldquo;Currently Watching&rdquo; shelf or mark one as watched to build your personal archive.
         </p>
       </div>

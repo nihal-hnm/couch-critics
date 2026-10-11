@@ -40,6 +40,15 @@ export const metadata: Metadata = {
   title: "COUCH CRITICS — Personal Movie & TV Journal",
   description:
     "Track episodes, curate your backlog, and analyze your viewing metrics. Your personal movie and TV show journal.",
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    shortcut: "/icon.png",
+    apple: "/apple-icon.png",
+  },
   referrer: "no-referrer",
 };
 
@@ -61,6 +70,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <ThemeProvider>
           <AuthProvider>
             <JournalProvider>
+              <div className="ambient-orbs" aria-hidden="true">
+                <div className="ambient-orb orb-crimson" />
+                <div className="ambient-orb orb-violet" />
+                <div className="ambient-orb orb-blue" />
+              </div>
               <GradientCursorTracker />
               {children}
             </JournalProvider>

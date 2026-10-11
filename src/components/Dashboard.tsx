@@ -46,6 +46,7 @@ import {
   RotateCcw,
   SlidersHorizontal,
   Tags,
+  ArrowLeft,
 } from "lucide-react";
 import { useJournal } from "@/lib/journal-context";
 import { useAuth } from "@/lib/auth-context";
@@ -850,7 +851,7 @@ export default function Dashboard() {
 
         {/* ── Header ─────────────────────────────────────────── */}
         <header className="relative z-20 pointer-events-none w-full">
-          <div className="w-full px-4 sm:px-6 lg:px-8 pt-5 pb-4 flex items-center justify-between">
+          <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-5 pb-4 flex items-center justify-between">
             <div className="flex items-center gap-3 pointer-events-auto">
               {/* Burger Menu Button */}
               <button
@@ -963,12 +964,13 @@ export default function Dashboard() {
       <div id="shelves-main-content" className="scroll-mt-4" />
 
       {/* ── Main Hero Content (Cleanly Positioned BELOW Moving Background) ── */}
+      {/* ── Main Hero Content (Cleanly Positioned BELOW Moving Background) ── */}
       {activeNav === "watching" && (
-        <div className="relative z-10 max-w-[1800px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2">
+        <div className="relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase bg-[#E50914]/12 text-[#E50914] border border-[#E50914]/25">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase bg-[#E50914]/15 text-[#E50914] border border-[#E50914]/30 shadow-sm shadow-[#E50914]/10">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#E50914] animate-pulse" />
                   In Progress
                 </span>
@@ -984,161 +986,133 @@ export default function Dashboard() {
               </p>
             </div>
 
-              {/* Quick Runtime Metrics Banner: Overall in days & hours, Series and Movies in hours */}
-              {watching.length > 0 && (
-                <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-                  {/* Overall Watch Time in Days & Hours */}
-                  <div className="glass-card px-3.5 py-2 border border-[#292932] flex items-center gap-2.5">
-                    <div className="p-1.5 rounded-lg bg-[#E50914]/10 text-[#E50914]">
-                      <Clock className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold font-mono text-[#F5F5F5]">
-                        {formatDaysAndHours(stats.totalWatchTimeMins)}
-                      </div>
-                      <div className="text-[10px] text-[#A1A1AA]">Overall Time</div>
-                    </div>
-                  </div>
-
-                  {/* Series Time in Hours */}
-                  <div className="glass-card px-3.5 py-2 border border-[#292932] flex items-center gap-2.5">
-                    <div className="p-1.5 rounded-lg bg-[#E50914]/10 text-[#E50914]">
-                      <Tv className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold font-mono text-[#F5F5F5]">
-                        {formatHours(stats.seriesMinutes)}
-                      </div>
-                      <div className="text-[10px] text-[#A1A1AA]">Series Time</div>
-                    </div>
-                  </div>
-
-                  {/* Movie Time in Hours */}
-                  <div className="glass-card px-3.5 py-2 border border-[#292932] flex items-center gap-2.5">
-                    <div className="p-1.5 rounded-lg bg-[#E50914]/10 text-[#E50914]">
-                      <FilmIcon className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold font-mono text-[#F5F5F5]">
-                        {formatHours(stats.movieMinutes)}
-                      </div>
-                      <div className="text-[10px] text-[#A1A1AA]">Movie Time</div>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => setActiveNav("toWatch")}
-                    className="glass-card px-3 py-2 border border-[#292932] hover:border-[#3D3D4C] text-xs text-[#A1A1AA] hover:text-[#F5F5F5] transition-colors flex items-center gap-1.5 cursor-pointer"
-                    title="View To-Watch Backlog"
-                  >
-                    <BookmarkPlus className="w-3.5 h-3.5 text-[#E50914]" />
-                    <span>To Watch ({toWatch.length})</span>
-                  </button>
-
-                  <button
-                    onClick={() => setIsBurgerMenuOpen(true)}
-                    className="glass-card px-3 py-2 border border-[#292932] hover:border-[#3D3D4C] text-xs text-[#A1A1AA] hover:text-[#F5F5F5] transition-colors flex items-center gap-1.5 cursor-pointer"
-                    title="Open Burger Menu for more shelves"
-                  >
-                    <span>More Shelves</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Filter Pills for Currently Watching: All | Series | Movies | View by Genre */}
+            {/* Quick Runtime Metrics Banner: Overall in days & hours, Series and Movies in hours */}
             {watching.length > 0 && (
-              <div className="space-y-2.5 mt-6">
-                <div className="flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar">
-                  <button
-                    onClick={() => setWatchingTypeFilter("all")}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
-                      watchingTypeFilter === "all"
-                        ? "bg-[#E50914] text-white shadow-sm"
-                        : "text-[#A1A1AA] hover:text-[#F5F5F5] bg-[#15151C] border border-[#292932] hover:bg-[#1E1E26]"
-                    }`}
-                  >
-                    <Play className="w-3 h-3 fill-current" />
-                    <span>All In Progress ({watching.length})</span>
-                  </button>
-
-                  <button
-                    onClick={() => setWatchingTypeFilter("tv")}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
-                      watchingTypeFilter === "tv"
-                        ? "bg-[#E50914] text-white shadow-sm"
-                        : "text-[#A1A1AA] hover:text-[#F5F5F5] bg-[#15151C] border border-[#292932] hover:bg-[#1E1E26]"
-                    }`}
-                  >
-                    <Tv className="w-3 h-3" />
-                    <span>TV Series ({watchingSeries.length})</span>
-                  </button>
-
-                  <button
-                    onClick={() => setWatchingTypeFilter("movie")}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
-                      watchingTypeFilter === "movie"
-                        ? "bg-[#E50914] text-white shadow-sm"
-                        : "text-[#A1A1AA] hover:text-[#F5F5F5] bg-[#15151C] border border-[#292932] hover:bg-[#1E1E26]"
-                    }`}
-                  >
-                    <FilmIcon className="w-3 h-3" />
-                    <span>Movies ({watchingMovies.length})</span>
-                  </button>
-
-                  <button
-                    onClick={() => setActiveNav("genres")}
-                    className="px-3 py-1.5 rounded-xl text-xs font-semibold text-[#A1A1AA] hover:text-[#F5F5F5] bg-[#15151C] hover:bg-[#1E1E26] border border-[#292932] transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ml-auto"
-                    title="View all titles grouped by genre"
-                  >
-                    <Tags className="w-3.5 h-3.5 text-[#E50914]" />
-                    <span>View All via Genre &rarr;</span>
-                  </button>
+              <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+                {/* Overall Watch Time in Days & Hours */}
+                <div className="liquid-glass-card px-3.5 py-2 flex items-center gap-2.5">
+                  <div className="p-1.5 rounded-lg bg-[#E50914]/12 text-[#E50914]">
+                    <Clock className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold font-mono text-[#F5F5F5]">
+                      {formatDaysAndHours(stats.totalWatchTimeMins)}
+                    </div>
+                    <div className="text-[10px] text-[#A1A1AA]">Overall Time</div>
+                  </div>
                 </div>
 
-                {/* Genre Quick Filter row for Watching shelf */}
-                {watchingGenres.length > 0 && (
-                  <div className="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar">
-                    <span className="text-[11px] font-semibold text-[#A1A1AA] uppercase tracking-wider flex items-center gap-1 shrink-0 mr-1">
-                      <Tags className="w-3 h-3 text-[#E50914]" />
-                      Genre:
-                    </span>
-                    <button
-                      onClick={() => setWatchingGenreFilter("all")}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all shrink-0 cursor-pointer ${
-                        watchingGenreFilter === "all"
-                          ? "bg-[#E50914] text-white font-semibold shadow-sm"
-                          : "text-[#A1A1AA] hover:text-[#F5F5F5] bg-[#15151C] border border-[#292932] hover:bg-[#1E1E26]"
-                      }`}
-                    >
-                      All
-                    </button>
-                    {watchingGenres.map(({ genre, count }) => (
-                      <button
-                        key={genre}
-                        onClick={() => setWatchingGenreFilter(watchingGenreFilter === genre ? "all" : genre)}
-                        className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all shrink-0 cursor-pointer ${
-                          watchingGenreFilter === genre
-                            ? "bg-[#E50914] text-white font-semibold shadow-sm"
-                            : "text-[#A1A1AA] hover:text-[#F5F5F5] bg-[#15151C] border border-[#292932] hover:bg-[#1E1E26]"
-                        }`}
-                      >
-                        {genre} ({count})
-                      </button>
-                    ))}
+                {/* Series Time in Hours */}
+                <div className="liquid-glass-card px-3.5 py-2 flex items-center gap-2.5">
+                  <div className="p-1.5 rounded-lg bg-[#E50914]/12 text-[#E50914]">
+                    <Tv className="w-4 h-4" />
                   </div>
-                )}
+                  <div>
+                    <div className="text-xs font-bold font-mono text-[#F5F5F5]">
+                      {formatHours(stats.seriesMinutes)}
+                    </div>
+                    <div className="text-[10px] text-[#A1A1AA]">Series Time</div>
+                  </div>
+                </div>
+
+                {/* Movie Time in Hours */}
+                <div className="liquid-glass-card px-3.5 py-2 flex items-center gap-2.5">
+                  <div className="p-1.5 rounded-lg bg-[#E50914]/12 text-[#E50914]">
+                    <FilmIcon className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold font-mono text-[#F5F5F5]">
+                      {formatHours(stats.movieMinutes)}
+                    </div>
+                    <div className="text-[10px] text-[#A1A1AA]">Movie Time</div>
+                  </div>
+                </div>
               </div>
             )}
           </div>
-        )}
+
+          {/* Unified Filter Toolbar for Currently Watching */}
+          {watching.length > 0 && (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-6 pt-4 border-t border-white/[0.06]">
+              {/* Type Segmented Control */}
+              <div className="inline-flex p-1 rounded-xl bg-white/[0.04] border border-white/[0.08] backdrop-blur-md">
+                <button
+                  onClick={() => setWatchingTypeFilter("all")}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    watchingTypeFilter === "all"
+                      ? "bg-[#E50914] text-white shadow-sm"
+                      : "text-[#A1A1AA] hover:text-[#F5F5F5]"
+                  }`}
+                >
+                  <Play className="w-3 h-3 fill-current" />
+                  <span>All ({watching.length})</span>
+                </button>
+                <button
+                  onClick={() => setWatchingTypeFilter("tv")}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    watchingTypeFilter === "tv"
+                      ? "bg-[#E50914] text-white shadow-sm"
+                      : "text-[#A1A1AA] hover:text-[#F5F5F5]"
+                  }`}
+                >
+                  <Tv className="w-3 h-3" />
+                  <span>Series ({watchingSeries.length})</span>
+                </button>
+                <button
+                  onClick={() => setWatchingTypeFilter("movie")}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    watchingTypeFilter === "movie"
+                      ? "bg-[#E50914] text-white shadow-sm"
+                      : "text-[#A1A1AA] hover:text-[#F5F5F5]"
+                  }`}
+                >
+                  <FilmIcon className="w-3 h-3" />
+                  <span>Movies ({watchingMovies.length})</span>
+                </button>
+              </div>
+
+              {/* Genre Filter Chips */}
+              {watchingGenres.length > 0 && (
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar">
+                  <span className="text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider shrink-0 mr-1 flex items-center gap-1">
+                    <Tags className="w-3 h-3 text-[#E50914]" />
+                    Genre:
+                  </span>
+                  <button
+                    onClick={() => setWatchingGenreFilter("all")}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all shrink-0 cursor-pointer ${
+                      watchingGenreFilter === "all"
+                        ? "bg-white/15 text-white border border-white/20 font-semibold"
+                        : "text-[#A1A1AA] hover:text-[#F5F5F5] bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.08]"
+                    }`}
+                  >
+                    All
+                  </button>
+                  {watchingGenres.map(({ genre, count }) => (
+                    <button
+                      key={genre}
+                      onClick={() => setWatchingGenreFilter(watchingGenreFilter === genre ? "all" : genre)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all shrink-0 cursor-pointer ${
+                        watchingGenreFilter === genre
+                          ? "bg-white/15 text-white border border-white/20 font-semibold"
+                          : "text-[#A1A1AA] hover:text-[#F5F5F5] bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.08]"
+                      }`}
+                    >
+                      {genre} <span className="opacity-60 text-[10px]">({count})</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* ══ MAIN CONTENT VIEWS ══════════════════════════════════════ */}
 
       {/* ── View 1: CURRENTLY WATCHING (Primary Home Screen) ─────── */}
       {activeNav === "watching" && (
-        <main className="max-w-[1800px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+        <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
           {watching.length > 0 ? (
             filteredWatching.length > 0 ? (
               <WatchingShelf entries={filteredWatching} />
@@ -1209,7 +1183,7 @@ export default function Dashboard() {
 
       {/* ── View 2: TO WATCH BACKLOG (From Burger Bar) ───────────── */}
       {activeNav === "toWatch" && (
-        <main className="max-w-[1800px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
           <TopReturnBanner
             title="To Watch Backlog"
             subtitle="Your wishlist of movies and TV series waiting to be watched"
@@ -1226,7 +1200,7 @@ export default function Dashboard() {
 
       {/* ── View 3: WATCHED ARCHIVE & REVIEWS (From Burger Bar) ──── */}
       {activeNav === "watched" && (
-        <main className="max-w-[1800px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
           <TopReturnBanner
             title="Watched Archive &amp; Reviews"
             subtitle={`${watchedMovies.length} ${watchedMovies.length === 1 ? "movie" : "movies"} and ${watchedSeries.length} completed TV ${watchedSeries.length === 1 ? "series" : "series"} (${watched.length} total)`}
@@ -1243,7 +1217,7 @@ export default function Dashboard() {
 
       {/* ── View 4: ALL MOVIES (From Burger Bar - Watched Only) ───── */}
       {activeNav === "movies" && (
-        <main className="max-w-[1800px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+        <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
           <TopReturnBanner
             title="All Movies"
             subtitle={`${watchedMovies.length} watched ${watchedMovies.length === 1 ? "movie" : "movies"} in your journal archive`}
@@ -1270,7 +1244,7 @@ export default function Dashboard() {
 
       {/* ── View 5: ALL TV SERIES (From Burger Bar - Watched Only) ─── */}
       {activeNav === "series" && (
-        <main className="max-w-[1800px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+        <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
           <TopReturnBanner
             title="All TV Series"
             subtitle={`${watchedSeries.length} completed TV ${watchedSeries.length === 1 ? "series" : "series"} in your journal archive`}
@@ -1297,7 +1271,7 @@ export default function Dashboard() {
 
       {/* ── View 6: BROWSE BY GENRE (From Burger Bar) ──────────────── */}
       {activeNav === "genres" && (
-        <main className="max-w-[1800px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
           <TopReturnBanner
             title="Browse by Genre"
             subtitle={`Explore ${entries.length} titles across ${allGenres.length} genres with watch time tracking`}
@@ -1502,7 +1476,7 @@ export default function Dashboard() {
 
       {/* ── View 7: WATCH ANALYTICS (From Burger Bar) ────────────── */}
       {activeNav === "stats" && (
-        <main className="max-w-[1800px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
           <TopReturnBanner
             title="Watch Analytics"
             subtitle="Consumption metrics, individual movie vs series minutes, and genre distribution"
@@ -1519,7 +1493,7 @@ export default function Dashboard() {
 
       {/* ── View 7: MY JOURNEY (From Burger Bar) ─────────────────── */}
       {activeNav === "journey" && (
-        <main className="max-w-[1800px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
           <TopReturnBanner
             title="My Journey"
             subtitle="A timeline of the stories experienced across the years"
@@ -1569,7 +1543,7 @@ export default function Dashboard() {
 
       {/* ── View 8: FAVORITES (From Burger Bar) ──────────────────── */}
       {activeNav === "favorites" && (
-        <main className="max-w-[1800px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
           <TopReturnBanner
             title="My Favorites"
             subtitle="Films and shows you rated 8/10 or higher"
@@ -1674,26 +1648,18 @@ function TopReturnBanner({
   accentBgGlow?: string;
   watchingCount: number;
   onBackToWatching: () => void;
-  onOpenMenu: () => void;
+  onOpenMenu?: () => void;
 }) {
   return (
-    <div className={`relative flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-[#15151C] border border-[#292932] ${accentBorderColor} shadow-lg shadow-black/40 overflow-hidden`}>
+    <div className={`relative flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl liquid-glass-card ${accentBorderColor} overflow-hidden`}>
       {accentBgGlow && (
         <div className={`absolute top-0 left-0 w-96 h-32 pointer-events-none blur-3xl opacity-15 ${accentBgGlow}`} />
       )}
       <div className="relative z-10 flex items-center gap-3.5">
-        <button
-          onClick={onOpenMenu}
-          className="p-2.5 rounded-xl bg-[#0B0B0F] hover:bg-[#1E1E26] text-[#A1A1AA] hover:text-white border border-[#292932] transition-all flex items-center gap-1.5 text-xs font-semibold cursor-pointer shrink-0"
-          title="Open Burger Menu"
-        >
-          <Menu className="w-4 h-4" />
-          <span className="hidden sm:inline">Menu</span>
-        </button>
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="p-1.5 rounded-lg bg-black/40 border border-white/5">{icon}</div>
-            <h2 className="text-base sm:text-lg font-bold text-white">{title}</h2>
+            <div className="p-2 rounded-xl bg-white/[0.04] border border-white/10 shadow-sm">{icon}</div>
+            <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">{title}</h2>
           </div>
           <p className="text-xs text-[#A1A1AA] mt-1">{subtitle}</p>
         </div>
@@ -1701,10 +1667,15 @@ function TopReturnBanner({
 
       <button
         onClick={onBackToWatching}
-        className="relative z-10 flex items-center justify-center gap-2 px-4 py-2.5 bg-[#E50914] hover:bg-[#FF3B3B] text-white text-xs font-semibold rounded-xl shadow-md shadow-black/40 transition-all hover:scale-[1.02] cursor-pointer shrink-0"
+        className="relative z-10 flex items-center justify-center gap-2 px-4 py-2.5 bg-white/[0.06] hover:bg-white/[0.12] text-white hover:text-white border border-white/10 text-xs font-semibold rounded-xl backdrop-blur-md transition-all hover:scale-[1.02] cursor-pointer shrink-0 shadow-sm"
       >
-        <Play className="w-3.5 h-3.5 fill-current" />
-        <span>Back to Currently Watching ({watchingCount})</span>
+        <ArrowLeft className="w-3.5 h-3.5 text-[#E50914]" />
+        <span>Back to Currently Watching</span>
+        {watchingCount > 0 && (
+          <span className="px-2 py-0.5 rounded-full bg-[#E50914]/20 text-[#E50914] text-[10px] font-bold">
+            {watchingCount}
+          </span>
+        )}
       </button>
     </div>
   );

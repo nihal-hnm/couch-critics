@@ -194,12 +194,14 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
           return (
             <div
               key={entry.id}
-              className="relative rounded-2xl overflow-hidden border border-[#292932] group poster-lift bg-[#15151C] flex flex-col justify-between shadow-lg"
+              className="liquid-glass-card group poster-lift rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl relative"
               style={{ animationDelay: `${index * 80}ms` }}
             >
+              <div className="glass-specular" />
+
               {/* ── Card Header: Ambient Backdrop + Full Poster + Info ── */}
               <div
-                className="relative p-4 sm:p-5 overflow-hidden cursor-pointer bg-[#15151C]"
+                className="relative p-4 sm:p-5 overflow-hidden cursor-pointer"
                 onClick={() => setSelectedEntry(entry)}
               >
                 {/* Ambient Blurred Backdrop behind the card */}
@@ -209,7 +211,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                       src={getOptimizedImageUrl(entry.tmdb.backdropUrl || entry.tmdb.posterUrl)}
                       alt=""
                       referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover blur-lg scale-110"
+                      className="w-full h-full object-cover blur-xl scale-110"
                     />
                     <div className="absolute inset-0 card-ambient-scrim pointer-events-none" />
                   </div>
@@ -217,7 +219,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
 
                 <div className="relative z-10 flex gap-4 sm:gap-5 items-start">
                   {/* ── FULL UNZOOMED COVER POSTER ── */}
-                  <div className="w-28 sm:w-36 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-[#292932] shrink-0 bg-[#0B0B0F] group-hover:scale-[1.02] transition-transform duration-300">
+                  <div className="w-28 sm:w-34 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-white/10 shrink-0 bg-[#0B0B0F] group-hover:scale-[1.02] transition-transform duration-300">
                     <MovieImage
                       src={entry.tmdb.posterUrl}
                       alt={entry.tmdb.title}
@@ -235,35 +237,21 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                       <div className="flex items-center justify-between gap-2 mb-2">
                         <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#E50914]/12 border border-[#E50914]/25 backdrop-blur-sm">
                           <div className="w-1.5 h-1.5 rounded-full bg-[#E50914] animate-pulse" />
-                          <span className="text-[10px] font-medium text-[#E50914] uppercase tracking-wider flex items-center gap-1">
+                          <span className="text-[10px] font-semibold text-[#E50914] uppercase tracking-wider flex items-center gap-1">
                             {isMovie ? <Film className="w-2.5 h-2.5" /> : <Tv className="w-2.5 h-2.5" />}
                             Now Watching
                           </span>
                         </div>
 
-                        {/* Quick action buttons */}
+                        {/* Top quick action: Remove only (uncluttered) */}
                         <div
                           className="flex items-center gap-1.5 z-10"
                           onClick={(e) => e.stopPropagation()}
                         >
                           <button
-                            onClick={() => handleMoveToBacklog(entry)}
-                            className="p-1.5 bg-[#15151C] hover:bg-[#1E1E26] border border-[#292932] rounded-lg text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
-                            title="Move to To-Watch (Backlog)"
-                          >
-                            <BookmarkPlus className="w-3.5 h-3.5 text-[#E50914]" />
-                          </button>
-                          <button
-                            onClick={() => setCompletingId(entry.id)}
-                            className="p-1.5 bg-emerald-600/80 rounded-lg text-white hover:bg-emerald-500 transition-colors backdrop-blur-sm cursor-pointer"
-                            title="Mark as completed"
-                          >
-                            <CheckCircle2 className="w-3.5 h-3.5" />
-                          </button>
-                          <button
                             onClick={() => removeEntry(entry.id)}
-                            className="p-1.5 bg-red-600/80 rounded-lg text-white hover:bg-red-500 transition-colors backdrop-blur-sm cursor-pointer"
-                            title="Remove"
+                            className="p-1.5 rounded-lg text-white/40 hover:text-red-400 hover:bg-white/5 transition-colors cursor-pointer"
+                            title="Remove from journal"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -271,23 +259,23 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-lg sm:text-xl font-bold text-[#F5F5F5] leading-tight line-clamp-2 transition-colors">
+                      <h3 className="text-base sm:text-lg font-bold text-white leading-snug line-clamp-2 tracking-tight group-hover:text-white transition-colors">
                         {entry.tmdb.title}
                       </h3>
 
                       {/* Metadata */}
                       <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-[#A1A1AA]">
                         {entry.tmdb.releaseYear && (
-                          <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-black/5 border border-[#292932]/30 text-[#F5F5F5]">
+                          <span className="font-mono text-[11px] font-bold px-2 py-0.5 rounded bg-white/[0.06] border border-white/10 text-[#F5F5F5]">
                             {entry.tmdb.releaseYear}
                           </span>
                         )}
                         {entry.tmdb.genres?.length > 0 && (
-                          <span>{entry.tmdb.genres.slice(0, 2).join(", ")}</span>
+                          <span className="text-white/70">{entry.tmdb.genres.slice(0, 2).join(", ")}</span>
                         )}
                         {entry.tmdb.runtime > 0 && (
-                          <span className="flex items-center gap-1 text-[#A1A1AA]">
-                            <Clock className="w-3 h-3" />
+                          <span className="flex items-center gap-1 text-white/60">
+                            <Clock className="w-3 h-3 text-[#E50914]" />
                             {isMovie ? `${entry.tmdb.runtime}m` : `~${entry.tmdb.runtime}m/ep`}
                           </span>
                         )}
@@ -305,8 +293,8 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                     </div>
 
                     {/* Hint to open details */}
-                    <div className="mt-2.5 text-[11px] text-[#A1A1AA] flex items-center gap-1 font-medium">
-                      <span>Click card for full details</span>
+                    <div className="mt-2 text-[11px] text-white/40 flex items-center gap-1 font-medium">
+                      <span>Click for full details</span>
                       <ChevronRight className="w-3 h-3" />
                     </div>
                   </div>
@@ -314,12 +302,12 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
               </div>
 
               {/* ── Progress Section ───────────────────────────── */}
-              <div className="p-4 space-y-3 bg-[#15151C] border-t border-[#292932]">
-                {/* Midnight Cinema progress bar */}
-                <div className="w-full bg-[#0B0B0F] border border-[#292932] rounded-full h-1.5 overflow-hidden">
+              <div className="p-4 space-y-3 border-t border-white/[0.06] bg-black/20 backdrop-blur-sm">
+                {/* Midnight Cinema shimmering progress bar */}
+                <div className="w-full bg-white/[0.06] border border-white/10 rounded-full h-2 overflow-hidden p-0.5">
                   <div
-                    className="h-full bg-[#E50914] rounded-full transition-all duration-500"
-                    style={{ width: `${Math.min(100, progressPercent)}%` }}
+                    className="h-full progress-shimmer-bar rounded-full transition-all duration-500"
+                    style={{ width: `${Math.min(100, Math.max(3, progressPercent))}%` }}
                   />
                 </div>
 
@@ -327,15 +315,15 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                 <div className="flex items-center justify-between">
                   <div className="text-sm">
                     {isMovie ? (
-                      <span className="text-[#A1A1AA]">
+                      <span className="text-[#A1A1AA] text-xs font-medium">
                         {progress?.minutesWatched ?? 0} / {progress?.totalMinutes ?? entry.tmdb.runtime ?? 120} min
                       </span>
                     ) : (
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-[#F5F5F5]">
+                        <span className="font-semibold text-white text-xs">
                           S{progress?.currentSeason || 1}:E{progress?.currentEpisode || 1}
                         </span>
-                        <span className="text-xs text-[#A1A1AA]">
+                        <span className="text-[11px] text-[#A1A1AA]">
                           ({watchedEpisodesCount} of {totalEpisodesCount} eps)
                         </span>
                       </div>
@@ -349,12 +337,12 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                           ? handleProgressChange(entry, -15)
                           : handleEpisodeChange(entry, -1)
                       }
-                      className="p-1.5 rounded-lg bg-[#0B0B0F] border border-[#292932] text-[#A1A1AA] hover:text-white hover:bg-[#1E1E26] transition-colors"
+                      className="p-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-white/70 hover:text-white hover:bg-white/[0.1] transition-all cursor-pointer"
                       title={isMovie ? "Rewind 15m" : "Previous episode"}
                     >
                       <Minus className="w-3.5 h-3.5" />
                     </button>
-                    <span className="text-sm font-semibold text-[#E50914] min-w-[3rem] text-center font-mono">
+                    <span className="text-xs font-bold text-[#E50914] min-w-[2.75rem] text-center font-mono">
                       {progressPercent}%
                     </span>
                     <button
@@ -363,7 +351,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                           ? handleProgressChange(entry, 15)
                           : handleEpisodeChange(entry, 1)
                       }
-                      className="p-1.5 rounded-lg bg-[#0B0B0F] border border-[#292932] text-[#A1A1AA] hover:text-white hover:bg-[#1E1E26] transition-colors"
+                      className="p-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-white/70 hover:text-white hover:bg-white/[0.1] transition-all cursor-pointer"
                       title={isMovie ? "Forward 15m" : "Next episode"}
                     >
                       <Plus className="w-3.5 h-3.5" />
@@ -371,17 +359,17 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                   </div>
                 </div>
 
-                {/* ── Watching Options Bar: Move to To-Watch, Complete, and Details ── */}
-                <div className="pt-2.5 border-t border-[#292932] flex items-center justify-between gap-2">
+                {/* ── Watching Action Bar: To-Watch, Finished, and Episodes / Details ── */}
+                <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     {/* To Watch Option */}
                     <button
                       type="button"
                       onClick={() => handleMoveToBacklog(entry)}
-                      className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-[#A1A1AA] hover:text-white bg-[#0B0B0F] hover:bg-[#1E1E26] border border-[#292932] transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                      className="px-2.5 py-1.5 rounded-lg text-xs font-medium text-white/70 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 transition-all flex items-center gap-1.5 cursor-pointer"
                       title="Move to To-Watch shelf (Backlog)"
                     >
-                      <BookmarkPlus className="w-3.5 h-3.5 text-[#E50914]" />
+                      <BookmarkPlus className="w-3.5 h-3.5 text-amber-400" />
                       <span>To Watch</span>
                     </button>
 
@@ -389,20 +377,20 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                     <button
                       type="button"
                       onClick={() => setCompletingId(entry.id)}
-                      className="px-2.5 py-1.5 rounded-lg text-xs font-medium text-emerald-300 hover:text-white bg-emerald-950/40 hover:bg-emerald-600/30 border border-emerald-800/40 hover:border-emerald-500/50 transition-all flex items-center gap-1.5 cursor-pointer"
+                      className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-emerald-400 hover:text-white bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 transition-all flex items-center gap-1.5 cursor-pointer"
                       title="Mark as completed / watched"
                     >
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                      <span className="hidden xs:inline">Finished</span>
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>Finished</span>
                     </button>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5">
                     {!isMovie && (
                       <button
                         type="button"
                         onClick={() => setSelectedEntry(entry)}
-                        className="text-xs text-[#A1A1AA] hover:text-[#F5F5F5] flex items-center gap-1.5 transition-colors font-medium cursor-pointer px-2.5 py-1.5 rounded-lg hover:bg-white/5 border border-transparent hover:border-[#292932]"
+                        className="text-xs text-white/70 hover:text-white flex items-center gap-1.5 transition-colors font-medium cursor-pointer px-2.5 py-1.5 rounded-lg hover:bg-white/5 border border-transparent hover:border-white/10"
                         title="Open Episode Guide & Checklist"
                       >
                         <ListVideo className="w-3.5 h-3.5 text-[#E50914]" />
@@ -413,11 +401,11 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                     <button
                       type="button"
                       onClick={() => setSelectedEntry(entry)}
-                      className="text-xs text-[#A1A1AA] hover:text-white transition-colors cursor-pointer flex items-center gap-1 px-2.5 py-1.5 rounded-lg hover:bg-white/5 border border-transparent hover:border-[#292932]"
+                      className="text-xs text-white/70 hover:text-white transition-colors cursor-pointer flex items-center gap-1 px-2.5 py-1.5 rounded-lg hover:bg-white/5 border border-transparent hover:border-white/10"
                       title="View full details"
                     >
                       <span>Details</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
+                      <ChevronRight className="w-3.5 h-3.5 text-[#E50914]" />
                     </button>
                   </div>
                 </div>

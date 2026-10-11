@@ -206,13 +206,116 @@ body {
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
   border-radius: 1rem;
-  transition: background 200ms ease, border-color 200ms ease;
+  transition: background 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
 }
 
 .glass-card-hover:hover {
   background: var(--card-hover-bg);
   border-color: var(--card-hover-border);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* ─── Liquid Glass Design Tokens & Utilities ────────────────────────────── */
+.liquid-glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 8px 32px rgba(0, 0, 0, 0.35);
+  border-radius: 1.25rem;
+  transition: all 250ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.liquid-glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+.glass-specular {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* Ambient Floating Orbs Layer */
+.ambient-orbs {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.16;
+  will-change: transform;
+}
+
+.orb-crimson {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, #dc2626 0%, #7f1d1d 70%, transparent 100%);
+  top: -150px;
+  left: -150px;
+  animation: orb-drift-1 24s ease-in-out infinite alternate;
+}
+
+.orb-violet {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, #7c3aed 0%, #4c1d95 70%, transparent 100%);
+  bottom: 10%;
+  right: -100px;
+  animation: orb-drift-2 28s ease-in-out infinite alternate;
+}
+
+.orb-blue {
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, #2563eb 0%, #1e3a5f 70%, transparent 100%);
+  top: 40%;
+  left: -100px;
+  animation: orb-drift-3 22s ease-in-out infinite alternate;
+}
+
+@keyframes orb-drift-1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(60px, 40px) scale(1.08); }
+  100% { transform: translate(-30px, 60px) scale(0.95); }
+}
+
+@keyframes orb-drift-2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-50px, -40px) scale(1.05); }
+  100% { transform: translate(40px, -20px) scale(0.92); }
+}
+
+@keyframes orb-drift-3 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, -30px) scale(1.1); }
+  100% { transform: translate(-20px, 40px) scale(0.98); }
+}
+
+@keyframes progress-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.progress-shimmer-bar {
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-shimmer-bar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: progress-shimmer 2.5s infinite;
 }
 
 /* Stronger glass for headers / sticky elements */
@@ -1264,6 +1367,31 @@ body {
 
 .light .spotlight-scrim {
   background: rgba(255, 255, 255, 0.92) !important;
+}
+
+/* Liquid Glass Cards in Light Mode */
+.light .liquid-glass-card {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: #E4E4E7 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+}
+
+.light .liquid-glass-card h2,
+.light .liquid-glass-card h3,
+.light .liquid-glass-card h4 {
+  color: #111116 !important;
+}
+
+.light .liquid-glass-card .text-\[\#A1A1AA\],
+.light .liquid-glass-card .text-white\/70,
+.light .liquid-glass-card .text-white\/60,
+.light .liquid-glass-card .text-white\/40 {
+  color: #52525B !important;
+}
+
+.light .liquid-glass-card .text-white,
+.light .liquid-glass-card .text-\[\#F5F5F5\] {
+  color: #18181B !important;
 }
 
 /* Emerald action buttons and tags in light mode */

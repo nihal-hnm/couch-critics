@@ -358,11 +358,10 @@ export default function SearchModal({
 
           {!isLoading && !error && results.length === 0 && query === "" && (
             <div className="text-center py-16 text-zinc-500">
-              <div className="relative inline-block mb-4">
-                <Sparkles className="w-12 h-12 mx-auto text-[#A1A1AA]/30 animate-float" />
-                <div className="absolute inset-0 w-12 h-12 mx-auto rounded-full bg-[#E50914]/5 blur-xl" />
+              <div className="w-14 h-14 mx-auto rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-center mb-4 text-[#A1A1AA]/70">
+                <Sparkles className="w-7 h-7 text-[#E50914]" />
               </div>
-              <p className="text-lg text-[#F5F5F5]">Search for a movie or TV show</p>
+              <p className="text-lg font-medium text-[#F5F5F5]">Search for a movie or TV show</p>
               <p className="text-sm mt-1 text-[#A1A1AA]">
                 Results from The Movie Database (TMDB)
               </p>

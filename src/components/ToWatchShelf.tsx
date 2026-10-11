@@ -108,7 +108,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
               placeholder="Filter by title or genre..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 glass-card text-sm text-[#F5F5F5] placeholder-[#A1A1AA]/50 outline-none focus:border-amber-500/50 transition-colors border border-[#292932]"
+              className="w-full pl-10 pr-4 py-2.5 liquid-glass-card text-sm text-[#F5F5F5] placeholder-[#A1A1AA]/50 outline-none focus:border-[#E50914]/50 transition-colors"
               id="towatch-search"
             />
           </div>
@@ -118,8 +118,8 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm transition-all cursor-pointer ${
               showFilters
-                ? "bg-amber-500/20 text-amber-400 border-amber-500/50 font-medium"
-                : "glass-card text-[#A1A1AA] hover:text-white border-[#292932]"
+                ? "bg-[#E50914]/15 text-[#E50914] border-[#E50914]/40 font-semibold"
+                : "liquid-glass-card text-[#A1A1AA] hover:text-white"
             }`}
           >
             <SlidersHorizontal className="w-4 h-4" />
@@ -130,9 +130,9 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
           <button
             onClick={pickRandom}
             disabled={filteredEntries.length === 0}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 rounded-xl text-sm font-semibold transition-all shadow-md shadow-amber-950/40 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#E50914] to-[#B81D24] hover:from-[#FF1E28] hover:to-[#E50914] text-white rounded-xl text-sm font-semibold transition-all shadow-md shadow-[#E50914]/25 hover:shadow-lg hover:shadow-[#E50914]/40 hover:scale-[1.02] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
-            <Shuffle className="w-4 h-4 text-stone-950" />
+            <Shuffle className="w-4 h-4 text-white" />
             Pick for Tonight
           </button>
         </div>
