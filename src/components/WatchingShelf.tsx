@@ -15,6 +15,7 @@ import {
   CheckCircle2,
   Trash2,
   ChevronRight,
+  ChevronDown,
   Film,
   Tv,
   Clock,
@@ -35,35 +36,93 @@ interface WatchingShelfProps {
   entries: MovieEntry[];
 }
 
-function buildWatchedEpisodes(currentEp: number, seasons?: TMDBSeasonData[]): string[] {
-  const codes: string[] = [];
-  if (!currentEp || currentEp <= 0) return codes;
-
-  if (seasons && seasons.length > 0) {
-    let remaining = currentEp;
-    for (const season of seasons) {
-      if (season.seasonNumber <= 0) continue;
-      const count = season.episodeCount || 10;
-      const watchedInThisSeason = Math.min(remaining, count);
-      for (let i = 1; i <= watchedInThisSeason; i++) {
-        codes.push(`S${season.seasonNumber}E${i}`);
-      }
-      remaining -= watchedInThisSeason;
-      if (remaining <= 0) break;
-    }
-  } else {
-    let remaining = currentEp;
-    let s = 1;
-    while (remaining > 0) {
-      const epThisSeason = Math.min(remaining, 10);
-      for (let i = 1; i <= epThisSeason; i++) {
-        codes.push(`S${s}E${i}`);
-      }
-      remaining -= epThisSeason;
-      s++;
-    }
+export function getTVSeasonProgress(entry: MovieEntry) {
+  const isMovie = entry.tmdb.mediaType === "movie";
+  if (isMovie) {
+    const totalMinutes = entry.progress?.totalMinutes ?? entry.tmdb.runtime ?? 120;
+    const minutesWatched = entry.progress?.minutesWatched ?? 0;
+    const percent = totalMinutes > 0 ? Math.round((minutesWatched / totalMinutes) * 100) : 0;
+    return {
+      isMovie: true,
+      minutesWatched,
+      totalMinutes,
+      percent: Math.min(100, Math.max(0, percent)),
+      currentSeason: 1,
+      currentEpisode: 1,
+      seasonEpisodeCount: 1,
+      totalSeasons: 1,
+      seasonsList: [] as TMDBSeasonData[],
+    };
   }
-  return codes;
+
+  // Retrieve season data from TMDB metadata or cached tv catalog
+  const cached = getCachedTVSeasons(entry.tmdb.tmdbId);
+  const rawSeasons =
+    (entry.tmdb.seasons && entry.tmdb.seasons.length > 0 ? entry.tmdb.seasons : null) ||
+    (cached?.seasons && cached.seasons.length > 0 ? cached.seasons : null) ||
+    [];
+
+  // Filter valid regular seasons (seasonNumber >= 1 and episodeCount > 0)
+  const regularSeasons = rawSeasons.filter((s) => s.seasonNumber > 0 && s.episodeCount > 0);
+  const seasonsList: TMDBSeasonData[] =
+    regularSeasons.length > 0
+      ? regularSeasons
+      : [
+          {
+            seasonNumber: 1,
+            name: "Season 1",
+            episodeCount: entry.tmdb.totalEpisodes || 10,
+          },
+        ];
+
+  const totalSeasons = Math.max(
+    seasonsList.length,
+    entry.progress?.totalSeasons || entry.tmdb.totalSeasons || 1
+  );
+
+  let currentSeason = entry.progress?.currentSeason ?? 1;
+  let currentEpisode = entry.progress?.currentEpisode ?? 1;
+
+  // Verify season exists in seasonsList
+  let currentSeasonData = seasonsList.find((s) => s.seasonNumber === currentSeason);
+  if (!currentSeasonData) {
+    currentSeason = seasonsList[0]?.seasonNumber || 1;
+    currentSeasonData = seasonsList[0];
+  }
+  const seasonEpisodeCount = currentSeasonData?.episodeCount || 10;
+
+  // Handle legacy cumulative episode bug (e.g., S1:E81 when season 1 only has 12 episodes)
+  if (currentEpisode > seasonEpisodeCount && seasonsList.length > 1) {
+    let rem = currentEpisode;
+    for (const s of seasonsList) {
+      if (rem <= s.episodeCount) {
+        currentSeason = s.seasonNumber;
+        currentEpisode = rem;
+        break;
+      }
+      rem -= s.episodeCount;
+      currentSeason = s.seasonNumber;
+      currentEpisode = s.episodeCount;
+    }
+    currentSeasonData = seasonsList.find((s) => s.seasonNumber === currentSeason);
+  }
+
+  const validEpCount = currentSeasonData?.episodeCount || 10;
+  const validEpisode = Math.max(1, Math.min(validEpCount, currentEpisode));
+
+  const percent = validEpCount > 0 ? Math.round((validEpisode / validEpCount) * 100) : 0;
+
+  return {
+    isMovie: false,
+    minutesWatched: 0,
+    totalMinutes: 0,
+    percent: Math.min(100, Math.max(0, percent)),
+    currentSeason,
+    currentEpisode: validEpisode,
+    seasonEpisodeCount: validEpCount,
+    totalSeasons,
+    seasonsList,
+  };
 }
 
 export default function WatchingShelf({ entries }: WatchingShelfProps) {
@@ -86,31 +145,70 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
   }
 
   function handleEpisodeChange(entry: MovieEntry, delta: number) {
-    const current = entry.progress?.currentEpisode ?? 1;
-    const total = entry.progress?.totalEpisodes ?? entry.tmdb.totalEpisodes ?? 10;
-    const newValue = Math.max(1, Math.min(total, current + delta));
-    const season = entry.progress?.currentSeason ?? 1;
+    const sp = getTVSeasonProgress(entry);
+    if (sp.isMovie) return;
 
-    // Use existing watched list or reconstruct based on current progress
-    const currentWatched = new Set(
-      entry.progress?.watchedEpisodes && entry.progress.watchedEpisodes.length > 0
-        ? entry.progress.watchedEpisodes
-        : buildWatchedEpisodes(current, entry.tmdb.seasons)
-    );
+    const { currentSeason, currentEpisode, seasonEpisodeCount, totalSeasons, seasonsList } = sp;
+    const currentWatched = new Set(entry.progress?.watchedEpisodes ?? []);
+
+    let newSeason = currentSeason;
+    let newEpisode = currentEpisode + delta;
 
     if (delta > 0) {
-      currentWatched.add(`S${season}E${newValue}`);
+      if (newEpisode > seasonEpisodeCount) {
+        if (currentSeason < totalSeasons) {
+          newSeason = currentSeason + 1;
+          newEpisode = 1;
+        } else {
+          newEpisode = seasonEpisodeCount;
+        }
+      }
+      currentWatched.add(`S${newSeason}E${newEpisode}`);
     } else {
-      currentWatched.delete(`S${season}E${current}`);
+      if (newEpisode < 1) {
+        if (currentSeason > 1) {
+          newSeason = currentSeason - 1;
+          const prevSeasonData = seasonsList.find((s) => s.seasonNumber === newSeason);
+          newEpisode = prevSeasonData?.episodeCount || 10;
+        } else {
+          newEpisode = 1;
+        }
+      }
+      currentWatched.delete(`S${currentSeason}E${currentEpisode}`);
     }
 
     const watchedArray = Array.from(currentWatched);
+    const updatedSeasonData = seasonsList.find((s) => s.seasonNumber === newSeason);
+    const newSeasonEpCount = updatedSeasonData?.episodeCount || 10;
+
     updateProgress(entry.id, {
       ...entry.progress,
-      currentEpisode: newValue,
-      totalEpisodes: total,
+      currentSeason: newSeason,
+      currentEpisode: Math.min(newSeasonEpCount, Math.max(1, newEpisode)),
+      totalEpisodes: newSeasonEpCount,
       watchedEpisodes: watchedArray,
       minutesWatched: watchedArray.length * (entry.tmdb.runtime || 45),
+    });
+  }
+
+  function handleSeasonChange(entry: MovieEntry, newSeasonNum: number) {
+    const sp = getTVSeasonProgress(entry);
+    const targetSeason = sp.seasonsList.find((s) => s.seasonNumber === newSeasonNum);
+    const seasonEpCount = targetSeason?.episodeCount || 10;
+
+    const watchedSet = new Set(entry.progress?.watchedEpisodes ?? []);
+    let highestInSeason = 1;
+    for (let ep = 1; ep <= seasonEpCount; ep++) {
+      if (watchedSet.has(`S${newSeasonNum}E${ep}`)) {
+        highestInSeason = ep;
+      }
+    }
+
+    updateProgress(entry.id, {
+      ...entry.progress,
+      currentSeason: newSeasonNum,
+      currentEpisode: highestInSeason,
+      totalEpisodes: seasonEpCount,
     });
   }
 
@@ -150,58 +248,22 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
 
   return (
     <>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 items-start">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         {entries.map((entry, index) => {
-          const progress = entry.progress;
-          const isMovie = entry.tmdb.mediaType === "movie";
-          const showSeasons =
-            (entry.tmdb.seasons && entry.tmdb.seasons.length > 0 ? entry.tmdb.seasons : null) ||
-            (getCachedTVSeasons(entry.tmdb.tmdbId)?.seasons && getCachedTVSeasons(entry.tmdb.tmdbId)!.seasons.length > 0
-              ? getCachedTVSeasons(entry.tmdb.tmdbId)!.seasons
-              : null);
-
-          const hasInvalidSeason1Overflow =
-            Boolean(showSeasons &&
-            showSeasons.length > 1 &&
-            progress?.watchedEpisodes?.some((code) => {
-              const match = code.match(/^S1E(\d+)$/);
-              if (!match) return false;
-              const ep = parseInt(match[1], 10);
-              const s1Count = showSeasons?.find((s) => s.seasonNumber === 1)?.episodeCount || 10;
-              return ep > s1Count;
-            }));
-
-          const watchedEpisodesList =
-            progress?.watchedEpisodes && progress.watchedEpisodes.length > 0 && !hasInvalidSeason1Overflow
-              ? progress.watchedEpisodes
-              : buildWatchedEpisodes(progress?.currentEpisode ?? 0, showSeasons || undefined);
-          const watchedEpisodesCount =
-            watchedEpisodesList.length > 0
-              ? watchedEpisodesList.length
-              : (progress?.currentEpisode ?? 0);
-          const totalEpisodesCount = progress?.totalEpisodes ?? entry.tmdb.totalEpisodes ?? 10;
-
-          const progressPercent = isMovie
-            ? progress?.totalMinutes
-              ? Math.round(
-                  ((progress.minutesWatched ?? 0) / progress.totalMinutes) * 100
-                )
-              : 0
-            : totalEpisodesCount
-            ? Math.round((watchedEpisodesCount / totalEpisodesCount) * 100)
-            : 0;
+          const sp = getTVSeasonProgress(entry);
+          const isMovie = sp.isMovie;
 
           return (
             <div
               key={entry.id}
-              className="liquid-glass-card group poster-lift rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl relative"
+              className="liquid-glass-card group poster-lift rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl relative h-full"
               style={{ animationDelay: `${index * 80}ms` }}
             >
               <div className="glass-specular" />
 
               {/* ── Card Header: Ambient Backdrop + Full Poster + Info ── */}
               <div
-                className="relative p-4 sm:p-5 overflow-hidden cursor-pointer"
+                className="relative p-4 sm:p-5 overflow-hidden cursor-pointer flex-1 flex flex-col justify-between"
                 onClick={() => setSelectedEntry(entry)}
               >
                 {/* Ambient Blurred Backdrop behind the card */}
@@ -217,9 +279,9 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                   </div>
                 )}
 
-                <div className="relative z-10 flex gap-4 sm:gap-5 items-start">
+                <div className="relative z-10 flex gap-4 sm:gap-5 items-start flex-1">
                   {/* ── FULL UNZOOMED COVER POSTER ── */}
-                  <div className="w-28 sm:w-34 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-white/10 shrink-0 bg-[#0B0B0F] group-hover:scale-[1.02] transition-transform duration-300">
+                  <div className="w-28 sm:w-32 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-white/10 shrink-0 bg-[#0B0B0F] group-hover:scale-[1.02] transition-transform duration-300">
                     <MovieImage
                       src={entry.tmdb.posterUrl}
                       alt={entry.tmdb.title}
@@ -235,9 +297,9 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                     <div>
                       {/* Top Row: Badge + Floating Action Buttons */}
                       <div className="flex items-center justify-between gap-2 mb-2">
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#E50914]/12 border border-[#E50914]/25 backdrop-blur-sm">
+                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#E50914]/12 border border-[#E50914]/25 backdrop-blur-sm shrink-0">
                           <div className="w-1.5 h-1.5 rounded-full bg-[#E50914] animate-pulse" />
-                          <span className="text-[10px] font-semibold text-[#E50914] uppercase tracking-wider flex items-center gap-1">
+                          <span className="text-[10px] font-semibold text-[#E50914] uppercase tracking-wider flex items-center gap-1 whitespace-nowrap">
                             {isMovie ? <Film className="w-2.5 h-2.5" /> : <Tv className="w-2.5 h-2.5" />}
                             Now Watching
                           </span>
@@ -258,20 +320,20 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                         </div>
                       </div>
 
-                      {/* Title */}
-                      <h3 className="text-base sm:text-lg font-bold text-white leading-snug line-clamp-2 tracking-tight group-hover:text-white transition-colors">
+                      {/* Title: Consistent min-height for clean alignment across 1-line and 2-line titles */}
+                      <h3 className="text-base sm:text-lg font-bold text-white leading-snug line-clamp-2 tracking-tight group-hover:text-white transition-colors min-h-[2.75rem] flex items-start">
                         {entry.tmdb.title}
                       </h3>
 
                       {/* Metadata */}
-                      <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-[#A1A1AA]">
+                      <div className="flex flex-wrap items-center gap-2 mt-1.5 text-xs text-[#A1A1AA]">
                         {entry.tmdb.releaseYear && (
                           <span className="font-mono text-[11px] font-bold px-2 py-0.5 rounded bg-white/[0.06] border border-white/10 text-[#F5F5F5]">
                             {entry.tmdb.releaseYear}
                           </span>
                         )}
                         {entry.tmdb.genres?.length > 0 && (
-                          <span className="text-white/70">{entry.tmdb.genres.slice(0, 2).join(", ")}</span>
+                          <span className="text-white/70 truncate max-w-[120px]">{entry.tmdb.genres.slice(0, 2).join(", ")}</span>
                         )}
                         {entry.tmdb.runtime > 0 && (
                           <span className="flex items-center gap-1 text-white/60">
@@ -281,8 +343,8 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                         )}
                       </div>
 
-                      {/* Where to Watch */}
-                      <div className="mt-2.5" onClick={(e) => e.stopPropagation()}>
+                      {/* Where to Watch - Fixed min-height container for consistent card height */}
+                      <div className="mt-2 min-h-[36px] flex items-center" onClick={(e) => e.stopPropagation()}>
                         <WhereToWatch
                           tmdbId={entry.tmdb.tmdbId}
                           title={entry.tmdb.title}
@@ -301,30 +363,51 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                 </div>
               </div>
 
-              {/* ── Progress Section ───────────────────────────── */}
-              <div className="p-4 space-y-3 border-t border-white/[0.06] bg-black/20 backdrop-blur-sm">
+              {/* ── Progress Section (Pinned to Bottom via mt-auto) ───────────────────────────── */}
+              <div className="p-4 space-y-3 border-t border-white/[0.06] bg-black/20 backdrop-blur-sm mt-auto">
                 {/* Midnight Cinema shimmering progress bar */}
                 <div className="w-full bg-white/[0.06] border border-white/10 rounded-full h-2 overflow-hidden p-0.5">
                   <div
                     className="h-full progress-shimmer-bar rounded-full transition-all duration-500"
-                    style={{ width: `${Math.min(100, Math.max(3, progressPercent))}%` }}
+                    style={{ width: `${Math.min(100, Math.max(3, sp.percent))}%` }}
                   />
                 </div>
 
-                {/* Progress controls */}
+                {/* Progress controls: Individual Season Episode Counting */}
                 <div className="flex items-center justify-between">
                   <div className="text-sm">
                     {isMovie ? (
                       <span className="text-[#A1A1AA] text-xs font-medium">
-                        {progress?.minutesWatched ?? 0} / {progress?.totalMinutes ?? entry.tmdb.runtime ?? 120} min
+                        {sp.minutesWatched} / {sp.totalMinutes} min
                       </span>
                     ) : (
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        {sp.totalSeasons > 1 ? (
+                          <div className="relative inline-flex items-center" onClick={(e) => e.stopPropagation()}>
+                            <select
+                              value={sp.currentSeason}
+                              onChange={(e) => handleSeasonChange(entry, parseInt(e.target.value, 10))}
+                              className="bg-white/[0.08] hover:bg-white/[0.14] text-white font-semibold text-xs py-0.5 pl-2 pr-5 rounded-md border border-white/10 cursor-pointer focus:outline-none appearance-none transition-colors"
+                              title="Switch season"
+                            >
+                              {sp.seasonsList.map((s) => (
+                                <option key={s.seasonNumber} value={s.seasonNumber} className="bg-[#15151C] text-white">
+                                  S{s.seasonNumber}
+                                </option>
+                              ))}
+                            </select>
+                            <ChevronDown className="w-3 h-3 text-white/50 absolute right-1.5 pointer-events-none" />
+                          </div>
+                        ) : (
+                          <span className="font-semibold text-white text-xs">
+                            S{sp.currentSeason}:
+                          </span>
+                        )}
                         <span className="font-semibold text-white text-xs">
-                          S{progress?.currentSeason || 1}:E{progress?.currentEpisode || 1}
+                          E{sp.currentEpisode}
                         </span>
                         <span className="text-[11px] text-[#A1A1AA]">
-                          ({watchedEpisodesCount} of {totalEpisodesCount} eps)
+                          ({sp.currentEpisode} of {sp.seasonEpisodeCount} eps)
                         </span>
                       </div>
                     )}
@@ -343,7 +426,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                       <Minus className="w-3.5 h-3.5" />
                     </button>
                     <span className="text-xs font-bold text-[#E50914] min-w-[2.75rem] text-center font-mono">
-                      {progressPercent}%
+                      {sp.percent}%
                     </span>
                     <button
                       onClick={() =>

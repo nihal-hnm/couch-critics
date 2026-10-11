@@ -352,15 +352,28 @@ export default function MediaDetailModal({
       });
     }
 
-    const currentEpCount = watchedArray.length;
+    const seasonData = seasonsList.find((s) => s.seasonNumber === seasonNum);
+    const seasonEpCount = seasonData?.episodeCount || 10;
+
+    let activeSeasonEp = episodeNum;
+    if (isCurrentlyWatched) {
+      let highest = 0;
+      for (let ep = 1; ep <= seasonEpCount; ep++) {
+        if (newWatched.has(`S${seasonNum}E${ep}`)) {
+          highest = ep;
+        }
+      }
+      activeSeasonEp = Math.max(1, highest);
+    }
+
     const updatedProgress: WatchProgress = {
       ...(entry.progress ?? {}),
       currentSeason: seasonNum,
-      currentEpisode: currentEpCount,
-      totalEpisodes: entry.progress?.totalEpisodes || entry.tmdb.totalEpisodes || 10,
+      currentEpisode: activeSeasonEp,
+      totalEpisodes: seasonEpCount,
       watchedEpisodes: watchedArray,
       episodeHistory: newHistory.slice(0, 50),
-      minutesWatched: currentEpCount * (entry.tmdb.runtime || 45),
+      minutesWatched: watchedArray.length * (entry.tmdb.runtime || 45),
     };
 
     updateProgress(entry.id, updatedProgress);
@@ -384,7 +397,8 @@ export default function MediaDetailModal({
   function handleMarkAllSeason(seasonNum: number) {
     if (!entry) return;
     const seasonData = seasonsList.find((s) => s.seasonNumber === seasonNum);
-    const eps = getEpisodesForSeason(seasonNum, seasonData?.episodeCount || 10);
+    const seasonEpCount = seasonData?.episodeCount || 10;
+    const eps = getEpisodesForSeason(seasonNum, seasonEpCount);
     const newWatched = new Set(entry.progress?.watchedEpisodes ?? []);
 
     eps.forEach((ep) => {
@@ -395,7 +409,8 @@ export default function MediaDetailModal({
     updateProgress(entry.id, {
       ...(entry.progress ?? {}),
       currentSeason: seasonNum,
-      currentEpisode: watchedArray.length,
+      currentEpisode: seasonEpCount,
+      totalEpisodes: seasonEpCount,
       watchedEpisodes: watchedArray,
       minutesWatched: watchedArray.length * (entry.tmdb.runtime || 45),
     });
@@ -409,7 +424,8 @@ export default function MediaDetailModal({
   function handleUnmarkAllSeason(seasonNum: number) {
     if (!entry) return;
     const seasonData = seasonsList.find((s) => s.seasonNumber === seasonNum);
-    const eps = getEpisodesForSeason(seasonNum, seasonData?.episodeCount || 10);
+    const seasonEpCount = seasonData?.episodeCount || 10;
+    const eps = getEpisodesForSeason(seasonNum, seasonEpCount);
     const newWatched = new Set(entry.progress?.watchedEpisodes ?? []);
 
     eps.forEach((ep) => {
@@ -420,7 +436,8 @@ export default function MediaDetailModal({
     updateProgress(entry.id, {
       ...(entry.progress ?? {}),
       currentSeason: seasonNum,
-      currentEpisode: watchedArray.length,
+      currentEpisode: 1,
+      totalEpisodes: seasonEpCount,
       watchedEpisodes: watchedArray,
       minutesWatched: watchedArray.length * (entry.tmdb.runtime || 45),
     });
