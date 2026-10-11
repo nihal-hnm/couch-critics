@@ -415,8 +415,8 @@ export default function Dashboard() {
         {/* Drawer Header */}
         <div className="p-5 border-b border-[#292932] flex items-center justify-between bg-black/40">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-[#E50914]/15 border border-[#E50914]/30">
-              <FilmIcon className="w-5 h-5 text-[#E50914]" />
+            <div className="w-8 h-8 rounded-lg overflow-hidden border border-white/10 shrink-0 bg-[#07070A] flex items-center justify-center">
+              <img src="/icon.png" alt="Couch Critics" className="w-full h-full object-cover" />
             </div>
             <div>
               <h2 className="text-base font-bold text-white font-mono uppercase tracking-wider">
@@ -872,8 +872,8 @@ export default function Dashboard() {
                 onClick={() => setActiveNav("watching")}
                 className="flex items-center gap-2.5 cursor-pointer group px-3 py-1.5 rounded-xl bg-[#15151C] border border-[#292932] shadow-sm backdrop-blur-md transition-all hover:border-[#3D3D4C]"
               >
-                <div className="p-1.5 rounded-lg bg-[#E50914]/15 border border-[#E50914]/30">
-                  <FilmIcon className="w-5 h-5 text-[#E50914]" />
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden border border-white/10 shrink-0 bg-[#07070A] flex items-center justify-center">
+                  <img src="/icon.png" alt="Couch Critics" className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <h1 className="text-sm sm:text-base font-bold text-[#F5F5F5] tracking-wider uppercase font-mono group-hover:text-[#E50914] transition-colors leading-tight">

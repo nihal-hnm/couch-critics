@@ -120,8 +120,10 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       <div className="auth-modal-content">
         {/* Header */}
         <div className="auth-modal-header">
-          <div className="auth-modal-logo">
-            <Film size={28} />
+          <div className="auth-modal-logo flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl overflow-hidden shadow-md shadow-[#E50914]/25 border border-white/10 shrink-0 bg-[#07070A] flex items-center justify-center">
+              <img src="/icon.png" alt="Couch Critics" className="w-full h-full object-cover" />
+            </div>
             <span>COUCH CRITICS</span>
           </div>
           <button

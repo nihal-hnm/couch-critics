@@ -159,8 +159,8 @@ export default function LoginPage() {
           className="flex items-center gap-3 group transition-transform active:scale-95"
           aria-label="Couch Critics Home"
         >
-          <div className="p-2.5 rounded-xl bg-[#15151C] border border-[#292932] shadow-lg shadow-black/40 group-hover:border-[#E50914]/40 transition-colors">
-            <Film className="w-6 h-6 text-[#E50914] group-hover:text-[#FF3B3B] transition-colors" />
+          <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-[#E50914]/25 border border-white/10 shrink-0 bg-[#07070A] flex items-center justify-center group-hover:border-[#E50914]/40 group-hover:scale-105 transition-all">
+            <img src="/icon.png" alt="Couch Critics" className="w-full h-full object-cover" />
           </div>
           <div className="flex flex-col">
             <span className="text-xl sm:text-2xl font-black tracking-widest font-mono uppercase bg-gradient-to-r from-[#F5F5F5] via-white to-[#A1A1AA] bg-clip-text text-transparent drop-shadow-sm">
