@@ -347,13 +347,13 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
                       <div className="space-y-1 mt-3">
                         <div className="flex justify-between text-[11px] text-stone-500">
                           <span>Progress</span>
-                          <span className="font-semibold text-stone-300">
+                          <span className="font-semibold text-emerald-400">
                             {show.percentComplete}%
                           </span>
                         </div>
-                        <div className="w-full bg-stone-800 rounded-full h-1.5 overflow-hidden">
+                        <div className="w-full bg-stone-800 rounded-full h-2 overflow-hidden border border-stone-700/60">
                           <div
-                            className="h-full bg-gradient-to-r from-purple-500 to-[#5c0f92] rounded-full"
+                            className="h-full bg-gradient-to-r from-emerald-500 via-green-400 to-emerald-400 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.4)]"
                             style={{ width: `${show.percentComplete}%` }}
                           />
                         </div>

@@ -20,7 +20,7 @@
 
 "use client";
 
-import { useState, useMemo, useRef, useEffect, useCallback } from "react";
+import { useState, useMemo, useRef, useEffect, useCallback, type ReactNode } from "react";
 import {
   Plus,
   Film as FilmIcon,
@@ -1563,7 +1563,7 @@ function TopReturnBanner({
 }: {
   title: string;
   subtitle: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   watchingCount: number;
   onBackToWatching: () => void;
   onOpenMenu: () => void;
@@ -1607,6 +1607,7 @@ function PosterCard({
   showShelfBadge = false,
   onClick,
 }: {
+  key?: string | number;
   entry: MovieEntry;
   index: number;
   showRating?: boolean;
@@ -1655,6 +1656,25 @@ function PosterCard({
           </div>
         )}
 
+        {/* TV Series Episode Progress Bar */}
+        {isTV && entry.shelf === "watching" && entry.progress && (
+          <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-stone-950/80 z-10 border-t border-black/40">
+            <div
+              className="h-full bg-gradient-to-r from-emerald-500 to-green-400 shadow-[0_0_8px_rgba(16,185,129,0.6)]"
+              style={{
+                width: `${Math.min(
+                  100,
+                  Math.round(
+                    ((entry.progress.watchedEpisodes?.length || entry.progress.currentEpisode || 0) /
+                      (entry.progress.totalEpisodes || entry.tmdb.totalEpisodes || 10)) *
+                      100
+                  )
+                )}%`,
+              }}
+            />
+          </div>
+        )}
+
         {/* Hover overlay with click prompt */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-2">
           <span className="text-[10px] text-purple-300 font-medium">Click for details</span>
@@ -1680,7 +1700,7 @@ function PosterCard({
               {entry.review.rating}
             </span>
           ) : isTV && entry.progress?.currentEpisode ? (
-            <span className="text-[10px] text-purple-500/80 font-mono">
+            <span className="text-[10px] text-emerald-400 font-mono font-semibold">
               Ep {entry.progress.currentEpisode}
             </span>
           ) : null}
@@ -1697,7 +1717,7 @@ function EmptySection({
   subtitle,
   onAdd,
 }: {
-  icon: React.ReactNode;
+  icon: ReactNode;
   title: string;
   subtitle: string;
   onAdd: () => void;

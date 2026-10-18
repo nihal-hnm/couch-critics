@@ -728,7 +728,7 @@ export default function MediaDetailModal({
                 </div>
                 <div className="flex items-center gap-5 shrink-0">
                   <div className="text-right">
-                    <p className="text-xl font-black text-purple-400">
+                    <p className="text-xl font-black text-emerald-400">
                       {watchedEpisodeCodes.size} <span className="text-stone-400 text-sm font-normal">/ {displayTotalEpisodes}</span>
                     </p>
                     <p className="text-[10px] text-stone-400 uppercase tracking-wider font-semibold">
@@ -758,16 +758,16 @@ export default function MediaDetailModal({
               <div className="space-y-1.5 bg-stone-900/60 p-3 rounded-xl border border-stone-800/80">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-stone-300 font-medium flex items-center gap-1.5">
-                    <Tv className="w-3.5 h-3.5 text-purple-400" />
+                    <Tv className="w-3.5 h-3.5 text-emerald-400" />
                     Overall Series Completion
                   </span>
-                  <span className="font-bold text-purple-400">
+                  <span className="font-bold text-emerald-400">
                     {Math.round((watchedEpisodeCodes.size / (displayTotalEpisodes || 1)) * 100)}%
                   </span>
                 </div>
-                <div className="w-full bg-stone-950 rounded-full h-2.5 overflow-hidden border border-stone-800/80">
+                <div className="w-full bg-stone-900/90 rounded-full h-3 overflow-hidden border border-stone-700/60">
                   <div
-                    className="h-full bg-gradient-to-r from-purple-500 via-[#5c0f92] to-purple-400 transition-all duration-300"
+                    className="h-full bg-gradient-to-r from-emerald-500 via-green-400 to-emerald-400 transition-all duration-300 shadow-[0_0_12px_rgba(16,185,129,0.5)] rounded-full"
                     style={{
                       width: `${Math.min(100, Math.round((watchedEpisodeCodes.size / (displayTotalEpisodes || 1)) * 100))}%`,
                     }}
@@ -954,7 +954,7 @@ export default function MediaDetailModal({
                                   ({seasonEps.length} episodes)
                                 </span>
                               </div>
-                              <p className="text-xs text-purple-400/90 mt-0.5 font-medium">
+                              <p className="text-xs text-emerald-400/90 mt-0.5 font-medium">
                                 {watchedInSeason} / {seasonEps.length} watched ({seasonPercent}%)
                               </p>
                             </div>
@@ -968,7 +968,7 @@ export default function MediaDetailModal({
                             <button
                               type="button"
                               onClick={() => handleMarkAllSeason(seasonNumber)}
-                              className="text-xs text-purple-300 hover:text-purple-100 flex items-center gap-1.5 bg-purple-500/15 hover:bg-purple-500/25 px-2.5 py-1 rounded-lg border border-purple-500/30 transition-colors font-medium"
+                              className="text-xs text-emerald-300 hover:text-emerald-100 flex items-center gap-1.5 bg-emerald-500/15 hover:bg-emerald-500/25 px-2.5 py-1 rounded-lg border border-emerald-500/30 transition-colors font-medium"
                               title={`Mark all episodes in ${season.name} as watched`}
                             >
                               <Check className="w-3.5 h-3.5" />
@@ -987,9 +987,9 @@ export default function MediaDetailModal({
                         </div>
 
                         {/* Season Mini Progress Bar */}
-                        <div className="w-full bg-stone-950 h-1 overflow-hidden">
+                        <div className="w-full bg-stone-900/90 h-2 overflow-hidden border-y border-stone-800/80">
                           <div
-                            className="h-full bg-gradient-to-r from-purple-500 to-[#5c0f92] transition-all duration-300"
+                            className="h-full bg-gradient-to-r from-emerald-500 via-green-400 to-emerald-400 transition-all duration-300 shadow-[0_0_8px_rgba(16,185,129,0.4)]"
                             style={{ width: `${seasonPercent}%` }}
                           />
                         </div>
@@ -1019,7 +1019,7 @@ export default function MediaDetailModal({
                                     }
                                     className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer ${
                                       isWatched
-                                        ? "bg-purple-500/10 border-purple-500/30 text-white"
+                                        ? "bg-emerald-950/20 border-emerald-500/30 text-white"
                                         : "bg-stone-900/60 border-stone-800/80 text-stone-400 hover:border-stone-700 hover:bg-stone-900"
                                     }`}
                                   >
@@ -1028,8 +1028,8 @@ export default function MediaDetailModal({
                                         type="button"
                                         className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 transition-all ${
                                           isWatched
-                                            ? "bg-[#5c0f92] text-white font-bold"
-                                            : "border border-stone-700 hover:border-purple-400"
+                                            ? "bg-emerald-600 text-white font-bold"
+                                            : "border border-stone-700 hover:border-emerald-400"
                                         }`}
                                       >
                                         {isWatched ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : null}
@@ -1040,7 +1040,7 @@ export default function MediaDetailModal({
                                             isWatched ? "text-white" : "text-stone-300"
                                           }`}
                                         >
-                                          <span className="text-purple-400 font-mono text-xs font-bold mr-2">
+                                          <span className="text-emerald-400 font-mono text-xs font-bold mr-2">
                                             E{ep.episodeNumber}
                                           </span>
                                           {ep.title}

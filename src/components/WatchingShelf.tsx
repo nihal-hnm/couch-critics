@@ -438,10 +438,14 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
 
               {/* ── Progress Section ───────────────────────────── */}
               <div className="p-4 space-y-3 bg-[#141210]">
-                {/* Warm purple progress bar */}
-                <div className="w-full bg-stone-800/80 rounded-full h-1.5 overflow-hidden">
+                {/* Progress bar */}
+                <div className="w-full bg-stone-800/90 rounded-full h-2 overflow-hidden border border-stone-700/50">
                   <div
-                    className="h-full bg-gradient-to-r from-purple-500 to-[#5c0f92] rounded-full transition-all duration-500"
+                    className={`h-full rounded-full transition-all duration-500 ${
+                      !isMovie
+                        ? "bg-gradient-to-r from-emerald-500 via-green-400 to-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
+                        : "bg-gradient-to-r from-purple-500 to-purple-400"
+                    }`}
                     style={{ width: `${Math.min(100, progressPercent)}%` }}
                   />
                 </div>
@@ -477,7 +481,11 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                     >
                       <Minus className="w-3.5 h-3.5" />
                     </button>
-                    <span className="text-sm font-semibold text-purple-400 min-w-[3rem] text-center">
+                    <span
+                      className={`text-sm font-semibold min-w-[3rem] text-center ${
+                        !isMovie ? "text-emerald-400" : "text-purple-400"
+                      }`}
+                    >
                       {progressPercent}%
                     </span>
                     <button
@@ -637,7 +645,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                                   <button
                                     type="button"
                                     onClick={() => handleSelectAllSeason(entry, sNum, epCount)}
-                                    className="px-2 py-0.5 rounded text-[10px] font-medium bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/25 transition-colors"
+                                    className="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/25 transition-colors"
                                   >
                                     Select All
                                   </button>
@@ -649,6 +657,16 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                                     Unselect All
                                   </button>
                                 </div>
+                              </div>
+
+                              {/* Season Episode Progress Bar */}
+                              <div className="w-full bg-stone-900 rounded-full h-1.5 overflow-hidden border border-stone-800/80 my-1">
+                                <div
+                                  className="h-full bg-gradient-to-r from-emerald-500 to-green-400 rounded-full transition-all duration-300 shadow-[0_0_8px_rgba(16,185,129,0.4)]"
+                                  style={{
+                                    width: `${epCount ? Math.round((watchedInSeason / epCount) * 100) : 0}%`,
+                                  }}
+                                />
                               </div>
 
                               {/* Episode Checklist Grid */}
@@ -665,13 +683,13 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                                       onClick={() => handleToggleEpisode(entry, sNum, eNum)}
                                       className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium text-left border transition-all ${
                                         isWatched
-                                          ? "bg-purple-500/20 text-purple-200 border-purple-500/30"
+                                          ? "bg-emerald-500/15 text-emerald-200 border-emerald-500/30"
                                           : "bg-stone-900 text-stone-400 border-stone-800 hover:border-stone-700"
                                       }`}
                                     >
                                       <div
                                         className={`w-3.5 h-3.5 rounded flex items-center justify-center shrink-0 ${
-                                          isWatched ? "bg-[#5c0f92] text-white" : "border border-stone-600"
+                                          isWatched ? "bg-emerald-600 text-white" : "border border-stone-600"
                                         }`}
                                       >
                                         {isWatched && <Check className="w-2.5 h-2.5 stroke-[3]" />}
