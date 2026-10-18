@@ -77,6 +77,14 @@ export default function MediaDetailModal({
   const [loadingSeasons, setLoadingSeasons] = useState<Record<number, boolean>>({});
   const [collapsedSeasons, setCollapsedSeasons] = useState<Record<number, boolean>>({});
   const [episodeFilter, setEpisodeFilter] = useState<"all" | "watched" | "unwatched">("all");
+  const [expandedOverviewCodes, setExpandedOverviewCodes] = useState<Record<string, boolean>>({});
+
+  function toggleOverview(epCode: string) {
+    setExpandedOverviewCodes((prev) => ({
+      ...prev,
+      [epCode]: !prev[epCode],
+    }));
+  }
 
   // Review editing state
   const [rating, setRating] = useState<number>(entry?.review?.rating ?? 8);
@@ -103,13 +111,35 @@ export default function MediaDetailModal({
     if (!entry || entry.tmdb.mediaType !== "tv") return;
 
     const catalog = getCachedTVSeasons(entry.tmdb.tmdbId);
+
+    // Check if entry.tmdb.seasons already has detailed episodes with real names
+    const entryHasRichEpisodes =
+      entry.tmdb.seasons &&
+      entry.tmdb.seasons.some(
+        (s) =>
+          s.episodes &&
+          s.episodes.length > 0 &&
+          s.episodes.some((e) => e.title && !e.title.toLowerCase().startsWith("episode "))
+      );
+
+    const catalogHasRichEpisodes =
+      catalog?.seasons &&
+      catalog.seasons.some(
+        (s) =>
+          s.episodes &&
+          s.episodes.length > 0 &&
+          s.episodes.some((e) => e.title && !e.title.toLowerCase().startsWith("episode "))
+      );
+
     let resolvedSeasons: TMDBSeasonData[] =
-      entry.tmdb.seasons && entry.tmdb.seasons.length > 1
+      entryHasRichEpisodes && entry.tmdb.seasons
         ? entry.tmdb.seasons
-        : catalog?.seasons && catalog.seasons.length > 0
+        : catalogHasRichEpisodes && catalog?.seasons
         ? catalog.seasons
         : entry.tmdb.seasons && entry.tmdb.seasons.length > 0
         ? entry.tmdb.seasons
+        : catalog?.seasons && catalog.seasons.length > 0
+        ? catalog.seasons
         : [];
 
     function populateSeasons(seasons: TMDBSeasonData[]) {
@@ -118,7 +148,17 @@ export default function MediaDetailModal({
       // Initialize immediate fallback or existing data for each season
       const initialMap: Record<number, EpisodeItem[]> = {};
       seasons.forEach((s) => {
-        if (s.episodes && s.episodes.length > 0) {
+        const catalogSeason = catalog?.seasons.find((cs) => cs.seasonNumber === s.seasonNumber);
+        const hasRichEpisodes =
+          s.episodes &&
+          s.episodes.length > 0 &&
+          s.episodes.some((e) => e.title && !e.title.toLowerCase().startsWith("episode "));
+
+        if (hasRichEpisodes && s.episodes) {
+          initialMap[s.seasonNumber] = s.episodes;
+        } else if (catalogSeason?.episodes && catalogSeason.episodes.length > 0) {
+          initialMap[s.seasonNumber] = catalogSeason.episodes;
+        } else if (s.episodes && s.episodes.length > 0) {
           initialMap[s.seasonNumber] = s.episodes;
         } else {
           const count = s.episodeCount || 10;
@@ -132,10 +172,10 @@ export default function MediaDetailModal({
       });
       setSeasonsEpisodesMap(initialMap);
 
-      // Fetch detailed episode data for all seasons in background from TMDB
+      // Fetch detailed episode data for all seasons in background via TMDB/TVmaze
       seasons.forEach((s) => {
         setLoadingSeasons((prev) => ({ ...prev, [s.seasonNumber]: true }));
-        fetchSeasonEpisodes(entry!.tmdb.tmdbId, s.seasonNumber)
+        fetchSeasonEpisodes(entry!.tmdb.tmdbId, s.seasonNumber, entry!.tmdb.title)
           .then((eps) => {
             if (eps && eps.length > 0) {
               setSeasonsEpisodesMap((prev) => ({
@@ -155,7 +195,7 @@ export default function MediaDetailModal({
 
     if (resolvedSeasons.length > 0) {
       populateSeasons(resolvedSeasons);
-      if (catalog && (!entry.tmdb.seasons || entry.tmdb.seasons.length <= 1)) {
+      if (catalog && (!entryHasRichEpisodes || !entry.tmdb.seasons || entry.tmdb.seasons.length <= 1)) {
         enrichEntrySeasons(
           entry.id,
           catalog.seasons,
@@ -312,15 +352,28 @@ export default function MediaDetailModal({
       });
     }
 
-    const currentEpCount = watchedArray.length;
+    const seasonData = seasonsList.find((s) => s.seasonNumber === seasonNum);
+    const seasonEpCount = seasonData?.episodeCount || 10;
+
+    let activeSeasonEp = episodeNum;
+    if (isCurrentlyWatched) {
+      let highest = 0;
+      for (let ep = 1; ep <= seasonEpCount; ep++) {
+        if (newWatched.has(`S${seasonNum}E${ep}`)) {
+          highest = ep;
+        }
+      }
+      activeSeasonEp = Math.max(1, highest);
+    }
+
     const updatedProgress: WatchProgress = {
       ...(entry.progress ?? {}),
       currentSeason: seasonNum,
-      currentEpisode: currentEpCount,
-      totalEpisodes: entry.progress?.totalEpisodes || entry.tmdb.totalEpisodes || 10,
+      currentEpisode: activeSeasonEp,
+      totalEpisodes: seasonEpCount,
       watchedEpisodes: watchedArray,
       episodeHistory: newHistory.slice(0, 50),
-      minutesWatched: currentEpCount * (entry.tmdb.runtime || 45),
+      minutesWatched: watchedArray.length * (entry.tmdb.runtime || 45),
     };
 
     updateProgress(entry.id, updatedProgress);
@@ -344,7 +397,8 @@ export default function MediaDetailModal({
   function handleMarkAllSeason(seasonNum: number) {
     if (!entry) return;
     const seasonData = seasonsList.find((s) => s.seasonNumber === seasonNum);
-    const eps = getEpisodesForSeason(seasonNum, seasonData?.episodeCount || 10);
+    const seasonEpCount = seasonData?.episodeCount || 10;
+    const eps = getEpisodesForSeason(seasonNum, seasonEpCount);
     const newWatched = new Set(entry.progress?.watchedEpisodes ?? []);
 
     eps.forEach((ep) => {
@@ -355,7 +409,8 @@ export default function MediaDetailModal({
     updateProgress(entry.id, {
       ...(entry.progress ?? {}),
       currentSeason: seasonNum,
-      currentEpisode: watchedArray.length,
+      currentEpisode: seasonEpCount,
+      totalEpisodes: seasonEpCount,
       watchedEpisodes: watchedArray,
       minutesWatched: watchedArray.length * (entry.tmdb.runtime || 45),
     });
@@ -369,7 +424,8 @@ export default function MediaDetailModal({
   function handleUnmarkAllSeason(seasonNum: number) {
     if (!entry) return;
     const seasonData = seasonsList.find((s) => s.seasonNumber === seasonNum);
-    const eps = getEpisodesForSeason(seasonNum, seasonData?.episodeCount || 10);
+    const seasonEpCount = seasonData?.episodeCount || 10;
+    const eps = getEpisodesForSeason(seasonNum, seasonEpCount);
     const newWatched = new Set(entry.progress?.watchedEpisodes ?? []);
 
     eps.forEach((ep) => {
@@ -380,7 +436,8 @@ export default function MediaDetailModal({
     updateProgress(entry.id, {
       ...(entry.progress ?? {}),
       currentSeason: seasonNum,
-      currentEpisode: watchedArray.length,
+      currentEpisode: 1,
+      totalEpisodes: seasonEpCount,
       watchedEpisodes: watchedArray,
       minutesWatched: watchedArray.length * (entry.tmdb.runtime || 45),
     });
@@ -525,38 +582,37 @@ export default function MediaDetailModal({
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-4xl max-h-[90vh] bg-[#12100e] border border-purple-500/20 rounded-2xl overflow-hidden shadow-2xl flex flex-col z-10"
+        className="relative w-full max-w-4xl max-h-[90vh] bg-[#15151C] border border-[#292932] rounded-2xl overflow-hidden shadow-2xl flex flex-col z-10"
         onClick={(e) => e.stopPropagation()}
       >
         {/* ── Banner Header ─────────────────────────────────────── */}
-        <div className="relative h-48 sm:h-64 shrink-0 overflow-hidden">
+        <div className="relative h-48 sm:h-64 shrink-0 overflow-hidden keep-white">
           {entry.tmdb.backdropUrl || entry.tmdb.posterUrl ? (
             <img
               src={getOptimizedImageUrl(entry.tmdb.backdropUrl || entry.tmdb.posterUrl || "")}
               alt={entry.tmdb.title}
               referrerPolicy="no-referrer"
-              crossOrigin="anonymous"
-              className="w-full h-full object-cover object-center filter brightness-50"
+              className="w-full h-full object-cover object-center filter brightness-60"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-r from-stone-900 to-purple-950/40" />
+            <div className="w-full h-full bg-[#15151C]" />
           )}
 
-          <div className="absolute inset-0 bg-gradient-to-t from-[#12100e] via-[#12100e]/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/25 pointer-events-none" />
 
           {/* Close button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 rounded-full bg-black/60 text-stone-300 hover:text-white hover:bg-black/80 transition-colors backdrop-blur-sm border border-white/10"
+            className="absolute top-4 right-4 p-2 rounded-full bg-black/60 text-stone-200 hover:text-white hover:bg-black/80 transition-colors backdrop-blur-md border border-white/10 cursor-pointer z-10"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
           </button>
 
           {/* Media Info Overlay */}
-          <div className="absolute bottom-4 left-4 right-4 flex items-end gap-4 sm:gap-6">
+          <div className="absolute bottom-4 left-4 right-4 flex items-end gap-4 sm:gap-6 keep-white z-10">
             {entry.tmdb.posterUrl && (
-              <div className="w-24 sm:w-32 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-white/10 shrink-0 hidden xs:block bg-stone-900">
+              <div className="w-24 sm:w-32 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-white/10 shrink-0 hidden xs:block bg-[#0B0B0F]">
                 <MovieImage
                   src={entry.tmdb.posterUrl}
                   alt={entry.tmdb.title}
@@ -566,33 +622,33 @@ export default function MediaDetailModal({
                 />
               </div>
             )}
-            <div className="flex-1 min-w-0">
-              <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-purple-500/20 text-purple-300 border border-purple-500/30 flex items-center gap-1">
-                  {isTV ? <Tv className="w-3 h-3" /> : <Film className="w-3 h-3" />}
+            <div className="flex-1 min-w-0 keep-white">
+              <div className="flex flex-wrap items-center gap-2 mb-1.5 keep-white">
+                <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-white/10 text-white border border-white/15 flex items-center gap-1 backdrop-blur-sm">
+                  {isTV ? <Tv className="w-3 h-3 text-[#E50914]" /> : <Film className="w-3 h-3 text-[#E50914]" />}
                   {isTV ? "TV Series" : "Movie"}
                 </span>
-                <span className="text-xs text-stone-300">{entry.tmdb.releaseYear}</span>
+                <span className="text-xs text-stone-300 font-medium">{entry.tmdb.releaseYear}</span>
                 {entry.tmdb.runtime > 0 && (
-                  <span className="text-xs text-stone-400 flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
+                  <span className="text-xs text-stone-300 flex items-center gap-1">
+                    <Clock className="w-3 h-3 text-stone-400" />
                     {isTV ? `~${entry.tmdb.runtime}m / ep` : `${entry.tmdb.runtime}m`}
                   </span>
                 )}
                 {entry.review?.rating && (
-                  <span className="flex items-center gap-1 text-xs text-purple-400 font-semibold bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">
-                    <Star className="w-3 h-3 fill-purple-400" />
+                  <span className="flex items-center gap-1 text-xs text-[#F5C542] font-semibold bg-black/40 px-2 py-0.5 rounded border border-[#F5C542]/30 backdrop-blur-sm">
+                    <Star className="w-3 h-3 fill-[#F5C542]" />
                     {entry.review.rating}/10
                   </span>
                 )}
               </div>
-              <h2 className="text-xl sm:text-3xl font-bold text-white truncate leading-tight">
+              <h2 className="text-xl sm:text-3xl font-extrabold text-white truncate leading-tight drop-shadow-md">
                 {entry.tmdb.title}
               </h2>
               {entry.tmdb.director && (
-                <p className="text-xs text-stone-400 mt-0.5">
+                <p className="text-xs text-stone-300 mt-1">
                   {isTV ? "Created by" : "Directed by"}{" "}
-                  <span className="text-stone-300 font-medium">{entry.tmdb.director}</span>
+                  <span className="text-white font-semibold">{entry.tmdb.director}</span>
                 </p>
               )}
             </div>
@@ -600,16 +656,17 @@ export default function MediaDetailModal({
         </div>
 
         {/* ── Shelf Controls & Navigation Bar ───────────────────── */}
-        <div className="px-4 sm:px-6 py-3 border-b border-stone-800 bg-[#161311] flex flex-wrap items-center justify-between gap-3 shrink-0">
+        <div className="px-4 sm:px-6 py-3 border-b border-[#292932] bg-[#15151C] flex flex-wrap items-center justify-between gap-3 shrink-0">
           {/* Shelf Switcher & Unwatch button */}
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 bg-stone-900/80 p-1 rounded-xl border border-stone-800">
+            <span className="text-xs text-stone-400 font-medium hidden sm:inline">Shelf:</span>
+            <div className="flex items-center gap-1 bg-[#0B0B0F] p-1 rounded-xl border border-[#292932]">
               <button
                 onClick={() => handleShelfChange("watching")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   entry.shelf === "watching"
-                    ? "bg-purple-600 text-white shadow-sm"
-                    : "text-stone-400 hover:text-white"
+                    ? "bg-[#E50914] text-white shadow-sm"
+                    : "text-[#A1A1AA] hover:text-white"
                 }`}
               >
                 <Play className="w-3 h-3" />
@@ -617,10 +674,10 @@ export default function MediaDetailModal({
               </button>
               <button
                 onClick={() => handleShelfChange("toWatch")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   entry.shelf === "toWatch"
-                    ? "bg-purple-600 text-white shadow-sm"
-                    : "text-stone-400 hover:text-white"
+                    ? "bg-[#E50914] text-white shadow-sm"
+                    : "text-[#A1A1AA] hover:text-white"
                 }`}
               >
                 <BookmarkPlus className="w-3 h-3" />
@@ -628,36 +685,23 @@ export default function MediaDetailModal({
               </button>
               <button
                 onClick={() => handleShelfChange("watched")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   entry.shelf === "watched"
-                    ? "bg-emerald-600 text-white shadow-sm"
-                    : "text-stone-400 hover:text-white"
+                    ? "bg-white/15 text-white shadow-sm"
+                    : "text-[#A1A1AA] hover:text-white"
                 }`}
               >
-                <CheckCircle2 className="w-3 h-3" />
+                <CheckCircle2 className="w-3 h-3 text-[#F5C542]" />
                 Watched
               </button>
             </div>
-
-            {/* Move to To-Watch Action Button for Watching entries */}
-            {entry.shelf === "watching" && (
-              <button
-                type="button"
-                onClick={() => handleShelfChange("toWatch")}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-purple-300 hover:text-purple-100 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 transition-all shadow-sm cursor-pointer"
-                title="Move to To-Watch backlog"
-              >
-                <BookmarkPlus className="w-3.5 h-3.5" />
-                Move to To-Watch
-              </button>
-            )}
 
             {/* Unwatch Action Button */}
             {entry.shelf === "watched" && (
               <button
                 type="button"
                 onClick={() => handleUnwatch("toWatch")}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-purple-300 hover:text-purple-100 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 transition-all shadow-sm cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-[#A1A1AA] hover:text-white bg-white/5 hover:bg-white/10 border border-[#292932] transition-all shadow-sm cursor-pointer"
                 title="Unwatch (Move back to Watchlist/Backlog)"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
@@ -667,14 +711,14 @@ export default function MediaDetailModal({
           </div>
 
           {/* Modal View Tabs */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 bg-[#0B0B0F] p-1 rounded-xl border border-[#292932]">
             {isTV && (
               <button
                 onClick={() => setActiveTab("episodes")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                   activeTab === "episodes"
-                    ? "bg-purple-500/15 text-purple-200 border border-purple-500/30"
-                    : "text-stone-400 hover:text-stone-200"
+                    ? "bg-[#E50914] text-white shadow-sm"
+                    : "text-[#A1A1AA] hover:text-white"
                 }`}
               >
                 <ListVideo className="w-3.5 h-3.5" />
@@ -683,20 +727,20 @@ export default function MediaDetailModal({
             )}
             <button
               onClick={() => setActiveTab("overview")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                 activeTab === "overview"
-                  ? "bg-purple-500/15 text-purple-200 border border-purple-500/30"
-                  : "text-stone-400 hover:text-stone-200"
+                  ? "bg-[#E50914] text-white shadow-sm"
+                  : "text-[#A1A1AA] hover:text-white"
               }`}
             >
               Overview
             </button>
             <button
               onClick={() => setActiveTab("review")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                 activeTab === "review"
-                  ? "bg-purple-500/15 text-purple-200 border border-purple-500/30"
-                  : "text-stone-400 hover:text-stone-200"
+                  ? "bg-[#E50914] text-white shadow-sm"
+                  : "text-[#A1A1AA] hover:text-white"
               }`}
             >
               <Star className="w-3.5 h-3.5" />
@@ -711,14 +755,14 @@ export default function MediaDetailModal({
           {activeTab === "episodes" && isTV && (
             <div className="space-y-6">
               {/* Overall series progress banner */}
-              <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-purple-500/10 via-[#5c0f92]/10 to-transparent border border-purple-500/25 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg shadow-black/40">
+              <div className="p-4 sm:p-5 rounded-2xl bg-[#0B0B0F] border border-[#292932] flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg shadow-black/40">
                 <div>
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-purple-400" />
+                    <Sparkles className="w-4 h-4 text-[#E50914]" />
                     <h4 className="text-base font-bold text-white tracking-tight">
                       All Seasons &amp; Episodes Tracker
                     </h4>
-                    <span className="text-[11px] font-semibold uppercase px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                    <span className="text-[11px] font-semibold uppercase px-2 py-0.5 rounded-full bg-white/5 text-[#A1A1AA] border border-[#292932]">
                       {seasonsList.length} Seasons
                     </span>
                   </div>
@@ -755,7 +799,7 @@ export default function MediaDetailModal({
               />
 
               {/* Overall Series Progress Bar */}
-              <div className="space-y-1.5 bg-stone-900/60 p-3 rounded-xl border border-stone-800/80">
+              <div className="space-y-1.5 bg-[#0B0B0F] p-3 rounded-xl border border-[#292932]">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-stone-300 font-medium flex items-center gap-1.5">
                     <Tv className="w-3.5 h-3.5 text-emerald-400" />
@@ -765,7 +809,7 @@ export default function MediaDetailModal({
                     {Math.round((watchedEpisodeCodes.size / (displayTotalEpisodes || 1)) * 100)}%
                   </span>
                 </div>
-                <div className="w-full bg-stone-900/90 rounded-full h-3 overflow-hidden border border-stone-700/60">
+                <div className="w-full bg-[#15151C] rounded-full h-3 overflow-hidden border border-[#292932]">
                   <div
                     className="h-full bg-gradient-to-r from-emerald-500 via-green-400 to-emerald-400 transition-all duration-300 shadow-[0_0_12px_rgba(16,185,129,0.5)] rounded-full"
                     style={{
@@ -776,16 +820,16 @@ export default function MediaDetailModal({
               </div>
 
               {/* Toolbar: Season Filter / Jump Pills + Global Batch Actions */}
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 bg-stone-950/70 p-3 rounded-xl border border-stone-800/80">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 bg-[#0B0B0F] p-3 rounded-xl border border-[#292932]">
                 {/* Season Quick Jump / Filter Pills */}
                 <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 max-w-full hide-scrollbar">
                   <button
                     type="button"
                     onClick={() => setSelectedSeasonFilter("all")}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                       selectedSeasonFilter === "all"
-                        ? "bg-[#5c0f92] text-white shadow-md shadow-purple-500/20"
-                        : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
+                        ? "bg-[#E50914] text-white shadow-md shadow-black/40"
+                        : "bg-[#15151C] text-[#A1A1AA] hover:text-white border border-[#292932]"
                     }`}
                   >
                     All Seasons ({seasonsList.length})
@@ -802,10 +846,10 @@ export default function MediaDetailModal({
                         key={s.seasonNumber}
                         type="button"
                         onClick={() => setSelectedSeasonFilter(isSelected ? "all" : s.seasonNumber)}
-                        className={`px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all flex items-center gap-1.5 ${
+                        className={`px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
                           isSelected
-                            ? "bg-[#5c0f92] text-white font-bold shadow-md shadow-purple-500/20"
-                            : "bg-stone-900 text-stone-400 hover:text-white border border-stone-800"
+                            ? "bg-[#E50914] text-white font-bold shadow-md shadow-black/40"
+                            : "bg-[#15151C] text-[#A1A1AA] hover:text-white border border-[#292932]"
                         }`}
                         title={`Filter or jump to Season ${s.seasonNumber}`}
                       >
@@ -814,7 +858,7 @@ export default function MediaDetailModal({
                           className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
                             isSelected
                               ? "bg-white/20 text-white"
-                              : "bg-stone-800 text-stone-400"
+                              : "bg-[#0B0B0F] text-[#A1A1AA]"
                           }`}
                         >
                           {seasonWatched}/{seasonEps.length}
@@ -829,7 +873,7 @@ export default function MediaDetailModal({
                   <button
                     type="button"
                     onClick={handleMarkAllSeries}
-                    className="text-xs text-purple-300 hover:text-purple-100 flex items-center gap-1.5 bg-purple-500/15 hover:bg-purple-500/25 px-2.5 py-1.5 rounded-lg border border-purple-500/30 transition-colors font-medium"
+                    className="text-xs text-[#A1A1AA] hover:text-white flex items-center gap-1.5 bg-white/5 hover:bg-white/10 px-2.5 py-1.5 rounded-lg border border-[#292932] transition-colors font-medium cursor-pointer"
                     title="Mark all episodes across all seasons as watched"
                   >
                     <CheckCheck className="w-3.5 h-3.5" />
@@ -838,7 +882,7 @@ export default function MediaDetailModal({
                   <button
                     type="button"
                     onClick={handleUnmarkAllSeries}
-                    className="text-xs text-stone-400 hover:text-stone-200 flex items-center gap-1.5 bg-stone-900 hover:bg-stone-800 px-2.5 py-1.5 rounded-lg border border-stone-800 transition-colors font-medium"
+                    className="text-xs text-[#A1A1AA] hover:text-[#F5F5F5] flex items-center gap-1.5 bg-white/5 hover:bg-white/10 px-2.5 py-1.5 rounded-lg border border-[#292932] transition-colors font-medium cursor-pointer"
                     title="Unmark all episodes in this series"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
@@ -849,7 +893,7 @@ export default function MediaDetailModal({
                     onClick={
                       Object.keys(collapsedSeasons).length > 0 ? handleExpandAll : handleCollapseAll
                     }
-                    className="text-xs text-stone-400 hover:text-stone-200 flex items-center gap-1.5 bg-stone-900 hover:bg-stone-800 px-2.5 py-1.5 rounded-lg border border-stone-800 transition-colors font-medium"
+                    className="text-xs text-[#A1A1AA] hover:text-[#F5F5F5] flex items-center gap-1.5 bg-white/5 hover:bg-white/10 px-2.5 py-1.5 rounded-lg border border-[#292932] transition-colors font-medium cursor-pointer"
                     title="Expand or collapse all season accordions"
                   >
                     <Layers className="w-3.5 h-3.5" />
@@ -861,17 +905,17 @@ export default function MediaDetailModal({
               {/* Episode Filter Bar: All / Watched / Unwatched */}
               <div className="flex items-center justify-between flex-wrap gap-2 text-xs text-stone-400">
                 <span className="font-semibold text-stone-300 flex items-center gap-1.5">
-                  <Filter className="w-3.5 h-3.5 text-purple-400" />
+                  <Filter className="w-3.5 h-3.5 text-[#E50914]" />
                   Showing: {selectedSeasonFilter === "all" ? "All Seasons" : `Season ${selectedSeasonFilter}`}
                 </span>
-                <div className="flex items-center gap-1 bg-stone-900/90 p-1 rounded-xl border border-stone-800">
+                <div className="flex items-center gap-1 bg-[#0B0B0F] p-1 rounded-xl border border-[#292932]">
                   <button
                     type="button"
                     onClick={() => setEpisodeFilter("all")}
-                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                       episodeFilter === "all"
-                        ? "bg-purple-500/20 text-purple-300 font-semibold"
-                        : "text-stone-400 hover:text-white"
+                        ? "bg-[#E50914] text-white font-semibold"
+                        : "text-[#A1A1AA] hover:text-white"
                     }`}
                   >
                     All Episodes
@@ -879,10 +923,10 @@ export default function MediaDetailModal({
                   <button
                     type="button"
                     onClick={() => setEpisodeFilter("watched")}
-                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                       episodeFilter === "watched"
-                        ? "bg-purple-500/20 text-purple-300 font-semibold"
-                        : "text-stone-400 hover:text-white"
+                        ? "bg-[#E50914] text-white font-semibold"
+                        : "text-[#A1A1AA] hover:text-white"
                     }`}
                   >
                     Watched ({watchedEpisodeCodes.size})
@@ -890,10 +934,10 @@ export default function MediaDetailModal({
                   <button
                     type="button"
                     onClick={() => setEpisodeFilter("unwatched")}
-                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                       episodeFilter === "unwatched"
-                        ? "bg-purple-500/20 text-purple-300 font-semibold"
-                        : "text-stone-400 hover:text-white"
+                        ? "bg-[#E50914] text-white font-semibold"
+                        : "text-[#A1A1AA] hover:text-white"
                     }`}
                   >
                     Unwatched ({Math.max(0, displayTotalEpisodes - watchedEpisodeCodes.size)})
@@ -926,23 +970,23 @@ export default function MediaDetailModal({
                       <div
                         key={seasonNumber}
                         id={`season-block-${seasonNumber}`}
-                        className="rounded-2xl border border-stone-800/80 bg-[#151210] overflow-hidden shadow-md transition-all hover:border-stone-700/80"
+                        className="rounded-2xl border border-[#292932] bg-[#0B0B0F] overflow-hidden shadow-md transition-all hover:border-stone-700/80"
                       >
                         {/* Season Header Bar (Click to toggle accordion) */}
                         <div
                           onClick={() => toggleSeasonCollapse(seasonNumber)}
-                          className="p-3.5 sm:p-4 bg-stone-900/60 hover:bg-stone-900/90 transition-colors flex flex-wrap items-center justify-between gap-3 cursor-pointer select-none border-b border-stone-800/60"
+                          className="p-3.5 sm:p-4 bg-[#15151C] hover:bg-[#15151C]/80 transition-colors flex flex-wrap items-center justify-between gap-3 cursor-pointer select-none border-b border-[#292932]"
                         >
                           <div className="flex items-center gap-3">
                             <button
                               type="button"
-                              className="p-1 rounded-lg bg-stone-800/80 text-stone-300 hover:text-white transition-colors"
+                              className="p-1 rounded-lg bg-[#0B0B0F] text-[#A1A1AA] hover:text-white transition-colors"
                               aria-label={isCollapsed ? "Expand season" : "Collapse season"}
                             >
                               {isCollapsed ? (
-                                <ChevronRight className="w-4 h-4 text-stone-400" />
+                                <ChevronRight className="w-4 h-4 text-[#A1A1AA]" />
                               ) : (
-                                <ChevronDown className="w-4 h-4 text-purple-400" />
+                                <ChevronDown className="w-4 h-4 text-[#E50914]" />
                               )}
                             </button>
                             <div>
@@ -968,7 +1012,7 @@ export default function MediaDetailModal({
                             <button
                               type="button"
                               onClick={() => handleMarkAllSeason(seasonNumber)}
-                              className="text-xs text-emerald-300 hover:text-emerald-100 flex items-center gap-1.5 bg-emerald-500/15 hover:bg-emerald-500/25 px-2.5 py-1 rounded-lg border border-emerald-500/30 transition-colors font-medium"
+                              className="text-xs text-emerald-400 hover:text-white flex items-center gap-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 px-2.5 py-1 rounded-lg border border-emerald-500/30 transition-colors font-medium cursor-pointer"
                               title={`Mark all episodes in ${season.name} as watched`}
                             >
                               <Check className="w-3.5 h-3.5" />
@@ -977,7 +1021,7 @@ export default function MediaDetailModal({
                             <button
                               type="button"
                               onClick={() => handleUnmarkAllSeason(seasonNumber)}
-                              className="text-xs text-stone-400 hover:text-stone-200 flex items-center gap-1.5 bg-stone-950 hover:bg-stone-800 px-2.5 py-1 rounded-lg border border-stone-800 transition-colors font-medium"
+                              className="text-xs text-[#A1A1AA] hover:text-[#F5F5F5] flex items-center gap-1.5 bg-white/5 hover:bg-white/10 px-2.5 py-1 rounded-lg border border-[#292932] transition-colors font-medium cursor-pointer"
                               title={`Unmark all episodes in ${season.name}`}
                             >
                               <RotateCcw className="w-3.5 h-3.5" />
@@ -987,7 +1031,7 @@ export default function MediaDetailModal({
                         </div>
 
                         {/* Season Mini Progress Bar */}
-                        <div className="w-full bg-stone-900/90 h-2 overflow-hidden border-y border-stone-800/80">
+                        <div className="w-full bg-[#15151C] h-2 overflow-hidden border-y border-[#292932]">
                           <div
                             className="h-full bg-gradient-to-r from-emerald-500 via-green-400 to-emerald-400 transition-all duration-300 shadow-[0_0_8px_rgba(16,185,129,0.4)]"
                             style={{ width: `${seasonPercent}%` }}
@@ -1010,68 +1054,115 @@ export default function MediaDetailModal({
                                 const isWatched = watchedEpisodeCodes.has(
                                   `S${seasonNumber}E${ep.episodeNumber}`
                                 );
+                                const epCode = `S${seasonNumber}E${ep.episodeNumber}`;
+                                const isOverviewOpen = !!expandedOverviewCodes[epCode];
 
                                 return (
                                   <div
                                     key={ep.episodeNumber}
-                                    onClick={() =>
-                                      handleToggleEpisode(seasonNumber, ep.episodeNumber, ep.title)
-                                    }
-                                    className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer ${
+                                    className={`p-3 sm:p-3.5 rounded-xl border transition-all ${
                                       isWatched
                                         ? "bg-emerald-950/20 border-emerald-500/30 text-white"
-                                        : "bg-stone-900/60 border-stone-800/80 text-stone-400 hover:border-stone-700 hover:bg-stone-900"
+                                        : "bg-[#15151C]/60 border-[#292932] text-[#A1A1AA] hover:border-stone-700 hover:bg-[#15151C]"
                                     }`}
                                   >
-                                    <div className="flex items-center gap-3 min-w-0">
-                                      <button
-                                        type="button"
-                                        className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 transition-all ${
-                                          isWatched
-                                            ? "bg-emerald-600 text-white font-bold"
-                                            : "border border-stone-700 hover:border-emerald-400"
-                                        }`}
-                                      >
-                                        {isWatched ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : null}
-                                      </button>
-                                      <div className="min-w-0">
-                                        <p
-                                          className={`text-sm font-medium truncate ${
-                                            isWatched ? "text-white" : "text-stone-300"
+                                    <div className="flex items-center justify-between gap-3">
+                                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                                        <button
+                                          type="button"
+                                          onClick={() =>
+                                            handleToggleEpisode(seasonNumber, ep.episodeNumber, ep.title)
+                                          }
+                                          className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 transition-all cursor-pointer ${
+                                            isWatched
+                                              ? "bg-emerald-600 text-white font-bold"
+                                              : "border border-[#292932] hover:border-emerald-400 bg-[#0B0B0F]"
                                           }`}
+                                          aria-label={isWatched ? `Mark episode ${ep.episodeNumber} unwatched` : `Mark episode ${ep.episodeNumber} watched`}
                                         >
-                                          <span className="text-emerald-400 font-mono text-xs font-bold mr-2">
+                                          {isWatched ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : null}
+                                        </button>
+                                        <div
+                                          className="min-w-0 flex-1 cursor-pointer flex items-center gap-2 flex-wrap"
+                                          onClick={() => toggleOverview(epCode)}
+                                          title={isOverviewOpen ? "Click to hide overview" : "Click to view overview"}
+                                        >
+                                          <span className="text-emerald-400 font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/25 shrink-0">
                                             E{ep.episodeNumber}
                                           </span>
-                                          {ep.title}
-                                        </p>
-                                        {ep.overview ? (
-                                          <p className="text-xs text-stone-500 truncate max-w-xl mt-0.5">
-                                            {ep.overview}
-                                          </p>
-                                        ) : ep.airDate ? (
-                                          <p className="text-[11px] text-stone-500 mt-0.5">
-                                            Aired {ep.airDate}
-                                          </p>
-                                        ) : null}
+                                          <span
+                                            className={`text-sm font-semibold truncate ${
+                                              isWatched ? "text-white" : "text-stone-200"
+                                            }`}
+                                          >
+                                            {ep.title}
+                                          </span>
+                                        </div>
+                                      </div>
+
+                                      <div className="flex items-center gap-2.5 shrink-0">
+                                        <span className="text-xs text-stone-500 hidden sm:flex items-center gap-1 font-mono">
+                                          <Clock className="w-3 h-3" />
+                                          {ep.runtime || entry.tmdb.runtime || 45}m
+                                        </span>
+                                        <span
+                                          className={`text-[10px] px-2 py-0.5 rounded font-semibold uppercase tracking-wider hidden xs:inline-block ${
+                                            isWatched
+                                              ? "bg-[#E50914]/15 text-[#F5F5F5] border border-[#E50914]/40"
+                                              : "bg-stone-800 text-stone-500"
+                                          }`}
+                                        >
+                                          {isWatched ? "Watched" : "Unwatched"}
+                                        </span>
+
+                                        {/* Dropdown Toggle Button for Overview */}
+                                        <button
+                                          type="button"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            toggleOverview(epCode);
+                                          }}
+                                          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all border cursor-pointer ${
+                                            isOverviewOpen
+                                              ? "bg-[#E50914]/15 text-[#F5F5F5] border-[#E50914]/40 shadow-sm"
+                                              : "bg-stone-800/80 text-stone-300 hover:text-white hover:bg-stone-700/80 border-stone-700/60"
+                                          }`}
+                                          title={isOverviewOpen ? "Collapse overview" : "Watch episode overview"}
+                                        >
+                                          <span>Overview</span>
+                                          <ChevronDown
+                                            className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                                              isOverviewOpen ? "rotate-180 text-[#E50914]" : "text-stone-400"
+                                            }`}
+                                          />
+                                        </button>
                                       </div>
                                     </div>
 
-                                    <div className="flex items-center gap-3 shrink-0 ml-3">
-                                      <span className="text-xs text-stone-500 flex items-center gap-1">
-                                        <Clock className="w-3 h-3" />
-                                        {ep.runtime || entry.tmdb.runtime || 45}m
-                                      </span>
-                                      <span
-                                        className={`text-[10px] px-2 py-0.5 rounded font-semibold uppercase tracking-wider ${
-                                          isWatched
-                                            ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
-                                            : "bg-stone-800 text-stone-500"
-                                        }`}
-                                      >
-                                        {isWatched ? "Watched" : "Unwatched"}
-                                      </span>
-                                    </div>
+                                    {/* Overview Dropdown Content */}
+                                    {isOverviewOpen && (
+                                      <div className="mt-3 pt-3 border-t border-stone-800/70 pl-8 pr-1 animate-in fade-in slide-in-from-top-1 duration-200">
+                                        <p className="text-xs text-stone-300 leading-relaxed">
+                                          {ep.overview ? (
+                                            ep.overview
+                                          ) : (
+                                            <span className="text-stone-500 italic text-[11px]">
+                                              No overview available for this episode.
+                                            </span>
+                                          )}
+                                        </p>
+
+                                        <div className="flex items-center gap-3 mt-2 text-[11px] text-stone-500 flex-wrap">
+                                          {ep.airDate && <span>Aired: {ep.airDate}</span>}
+                                          {ep.runtime && (
+                                            <span className="flex items-center gap-1 font-mono">
+                                              <Clock className="w-3 h-3" />
+                                              Runtime: {ep.runtime} min
+                                            </span>
+                                          )}
+                                        </div>
+                                      </div>
+                                    )}
                                   </div>
                                 );
                               })
@@ -1093,7 +1184,7 @@ export default function MediaDetailModal({
                 {entry.tmdb.genres.map((genre) => (
                   <span
                     key={genre}
-                    className="px-3 py-1 text-xs rounded-full bg-stone-900 text-purple-200 border border-stone-800"
+                    className="px-3 py-1 text-xs rounded-full bg-[#15151C] text-[#F5F5F5] border border-[#292932]"
                   >
                     {genre}
                   </span>
@@ -1123,7 +1214,7 @@ export default function MediaDetailModal({
                 <div className="p-4 rounded-xl bg-stone-900/60 border border-stone-800 space-y-3">
                   <div className="flex justify-between items-center text-sm">
                     <span className="font-semibold text-white">Movie Watch Progress</span>
-                    <span className="text-purple-400 font-semibold">
+                    <span className="text-[#E50914] font-semibold">
                       {entry.progress?.minutesWatched ?? 0} / {entry.tmdb.runtime || 120} min
                     </span>
                   </div>
@@ -1139,7 +1230,7 @@ export default function MediaDetailModal({
                         totalMinutes: entry.tmdb.runtime || 120,
                       })
                     }
-                    className="w-full accent-purple-500 cursor-pointer"
+                    className="w-full accent-[#E50914] cursor-pointer"
                   />
                   <div className="flex justify-between">
                     <button
@@ -1178,7 +1269,7 @@ export default function MediaDetailModal({
             <div className="space-y-6">
               {/* Star Rating Selector (1 to 10) */}
               <div>
-                <label className="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-semibold text-[#A1A1AA] uppercase tracking-wider mb-2">
                   Your Rating
                 </label>
                 <div className="flex items-center gap-1 sm:gap-2">
@@ -1193,20 +1284,20 @@ export default function MediaDetailModal({
                           onMouseEnter={() => setHoverRating(starVal)}
                           onMouseLeave={() => setHoverRating(0)}
                           onClick={() => setRating(starVal)}
-                          className="p-1 focus:outline-none transition-transform hover:scale-125"
+                          className="p-1 focus:outline-none transition-transform hover:scale-125 cursor-pointer"
                         >
                           <Star
                             className={`w-5 h-5 sm:w-6 sm:h-6 transition-colors ${
                               active
-                                ? "text-purple-400 fill-purple-400"
-                                : "text-stone-700 hover:text-stone-500"
+                                ? "text-[#F5C542] fill-[#F5C542]"
+                                : "text-[#292932] hover:text-[#F5C542]/50"
                             }`}
                           />
                         </button>
                       );
                     })}
                   </div>
-                  <span className="text-xl font-bold text-purple-400 ml-2">
+                  <span className="text-xl font-bold text-[#F5C542] ml-2">
                     {hoverRating || rating} / 10
                   </span>
                 </div>
@@ -1214,7 +1305,7 @@ export default function MediaDetailModal({
 
               {/* Notes */}
               <div>
-                <label className="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-semibold text-[#A1A1AA] uppercase tracking-wider mb-2">
                   Personal Journal Notes
                 </label>
                 <textarea
@@ -1222,26 +1313,26 @@ export default function MediaDetailModal({
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="What resonated with you? Notable scenes, performances, takeaways..."
                   rows={4}
-                  className="w-full bg-stone-900/90 border border-stone-800 rounded-xl p-3 text-sm text-white placeholder-stone-600 focus:outline-none focus:border-purple-500/50 resize-y transition-colors"
+                  className="w-full bg-[#0B0B0F] border border-[#292932] rounded-xl p-3 text-sm text-[#F5F5F5] placeholder-[#A1A1AA]/50 focus:outline-none focus:border-[#E50914]/50 resize-y transition-colors"
                 />
               </div>
 
               {/* Tags */}
               <div>
-                <label className="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-semibold text-[#A1A1AA] uppercase tracking-wider mb-2">
                   Tags &amp; Keywords
                 </label>
                 <div className="flex flex-wrap items-center gap-2 mb-2">
                   {tags.map((t) => (
                     <span
                       key={t}
-                      className="px-2.5 py-1 text-xs rounded-lg bg-purple-500/10 text-purple-300 border border-purple-500/20 flex items-center gap-1.5"
+                      className="px-2.5 py-1 text-xs rounded-lg bg-white/5 text-[#A1A1AA] border border-[#292932] flex items-center gap-1.5"
                     >
                       #{t}
                       <button
                         type="button"
                         onClick={() => handleRemoveTag(t)}
-                        className="hover:text-white"
+                        className="hover:text-white cursor-pointer"
                       >
                         <X className="w-3 h-3" />
                       </button>
@@ -1260,12 +1351,12 @@ export default function MediaDetailModal({
                       }
                     }}
                     placeholder="Add a tag (e.g. comfort-watch, peak-writing)..."
-                    className="flex-1 bg-stone-900 border border-stone-800 rounded-xl px-3 py-2 text-xs text-white placeholder-stone-600 focus:outline-none focus:border-purple-500/50"
+                    className="flex-1 bg-[#0B0B0F] border border-[#292932] rounded-xl px-3 py-2 text-xs text-[#F5F5F5] placeholder-[#A1A1AA]/50 focus:outline-none focus:border-[#E50914]/50"
                   />
                   <button
                     type="button"
                     onClick={handleAddTag}
-                    className="px-4 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs rounded-xl font-medium transition-colors"
+                    className="px-4 py-2 bg-white/10 hover:bg-white/20 text-[#F5F5F5] text-xs rounded-xl font-medium transition-colors cursor-pointer border border-[#292932]"
                   >
                     Add
                   </button>
@@ -1277,7 +1368,7 @@ export default function MediaDetailModal({
                 <button
                   type="button"
                   onClick={handleSaveReview}
-                  className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-[#5c0f92] hover:from-purple-500 hover:to-[#791bbd] text-white rounded-xl text-sm font-semibold shadow-lg shadow-purple-600/20 transition-all"
+                  className="px-6 py-2.5 bg-[#E50914] hover:bg-[#FF3B3B] text-white rounded-xl text-sm font-semibold shadow-md shadow-black/40 transition-all cursor-pointer"
                 >
                   Save Review
                 </button>
@@ -1293,7 +1384,7 @@ export default function MediaDetailModal({
         </div>
 
         {/* ── Modal Footer ──────────────────────────────────────── */}
-        <div className="px-4 sm:px-6 py-3 border-t border-stone-800/80 bg-[#161311] flex items-center justify-between shrink-0">
+        <div className="px-4 sm:px-6 py-3 border-t border-[#292932] bg-[#15151C] flex items-center justify-between shrink-0">
           <button
             onClick={() => {
               if (confirm(`Remove "${entry.tmdb.title}" from your Couch Critics journal?`)) {
@@ -1301,7 +1392,7 @@ export default function MediaDetailModal({
                 onClose();
               }
             }}
-            className="flex items-center gap-1.5 text-xs text-red-400/80 hover:text-red-300 transition-colors"
+            className="flex items-center gap-1.5 text-xs text-[#A1A1AA] hover:text-[#FF3B3B] transition-colors cursor-pointer"
           >
             <Trash2 className="w-3.5 h-3.5" />
             Remove from Journal
@@ -1309,7 +1400,7 @@ export default function MediaDetailModal({
 
           <button
             onClick={onClose}
-            className="px-5 py-2 text-xs font-semibold rounded-xl bg-stone-800 text-stone-200 hover:bg-stone-700 hover:text-white transition-colors"
+            className="px-5 py-2 text-xs font-semibold rounded-xl bg-white/10 text-white hover:bg-white/20 transition-colors border border-[#292932] cursor-pointer"
           >
             Done
           </button>

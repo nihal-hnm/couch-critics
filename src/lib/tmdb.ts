@@ -435,25 +435,63 @@ export async function getMovieDetails(
  */
 export async function fetchSeasonEpisodes(
   tvTmdbId: number,
-  seasonNumber: number
+  seasonNumber: number,
+  title?: string
 ): Promise<EpisodeItem[]> {
   const cacheKey = `couch-critics-tmdb-episodes-${tvTmdbId}-S${seasonNumber}`;
 
+  // 1. Check in-memory cache — but only if it contains real titles, not placeholders
   if (seasonEpisodesCache.has(cacheKey)) {
-    return seasonEpisodesCache.get(cacheKey)!;
+    const cached = seasonEpisodesCache.get(cacheKey)!;
+    const hasRealTitles = cached.some(
+      (e) => e.title && !e.title.toLowerCase().startsWith("episode ")
+    );
+    if (hasRealTitles) return cached;
   }
 
+  // 2. Check localStorage cache — but only if it contains real titles
   if (typeof window !== "undefined") {
     try {
       const cached = localStorage.getItem(cacheKey);
       if (cached) {
         const parsed = JSON.parse(cached) as EpisodeItem[];
-        seasonEpisodesCache.set(cacheKey, parsed);
-        return parsed;
+        const hasRealTitles = parsed.some(
+          (e) => e.title && !e.title.toLowerCase().startsWith("episode ")
+        );
+        if (hasRealTitles) {
+          seasonEpisodesCache.set(cacheKey, parsed);
+          return parsed;
+        }
       }
     } catch {}
   }
 
+  // 3. First-party Next.js server route (immune to client-side ad-blockers / Brave Shields)
+  if (typeof window !== "undefined") {
+    try {
+      const params = new URLSearchParams({
+        tmdbId: String(tvTmdbId),
+        season: String(seasonNumber),
+      });
+      if (title) params.set("title", title);
+
+      const res = await fetch(`/api/tv-episodes?${params.toString()}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.episodes && data.episodes.length > 0) {
+          seasonEpisodesCache.set(cacheKey, data.episodes);
+          try {
+            localStorage.setItem(cacheKey, JSON.stringify(data.episodes));
+          } catch {}
+          return data.episodes;
+        }
+      }
+    } catch (apiErr) {
+      console.warn(`Local /api/tv-episodes call failed:`, apiErr);
+    }
+  }
+
+  // 4. Direct TMDB API fallback
   try {
     const data = await tmdbFetch<TMDBSeasonDetailsRaw>(
       `/tv/${tvTmdbId}/season/${seasonNumber}`,
@@ -480,6 +518,38 @@ export async function fetchSeasonEpisodes(
     }
   } catch (err) {
     console.warn(`Could not fetch episodes for TV ${tvTmdbId} S${seasonNumber}:`, err);
+  }
+
+  // 5. Client-side TVmaze fallback if show title is available
+  if (title && typeof window !== "undefined") {
+    try {
+      const res = await fetch(
+        `https://api.tvmaze.com/singlesearch/shows?q=${encodeURIComponent(title)}&embed=episodes`
+      );
+      if (res.ok) {
+        const data = await res.json();
+        const allEpisodes: any[] = data._embedded?.episodes || [];
+        const seasonEpisodes = allEpisodes.filter((ep) => ep.season === seasonNumber);
+        if (seasonEpisodes.length > 0) {
+          const eps: EpisodeItem[] = seasonEpisodes.map((ep) => ({
+            seasonNumber: ep.season,
+            episodeNumber: ep.number,
+            title: ep.name || `Episode ${ep.number}`,
+            runtime: ep.runtime || 45,
+            overview: (ep.summary || "").replace(/<[^>]*>/g, "").trim(),
+            airDate: ep.airdate,
+          }));
+
+          seasonEpisodesCache.set(cacheKey, eps);
+          try {
+            localStorage.setItem(cacheKey, JSON.stringify(eps));
+          } catch {}
+          return eps;
+        }
+      }
+    } catch (tvmazeErr) {
+      console.warn(`Direct TVmaze fallback failed:`, tvmazeErr);
+    }
   }
 
   // Fallback to exact count from catalog if available

@@ -120,8 +120,10 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       <div className="auth-modal-content">
         {/* Header */}
         <div className="auth-modal-header">
-          <div className="auth-modal-logo">
-            <Film size={28} />
+          <div className="auth-modal-logo flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl overflow-hidden shadow-md shadow-[#E50914]/25 border border-white/10 shrink-0 bg-[#07070A] flex items-center justify-center">
+              <img src="/icon.png" alt="Couch Critics" className="w-full h-full object-cover" />
+            </div>
             <span>COUCH CRITICS</span>
           </div>
           <button
@@ -260,11 +262,11 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           )}
         </p>
 
-        <div className="mt-3 pt-3 border-t border-purple-500/15 text-center">
+        <div className="mt-3 pt-3 border-t border-[#292932] text-center">
           <Link
             href="/login"
             onClick={onClose}
-            className="text-xs text-purple-400 hover:text-purple-300 font-medium transition-colors"
+            className="text-xs text-[#E50914] hover:text-[#FF3B3B] font-medium transition-colors"
           >
             Open Full Cinematic Sign-in Page &rarr;
           </Link>

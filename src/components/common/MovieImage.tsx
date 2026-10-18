@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Film, Tv } from "lucide-react";
 import { getOptimizedImageUrl } from "@/lib/image-utils";
+import { searchMovies } from "@/lib/tmdb";
 
 interface MovieImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, "src"> {
   src?: string | null;
@@ -19,6 +20,8 @@ interface MovieImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElement>
  * Features:
  *  - Primary loading via `/api/image-proxy` to bypass ISP / DNS censorship
  *  - Strips referrers to satisfy TMDB CDN policies
+ *  - No crossOrigin attribute to prevent strict CORS rejection on CDN images
+ *  - Auto-heals missing or broken covers by searching TMDB by title
  *  - Fallback to direct TMDB URL if proxy has issues
  *  - Graceful cinematic placeholder if image is missing or cannot be fetched
  */
@@ -34,10 +37,50 @@ export function MovieImage({
 }: MovieImageProps) {
   const [hasError, setHasError] = useState(false);
   const [useDirectFallback, setUseDirectFallback] = useState(false);
+  const [autoHealedSrc, setAutoHealedSrc] = useState<string | null>(null);
 
-  const initialUrl = getOptimizedImageUrl(src);
+  useEffect(() => {
+    setHasError(false);
+    setUseDirectFallback(false);
+    setAutoHealedSrc(null);
+  }, [src]);
 
-  if (!src || hasError) {
+  // Auto-heal missing or broken poster URLs via TMDB title search
+  useEffect(() => {
+    if (src && !hasError) return;
+    if (!title || autoHealedSrc) return;
+
+    let mounted = true;
+    searchMovies(title)
+      .then((results) => {
+        if (!mounted || !results || results.length === 0) return;
+        const matched =
+          results.find((r) => r.posterUrl && (mediaType ? r.mediaType === mediaType : true)) ||
+          results.find((r) => r.posterUrl);
+
+        if (matched?.posterUrl) {
+          setAutoHealedSrc(matched.posterUrl);
+          setHasError(false);
+          setUseDirectFallback(false);
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      mounted = false;
+    };
+  }, [src, title, mediaType, hasError, autoHealedSrc]);
+
+  const rawActiveSrc = src || autoHealedSrc;
+  const initialUrl = getOptimizedImageUrl(rawActiveSrc);
+  const directUrl =
+    rawActiveSrc && rawActiveSrc.startsWith("/") && !rawActiveSrc.startsWith("data:")
+      ? rawActiveSrc.startsWith("/t/p/")
+        ? `https://image.tmdb.org${rawActiveSrc}`
+        : `https://image.tmdb.org/t/p/w500${rawActiveSrc}`
+      : rawActiveSrc;
+
+  if (!rawActiveSrc || hasError) {
     return (
       <div className={fallbackContainerClassName}>
         {mediaType === "tv" ? (
@@ -54,19 +97,18 @@ export function MovieImage({
     );
   }
 
-  const currentSrc = useDirectFallback ? src : initialUrl;
+  const currentSrc = useDirectFallback ? directUrl : initialUrl;
 
   return (
     <img
       {...props}
-      src={currentSrc}
+      src={currentSrc || undefined}
       alt={alt}
       loading={props.loading || "lazy"}
       referrerPolicy="no-referrer"
-      crossOrigin="anonymous"
       className={className}
       onError={() => {
-        if (!useDirectFallback && currentSrc !== src) {
+        if (!useDirectFallback && currentSrc !== directUrl) {
           // If proxy failed, try direct TMDB CDN with no-referrer
           setUseDirectFallback(true);
         } else {

@@ -644,8 +644,8 @@ export const TV_SEASONS_CATALOG: Record<number, CachedTVSeries> = {
   },
   "48891": {
     "totalSeasons": 8,
-    "totalEpisodes": 152,
-    "runtime": 45,
+    "totalEpisodes": 153,
+    "runtime": 22,
     "backdropUrl": "https://image.tmdb.org/t/p/w1280/9AeiA1XtP5sel2tAf9LaGeUjhDb.jpg",
     "seasons": [
       {
@@ -653,56 +653,1296 @@ export const TV_SEASONS_CATALOG: Record<number, CachedTVSeries> = {
         "name": "Season 1",
         "episodeCount": 22,
         "posterUrl": "https://image.tmdb.org/t/p/w500/9hL8os3A3pGpdvQtt029zj2pURy.jpg",
-        "overview": "Talented but laid-back detective Jake Peralta and his dysfunctional peers struggle to get along under their precinct's strict new captain."
+        "overview": "Brooklyn Nine-Nine Season 1",
+        "episodes": [
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 1,
+            "title": "Pilot",
+            "runtime": 30,
+            "overview": "Detective Jake Peralta is a talented, but carefree police detective at Brooklyn's 99th precinct who, along with his eclectic group of colleagues, are used to having a lax captain around the office. However, when tightly-wound Captain Ray Holt takes over, he is determined to make this dysfunctional group of detectives into the best precinct in Brooklyn.",
+            "airDate": "2013-09-17"
+          },
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 2,
+            "title": "The Tagger",
+            "runtime": 30,
+            "overview": "When Jake is late for roll call, Captain Ray Holt assigns him to a graffiti case that Jake feels is below his level. However, when the culprit turns out to be the Deputy Commissioner's son, the case becomes a major problem. Meanwhile, Gina's psychic friend visits the precinct and gets inside Charles' head.",
+            "airDate": "2013-09-24"
+          },
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 3,
+            "title": "The Slump",
+            "runtime": 30,
+            "overview": "Jake has a slew of unsolved cases that he can't seem to close, and the other detectives don't want his losing streak to rub off on them. Meanwhile, Holt asks Amy to run lead on the Junior Policeman Program for at-risk youth, and she enlists Rosa and Gina's help. Also, Boyle helps Sergeant Jeffords with a special case he cannot solve.",
+            "airDate": "2013-10-01"
+          },
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 4,
+            "title": "M.E. Time",
+            "runtime": 30,
+            "overview": "Much to the team's annoyance, Jake hits on an attractive medical examiner, Dr. Rossi, at a crime scene and holds up the autopsy report. He learns his lesson when Dr. Rossi turns out to be more than he bargained for. Meanwhile, Amy's purse-snatching case is stalled when the sketch artist is out sick, but she discovers that Sgt. Jeffords has hidden artistic talents.",
+            "airDate": "2013-10-08"
+          },
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 5,
+            "title": "The Vulture",
+            "runtime": 30,
+            "overview": "A detective from Special Crimes, takes over Jake's nearly solved murder case and steals his thunder. Over a few drinks, Jake enlists the precinct to get revenge and find the murder weapon before \"The Vulture\" does. Across town, Captain Holt and Gina help Terry get re-certified to carry a gun.",
+            "airDate": "2013-10-15"
+          },
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 6,
+            "title": "Halloween",
+            "runtime": 30,
+            "overview": "It's Halloween night, a busy time of the year for any police precinct. Amy detests the holiday, and is not thrilled when she has to don a costume to go undercover on street patrol with Charles. Back at the precinct, Jake bets Captain Holt that he can steal his Medal of Valor before midnight, which results in him bringing out some costumes of his own.",
+            "airDate": "2013-10-22"
+          },
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 7,
+            "title": "48 Hours",
+            "runtime": 30,
+            "overview": "When Jake makes an arrest without a lot of proof, he only has 48 hours to collect evidence, or else the \"perp\" will be released. After his unsuccessful interrogation of the suspect, Jake forces his co-workers to spend their weekend helping him crack the case. So, while the team is stuck at the precinct, Charles judges a pie contest between Gina and Rosa, and Holt helps Terry look better in the eyes of his in-laws.",
+            "airDate": "2013-11-05"
+          },
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 8,
+            "title": "Old School",
+            "runtime": 30,
+            "overview": "Jake's dream comes true when he gets to spend the day with his hero, Jimmy Brogan, a former crime reporter. But the dream becomes a nightmare when Jake's comments about Holt and the precinct are considered \"on the record.\" Meanwhile, Terry and Charles try to teach Rosa how to be less terrifying on the witness stand.",
+            "airDate": "2013-11-12"
+          },
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 9,
+            "title": "Sal's Pizza",
+            "runtime": 30,
+            "overview": "When Sal's Pizza burns down and the fire marshal quickly assumes that the owner is the prime suspect in the investigation, Jake does everything in his power to prove him wrong, even if it means stepping out of his jurisdiction. Meanwhile back at the precinct, chaos ensues when a computer virus publishes everyone's browser history.",
+            "airDate": "2013-11-19"
+          },
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 10,
+            "title": "Thanksgiving",
+            "runtime": 30,
+            "overview": "Amy wants to host a Thanksgiving dinner for the entire precinct, but it turns into a holiday disaster when Holt and Jake have to leave to go catch a perp. Boyle steps in to save Turkey Day.",
+            "airDate": "2013-11-26"
+          },
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 11,
+            "title": "Christmas",
+            "runtime": 30,
+            "overview": "Captain Holt receives death threats and Jake is put in charge of his security, a job he enjoys and abuses as much as he can. Meanwhile, Amy attempts to get the precinct to take a Christmas photo for Holt, but a lack of enthusiasm and Rosa's refusal to smile defeats her efforts. Also, Sergeant Terry Jeffords gets his mojo back.",
+            "airDate": "2013-12-03"
+          },
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 12,
+            "title": "Pontiac Bandit",
+            "runtime": 30,
+            "overview": "Jake is interested in one of Rosa's perps, Doug Judy, who has information about the \"Pontiac Bandit,\" a car thief whom Jake has been tracking for years. Meanwhile, the station tries to accommodate a scooter-bound Charles' every need when he returns to work, but he proves to be too much to handle. And Captain Holt struggles to find a home for two puppies.",
+            "airDate": "2014-01-07"
+          },
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 13,
+            "title": "The Bet",
+            "runtime": 30,
+            "overview": "Jake and Amy's ongoing bet about who can make more arrests comes to a close. Meanwhile, Charles receives the Medal of Valor for getting shot in the line of duty, but the pain medication he is taking causes him to reveal his true opinions about his colleagues.",
+            "airDate": "2014-01-14"
+          },
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 14,
+            "title": "The Ebony Falcon",
+            "runtime": 30,
+            "overview": "On his first task back in the field, Terry busts a steroid ring, and in doing so, takes cues from Jake on how to harness his emotions. Meanwhile, Amy and Rosa help solve a breaking-and-entering case at Gina's apartment.",
+            "airDate": "2014-01-21"
+          },
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 15,
+            "title": "Operation: Broken Feather",
+            "runtime": 30,
+            "overview": "Jake and Amy investigate a string of hotel robberies together, but Jake turns on her when he finds out she may leave the Nine-Nine to work in the Special Crimes unit with \"The Vulture\". Meanwhile Captain Holt and Sergeant Jeffords strategize to make the precinct more efficient.",
+            "airDate": "2014-02-02"
+          },
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 16,
+            "title": "The Party",
+            "runtime": 30,
+            "overview": "The officers in the precinct head over to Holt's house to celebrate his birthday, but they wind up making a poor impression on his husband.",
+            "airDate": "2014-02-04"
+          },
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 17,
+            "title": "Full Boyle",
+            "runtime": 30,
+            "overview": "Detective Boyle's new romance has upped his swagger, but Jake intervenes before his colleague goes \"Full Boyle\" and gets too serious, too soon, with his girlfriend. Meanwhile, Rosa and Amy have trouble taking a costumed citizen crime-fighter seriously, and Captain Holt has a new opponent.",
+            "airDate": "2014-02-11"
+          },
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 18,
+            "title": "The Apartment",
+            "runtime": 30,
+            "overview": "Jake's crushing debt finally catches up to him, and he is in danger of losing his apartment, unless Gina can find a way to bail him out. Captain Holt and Sergeant Jeffords hold performance reviews for the entire precinct, and Rosa and Boyle have a run-in with one of the weekend squad officers .",
+            "airDate": "2014-02-25"
+          },
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 19,
+            "title": "Tactical Village",
+            "runtime": 30,
+            "overview": "The precinct heads to Tactical Village Day, a mandatory training course in which all regional precincts compete. While there, Amy runs into Teddy, a fellow officer she used to date. Meanwhile, Holt becomes addicted to a game on his phone and Rosa is pissed at Charles for not inviting her to his wedding.",
+            "airDate": "2014-03-04"
+          },
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 20,
+            "title": "Fancy Brudgom",
+            "runtime": 30,
+            "overview": "Charles asks Jake to be the best man at his wedding, a role that requires Jake to be supportive in important wedding decisions, ranging from cake tasting to floral arrangements. Meanwhile, Terry, Amy and Gina support each other as they start a new extreme diet and Holt helps Rosa make a sincere apology.",
+            "airDate": "2014-03-11"
+          },
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 21,
+            "title": "Unsolvable",
+            "runtime": 30,
+            "overview": "When Jake gets the weekend off, he decides to take on a cold case that everyone thinks is unsolvable, but with the help of Terry, the two try to crack the case once and for all. Meanwhile, Amy plans a romantic trip with Teddy and Gina and Rosa let Charles in on one of their best-kept secrets.",
+            "airDate": "2014-03-18"
+          },
+          {
+            "seasonNumber": 1,
+            "episodeNumber": 22,
+            "title": "Charges and Specs",
+            "runtime": 30,
+            "overview": "Jake's investigation of philanthropic civic leader Lucas Wint is shut down by Commissioner Podalski. Still determined to crack the case, Jake enlists Amy and a reluctant Captain Holt to help him uncover more evidence, even if it means facing suspension. Meanwhile, Charles is devastated over pre-marital problems with Vivian, and Gina knows just how to cheer him up.",
+            "airDate": "2014-03-25"
+          }
+        ]
       },
       {
         "seasonNumber": 2,
         "name": "Season 2",
         "episodeCount": 23,
         "posterUrl": "https://image.tmdb.org/t/p/w500/lvST5TSkJqN4yyhDy5IgyoBDize.jpg",
-        "overview": "In Season 2, Jake smokes out a mole in the precinct, Amy finds a flaw in one of Holt's old cases, and the precinct gets antiterrorism training."
+        "overview": "Brooklyn Nine-Nine Season 2",
+        "episodes": [
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 1,
+            "title": "Undercover",
+            "runtime": 30,
+            "overview": "Jake's undercover FBI operation ends in a successful sting, until he learns one mobster has gotten away. As Jake enlists Charles' help to track him down, Holt tests the squad's patience with practice drills.",
+            "airDate": "2014-09-28"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 2,
+            "title": "Chocolate Milk",
+            "runtime": 30,
+            "overview": "Holt is taken by surprise when his longtime nemesis, Deputy Chief Madeline Wuntch arrives for an inspection of his precinct. Meanwhile, Jake and Terry test the boundaries of \"work friends\" vs. \"friend friends\" as they investigate a stabbing at a hipster chocolate milk bar.",
+            "airDate": "2014-10-05"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 3,
+            "title": "The Jimmy Jab Games",
+            "runtime": 30,
+            "overview": "The squad has time to kill when the arrival of the Serbian President's motorcade to Brooklyn has been delayed. So, Jake launches \"The Jimmy Jab Games,\" an annual series of competitions in the precinct. Meanwhile, Terry and Holt take on a new drug task force approved by Holt's nemesis, Deputy Chief Madeline Wuntch.",
+            "airDate": "2014-10-12"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 4,
+            "title": "Halloween II",
+            "runtime": 30,
+            "overview": "The Peralta/Holt annual Halloween bet continues when Jake challenges the Captain that he can steal his watch before midnight. Meanwhile, Gina is upset that her dance team, Floorgasm, kicks her off the squad and Terry confronts her about her bad attitude.",
+            "airDate": "2014-10-19"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 5,
+            "title": "The Mole",
+            "runtime": 30,
+            "overview": "There's a mole in the precinct and Holt and Jake need to find out who it is before Deputy Chief Madeline Wuntch gets wind of it. Meanwhile, Terry and Rosa visit a \"silent\" disco to uncover new leads for their new drug task force.",
+            "airDate": "2014-11-02"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 6,
+            "title": "Jake and Sophia",
+            "runtime": 30,
+            "overview": "Jake hits it off with Sophia, a woman whom he meets at a bar, only to find out she is the defense attorney for a perp he is trying to put in jail. Meanwhile, Gina and Charles work to put their relationship behind them.",
+            "airDate": "2014-11-09"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 7,
+            "title": "Lockdown",
+            "runtime": 30,
+            "overview": "The precinct goes into lockdown mode on Thanksgiving night, and Jake, who was left in charge, is confident in his ability to keep spirits high and avoid chaos. Amy is less confident, as things spiral out of control.",
+            "airDate": "2014-11-16"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 8,
+            "title": "USPIS",
+            "runtime": 30,
+            "overview": "While attempting to catch a drug dealer, Jake and Charles reluctantly join forces with the nerdy lead investigator at the U.S. Postal Service, Jack Danger. Meanwhile, the rest of the team helps Amy quit smoking.",
+            "airDate": "2014-11-23"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 9,
+            "title": "The Road Trip",
+            "runtime": 30,
+            "overview": "In an attempt to add a touch of romance to their work trip, Jake invites his girlfriend, Sophia, as well as Amy's boyfriend, Teddy, to join them at a B&amp;B. Meanwhile, Rosa adamantly refuses to admit to Terry and Gina that she is sick, and Charles is eager to help Holt with his anniversary breakfast.",
+            "airDate": "2014-11-30"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 10,
+            "title": "The Pontiac Bandit Returns",
+            "runtime": 30,
+            "overview": "Aka Doug Judy, is back in custody, after jamming up Jake and Rosa in his previous encounter with them. But when Rosa discovers that Judy knows the whereabouts of the \"Giggle Pig\" drug leader, Capt. Holt offers the perp a plea deal to help track down the drug kingpin. Meanwhile, Gina and Boyle are nervous that their parents might be getting too close, and Santiago makes Holt a Christmas gift against his wishes.",
+            "airDate": "2014-12-07"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 11,
+            "title": "Stakeout",
+            "runtime": 30,
+            "overview": "Jake and Charles' bro-mance starts to crack when they volunteer for an eight-day stakeout in very close quarters. Meanwhile, Captain Holt's nephew, Marcus, comes to Brooklyn and captures Rosa's attention.",
+            "airDate": "2014-12-14"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 12,
+            "title": "Beach House",
+            "runtime": 30,
+            "overview": "The team is excited to spend the weekend at Charles' beach house for a detectives-only-getaway, until Jake ruins the fun by inviting Captain Holt. Meanwhile, Charles helps Rosa send romantic texts to her new boyfriend, and Gina tries to get Amy drunk, simply for her own enjoyment.",
+            "airDate": "2015-01-04"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 13,
+            "title": "Payback",
+            "runtime": 30,
+            "overview": "The squad decides it's high time Jake paid them back all the money he has owed them from over the years. Meanwhile, Amy and Holt team up to re-open the Brooklyn Broiler case.",
+            "airDate": "2015-01-11"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 14,
+            "title": "Defense Rests",
+            "runtime": 30,
+            "overview": "When Sophia's job gets in the way of her relationship with Jake, Jake tries to smooth things over with her boss. Meanwhile, Wuntch needs Holt's help for a job recommendation.",
+            "airDate": "2015-01-25"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 15,
+            "title": "Windbreaker City",
+            "runtime": 30,
+            "overview": "Jake is heartbroken over Sophia, but his spirits are lifted when the squad is invited to a Homeland Security terrorist training simulation. That is, until the agent in charge assigns them the lame role of playing hostages. Meanwhile, Gina administers a psychological exam to Holt, and Amy and Rosa compete for a day off from work.",
+            "airDate": "2015-02-08"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 16,
+            "title": "The Wednesday Incident",
+            "runtime": 30,
+            "overview": "When Jake notices that Holt has been acting moody, he teams up with Holt's husband to figure out what happened. Meanwhile, at the precinct, Charles tries to get a confession out of a geriatric suspect who pretends to be senile and adorable whenever Amy and Rosa are around.",
+            "airDate": "2015-02-15"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 17,
+            "title": "Boyle-Linetti Wedding",
+            "runtime": 30,
+            "overview": "It's the day of Gina and Charles' parents' wedding, and the whole squad is given a job to fulfill for the ceremony. However, Jake and Amy get sidetracked chasing a criminal, and Terry struggles to officiate the wedding.",
+            "airDate": "2015-03-01"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 18,
+            "title": "Captain Peralta",
+            "runtime": 30,
+            "overview": "Jake's mainly absentee father, Roger, comes to town to spend some time with his son. Jake can't wait to see him, but Charles is skeptical of Roger's intentions. Meanwhile, Holt tasks Amy, Terry, Gina and Rosa with an impossible brain teaser in exchange for Beyoncé tickets.",
+            "airDate": "2015-03-08"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 19,
+            "title": "Sabotage",
+            "runtime": 30,
+            "overview": "After a streak of really bad luck, Jake thinks he's being sabotaged by an enemy. Holt assigns Amy and Rosa to investigate the truth. Meanwhile, Holt hurts Gina's feelings by calling her dance troupe a \"hobby,\" and Charles is stuck working a case with Scully and Hitchcock in Jake's absence.",
+            "airDate": "2015-03-15"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 20,
+            "title": "AC/DC",
+            "runtime": 30,
+            "overview": "After Jake injures himself on a case, Terry forces him take time off and rest - something Jake doesn't know how to do. Across town, Holt and Rosa try to avoid intimate conversation during a double-date with their significant others.",
+            "airDate": "2015-04-26"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 21,
+            "title": "Det. Dave Majors",
+            "runtime": 30,
+            "overview": "Jake is excited to work a case with the best detective in the NYPD, Detective Majors, until Majors shares his intentions to ask Amy out on a date. Meanwhile, Charles and Gina try to convince Terry to stay at the Nine-Nine when he considers accepting an offer to work at a private security firm.",
+            "airDate": "2015-05-03"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 22,
+            "title": "The Chopper",
+            "runtime": 30,
+            "overview": "Holt is wary when Wuntch lets Jake work his dream case, worried that she is setting him up to fail. Back at the precinct, Amy, Rosa and Gina help Terry host a field trip for a local magnet school.",
+            "airDate": "2015-05-10"
+          },
+          {
+            "seasonNumber": 2,
+            "episodeNumber": 23,
+            "title": "Johnny and Dora",
+            "runtime": 30,
+            "overview": "Jake and Amy go undercover to catch Brooklyn's most notorious identity thief, and the case brings them closer together - very close. Meanwhile, the entire precinct is caught off-guard when one of their own says goodbye to the Nine-Nine.",
+            "airDate": "2015-05-17"
+          }
+        ]
       },
       {
         "seasonNumber": 3,
         "name": "Season 3",
         "episodeCount": 23,
         "posterUrl": "https://image.tmdb.org/t/p/w500/nqlpXFbyCGzeBaDVC2E6PO5itCw.jpg",
-        "overview": "After Holt's transfer, the precinct isn't happy with his replacement. Amy and Jake adjust to romance, while personnel changes shake up the department."
+        "overview": "Brooklyn Nine-Nine Season 3",
+        "episodes": [
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 1,
+            "title": "New Captain",
+            "runtime": 30,
+            "overview": "After Holt is transferred to the NYPD Department of Public Relations, the new captain's arrival causes the precinct to dissolve into chaos, despite Terry's best efforts to keep everyone on point. Meanwhile, Jake and Amy face the aftermath of their \"for reals\" kiss.",
+            "airDate": "2015-09-27"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 2,
+            "title": "The Funeral",
+            "runtime": 30,
+            "overview": "The Nine-Nine gets another personnel change that could put Jake and Amy's budding relationship at risk. Meanwhile, Terry assists Holt with an important public relations matter, and Rosa and Gina try to convince Charles to rethink his affection for a fellow officer.",
+            "airDate": "2015-10-04"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 3,
+            "title": "Boyle's Hunch",
+            "runtime": 30,
+            "overview": "Jake thinks Boyle might have met his soulmate in Genevieve, an art gallery owner, and he tries to help set them up. Meanwhile, Rosa deals with inter-precinct theft and Holt seeks Amy's help with an image campaign.",
+            "airDate": "2015-10-11"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 4,
+            "title": "The Oolong Slayer",
+            "runtime": 30,
+            "overview": "When investigating a serial killer, Jake enlists Holt's help in an attempt to solve the case off the radar. At the precinct, Rosa and Amy are forced to deal with demands from an old adversary and Terry discovers a new obsession.",
+            "airDate": "2015-10-18"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 5,
+            "title": "Halloween, Part III",
+            "runtime": 30,
+            "overview": "The third installment of Captain Holt and Jake's Halloween heist culminates with a tie-breaking competition to claim the title of \"amazing detective slash genius.\" This year, Jake and Holt split the squad into two teams to help them win.",
+            "airDate": "2015-10-25"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 6,
+            "title": "Into the Woods",
+            "runtime": 30,
+            "overview": "Jake and Charles convince Terry to take a weekend camping trip as a much needed \"babymoon,\" but they soon realize it might not be the idealistic weekend for which they had hoped. Meanwhile back at the precinct, Holt gives Rosa some important relationship advice and Amy enlists Gina's help to prepare her for an important presentation.",
+            "airDate": "2015-11-08"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 7,
+            "title": "The Mattress",
+            "runtime": 30,
+            "overview": "Jake and Amy convince the Captain to let them work a case together involving a new street drug, but their new relationship gets in the way. Meanwhile, at the precinct, Charles panics when he realizes he's damaged one of Holt's prized possessions and Terry teaches Rosa a lesson in discipline.",
+            "airDate": "2015-11-15"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 8,
+            "title": "Ava",
+            "runtime": 30,
+            "overview": "Jake's in charge of entertaining Sharon while Terry and Rosa head off to learn about the Douglass Street murders, but Sharon's water breaks and crisis ensues at the precinct; and Amy and Charles must process paperwork by hand due to an internet outage. Meanwhile, Holt is forced to confront his ex-boyfriend.",
+            "airDate": "2015-11-22"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 9,
+            "title": "The Swedes",
+            "runtime": 30,
+            "overview": "In an attempt to solve an international case, Jake and Rosa are forced to work with a pair of Swedish cops and things get very competitive, very quickly. Meanwhile, Amy and Terry offer to help Gina prepare for a big test and Holt enlists Charles to sub in as his squash partner for an annual tournament.",
+            "airDate": "2015-12-06"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 10,
+            "title": "Yippie Kayak",
+            "runtime": 30,
+            "overview": "Jake, Charles and Gina are involved in a real-life \"Die Hard\" situation while off-duty on Christmas Eve, and Terry must leave his family celebration to try to save his squad. Meanwhile, Amy tries to prove she's just as tough as Holt and Rosa.",
+            "airDate": "2015-12-13"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 11,
+            "title": "Hostage Situation",
+            "runtime": 30,
+            "overview": "Charles and Genevieve want to take their relationship to a new level, but his ex-wife, Eleanor, steamrolls their plans. Meanwhile, Amy asks Terry to write a recommendation letter with disastrous results, and Holt and Rosa enlist Gina's help to solve a case.",
+            "airDate": "2016-01-05"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 12,
+            "title": "9 Days",
+            "runtime": 30,
+            "overview": "When Captain Holt and Jake accidentally contract the mumps during an investigation, they decide to be quarantined together in hopes of still solving the case. Meanwhile, Rosa tries to help Boyle through a mourning process, and Terry is forced to clean up Hitchcock and Scully's mess.",
+            "airDate": "2016-01-19"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 13,
+            "title": "The Cruise",
+            "runtime": 30,
+            "overview": "Jake and Amy are excited to go on their first real vacation together, but Amy's perfectly planned cruise ship itinerary is thwarted when they discover an old adversary is on board with them. Meanwhile, Gina and Terry help Captain Holt survive a visit from his sister, Debbie, and Charles and Rosa vie for the same apartment.",
+            "airDate": "2016-01-26"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 14,
+            "title": "Karen Peralta",
+            "runtime": 30,
+            "overview": "On his birthday, Jake brings Amy to meet his mother, but a surprise appearance by his dad throws a wrench in his special day. Meanwhile, Rosa and Charles struggle with a new mandate regarding body cams while on a stakeout with Terry, and Gina forgets to inform the precinct about an important plan of Holt's.",
+            "airDate": "2016-02-02"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 15,
+            "title": "The 9-8",
+            "runtime": 30,
+            "overview": "The Nine-Nine host the detectives from the Nine-Eight, their neighboring precinct, reuniting Jake with his old partner. Charles is immediately jealous and tries to reclaim his best friend status with Jake. Meanwhile, the rest of the precinct tries to be welcoming to the Nine-Eight, but it doesn't go as well as they had planned.",
+            "airDate": "2016-02-09"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 16,
+            "title": "House Mouses",
+            "runtime": 30,
+            "overview": "When Jake insults Hitchcock and Scully's work ethic in the precinct, they force their way into one of his cases in attempt to prove themselves. Meanwhile, Amy and Gina help Rosa conquer one of her biggest fears, and Holt and Boyle work a celebrity case.",
+            "airDate": "2016-02-16"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 17,
+            "title": "Adrian Pimento",
+            "runtime": 30,
+            "overview": "When an unstable detective returns to the Nine-Nine after years undercover, Jake doesn't know what to make of him. Meanwhile, Charles' rebellious behavior pits him against the precinct's custodian, and Holt enlists Gina's help in directing a \"fun and informational\" video starring himself and Rosa.",
+            "airDate": "2016-02-23"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 18,
+            "title": "Cheddar",
+            "runtime": 30,
+            "overview": "Holt allows Amy and Jake to house-sit for him while he visits Kevin in Paris, but mayhem ensues when Holt's beloved dog, Cheddar, goes missing under their watch. Meanwhile, a romantic fling between Adrian Pimento and Rosa disrupts Terry and the rest of the precinct.",
+            "airDate": "2016-03-01"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 19,
+            "title": "Terry Kitties",
+            "runtime": 30,
+            "overview": "In an attempt to prove to his old precinct that he's not a joke, Terry enlists Jake's help in solving a case from his past. Meanwhile, Adrian moves in with Charles, with mixed results, and Amy invites herself to a hyper-competitive training exercise with Holt and Rosa.",
+            "airDate": "2016-03-15"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 20,
+            "title": "Paranoia",
+            "runtime": 30,
+            "overview": "Rosa enlists Jake to help change Terry's disapproving opinion about her fast-moving relationship with Adrian Pimento. But their love for each other is put on hold when Pimento thinks someone from his past is trying to kill him.",
+            "airDate": "2016-03-29"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 21,
+            "title": "Maximum Security",
+            "runtime": 30,
+            "overview": "In an attempt to get information on a criminal operation, Amy has to go undercover at a women's prison and befriend one of the prisoners. Meanwhile back at the precinct, Holt and the team plan a fake funeral in an attempt to catch a hitman.",
+            "airDate": "2016-04-05"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 22,
+            "title": "The Bureau",
+            "runtime": 30,
+            "overview": "With Pimento's life still in peril, Captain Holt calls on an old friend in the FBI to help with a seemingly impossible heist. Meanwhile Amy makes a breakthrough while undercover, and Terry and Gina discover an information leak in the Nine-Nine.",
+            "airDate": "2016-04-12"
+          },
+          {
+            "seasonNumber": 3,
+            "episodeNumber": 23,
+            "title": "Greg and Larry",
+            "runtime": 30,
+            "overview": "After a surprising turn of events in the Nine-Nine's attempt to track down Adrian Pimento's hitman, the precinct drops everything when they suspect Holt is in danger.",
+            "airDate": "2016-04-19"
+          }
+        ]
       },
       {
         "seasonNumber": 4,
         "name": "Season 4",
         "episodeCount": 22,
         "posterUrl": "https://image.tmdb.org/t/p/w500/6fsr582nvms8E4ag3jb3oHL76en.jpg",
-        "overview": "While the Nine-Nine tries to keep a lid on things in Brooklyn, Jake and Holt are in a witness protection program in Florida, where Holt is thriving."
+        "overview": "Brooklyn Nine-Nine Season 4",
+        "episodes": [
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 1,
+            "title": "Coral Palms, Part 1",
+            "runtime": 30,
+            "overview": "Jake and Holt remain in Florida, adjusting to their new lives under the Witness Protection Program, while Jimmy \"The Butcher\" Figgis is still on the loose. Their one human link to their regular lives is U.S. Marshall Karen Haas, but their anonymity may be in danger...",
+            "airDate": "2016-09-20"
+          },
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 2,
+            "title": "Coral Palms, Part 2",
+            "runtime": 30,
+            "overview": "After Jimmy \"The Butcher\" Figgis sees Jake and Holt's viral video, the two begin plotting their attack. However, they are forced to experience the other side of the interrogation table when caught red-handed. Back at the precinct, a questionable new Captain takes over.",
+            "airDate": "2016-09-27"
+          },
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 3,
+            "title": "Coral Palms, Part 3",
+            "runtime": 30,
+            "overview": "The team makes a road trip to Florida to try to help Jake and Holt take down Figgis. With an unforeseen injury and yet another interruption by Sheriff Reynolds, the plan doesn't follow through quite like they all had hoped. In the midst of the chaos, Jake and Amy share an awkward reunion.",
+            "airDate": "2016-10-04"
+          },
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 4,
+            "title": "The Night Shift",
+            "runtime": 30,
+            "overview": "As Jake struggles with his first case back at the precinct, he encounters Jess Day, who is visiting New York, and enlists her to help him find his suspect. Meanwhile, Holt researches ways to increase office morale and Amy tries to figure out why Rosa keeps taking such long breaks.",
+            "airDate": "2016-10-11"
+          },
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 5,
+            "title": "Halloween IV",
+            "runtime": 30,
+            "overview": "It's Halloween in the Nine-Nine, which can only mean one thing: heist time. This year, the squad members pull out all the stops in their quest to win the new defending title of \"Ultimate Detective Slash Genius.\" Lines are drawn and plans are made, but there can only be one reigning champion",
+            "airDate": "2016-10-18"
+          },
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 6,
+            "title": "Monster in the Closet",
+            "runtime": 30,
+            "overview": "Pimento and Rosa decide to pick up where they left off and get married, so the whole squad preps a perfect wedding under Amy's careful direction. Pimento enlists Jake and Gina to hunt for his grandmother's ruby earrings for Rosa to wear in the ceremony, but the universe has other plans for them.",
+            "airDate": "2016-11-15"
+          },
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 7,
+            "title": "Mr. Santiago",
+            "runtime": 30,
+            "overview": "At Amy's intricately planned Thanksgiving dinner, Jake goes \"full Santiago\" (binder and all) in order to impress her father, a former cop. With Jake and Amy's focus elsewhere, Charles is left on turkey duty and Holt helps Pimento cope after learning he can no longer work for the NYPD.",
+            "airDate": "2016-11-22"
+          },
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 8,
+            "title": "Skyfire Cycle",
+            "runtime": 30,
+            "overview": "When famous author DC Parlov receives death threats, Jake and Terry take the case, so that Terry can meet his lifelong hero. Back at the precinct, Gina forces her way into the Boyle clan of cousins in an attempt to choose the location of the annual Boyle family vacation. Meanwhile, Holt's anger peaks when Amy chooses Kevin's side in their argument about a math puzzle.",
+            "airDate": "2016-11-29"
+          },
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 9,
+            "title": "The Overmining",
+            "runtime": 30,
+            "overview": "Captain \"CJ\" is having major problems with a big case, and Jake and Holt find the motivation to help him out. Inside the precinct, war ensues when Terry enforces a green initiative and tells Gina to get rid of her precious space heater, while Rosa and Boyle take a break from the night shift to visit a foot massage parlor.",
+            "airDate": "2016-12-06"
+          },
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 10,
+            "title": "Captain Latvia",
+            "runtime": 30,
+            "overview": "Charles enlists Jake's help in tracking down his son's favorite toy for Christmas, and the pair finds themselves accidentally facing off against a Latvian criminal ring as a result. Back at the precinct, the team gears up for their annual Christmas carol competition against their sworn enemy: the MTA.",
+            "airDate": "2016-12-13"
+          },
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 11,
+            "title": "The Fugitive, Part 1",
+            "runtime": 30,
+            "overview": "A mass escape of convicts from a prison van in the streets of Brooklyn sends the entire squad on a manhunt. The only key witness? Former NFL running back Marshawn Lynch. Meanwhile, Jake and Amy place a bet on who can bring in the most escaped convicts - and the loser has to move into the winner's apartment. Then, with only one fugitive still on the loose, Jake enlists a surprising ally.",
+            "airDate": "2017-01-01"
+          },
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 12,
+            "title": "The Fugitive, Part 2",
+            "runtime": 30,
+            "overview": "With only one fugitive left on the loose after a mass escape of convicts from a prison van in the streets of Brooklyn that sent the entire squad on a manhunt, Jake enlists a surprising ally.",
+            "airDate": "2017-01-01"
+          },
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 13,
+            "title": "The Audit",
+            "runtime": 30,
+            "overview": "With the crime rate lowered, Brooklyn will be shutting down one of its precincts – permanently. The Nine-Nine is confident they will be evaluated fairly, until the official auditor turns out to be Amy's ex-boyfriend, Teddy. The whole squad then must band together to try to save the precinct.",
+            "airDate": "2017-04-11"
+          },
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 14,
+            "title": "Serve & Protect",
+            "runtime": 30,
+            "overview": "Terry's ex replaces Teddy in evaluating the precinct, but Jake and Rosa are distracted by a burglary case that occurred on the set of one of their favorite detective TV shows. As the rest of the Nine-Nine concentrate on the audit (and Terry's past relationship strategies), Jake and Rosa pass time with the series star and producer, who meddle in the case and charm Jake with the glamour of show business.",
+            "airDate": "2017-04-18"
+          },
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 15,
+            "title": "The Last Ride",
+            "runtime": 30,
+            "overview": "In what could be their last case as partners, Jake and Charles go to great extremes to apprehend a local bike thief. Terry shockingly isn't in the lead for \"Mr. Nine-Nine\" (the detective who has solved the most cases), leaving Rosa determined to boost his ego. Meanwhile, Amy spends some precious time with Holt.",
+            "airDate": "2017-04-25"
+          },
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 16,
+            "title": "Moo Moo",
+            "runtime": 30,
+            "overview": "Sergeant Jeffords is stopped by a fellow police officer while off-duty in his own neighborhood. When the incident escalates, Terry wants to file an official complaint against him, but Captain Holt has other ideas. Meanwhile, Jake and Amy get a glimpse into the difficulties of parenthood and answer some tough questions when they babysit Terry's kids.",
+            "airDate": "2017-05-02"
+          },
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 17,
+            "title": "Cop-Con",
+            "runtime": 30,
+            "overview": "The precinct packs up and heads to the Tri-State Police Officers' annual Cop-Con, which is usually the Nine-Nine's excuse for a big annual party. But the squad's fun is threatened this year when Holt asks them to be on their best behavior. Then, Amy suddenly vanishes hours before taking the Sergeant Exam, and it's up to Jake and Rosa to find her before it's too late.",
+            "airDate": "2017-05-09"
+          },
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 18,
+            "title": "Chasing Amy",
+            "runtime": 30,
+            "overview": "Amy suddenly vanishes hours before taking the Sergeant Exam, and it's up to Jake and Rosa to find her before it's too late.",
+            "airDate": "2017-05-09"
+          },
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 19,
+            "title": "Your Honor",
+            "runtime": 30,
+            "overview": "Captain Holt's mom seeks support from the precinct after her house is robbed. Meanwhile, Terry, Rosa and Boyle remodel the breakroom and Amy teaches Gina how to change her own car tire.",
+            "airDate": "2017-05-16"
+          },
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 20,
+            "title": "The Slaughterhouse",
+            "runtime": 30,
+            "overview": "Jake and Rosa try to earn the respect of their idol; Charles, Terry and Gina try to resolve Scully and Hitchcock's conflict.",
+            "airDate": "2017-05-16"
+          },
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 21,
+            "title": "The Bank Job",
+            "runtime": 30,
+            "overview": "As Jake and Rosa continue their search for a bank-robbing operation with Lieutenant Hawkins, they realize there's more to her team than meets the eye.",
+            "airDate": "2017-05-23"
+          },
+          {
+            "seasonNumber": 4,
+            "episodeNumber": 22,
+            "title": "Crime and Punishment",
+            "runtime": 30,
+            "overview": "Jake and Rosa are framed for a crime they didn't commit, it's up to the Nine-Nine to find a way to bust them out.",
+            "airDate": "2017-05-23"
+          }
+        ]
       },
       {
         "seasonNumber": 5,
         "name": "Season 5",
         "episodeCount": 22,
         "posterUrl": "https://image.tmdb.org/t/p/w500/dWOF2pJBNfunspM7PpVG6O9LWj3.jpg",
-        "overview": "After a nightmare stint in prison for a crime he didn't commit, Jake returns to the Nine-Nine, where personal and professional changes are afoot."
+        "overview": "Brooklyn Nine-Nine Season 5",
+        "episodes": [
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 1,
+            "title": "The Big House, Part 1",
+            "runtime": 30,
+            "overview": "Jake and Rosa assimilate to their new lives behind bars, but both are coping in very different ways. Jake bonds with his cellmate, Caleb, and is forced to join a prison gang led by notorious inmate Romero, in order to gain his protection. Meanwhile, in the women's prison, Rosa puts Holt and Terry to the test by having them complete outrageous favors for her. Back in the precinct, Amy and Charles are doing all they can to exonerate their colleagues.",
+            "airDate": "2017-09-26"
+          },
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 2,
+            "title": "The Big House, Part 2",
+            "runtime": 30,
+            "overview": "When the warden asks Jake to investigate Romero's drug smuggling operation, Jake and Caleb find themselves caught between the loyalty Jake has sworn to both of them. Meanwhile, Amy is offered a deal by a local mobster who claims he can prove that Hawkins is guilty, but Holt and the rest of the gang think they have a safer plan.",
+            "airDate": "2017-10-03"
+          },
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 3,
+            "title": "Kicks",
+            "runtime": 30,
+            "overview": "Now that he's officially back at the precinct and desperate to solve a real case, Jake finds a loophole to get out of his temporarily designated desk duty. Unfortunately, that loophole rests on his ability to pass an official evaluation performed by Holt. While Charles provides Jake with moral support, Terry and Amy help Rosa, who believes Pimento may be cheating on her.",
+            "airDate": "2017-10-10"
+          },
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 4,
+            "title": "HalloVeen",
+            "runtime": 30,
+            "overview": "The Nine-Nine embarks on its fifth annual Halloween Heist and, as usual, everybody has a plan and no one is safe. Relationships and friendships are tested as the title \"Amazing Human Slash Genius\" must be snagged by midnight, leaving everyone pitted against each other.",
+            "airDate": "2017-10-17"
+          },
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 5,
+            "title": "Bad Beat",
+            "runtime": 30,
+            "overview": "To track down the infamous arms dealer Dan \"Daniel\" Valdano, Jake and Terry go undercover at an illegal gambling club, but when Holt gets involved to coach the two in the art of poker, his addiction resurfaces. Meanwhile, Boyle buys a food truck that was formerly used in a brutal string of murders without telling his investor, Amy, and Hitchcock and Scully challenge Rosa to a \"Butt-lympics\".",
+            "airDate": "2017-11-07"
+          },
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 6,
+            "title": "The Venue",
+            "runtime": 30,
+            "overview": "The always unwelcome Vulture pops back into Jake and Amy's lives, threatening to swoop in and take something important away from them. Meanwhile, Boyle and Rosa must track down \"Sergeant Peanut Butter,\" the kidnapped NYPD horse that Charles envies, and Holt challenges Terry to be less image-conscious.",
+            "airDate": "2017-11-14"
+          },
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 7,
+            "title": "Two Turkeys",
+            "runtime": 30,
+            "overview": "Jake and Amy attempt to get their parents to bond over Thanksgiving dinner, but their first holiday together as a family does not go well. Meanwhile, at the precinct, Holt and Kevin's special Thanksgiving pie is stolen from his office and Holt searches through the ranks for the possible culprit.",
+            "airDate": "2017-11-21"
+          },
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 8,
+            "title": "Return to Skyfire",
+            "runtime": 30,
+            "overview": "When Terry's favorite author, DC Parlov, returns to the precinct because his latest manuscript was stolen, Terry and Jake convince Rosa to go undercover with them at a fantasy fiction convention to find the culprit. As drama ensues between Parlov and another writer, Terry admits that he's been writing a book of his own. Back at the precinct, Holt, Amy and Charles take a forensics course, but Charles' big mouth gets him in trouble.",
+            "airDate": "2017-11-28"
+          },
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 9,
+            "title": "99",
+            "runtime": 30,
+            "overview": "While the entire precinct attends a funeral in LA, Holt learns that he is in the running to become Chief Commissioner of the NYPD - his dream job. But after missing their flight back to New York, Jake must devise a variety of ways to get Holt back in time for the interview. Forced to stay with some estranged members of the Boyle family, Amy tries to convince everyone that she can be laid back, Terry panics about losing his first-class flight and Charles uncovers some new information about Rosa's personal life.",
+            "airDate": "2017-12-05"
+          },
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 10,
+            "title": "Game Night",
+            "runtime": 30,
+            "overview": "Rosa begs Jake to help her break some big news to her parents, but her plan is thrown off when they wrongly assume the two are dating. Gina returns to help the 99 get their internet access back from the Cyber Crimes division.",
+            "airDate": "2017-12-12"
+          },
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 11,
+            "title": "The Favor",
+            "runtime": 30,
+            "overview": "When Seamus Murphy returns to redeem the favor Holt owes him, the precinct searches for a loophole that will allow Holt to uphold his end of the bargain without breaking the law.",
+            "airDate": "2017-12-12"
+          },
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 12,
+            "title": "Safe House",
+            "runtime": 30,
+            "overview": "After Seamus threatens Kevin, Holt devises an elaborate plan to hide him in a safe house, with Jake as his guard. Kevin is miserable as the 99 works overtime to find Seamus and take him down.",
+            "airDate": "2018-03-18"
+          },
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 13,
+            "title": "The Negotiation",
+            "runtime": 30,
+            "overview": "Jake is called upon to negotiate a hostage situation with a jewel thief, only to discover that the culprit seems to be a familiar face. Amy and Gina help Charles with the high demands of his new food truck, and Holt panics when a member of the Police Commissioner selection committee decides to interview Hitchcock about Holt.",
+            "airDate": "2018-03-25"
+          },
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 14,
+            "title": "The Box",
+            "runtime": 30,
+            "overview": "Jake embarks on an all-night long interrogation in order to elicit a confession out of a suspect. But when Captain Holt skips the opera in order to stay back and help, the two cops clash over how to get him to talk.",
+            "airDate": "2018-04-01"
+          },
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 15,
+            "title": "The Puzzle Master",
+            "runtime": 30,
+            "overview": "Jake surprises Amy with an investigation into a string of arsons connected to her favorite crossword puzzle author, Vin Stermley. Meanwhile, Gina helps Holt jazz up his Commissioner candidate speech, and Terry, Rosa, Hitchcock and Scully argue over who is most deserving of the new detective car.",
+            "airDate": "2018-04-08"
+          },
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 16,
+            "title": "NutriBoom",
+            "runtime": 30,
+            "overview": "Jake and Charles realize that they've been suckered into the cult-like NutriBoom pyramid scheme, and must find a way to sever their contracts.",
+            "airDate": "2018-04-15"
+          },
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 17,
+            "title": "DFW",
+            "runtime": 30,
+            "overview": "Jake invites his newly discovered half-sister to stay with him in New York, but when he and Amy realize she's a bit of a nightmare, they must find a way to get her back home to Dallas.",
+            "airDate": "2018-04-15"
+          },
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 18,
+            "title": "Gray Star Mutual",
+            "runtime": 30,
+            "overview": "When a fire destroys Charles' food truck, Pimento unexpectedly shows up to the scene as the insurance agent. Meanwhile, Rosa helps Amy to see that it's okay to get excited about picking her wedding dress, and Gina and Terry coach Holt in the art of social media.",
+            "airDate": "2018-04-22"
+          },
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 19,
+            "title": "Bachelor/ette Party",
+            "runtime": 30,
+            "overview": "Charles plans an elaborate scavenger hunt for Jake's bachelor party, but the day goes awry when the guys decide to take some shortcuts instead. Meanwhile, Amy's bachelorette party escalates when the ladies realize she previously slept with a member of her soon-to-be wedding band.",
+            "airDate": "2018-04-29"
+          },
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 20,
+            "title": "Show Me Going",
+            "runtime": 30,
+            "overview": "When Rosa responds to an active shooter alert, the rest of the squad is forced to stay back, desperately fearing for her safety. Feeling helpless, Jake frantically brainstorms ways to offer his assistance, Terry faces an existential crisis and Gina and Amy try to make themselves useful by fixing Rosa's broken toilet.",
+            "airDate": "2018-05-06"
+          },
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 21,
+            "title": "White Whale",
+            "runtime": 30,
+            "overview": "Rosa and Amy team up to take down their \"white whale\" suspect - a ruthless killer who has managed to elude them for seven years - while Terry helps Jake tackle his wedding planning chores. Then, Captain Holt and his rival, Olivia Crawford, try to convince each other to step down in the campaign for Commissioner.",
+            "airDate": "2018-05-13"
+          },
+          {
+            "seasonNumber": 5,
+            "episodeNumber": 22,
+            "title": "Jake & Amy",
+            "runtime": 30,
+            "overview": "Jake and Amy's wedding day is majorly threatened, and Charles and the whole squad rush to help save it. Amidst the chaos, Holt hesitates to open the email that will indicate if he has won his campaign for Commissioner, despite Gina's encouragement. Meanwhile, Terry gently pushes Rosa towards a potential love interest.",
+            "airDate": "2018-05-20"
+          }
+        ]
       },
       {
         "seasonNumber": 6,
         "name": "Season 6",
         "episodeCount": 18,
         "posterUrl": "https://image.tmdb.org/t/p/w500/xa9xA4Ieju9cyVkfJ47n1hnbHWB.jpg",
-        "overview": "As Jake and Amy adjust to married life and Holt squares off with a rival, the hijinks, heists and crime-fighting continue at the Nine-Nine."
+        "overview": "Brooklyn Nine-Nine Season 6",
+        "episodes": [
+          {
+            "seasonNumber": 6,
+            "episodeNumber": 1,
+            "title": "Honeymoon",
+            "runtime": 30,
+            "overview": "Jake and Amy go on their honeymoon. Capt. Holt finds out whether he is the new commissioner of the NYPD.",
+            "airDate": "2019-01-10"
+          },
+          {
+            "seasonNumber": 6,
+            "episodeNumber": 2,
+            "title": "Hitchcock & Scully",
+            "runtime": 30,
+            "overview": "Jake and Charles investigate a case of Hitchcock and Scully from the 1980s. Meanwhile, Amy's uniformed officers and Terry's detectives fight over limited resources.",
+            "airDate": "2019-01-17"
+          },
+          {
+            "seasonNumber": 6,
+            "episodeNumber": 3,
+            "title": "The Tattler",
+            "runtime": 30,
+            "overview": "Jake and Gina attend their 20th high school reunion. Back at the Nine-Nine, Charles helps Rosa with her love life.",
+            "airDate": "2019-01-24"
+          },
+          {
+            "seasonNumber": 6,
+            "episodeNumber": 4,
+            "title": "Four Movements",
+            "runtime": 30,
+            "overview": "Gina plays a high-stakes game of chess with Captain Holt. Rosa and Amy take Gina out for a fancy brunch. Jake and Gina must use their wits to infiltrate a posh club.",
+            "airDate": "2019-01-31"
+          },
+          {
+            "seasonNumber": 6,
+            "episodeNumber": 5,
+            "title": "A Tale of Two Bandits",
+            "runtime": 30,
+            "overview": "Terry believes the Pontiac Bandit is stealing cars again, but Jake is convinced his friend wouldn't do that. The rest of the squad fight to keep Shaw's a police bar after some firemen stake their claim to it.",
+            "airDate": "2019-02-07"
+          },
+          {
+            "seasonNumber": 6,
+            "episodeNumber": 6,
+            "title": "The Crime Scene",
+            "runtime": 30,
+            "overview": "Jake and Rosa must deal with a mother in mourning as they work and rework a crime scene in order to solve a difficult murder case with confusing evidence.",
+            "airDate": "2019-02-14"
+          },
+          {
+            "seasonNumber": 6,
+            "episodeNumber": 7,
+            "title": "The Honeypot",
+            "runtime": 30,
+            "overview": "Jake and Holt clash over the merits of a new hire in the 99th precinct. Terry, Amy, Rosa and Charles try to do something about the cluttered bullpen.",
+            "airDate": "2019-02-21"
+          },
+          {
+            "seasonNumber": 6,
+            "episodeNumber": 8,
+            "title": "He Said, She Said",
+            "runtime": 30,
+            "overview": "Jake and Amy investigate a difficult \"he said, she said\" case. Holt becomes suspicious after learning his lifelong arch nemesis died in a prison transport accident.",
+            "airDate": "2019-02-28"
+          },
+          {
+            "seasonNumber": 6,
+            "episodeNumber": 9,
+            "title": "The Golden Child",
+            "runtime": 30,
+            "overview": "Jake helps Amy navigate the complicated relationship she has with her brother, David. Charles introduces some drama into an undercover mission involving Terry and Holt.",
+            "airDate": "2019-03-07"
+          },
+          {
+            "seasonNumber": 6,
+            "episodeNumber": 10,
+            "title": "Gintars",
+            "runtime": 30,
+            "overview": "A visitor from Latvia causes Charles and Jake to investigate Nikolaj's family. Holt and Amy bring in famed forensic scientist Dr. Yee to help close a case for Rosa.",
+            "airDate": "2019-03-14"
+          },
+          {
+            "seasonNumber": 6,
+            "episodeNumber": 11,
+            "title": "The Therapist",
+            "runtime": 30,
+            "overview": "Charles brings Jake into a case when a therapist reports one of his patient's missing. Holt finds out Rosa has a new girlfriend that everyone else has met. Amy believes she has accidentally received a package meant for Terry.",
+            "airDate": "2019-03-21"
+          },
+          {
+            "seasonNumber": 6,
+            "episodeNumber": 12,
+            "title": "Casecation",
+            "runtime": 30,
+            "overview": "Work is so busy for Jake and Amy that they end up celebrating their anniversary while standing guard over a comatose patient in the hospital.",
+            "airDate": "2019-04-11"
+          },
+          {
+            "seasonNumber": 6,
+            "episodeNumber": 13,
+            "title": "The Bimbo",
+            "runtime": 30,
+            "overview": "Holt and Jake investigate a case at Kevin's university. Back at the precinct, Terry and Amy take the squad out for lunch.",
+            "airDate": "2019-04-18"
+          },
+          {
+            "seasonNumber": 6,
+            "episodeNumber": 14,
+            "title": "Ticking Clocks",
+            "runtime": 30,
+            "overview": "In an episode that takes place in real time, Jake and the squad must track down a hacker who has infiltrated the Nine-Nine's servers. Rosa deals with relationship issues. Hitchcock and Scully attempt to cook the perfect lasagna.",
+            "airDate": "2019-04-25"
+          },
+          {
+            "seasonNumber": 6,
+            "episodeNumber": 15,
+            "title": "Return of the King",
+            "runtime": 30,
+            "overview": "When Gina returns to the Nine-Nine, Jake and Terry get drawn into her life. Holt learns that Charles's son, Nikolaj, may be a genius. Rosa copes with an injury.",
+            "airDate": "2019-05-02"
+          },
+          {
+            "seasonNumber": 6,
+            "episodeNumber": 16,
+            "title": "Cinco de Mayo",
+            "runtime": 30,
+            "overview": "In order to distract Terry from the stress of his upcoming lieutenant's exam, Jake, Holt and the squad decide to hold the annual Halloween Heist on a new date, Cinco de Mayo.",
+            "airDate": "2019-05-09"
+          },
+          {
+            "seasonNumber": 6,
+            "episodeNumber": 17,
+            "title": "Sicko",
+            "runtime": 30,
+            "overview": "Jake and Charles investigate a dangerous serial killer. Holt continues to spar with his rival, Commissioner Kelly. Terry finds out about whether or not he has passed the lieutenant's exam.",
+            "airDate": "2019-05-16"
+          },
+          {
+            "seasonNumber": 6,
+            "episodeNumber": 18,
+            "title": "Suicide Squad",
+            "runtime": 30,
+            "overview": "Desperate circumstances call for desperate measures, as Jake, Holt, Amy, Terry, Rosa and Charles must ally themselves with old enemies",
+            "airDate": "2019-05-16"
+          }
+        ]
       },
       {
         "seasonNumber": 7,
         "name": "Season 7",
         "episodeCount": 13,
         "posterUrl": "https://image.tmdb.org/t/p/w500/kJUpn3xnymCbdxInyZVGFW5vGYR.jpg",
-        "overview": "Jake and Amy rethink their family plans, Holt chafes over his demotion, and the squad sees the return of old pals and nemeses amid the usual shenanigans."
+        "overview": "Brooklyn Nine-Nine Season 7",
+        "episodes": [
+          {
+            "seasonNumber": 7,
+            "episodeNumber": 1,
+            "title": "Manhunter",
+            "runtime": 30,
+            "overview": "Jake leads a manhunt after an assassination attempt on a city councilor. Holt adjusts to his new position as a uniformed officer.",
+            "airDate": "2020-02-06"
+          },
+          {
+            "seasonNumber": 7,
+            "episodeNumber": 2,
+            "title": "Captain Kim",
+            "runtime": 30,
+            "overview": "A new captain at the Nine-Nine attempts to ingratiate herself with Jake and the squad by inviting them over to her house for a dinner party.",
+            "airDate": "2020-02-06"
+          },
+          {
+            "seasonNumber": 7,
+            "episodeNumber": 3,
+            "title": "Pimemento",
+            "runtime": 30,
+            "overview": "Adrian Pimento shows up unexpectedly to seek Jake and Charles' help after claiming someone is trying to kill him. The rest of the squad endures a Workplace Conflict seminar.",
+            "airDate": "2020-02-13"
+          },
+          {
+            "seasonNumber": 7,
+            "episodeNumber": 4,
+            "title": "The Jimmy Jab Games II",
+            "runtime": 30,
+            "overview": "Competitive juices are flowing as Jake and the squad compete in the second Jimmy Jab Games.",
+            "airDate": "2020-02-20"
+          },
+          {
+            "seasonNumber": 7,
+            "episodeNumber": 5,
+            "title": "Debbie",
+            "runtime": 30,
+            "overview": "When cocaine and weapons are stolen from the evidence lock-up, the squad must investigate the Nine-Nine itself.",
+            "airDate": "2020-02-27"
+          },
+          {
+            "seasonNumber": 7,
+            "episodeNumber": 6,
+            "title": "Trying",
+            "runtime": 30,
+            "overview": "Jake and Amy work an uncrackable case while Holt adjusts to a new beat. Hitchcock looks for the love of his life.",
+            "airDate": "2020-03-05"
+          },
+          {
+            "seasonNumber": 7,
+            "episodeNumber": 7,
+            "title": "Ding Dong",
+            "runtime": 30,
+            "overview": "Captain Holt deals with a personal loss. Jake must decide whether to take Terry or Charles to an exclusive event.",
+            "airDate": "2020-03-12"
+          },
+          {
+            "seasonNumber": 7,
+            "episodeNumber": 8,
+            "title": "The Takeback",
+            "runtime": 30,
+            "overview": "Doug Judy is back and this time things between him and Jake are personal. Amy and Charles try to find the perfect new vending machine for the Nine-Nine.",
+            "airDate": "2020-03-19"
+          },
+          {
+            "seasonNumber": 7,
+            "episodeNumber": 9,
+            "title": "Dillman",
+            "runtime": 30,
+            "overview": "When a prank goes disastrously awry, things at the Nine-Nine take a distinctly Agatha Christie turn.",
+            "airDate": "2020-03-26"
+          },
+          {
+            "seasonNumber": 7,
+            "episodeNumber": 10,
+            "title": "Admiral Peralta",
+            "runtime": 30,
+            "overview": "Jake and his father deal with unsettled family business. Amy and Rosa work a high-profile case. Terry wants to join the NYPD band.",
+            "airDate": "2020-04-02"
+          },
+          {
+            "seasonNumber": 7,
+            "episodeNumber": 11,
+            "title": "Valloweaster",
+            "runtime": 30,
+            "overview": "The squad competes in an effort to determine who is the greatest human/genius.",
+            "airDate": "2020-04-09"
+          },
+          {
+            "seasonNumber": 7,
+            "episodeNumber": 12,
+            "title": "Ransom",
+            "runtime": 30,
+            "overview": "Holt asks for Jake's help in a case that is exceptionally meaningful to him. Charles and Terry work together on a side business.",
+            "airDate": "2020-04-16"
+          },
+          {
+            "seasonNumber": 7,
+            "episodeNumber": 13,
+            "title": "Lights Out",
+            "runtime": 30,
+            "overview": "The entire squad is on high alert when a massive blackout hits Brooklyn.",
+            "airDate": "2020-04-23"
+          }
+        ]
       },
       {
         "seasonNumber": 8,
         "name": "Season 8",
-        "episodeCount": 9,
+        "episodeCount": 10,
         "posterUrl": "https://image.tmdb.org/t/p/w500/8PmhuCEB9W3Cc5ZDJunnV1m68IZ.jpg",
-        "overview": "Jake and the squad must try to balance their personal lives and their professional lives over the course of a very difficult year."
+        "overview": "Brooklyn Nine-Nine Season 8",
+        "episodes": [
+          {
+            "seasonNumber": 8,
+            "episodeNumber": 1,
+            "title": "The Good Ones",
+            "runtime": 30,
+            "overview": "Amy returns from maternity leave. Jake and Rosa work a difficult case.",
+            "airDate": "2021-08-12"
+          },
+          {
+            "seasonNumber": 8,
+            "episodeNumber": 2,
+            "title": "The Lake House",
+            "runtime": 30,
+            "overview": "The squad takes up Holt on an offer for a weekend getaway.",
+            "airDate": "2021-08-12"
+          },
+          {
+            "seasonNumber": 8,
+            "episodeNumber": 3,
+            "title": "Blue Flu",
+            "runtime": 30,
+            "overview": "Capt. Holt and Amy manage an understaffed precinct. Jake and Charles investigate.",
+            "airDate": "2021-08-19"
+          },
+          {
+            "seasonNumber": 8,
+            "episodeNumber": 4,
+            "title": "Balancing",
+            "runtime": 30,
+            "overview": "Jake and Amy create a system to balance work and childcare. Rosa gets a new houseguest.",
+            "airDate": "2021-08-19"
+          },
+          {
+            "seasonNumber": 8,
+            "episodeNumber": 5,
+            "title": "PB & J",
+            "runtime": 30,
+            "overview": "Jake takes an old friend for a ride.",
+            "airDate": "2021-08-26"
+          },
+          {
+            "seasonNumber": 8,
+            "episodeNumber": 6,
+            "title": "The Set Up",
+            "runtime": 30,
+            "overview": "When the FBI takes over a high-profile case, Jake keeps digging. Amy and Rosa negotiate with O'Sullivan and the police union.",
+            "airDate": "2021-08-26"
+          },
+          {
+            "seasonNumber": 8,
+            "episodeNumber": 7,
+            "title": "Game of Boyles",
+            "runtime": 30,
+            "overview": "Terry, Jake and Charles visit the Boyle Family Farm. Amy and Rosa help out Capt. Holt.",
+            "airDate": "2021-09-02"
+          },
+          {
+            "seasonNumber": 8,
+            "episodeNumber": 8,
+            "title": "Renewal",
+            "runtime": 30,
+            "overview": "The squad comes together to work an important high-stakes case.",
+            "airDate": "2021-09-02"
+          },
+          {
+            "seasonNumber": 8,
+            "episodeNumber": 9,
+            "title": "The Last Day (1)",
+            "runtime": 30,
+            "overview": "The squad take stock of their eight years together and look toward their future.",
+            "airDate": "2021-09-16"
+          },
+          {
+            "seasonNumber": 8,
+            "episodeNumber": 10,
+            "title": "The Last Day (2)",
+            "runtime": 30,
+            "overview": "The squad take stock of their eight years together and look toward their future.",
+            "airDate": "2021-09-16"
+          }
+        ]
       }
     ]
   },

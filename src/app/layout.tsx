@@ -19,6 +19,7 @@ import { Inter } from "next/font/google";
 import { AuthProvider } from "@/lib/auth-context";
 import { JournalProvider } from "@/lib/journal-context";
 import { ThemeProvider } from "@/lib/theme-context";
+import GradientCursorTracker from "@/components/GradientCursorTracker";
 import "./globals.css";
 
 /**
@@ -39,6 +40,15 @@ export const metadata: Metadata = {
   title: "COUCH CRITICS — Personal Movie & TV Journal",
   description:
     "Track episodes, curate your backlog, and analyze your viewing metrics. Your personal movie and TV show journal.",
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    shortcut: "/icon.png",
+    apple: "/apple-icon.png",
+  },
   referrer: "no-referrer",
 };
 
@@ -63,7 +73,15 @@ export default function RootLayout({
          */}
         <ThemeProvider>
           <AuthProvider>
-            <JournalProvider>{children}</JournalProvider>
+            <JournalProvider>
+              <div className="ambient-orbs" aria-hidden="true">
+                <div className="ambient-orb orb-crimson" />
+                <div className="ambient-orb orb-violet" />
+                <div className="ambient-orb orb-blue" />
+              </div>
+              <GradientCursorTracker />
+              {children}
+            </JournalProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

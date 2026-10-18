@@ -80,12 +80,21 @@ export async function GET(request: NextRequest) {
     const platforms: StreamingPlatform[] = [];
     const seenPlatformIds = new Set<string>();
 
-    // Process subscription (flatrate) first, then free, then rent/buy
+    // Process subscription (flatrate) first, then free, then rent/buy.
+    // For TV series, if flatrate subscription is available, exclude per-episode rent/buy to show true availability.
+    const hasStreaming =
+      (regionData.flatrate && regionData.flatrate.length > 0) ||
+      (regionData.free && regionData.free.length > 0);
+
     const rawProviders = [
       ...(regionData.flatrate || []).map((p: any) => ({ ...p, category: "subscription" })),
       ...(regionData.free || []).map((p: any) => ({ ...p, category: "free" })),
-      ...(regionData.rent || []).map((p: any) => ({ ...p, category: "rent" })),
-      ...(regionData.buy || []).map((p: any) => ({ ...p, category: "buy" })),
+      ...(!hasStreaming || mediaType === "movie"
+        ? [
+            ...(regionData.rent || []).map((p: any) => ({ ...p, category: "rent" })),
+            ...(regionData.buy || []).map((p: any) => ({ ...p, category: "buy" })),
+          ]
+        : []),
     ];
 
     for (const raw of rawProviders) {

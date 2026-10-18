@@ -185,32 +185,32 @@ export default function SearchModal({
      * itself — clicks inside it don't bubble up to close the backdrop.
      */
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-md animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-2xl max-h-[85vh] rounded-t-2xl sm:rounded-2xl glass-card shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300"
+        className="w-full max-w-2xl max-h-[85vh] rounded-t-2xl sm:rounded-2xl glass-card shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300 border border-[#292932]"
         style={{
-          boxShadow: "0 0 80px rgba(245, 158, 11, 0.06), 0 20px 60px rgba(0, 0, 0, 0.5)",
+          boxShadow: "0 20px 60px rgba(0, 0, 0, 0.7)",
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* ── Header (warm search bar) ──────────────────────── */}
-        <div className="flex items-center gap-3 p-4 border-b border-purple-500/10">
-          <Search className="w-5 h-5 text-purple-400/60" />
+        {/* ── Header (search bar) ──────────────────────── */}
+        <div className="flex items-center gap-3 p-4 border-b border-[#292932]">
+          <Search className="w-5 h-5 text-[#A1A1AA]" />
           <input
             ref={inputRef}
             type="text"
             placeholder="Search movies & TV shows..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="flex-1 bg-transparent text-white placeholder-zinc-500 outline-none text-lg"
+            className="flex-1 bg-transparent text-white placeholder-[#A1A1AA]/50 outline-none text-lg"
             id="search-input"
           />
           {query && (
             <button
               onClick={() => setQuery("")}
-              className="p-1 rounded-md text-zinc-500 hover:text-zinc-300 hover:bg-white/5 transition-colors"
+              className="p-1 rounded-md text-[#A1A1AA] hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
               aria-label="Clear search"
             >
               <X className="w-4 h-4" />
@@ -218,7 +218,7 @@ export default function SearchModal({
           )}
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-white/5 text-zinc-500 hover:text-white transition-colors"
+            className="p-1.5 rounded-lg hover:bg-white/5 text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
             aria-label="Close search"
           >
             <X className="w-5 h-5" />
@@ -228,14 +228,14 @@ export default function SearchModal({
         {/* ── Results ────────────────────────────────────────── */}
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {isLoading && (
-            <div className="flex items-center justify-center py-12 text-purple-400/60">
-              <Loader2 className="w-6 h-6 animate-spin mr-2" />
-              <span className="text-zinc-400">Searching TMDB...</span>
+            <div className="flex items-center justify-center py-12 text-[#A1A1AA]">
+              <Loader2 className="w-6 h-6 animate-spin mr-2 text-[#E50914]" />
+              <span className="text-[#A1A1AA]">Searching TMDB...</span>
             </div>
           )}
 
           {error && (
-            <div className="flex items-center gap-2 py-4 px-3 rounded-lg bg-red-500/8 border border-red-500/15 text-red-400 text-sm">
+            <div className="flex items-center gap-2 py-4 px-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
               <CircleAlert className="w-4 h-4 shrink-0" />
               {error}
             </div>
@@ -250,11 +250,11 @@ export default function SearchModal({
               return (
                 <div
                   key={movie.tmdbId}
-                  className="flex gap-3 p-3 rounded-xl glass-card glass-card-hover transition-all duration-200 group stagger-item"
+                  className="flex gap-3 p-3 rounded-xl glass-card glass-card-hover border border-[#292932] transition-all duration-200 group stagger-item"
                   style={{ animationDelay: `${idx * 40}ms` }}
                 >
                   {/* Poster thumbnail */}
-                  <div className="w-16 h-24 rounded-lg overflow-hidden shrink-0 bg-stone-900 border border-stone-800/40 group-hover:shadow-lg group-hover:shadow-purple-500/10 transition-shadow">
+                  <div className="w-16 h-24 rounded-lg overflow-hidden shrink-0 bg-[#0B0B0F] border border-[#292932] group-hover:shadow-lg transition-shadow">
                     <MovieImage
                       src={movie.posterUrl}
                       alt={`${movie.title} poster`}
@@ -272,12 +272,12 @@ export default function SearchModal({
                         {movie.title}
                       </h3>
                       {movie.mediaType === "tv" ? (
-                        <Tv className="w-3.5 h-3.5 text-purple-300/60 shrink-0" />
+                        <Tv className="w-3.5 h-3.5 text-[#A1A1AA] shrink-0" />
                       ) : (
-                        <Film className="w-3.5 h-3.5 text-purple-400/60 shrink-0" />
+                        <Film className="w-3.5 h-3.5 text-[#A1A1AA] shrink-0" />
                       )}
                     </div>
-                    <p className="text-sm text-zinc-400">
+                    <p className="text-sm text-[#A1A1AA]">
                       {movie.releaseYear}
                       {movie.genres.length > 0 &&
                         ` · ${movie.genres.slice(0, 3).join(", ")}`}
@@ -290,7 +290,7 @@ export default function SearchModal({
                         variant="compact"
                       />
                     </div>
-                    <p className="text-xs text-zinc-600 line-clamp-2 mt-1">
+                    <p className="text-xs text-stone-500 line-clamp-2 mt-1">
                       {movie.overview}
                     </p>
                   </div>
@@ -298,7 +298,7 @@ export default function SearchModal({
                   {/* Add buttons */}
                   <div className="flex flex-col gap-1.5 shrink-0">
                     {isAlreadyAdded ? (
-                      <span className="text-xs text-purple-400 bg-purple-400/10 px-2.5 py-1.5 rounded-lg border border-purple-400/15">
+                      <span className="text-xs text-[#F5C542] bg-white/5 px-2.5 py-1.5 rounded-lg border border-[#292932]">
                         Added ✓
                       </span>
                     ) : (
@@ -306,7 +306,7 @@ export default function SearchModal({
                         <button
                           onClick={() => handleAddMovie(movie, defaultShelf)}
                           disabled={addingId === movie.tmdbId}
-                          className="flex items-center gap-1 text-xs bg-purple-500/15 hover:bg-purple-500/25 text-purple-300 px-2.5 py-1.5 rounded-lg transition-all border border-purple-500/20 disabled:opacity-50"
+                          className="flex items-center gap-1 text-xs bg-[#E50914] hover:bg-[#FF3B3B] text-white font-semibold px-2.5 py-1.5 rounded-lg transition-all shadow-md shadow-black/40 disabled:opacity-50 cursor-pointer"
                         >
                           {addingId === movie.tmdbId ? (
                             <Loader2 className="w-3 h-3 animate-spin" />
@@ -323,9 +323,9 @@ export default function SearchModal({
                           <button
                             onClick={() => handleAddMovie(movie, "toWatch")}
                             disabled={addingId === movie.tmdbId}
-                            className="text-xs text-zinc-500 hover:text-purple-300 px-2.5 py-1 rounded-lg hover:bg-purple-500/10 transition-all flex items-center gap-1"
+                            className="text-xs text-[#A1A1AA] hover:text-white px-2.5 py-1 rounded-lg hover:bg-white/10 transition-all flex items-center gap-1 border border-transparent hover:border-[#292932] cursor-pointer"
                           >
-                            <BookmarkPlus className="w-3 h-3 text-purple-400" />
+                            <BookmarkPlus className="w-3 h-3 text-[#A1A1AA]" />
                             + To Watch
                           </button>
                         )}
@@ -333,7 +333,7 @@ export default function SearchModal({
                           <button
                             onClick={() => handleAddMovie(movie, "watching")}
                             disabled={addingId === movie.tmdbId}
-                            className="text-xs text-zinc-500 hover:text-purple-300 px-2.5 py-1 rounded-lg hover:bg-purple-500/10 transition-all flex items-center gap-1"
+                            className="text-xs text-[#A1A1AA] hover:text-white px-2.5 py-1 rounded-lg hover:bg-white/10 transition-all flex items-center gap-1 border border-transparent hover:border-[#292932] cursor-pointer"
                           >
                             <Plus className="w-3 h-3" />
                             + Watching
@@ -343,7 +343,7 @@ export default function SearchModal({
                           <button
                             onClick={() => handleAddMovie(movie, "watched")}
                             disabled={addingId === movie.tmdbId}
-                            className="text-xs text-zinc-500 hover:text-purple-300 px-2.5 py-1 rounded-lg hover:bg-purple-500/10 transition-all flex items-center gap-1"
+                            className="text-xs text-[#A1A1AA] hover:text-white px-2.5 py-1 rounded-lg hover:bg-white/10 transition-all flex items-center gap-1 border border-transparent hover:border-[#292932] cursor-pointer"
                           >
                             <Plus className="w-3 h-3" />
                             + Watched
@@ -358,12 +358,11 @@ export default function SearchModal({
 
           {!isLoading && !error && results.length === 0 && query === "" && (
             <div className="text-center py-16 text-zinc-500">
-              <div className="relative inline-block mb-4">
-                <Sparkles className="w-12 h-12 mx-auto text-purple-500/20 animate-float" />
-                <div className="absolute inset-0 w-12 h-12 mx-auto rounded-full bg-purple-500/5 blur-xl" />
+              <div className="w-14 h-14 mx-auto rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-center mb-4 text-[#A1A1AA]/70">
+                <Sparkles className="w-7 h-7 text-[#E50914]" />
               </div>
-              <p className="text-lg text-zinc-400">Search for a movie or TV show</p>
-              <p className="text-sm mt-1 text-zinc-600">
+              <p className="text-lg font-medium text-[#F5F5F5]">Search for a movie or TV show</p>
+              <p className="text-sm mt-1 text-[#A1A1AA]">
                 Results from The Movie Database (TMDB)
               </p>
             </div>
