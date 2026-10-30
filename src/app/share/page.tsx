@@ -211,7 +211,7 @@ export default function SharePage() {
 
             {/* Quick Metrics Cards */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 shrink-0">
-              <div className="p-3 sm:p-3.5 rounded-xl bg-[#15151F] border border-[#292932] text-center shadow-sm">
+              <div className="p-3 sm:p-3.5 rounded-xl bg-[#15151C] border border-[#292932] text-center shadow-sm">
                 <span className="text-[10px] font-mono text-emerald-400 font-bold block uppercase tracking-wider">
                   Watched
                 </span>
@@ -220,7 +220,7 @@ export default function SharePage() {
                 </span>
               </div>
 
-              <div className="p-3 sm:p-3.5 rounded-xl bg-[#15151F] border border-[#292932] text-center shadow-sm">
+              <div className="p-3 sm:p-3.5 rounded-xl bg-[#15151C] border border-[#292932] text-center shadow-sm">
                 <span className="text-[10px] font-mono text-red-400 font-bold block uppercase tracking-wider">
                   Watching
                 </span>
@@ -229,7 +229,7 @@ export default function SharePage() {
                 </span>
               </div>
 
-              <div className="p-3 sm:p-3.5 rounded-xl bg-[#15151F] border border-[#292932] text-center shadow-sm">
+              <div className="p-3 sm:p-3.5 rounded-xl bg-[#15151C] border border-[#292932] text-center shadow-sm">
                 <span className="text-[10px] font-mono text-amber-400 font-bold block uppercase tracking-wider">
                   To Watch
                 </span>
@@ -238,7 +238,7 @@ export default function SharePage() {
                 </span>
               </div>
 
-              <div className="p-3 sm:p-3.5 rounded-xl bg-[#15151F] border border-[#292932] text-center shadow-sm">
+              <div className="p-3 sm:p-3.5 rounded-xl bg-[#15151C] border border-[#292932] text-center shadow-sm">
                 <span className="text-[10px] font-mono text-yellow-400 font-bold block uppercase tracking-wider">
                   Avg Rating
                 </span>
@@ -255,7 +255,7 @@ export default function SharePage() {
       <section className="sticky top-[57px] z-30 w-full bg-[#0B0B0F]/95 backdrop-blur-md border-b border-[#292932]">
         <div className="max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row md:items-center justify-between gap-3">
           {/* Shelves Selector */}
-          <div className="flex items-center gap-1.5 p-1 bg-[#15151F] border border-[#292932] rounded-xl overflow-x-auto scrollbar-none">
+          <div className="flex items-center gap-1.5 p-1 bg-[#15151C] border border-[#292932] rounded-xl overflow-x-auto scrollbar-none">
             <button
               onClick={() => setActiveTab("all")}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shrink-0 cursor-pointer ${
@@ -314,7 +314,7 @@ export default function SharePage() {
                 placeholder="Filter titles or directors..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#15151F] border border-[#292932] rounded-xl pl-9 pr-8 py-1.5 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-amber-500/50"
+                className="w-full bg-[#15151C] border border-[#292932] rounded-xl pl-9 pr-8 py-1.5 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-amber-500/50"
               />
               {searchQuery && (
                 <button
@@ -327,7 +327,7 @@ export default function SharePage() {
             </div>
 
             {/* Media Type Filter */}
-            <div className="flex items-center gap-1 p-1 bg-[#15151F] border border-[#292932] rounded-xl shrink-0">
+            <div className="flex items-center gap-1 p-1 bg-[#15151C] border border-[#292932] rounded-xl shrink-0">
               <button
                 onClick={() => setTypeFilter("all")}
                 className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all ${
@@ -358,7 +358,7 @@ export default function SharePage() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="bg-[#15151F] border border-[#292932] text-zinc-300 rounded-xl px-2.5 py-1.5 text-xs font-mono focus:outline-none cursor-pointer"
+              className="bg-[#15151C] border border-[#292932] text-zinc-300 rounded-xl px-2.5 py-1.5 text-xs font-mono focus:outline-none cursor-pointer"
             >
               <option value="recent">Sort: Default</option>
               <option value="rating">Sort: Rating</option>
@@ -377,7 +377,7 @@ export default function SharePage() {
             <p className="text-sm text-zinc-400 font-mono">Loading shared journal...</p>
           </div>
         ) : sortedEntries.length === 0 ? (
-          <div className="p-16 text-center rounded-2xl bg-[#12131C] border border-[#292932] max-w-lg mx-auto">
+          <div className="p-16 text-center rounded-2xl bg-[#15151C] border border-[#292932] max-w-lg mx-auto">
             <Film className="w-10 h-10 text-zinc-600 mx-auto mb-3" />
             <h3 className="text-base font-bold text-white mb-1">No matching titles found</h3>
             <p className="text-xs text-zinc-400 mb-4">
@@ -405,10 +405,10 @@ export default function SharePage() {
                 <div
                   key={entry.id}
                   onClick={() => setSelectedEntry(entry)}
-                  className="group relative flex flex-col rounded-2xl bg-[#141520] border border-[#292932] overflow-hidden hover:border-amber-500/50 hover:shadow-xl hover:shadow-black/60 transition-all cursor-pointer"
+                  className="group relative flex flex-col rounded-2xl bg-[#15151C] border border-[#292932] overflow-hidden hover:border-amber-500/50 hover:shadow-xl hover:shadow-black/60 transition-all cursor-pointer"
                 >
                   {/* Poster Image */}
-                  <div className="relative aspect-[2/3] w-full bg-[#0A0B10] overflow-hidden">
+                  <div className="relative aspect-[2/3] w-full bg-[#0B0B0F] overflow-hidden">
                     {entry.tmdb.posterUrl ? (
                       <img
                         src={entry.tmdb.posterUrl}
@@ -417,7 +417,7 @@ export default function SharePage() {
                         loading="lazy"
                       />
                     ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center bg-[#151520] text-zinc-600">
+                      <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center bg-[#0B0B0F] text-zinc-600">
                         {isTv ? <Tv className="w-8 h-8 mb-2" /> : <Film className="w-8 h-8 mb-2" />}
                         <span className="text-[11px] font-mono">{entry.tmdb.title}</span>
                       </div>
@@ -506,7 +506,7 @@ export default function SharePage() {
                   </div>
 
                   {/* Info Box */}
-                  <div className="p-3 flex-1 flex flex-col justify-between space-y-1.5 bg-[#141520]">
+                  <div className="p-3 flex-1 flex flex-col justify-between space-y-1.5 bg-[#15151C]">
                     <div>
                       <h4 className="text-xs sm:text-sm font-bold text-white line-clamp-1 group-hover:text-amber-400 transition-colors">
                         {entry.tmdb.title}
@@ -550,11 +550,11 @@ export default function SharePage() {
           onClick={() => setSelectedEntry(null)}
         >
           <div
-            className="relative w-full max-w-xl bg-[#12131D] border border-[#292932] rounded-2xl overflow-hidden shadow-2xl text-white"
+            className="relative w-full max-w-xl bg-[#15151C] border border-[#292932] rounded-2xl overflow-hidden shadow-2xl text-white"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header / Backdrop Image */}
-            <div className="relative aspect-[16/9] w-full bg-[#0A0B10] overflow-hidden">
+            <div className="relative aspect-[16/9] w-full bg-[#0B0B0F] overflow-hidden">
               {selectedEntry.tmdb.posterUrl && (
                 <img
                   src={selectedEntry.tmdb.posterUrl}
@@ -562,7 +562,7 @@ export default function SharePage() {
                   className="w-full h-full object-cover filter blur-sm scale-110 opacity-40"
                 />
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#12131D] via-[#12131D]/60 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#15151C] via-[#15151C]/60 to-transparent" />
 
               <button
                 onClick={() => setSelectedEntry(null)}

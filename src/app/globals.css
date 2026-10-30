@@ -1493,3 +1493,229 @@ body {
   border-color: #E50914 !important;
   color: #E50914 !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Share Modal Styling (Dark + Daylight Light Mode)
+   ═══════════════════════════════════════════════════════════════ */
+
+.share-modal-card {
+  background: #15151C;
+  border-color: #292932;
+  color: #F5F5F5;
+}
+
+.scope-btn-inactive {
+  background: #15151C;
+  border-color: #292932;
+  color: #A1A1AA;
+}
+.scope-btn-inactive:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #FFFFFF;
+  border-color: #3D3D4C;
+}
+
+.scope-btn-active-all {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.5);
+  color: #FDE68A;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.scope-btn-active-watching {
+  background: rgba(229, 9, 20, 0.15);
+  border-color: rgba(229, 9, 20, 0.5);
+  color: #FCA5A5;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.scope-btn-active-toWatch {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.5);
+  color: #FDE68A;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.scope-btn-active-watched {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.5);
+  color: #6EE7B7;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.format-pill-active {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.format-pill-inactive {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #A1A1AA;
+}
+.format-pill-inactive:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #FFFFFF;
+}
+
+.social-share-btn {
+  background: #0B0B0F;
+  border-color: #292932;
+  color: #D4D4D8;
+}
+.social-share-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #FFFFFF;
+  border-color: #3D3D4C;
+}
+
+.close-btn {
+  background: transparent;
+  color: #A1A1AA;
+}
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #FFFFFF;
+}
+
+/* Light Mode Overrides for Share Modal */
+.light .share-modal-card {
+  background: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  color: #0F172A !important;
+  box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.18) !important;
+}
+
+.light .share-modal-card h2,
+.light .share-modal-card h3,
+.light .share-modal-card h4 {
+  color: #0F172A !important;
+}
+
+.light .share-modal-card .bg-\[\#0B0B0F\],
+.light .share-modal-card [class*="bg-[#0B0B0F]" i] {
+  background: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+.light .share-modal-card .bg-\[\#15151C\],
+.light .share-modal-card [class*="bg-[#15151C]" i] {
+  background: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+.light .share-modal-card .text-zinc-400,
+.light .share-modal-card .text-zinc-500 {
+  color: #64748B !important;
+}
+
+.light .share-modal-card input,
+.light .share-modal-card textarea {
+  background: #FFFFFF !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+.light .share-modal-card input:focus,
+.light .share-modal-card textarea:focus {
+  border-color: #E50914 !important;
+}
+
+.light .scope-btn-inactive {
+  background: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  color: #64748B !important;
+}
+
+.light .scope-btn-inactive:hover {
+  background: #F1F5F9 !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+
+.light .scope-btn-active-all {
+  background: #FEF3C7 !important;
+  border-color: #F59E0B !important;
+  color: #B45309 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 3px rgba(245, 158, 11, 0.2) !important;
+}
+
+.light .scope-btn-active-watching {
+  background: #FEE2E2 !important;
+  border-color: #EF4444 !important;
+  color: #B91C1C !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 3px rgba(239, 68, 68, 0.2) !important;
+}
+
+.light .scope-btn-active-toWatch {
+  background: #FEF3C7 !important;
+  border-color: #F59E0B !important;
+  color: #B45309 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 3px rgba(245, 158, 11, 0.2) !important;
+}
+
+.light .scope-btn-active-watched {
+  background: #DCFCE7 !important;
+  border-color: #10B981 !important;
+  color: #15803D !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 3px rgba(16, 185, 129, 0.2) !important;
+}
+
+.light .format-pill-active {
+  background: #0F172A !important;
+  border-color: #0F172A !important;
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.15) !important;
+}
+
+.light .format-pill-active * {
+  color: #FFFFFF !important;
+}
+
+.light .format-pill-inactive {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: #64748B !important;
+}
+
+.light .format-pill-inactive:hover {
+  background: rgba(15, 23, 42, 0.05) !important;
+  color: #0F172A !important;
+}
+
+.light .social-share-btn {
+  background: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  color: #0F172A !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06) !important;
+}
+
+.light .social-share-btn:hover {
+  background: #F8FAFC !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+.light .share-modal-card .close-btn {
+  background: #F1F5F9 !important;
+  color: #64748B !important;
+}
+
+.light .share-modal-card .close-btn:hover {
+  background: #E2E8F0 !important;
+  color: #0F172A !important;
+}
