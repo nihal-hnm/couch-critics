@@ -47,12 +47,15 @@ import {
   SlidersHorizontal,
   Tags,
   ArrowLeft,
+  Share2,
 } from "lucide-react";
 import { useJournal } from "@/lib/journal-context";
 import { useAuth } from "@/lib/auth-context";
 import type { Shelf, MovieEntry } from "@/lib/types";
 import SearchModal from "@/components/SearchModal";
 import AuthModal from "@/components/AuthModal";
+import ShareModal from "@/components/ShareModal";
+import type { ShareScope } from "@/lib/share-utils";
 import WatchingShelf from "@/components/WatchingShelf";
 import ToWatchShelf from "@/components/ToWatchShelf";
 import WatchedShelf from "@/components/WatchedShelf";
@@ -90,6 +93,8 @@ export default function Dashboard() {
   const [selectedGenre, setSelectedGenre] = useState<string>("all");
   const [genreShelfFilter, setGenreShelfFilter] = useState<"all" | "watching" | "toWatch" | "watched">("all");
   const [selectedDetailEntry, setSelectedDetailEntry] = useState<MovieEntry | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [shareScope, setShareScope] = useState<ShareScope>("all");
 
   const userMenuRef = useRef<HTMLDivElement>(null);
   const moreMenuRef = useRef<HTMLDivElement>(null);
@@ -347,6 +352,21 @@ export default function Dashboard() {
             aria-label="Close menu"
           >
             <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Drawer Share Action */}
+        <div className="p-3 border-b border-[#292932] bg-white/[0.02]">
+          <button
+            onClick={() => {
+              setIsBurgerMenuOpen(false);
+              setShareScope("all");
+              setIsShareModalOpen(true);
+            }}
+            className="w-full py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-amber-500/15 via-red-500/10 to-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-semibold flex items-center justify-center gap-2 hover:bg-amber-500/25 transition-all shadow-sm cursor-pointer"
+          >
+            <Share2 className="w-4 h-4 text-amber-400" />
+            <span>Share My Journal & Shelves</span>
           </button>
         </div>
 
@@ -922,6 +942,29 @@ export default function Dashboard() {
             >
               <Plus className="w-4 h-4" />
               <span className="hidden sm:inline">Add Title</span>
+            </button>
+
+            {/* Share Journal Button */}
+            <button
+              type="button"
+              onClick={() => {
+                const initialScope: ShareScope =
+                  activeNav === "watching"
+                    ? "watching"
+                    : activeNav === "toWatch"
+                      ? "toWatch"
+                      : activeNav === "watched"
+                        ? "watched"
+                        : "all";
+                setShareScope(initialScope);
+                setIsShareModalOpen(true);
+              }}
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl bg-[#15151C] hover:bg-[#1E1E26] border border-[#292932] hover:border-amber-500/40 text-[#A1A1AA] hover:text-[#F5F5F5] transition-all cursor-pointer shadow-sm group shrink-0"
+              title="Share your Journal (Watched, Watching, To Watch)"
+              aria-label="Share journal"
+            >
+              <Share2 className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform" />
+              <span className="text-xs hidden md:inline font-medium">Share</span>
             </button>
 
             {/* Theme Toggle */}
@@ -1625,6 +1668,14 @@ export default function Dashboard() {
         }
         isOpen={!!selectedDetailEntry}
         onClose={() => setSelectedDetailEntry(null)}
+      />
+
+      {/* ── Share Modal ─────────────────────────────────────────── */}
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        entries={entries}
+        initialScope={shareScope}
       />
     </div>
   );
