@@ -455,7 +455,7 @@ export default function WatchedShelf({
     <div className="space-y-6">
       {/* ── Control Bar: Media Filter, Search & Sorter ──────────────────────── */}
       <div className="glass-card p-4 rounded-2xl border border-[#292932] space-y-4">
-        {/* Top Row: Type Pills & Sorter */}
+        {/* Top Row: Type Tabs & Sorter */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           {/* Media Type Tabs (All | Movies | TV Series) */}
           {!hideMediaTypeFilter && (
@@ -469,7 +469,7 @@ export default function WatchedShelf({
                 }`}
               >
                 <span>All Titles</span>
-                <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-black/40 font-mono">
+                <span className="px-1.5 py-0.5 rounded-md text-[10px] bg-black/40 font-mono">
                   {totalCount}
                 </span>
               </button>
@@ -484,7 +484,7 @@ export default function WatchedShelf({
               >
                 <Film className="w-3.5 h-3.5 text-indigo-200" />
                 <span>Movies</span>
-                <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-black/40 font-mono">
+                <span className="px-1.5 py-0.5 rounded-md text-[10px] bg-black/40 font-mono">
                   {movieCount}
                 </span>
               </button>
@@ -499,7 +499,7 @@ export default function WatchedShelf({
               >
                 <Tv className="w-3.5 h-3.5 text-purple-200" />
                 <span>TV Series</span>
-                <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-black/40 font-mono">
+                <span className="px-1.5 py-0.5 rounded-md text-[10px] bg-black/40 font-mono">
                   {seriesCount}
                 </span>
               </button>
@@ -538,7 +538,7 @@ export default function WatchedShelf({
               </div>
             )}
 
-            {/* Sort Dropdown / Pills */}
+            {/* Sort Dropdown / Options */}
             <div className="flex items-center gap-1 bg-black/40 p-0.5 rounded-xl border border-[#292932]">
               <span className="text-[10px] font-bold text-[#A1A1AA] uppercase px-2">Sort:</span>
               {(
@@ -623,7 +623,7 @@ export default function WatchedShelf({
                   <Film className="w-4 h-4" />
                 </div>
                 <span>Watched Movies</span>
-                <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-white/5 text-[#A1A1AA] border border-[#292932]">
+                <span className="px-2 py-0.5 rounded-md text-xs font-mono bg-white/5 text-[#A1A1AA] border border-[#292932]">
                   {sortedMovies.length} {sortedMovies.length === 1 ? "film" : "films"}
                 </span>
               </h3>
@@ -648,7 +648,7 @@ export default function WatchedShelf({
                   <Tv className="w-4 h-4" />
                 </div>
                 <span>Completed TV Series</span>
-                <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-white/5 text-[#A1A1AA] border border-[#292932]">
+                <span className="px-2 py-0.5 rounded-md text-xs font-mono bg-white/5 text-[#A1A1AA] border border-[#292932]">
                   {sortedSeries.length} {sortedSeries.length === 1 ? "series" : "series"}
                 </span>
               </h3>

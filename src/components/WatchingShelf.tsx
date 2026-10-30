@@ -297,7 +297,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                     <div>
                       {/* Top Row: Badge + Floating Action Buttons */}
                       <div className="flex items-center justify-between gap-2 mb-2">
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#E50914]/12 border border-[#E50914]/25 backdrop-blur-sm shrink-0">
+                        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#E50914]/12 border border-[#E50914]/25 backdrop-blur-sm shrink-0">
                           <div className="w-1.5 h-1.5 rounded-full bg-[#E50914] animate-pulse" />
                           <span className="text-[10px] font-semibold text-[#E50914] uppercase tracking-wider flex items-center gap-1 whitespace-nowrap">
                             {isMovie ? <Film className="w-2.5 h-2.5" /> : <Tv className="w-2.5 h-2.5" />}
@@ -366,9 +366,9 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
               {/* ── Progress Section (Pinned to Bottom via mt-auto) ───────────────────────────── */}
               <div className="p-4 space-y-3 border-t border-white/[0.06] bg-black/20 backdrop-blur-sm mt-auto">
                 {/* Progress bar */}
-                <div className="w-full bg-[#0B0B0F] border border-white/10 rounded-full h-2 overflow-hidden p-0.5">
+                <div className="w-full bg-[#0B0B0F] border border-white/10 rounded-md h-2 overflow-hidden p-0.5">
                   <div
-                    className={`h-full rounded-full transition-all duration-500 ${
+                    className={`h-full rounded-sm transition-all duration-500 ${
                       !isMovie
                         ? "bg-gradient-to-r from-emerald-500 via-green-400 to-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
                         : "bg-gradient-to-r from-[#E50914] to-[#B20710]"

@@ -541,23 +541,27 @@ body {
 }
 
 /* ─── Genre Pill ─────────────────────────────────────────────────────────── */
-.genre-pill {
+.genre-pill,
+.genre-chip {
   transition: all 300ms ease;
   cursor: default;
 }
 
-.genre-pill:hover {
+.genre-pill:hover,
+.genre-chip:hover {
   border-color: #3D3D4C;
   transform: translateY(-1px);
 }
 
 /* ─── Analytics Genre Pill (interactive, clickable) ──────────────────────── */
-.analytics-genre-pill {
+.analytics-genre-pill,
+.analytics-genre-chip {
   cursor: pointer;
   user-select: none;
 }
 
-.analytics-genre-pill:active {
+.analytics-genre-pill:active,
+.analytics-genre-chip:active {
   transform: scale(0.97);
 }
 

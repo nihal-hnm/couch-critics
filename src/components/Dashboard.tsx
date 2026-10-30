@@ -5,7 +5,7 @@
  *
  * Features:
  *  - Main View: Exclusively focused on Currently Watching shows & movies
- *    with interactive episode-wise checklists, progress steppers, and filter pills.
+ *    with interactive episode-wise checklists, progress steppers, and filter chips.
  *  - Burger Bar (Slide-out Drawer): Houses the rest of the app:
  *    • To Watch (Backlog)
  *    • Watched Archive & Reviews
@@ -464,7 +464,7 @@ export default function Dashboard() {
                 </div>
                 <span className="text-left font-medium">Currently Watching</span>
               </div>
-              <span className={`px-2 py-0.5 rounded-full text-xs font-mono ${
+              <span className={`px-1.5 py-0.5 rounded-md text-xs font-mono ${
                 activeNav === "watching"
                   ? "bg-white/20 text-white"
                   : "bg-red-950/40 text-red-300 border border-red-500/25"
@@ -501,7 +501,7 @@ export default function Dashboard() {
                   </div>
                   <span>To Watch (Backlog)</span>
                 </div>
-                <span className={`px-2 py-0.5 rounded-full text-xs font-mono ${
+                <span className={`px-1.5 py-0.5 rounded-md text-xs font-mono ${
                   activeNav === "toWatch"
                     ? "bg-amber-500/25 text-amber-200 border border-amber-500/30"
                     : "bg-amber-950/40 text-amber-300 border border-amber-500/25"
@@ -535,7 +535,7 @@ export default function Dashboard() {
                   <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-950/40 text-emerald-300/80 border border-emerald-500/20" title="Movies & Shows breakdown">
                     {watchedMovies.length}M · {watchedSeries.length}S
                   </span>
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-mono ${
+                  <span className={`px-1.5 py-0.5 rounded-md text-xs font-mono ${
                     activeNav === "watched"
                       ? "bg-emerald-500/25 text-emerald-200 border border-emerald-500/30"
                       : "bg-emerald-950/40 text-emerald-300 border border-emerald-500/25"
@@ -566,7 +566,7 @@ export default function Dashboard() {
                   </div>
                   <span>All Movies</span>
                 </div>
-                <span className={`px-2 py-0.5 rounded-full text-xs font-mono ${
+                <span className={`px-1.5 py-0.5 rounded-md text-xs font-mono ${
                   activeNav === "movies"
                     ? "bg-indigo-500/25 text-indigo-200 border border-indigo-500/30"
                     : "bg-indigo-950/40 text-indigo-300 border border-indigo-500/25"
@@ -596,7 +596,7 @@ export default function Dashboard() {
                   </div>
                   <span>All TV Series</span>
                 </div>
-                <span className={`px-2 py-0.5 rounded-full text-xs font-mono ${
+                <span className={`px-1.5 py-0.5 rounded-md text-xs font-mono ${
                   activeNav === "series"
                     ? "bg-purple-500/25 text-purple-200 border border-purple-500/30"
                     : "bg-purple-950/40 text-purple-300 border border-purple-500/25"
@@ -626,7 +626,7 @@ export default function Dashboard() {
                   </div>
                   <span>Browse by Genre</span>
                 </div>
-                <span className={`px-2 py-0.5 rounded-full text-xs font-mono ${
+                <span className={`px-1.5 py-0.5 rounded-md text-xs font-mono ${
                   activeNav === "genres"
                     ? "bg-orange-500/25 text-orange-200 border border-orange-500/30"
                     : "bg-orange-950/40 text-orange-300 border border-orange-500/25"
@@ -664,7 +664,7 @@ export default function Dashboard() {
                   </div>
                   <span>Watch Analytics</span>
                 </div>
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${
+                <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-mono ${
                   activeNav === "stats"
                     ? "bg-cyan-500/25 text-cyan-200 border border-cyan-500/30 font-bold"
                     : "bg-cyan-950/40 text-cyan-300 border border-cyan-500/25"
@@ -694,7 +694,7 @@ export default function Dashboard() {
                   </div>
                   <span>My Favorites</span>
                 </div>
-                <span className={`px-2 py-0.5 rounded-full text-xs font-mono ${
+                <span className={`px-1.5 py-0.5 rounded-md text-xs font-mono ${
                   activeNav === "favorites"
                     ? "bg-rose-500/25 text-rose-200 border border-rose-500/30"
                     : "bg-rose-950/40 text-rose-300 border border-rose-500/25"
@@ -724,7 +724,7 @@ export default function Dashboard() {
                   </div>
                   <span>My Journey</span>
                 </div>
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${
+                <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-mono ${
                   activeNav === "journey"
                     ? "bg-yellow-500/25 text-yellow-200 border border-yellow-500/30"
                     : "bg-yellow-950/40 text-yellow-300 border border-yellow-500/25"
@@ -970,7 +970,7 @@ export default function Dashboard() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase bg-[#E50914]/15 text-[#E50914] border border-[#E50914]/30 shadow-sm shadow-[#E50914]/10">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[10px] font-bold tracking-widest uppercase bg-[#E50914]/15 text-[#E50914] border border-[#E50914]/30 shadow-sm shadow-[#E50914]/10">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#E50914] animate-pulse" />
                   In Progress
                 </span>
@@ -1352,7 +1352,7 @@ export default function Dashboard() {
                 }`}
               >
                 <span>All Genres</span>
-                <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-black/40 font-mono">
+                <span className="px-1.5 py-0.5 rounded-md text-[10px] bg-black/40 font-mono">
                   {entries.length}
                 </span>
               </button>
@@ -1368,7 +1368,7 @@ export default function Dashboard() {
                   }`}
                 >
                   <span>{genre}</span>
-                  <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-black/40 font-mono">
+                  <span className="px-1.5 py-0.5 rounded-md text-[10px] bg-black/40 font-mono">
                     {count}
                   </span>
                 </button>
@@ -1450,7 +1450,7 @@ export default function Dashboard() {
                 No titles found in {selectedGenre === "all" ? "this filter" : `"${selectedGenre}"`}
               </h3>
               <p className="text-xs text-[#A1A1AA] mt-1 max-w-sm mx-auto">
-                Try switching the shelf filter or selecting another genre from the pills above.
+                Try switching the shelf filter or selecting another genre from the tags above.
               </p>
               <div className="mt-4 flex items-center justify-center gap-2">
                 <button
@@ -1581,7 +1581,7 @@ export default function Dashboard() {
       {/* ── Floating Action Button (Mobile) ──────────────────────── */}
       <button
         onClick={() => setIsSearchOpen(true)}
-        className="fixed bottom-6 right-6 sm:hidden p-4 bg-[#E50914] hover:bg-[#FF3B3B] text-white rounded-full shadow-2xl shadow-black/60 transition-all z-30 cursor-pointer active:scale-95"
+        className="fixed bottom-6 right-6 sm:hidden p-4 bg-[#E50914] hover:bg-[#FF3B3B] text-white rounded-2xl shadow-2xl shadow-black/60 transition-all z-30 cursor-pointer active:scale-95"
         aria-label="Add title"
       >
         <Plus className="w-6 h-6" />
@@ -1672,7 +1672,7 @@ function TopReturnBanner({
         <ArrowLeft className="w-3.5 h-3.5 text-[#E50914]" />
         <span>Back to Currently Watching</span>
         {watchingCount > 0 && (
-          <span className="px-2 py-0.5 rounded-full bg-[#E50914]/20 text-[#E50914] text-[10px] font-bold">
+          <span className="px-1.5 py-0.5 rounded-md bg-[#E50914]/20 text-[#E50914] text-[10px] font-bold">
             {watchingCount}
           </span>
         )}

@@ -7,7 +7,7 @@
  *  ─ Time-period toggle: All-Time / This Year / This Month
  *  ─ Metric stat cards: Hours Watched, Episodes, Movies, Shows
  *  ─ Granular Episode-Wise Watching Data: TV series progress bars & episode logs
- *  ─ Interactive genre filter pills with active states
+ *  ─ Interactive genre filter chips with active states
  *  ─ Genre distribution bar chart with percentage shares
  *  ─ Filtered watch history grid with clickable cards
  *  ─ Full MediaDetailModal integration for viewing and updating entries
@@ -199,7 +199,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
               <div>
                 <h3 className="text-base font-bold text-white flex items-center gap-2">
                   Watch Time Calculation
-                  <span className="text-xs font-normal text-[#A1A1AA] bg-white/5 px-2 py-0.5 rounded-full border border-[#292932]">
+                  <span className="text-xs font-normal text-[#A1A1AA] bg-white/5 px-2 py-0.5 rounded-md border border-[#292932]">
                     {analytics.totalWatchTimeMins.toLocaleString()} total mins
                   </span>
                 </h3>
@@ -221,7 +221,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
           </div>
 
           {/* Dual Proportional Split Bar */}
-          <div className="w-full bg-[#0B0B0F] rounded-full h-3 overflow-hidden flex border border-[#292932]">
+          <div className="w-full bg-[#0B0B0F] rounded-lg h-3 overflow-hidden flex border border-[#292932]">
             <div
               className="h-full bg-indigo-500 transition-all duration-500"
               style={{
@@ -293,7 +293,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
                 <div>
                   <h3 className="text-base font-bold text-white flex items-center gap-2">
                     Episode-Wise Watching Breakdown
-                    <span className="text-xs font-normal text-[#A1A1AA] bg-white/5 px-2 py-0.5 rounded-full border border-[#292932]">
+                    <span className="text-xs font-normal text-[#A1A1AA] bg-white/5 px-2 py-0.5 rounded-md border border-[#292932]">
                       {analytics.totalEpisodesWatched} episodes total
                     </span>
                   </h3>
@@ -363,9 +363,9 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
                             {show.percentComplete}%
                           </span>
                         </div>
-                        <div className="w-full bg-[#0B0B0F] rounded-full h-2 overflow-hidden border border-[#292932]">
+                        <div className="w-full bg-[#0B0B0F] rounded-md h-2 overflow-hidden border border-[#292932]">
                           <div
-                            className="h-full bg-gradient-to-r from-emerald-500 via-green-400 to-emerald-400 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.4)]"
+                            className="h-full bg-gradient-to-r from-emerald-500 via-green-400 to-emerald-400 rounded-sm shadow-[0_0_8px_rgba(16,185,129,0.4)]"
                             style={{ width: `${show.percentComplete}%` }}
                           />
                         </div>
@@ -432,7 +432,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
               </span>
             </div>
 
-            {/* ── Genre Pills (clickable) ────────────────────────── */}
+            {/* ── Genre Chips (clickable) ────────────────────────── */}
             <div className="flex flex-wrap gap-2 mb-5">
               {genreList.slice(0, 14).map(({ genre, count, percentage }) => (
                 <button
@@ -440,7 +440,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
                   id={`genre-pill-${genre.replace(/\s+/g, "-").toLowerCase()}`}
                   onClick={() => handleGenreClick(genre)}
                   className={`
-                    analytics-genre-pill group flex items-center gap-2 px-3 py-1.5 rounded-full text-sm
+                    analytics-genre-pill group flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm
                     transition-all duration-200 border cursor-pointer
                     ${
                       selectedGenre === genre
@@ -489,9 +489,9 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
                   >
                     {genre}
                   </span>
-                  <div className="flex-1 h-5 bg-[#0B0B0F] rounded-full overflow-hidden border border-[#292932]">
+                  <div className="flex-1 h-4 bg-[#0B0B0F] rounded-md overflow-hidden border border-[#292932]">
                     <div
-                      className="h-full rounded-full transition-all duration-700 ease-out"
+                      className="h-full rounded-sm transition-all duration-700 ease-out"
                       style={{
                         width: `${(count / maxGenreCount) * 100}%`,
                         backgroundColor:

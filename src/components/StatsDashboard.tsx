@@ -214,9 +214,9 @@ export default function StatsDashboard({ entries }: StatsDashboardProps) {
                 <span className="text-xs text-[#A1A1AA] w-28 truncate text-right group-hover/bar:text-white transition-colors">
                   {genre}
                 </span>
-                <div className="flex-1 h-5 bg-[#0B0B0F] rounded-full overflow-hidden border border-[#292932]">
+                <div className="flex-1 h-4 bg-[#0B0B0F] rounded-md overflow-hidden border border-[#292932]">
                   <div
-                    className="h-full rounded-full transition-all duration-700 ease-out"
+                    className="h-full rounded-sm transition-all duration-700 ease-out"
                     style={{
                       width: `${(count / maxGenreCount) * 100}%`,
                       backgroundColor: idx === 0 ? "#E50914" : idx < 3 ? "#F5C542" : "#292932",

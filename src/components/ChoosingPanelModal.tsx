@@ -245,7 +245,7 @@ export default function ChoosingPanelModal({
           {/* Close button */}
           <button
             onClick={onClose}
-            className="absolute top-3.5 right-3.5 p-2 rounded-full bg-black/60 text-[#A1A1AA] hover:text-white hover:bg-black/90 transition-colors backdrop-blur-sm border border-[#292932] cursor-pointer z-20"
+            className="absolute top-3.5 right-3.5 p-2 rounded-xl bg-black/60 text-[#A1A1AA] hover:text-white hover:bg-black/90 transition-colors backdrop-blur-sm border border-[#292932] cursor-pointer z-20"
             aria-label="Close panel"
           >
             <X className="w-5 h-5" />
@@ -265,7 +265,7 @@ export default function ChoosingPanelModal({
 
             <div className="flex-1 min-w-0 pb-0.5">
               <div className="flex items-center gap-2 mb-1">
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wider uppercase bg-white/5 text-[#A1A1AA] border border-[#292932]">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold tracking-wider uppercase bg-white/5 text-[#A1A1AA] border border-[#292932]">
                   {isTV ? <Tv className="w-2.5 h-2.5" /> : <Film className="w-2.5 h-2.5" />}
                   {isTV ? "TV Series" : "Movie"}
                 </span>
@@ -323,7 +323,7 @@ export default function ChoosingPanelModal({
               </div>
 
               {currentShelf && (
-                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/5 text-[#A1A1AA] border border-[#292932] shrink-0">
+                <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-white/5 text-[#A1A1AA] border border-[#292932] shrink-0">
                   On Shelf: {getShelfLabel(currentShelf)}
                 </span>
               )}

@@ -603,7 +603,7 @@ export default function MediaDetailModal({
           {/* Close button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 rounded-full bg-black/60 text-stone-200 hover:text-white hover:bg-black/80 transition-colors backdrop-blur-md border border-white/10 cursor-pointer z-10"
+            className="absolute top-4 right-4 p-2 rounded-xl bg-black/60 text-stone-200 hover:text-white hover:bg-black/80 transition-colors backdrop-blur-md border border-white/10 cursor-pointer z-10"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
@@ -762,7 +762,7 @@ export default function MediaDetailModal({
                     <h4 className="text-base font-bold text-white tracking-tight">
                       All Seasons &amp; Episodes Tracker
                     </h4>
-                    <span className="text-[11px] font-semibold uppercase px-2 py-0.5 rounded-full bg-white/5 text-[#A1A1AA] border border-[#292932]">
+                    <span className="text-[11px] font-semibold uppercase px-2 py-0.5 rounded-md bg-white/5 text-[#A1A1AA] border border-[#292932]">
                       {seasonsList.length} Seasons
                     </span>
                   </div>
@@ -809,9 +809,9 @@ export default function MediaDetailModal({
                     {Math.round((watchedEpisodeCodes.size / (displayTotalEpisodes || 1)) * 100)}%
                   </span>
                 </div>
-                <div className="w-full bg-[#15151C] rounded-full h-3 overflow-hidden border border-[#292932]">
+                <div className="w-full bg-[#15151C] rounded-lg h-2.5 overflow-hidden border border-[#292932]">
                   <div
-                    className="h-full bg-gradient-to-r from-emerald-500 via-green-400 to-emerald-400 transition-all duration-300 shadow-[0_0_12px_rgba(16,185,129,0.5)] rounded-full"
+                    className="h-full bg-gradient-to-r from-emerald-500 via-green-400 to-emerald-400 transition-all duration-300 shadow-[0_0_12px_rgba(16,185,129,0.5)] rounded-md"
                     style={{
                       width: `${Math.min(100, Math.round((watchedEpisodeCodes.size / (displayTotalEpisodes || 1)) * 100))}%`,
                     }}
@@ -819,9 +819,9 @@ export default function MediaDetailModal({
                 </div>
               </div>
 
-              {/* Toolbar: Season Filter / Jump Pills + Global Batch Actions */}
+              {/* Toolbar: Season Filter / Jump Tabs + Global Batch Actions */}
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 bg-[#0B0B0F] p-3 rounded-xl border border-[#292932]">
-                {/* Season Quick Jump / Filter Pills */}
+                {/* Season Quick Jump / Filter Tabs */}
                 <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 max-w-full hide-scrollbar">
                   <button
                     type="button"
@@ -855,7 +855,7 @@ export default function MediaDetailModal({
                       >
                         <span>S{s.seasonNumber}</span>
                         <span
-                          className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                          className={`text-[10px] px-1.5 py-0.5 rounded-md font-bold ${
                             isSelected
                               ? "bg-white/20 text-white"
                               : "bg-[#0B0B0F] text-[#A1A1AA]"
@@ -1184,7 +1184,7 @@ export default function MediaDetailModal({
                 {entry.tmdb.genres.map((genre) => (
                   <span
                     key={genre}
-                    className="px-3 py-1 text-xs rounded-full bg-[#15151C] text-[#F5F5F5] border border-[#292932]"
+                    className="px-2.5 py-1 text-xs rounded-lg font-medium bg-[#15151C] text-[#F5F5F5] border border-[#292932] hover:border-[#3D3D4C] transition-colors"
                   >
                     {genre}
                   </span>
