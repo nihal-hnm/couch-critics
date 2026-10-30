@@ -58,7 +58,6 @@ import ToWatchShelf from "@/components/ToWatchShelf";
 import WatchedShelf from "@/components/WatchedShelf";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
 import MediaDetailModal from "@/components/MediaDetailModal";
-import ChoosingPanelModal from "@/components/ChoosingPanelModal";
 import ThemeToggle from "@/components/ThemeToggle";
 import { computeStats, formatWatchTime, formatDaysAndHours, formatHours } from "@/lib/stats";
 
@@ -74,7 +73,6 @@ export type NavKey =
   | "favorites";
 
 import Link from "next/link";
-import { SHOWCASE_MEDIA_ITEMS, type MarqueeMediaItem } from "@/lib/showcase-media";
 import { MovieImage } from "./common/MovieImage";
 import { getOptimizedImageUrl } from "@/lib/image-utils";
 
@@ -91,9 +89,7 @@ export default function Dashboard() {
   const [selectedGenre, setSelectedGenre] = useState<string>("all");
   const [genreShelfFilter, setGenreShelfFilter] = useState<"all" | "watching" | "toWatch" | "watched">("all");
   const [selectedDetailEntry, setSelectedDetailEntry] = useState<MovieEntry | null>(null);
-  const [selectedChoosingItem, setSelectedChoosingItem] = useState<(MarqueeMediaItem & { shelf?: Shelf; entry?: MovieEntry }) | null>(null);
 
-  const heroRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   // Close menus on outside click or Escape key
@@ -277,98 +273,6 @@ export default function Dashboard() {
       .sort((a, b) => (b.review?.rating ?? 0) - (a.review?.rating ?? 0))
       .slice(0, 20);
   }, [watched]);
-
-  // Moving Background Marquee: ONLY "To Watch" backlog titles (strictly excluding watched & watching)
-  const marqueeItems = useMemo(() => {
-    // 1. Set of all watched & currently watching titles/tmdbIds from the user's journal to strictly exclude them
-    const excludedTitleKeys = new Set(
-      entries
-        .filter((e) => e.shelf === "watched" || e.shelf === "watching")
-        .map((e) => e.tmdb?.title?.toLowerCase().trim())
-        .filter(Boolean)
-    );
-    const excludedTmdbIds = new Set(
-      entries
-        .filter((e) => (e.shelf === "watched" || e.shelf === "watching") && e.tmdb?.tmdbId)
-        .map((e) => e.tmdb.tmdbId)
-    );
-
-    // 2. User entries that are strictly on the "To Watch" shelf
-    const toWatchUserMedia: (MarqueeMediaItem & { shelf: Shelf; entry?: MovieEntry })[] = entries
-      .filter((e) => e.tmdb?.posterUrl && e.shelf === "toWatch")
-      .map((e) => ({
-        id: e.id,
-        title: e.tmdb.title,
-        mediaType: e.tmdb.mediaType,
-        posterUrl: e.tmdb.posterUrl!,
-        releaseYear: e.tmdb.releaseYear,
-        shelf: "toWatch",
-        entry: e,
-      }));
-
-    // 3. Showcase / catalog items that are NOT in watched and NOT in watching
-    const toWatchShowcase: (MarqueeMediaItem & { shelf: Shelf; entry?: MovieEntry })[] = [];
-    for (const item of SHOWCASE_MEDIA_ITEMS) {
-      const itemTitleKey = item.title.toLowerCase().trim();
-      const itemTmdbId = parseInt(item.id.replace("showcase-", ""), 10);
-
-      // Strictly exclude if the user is watching or has already watched this title
-      if (
-        excludedTitleKeys.has(itemTitleKey) ||
-        (!isNaN(itemTmdbId) && excludedTmdbIds.has(itemTmdbId))
-      ) {
-        continue;
-      }
-
-      // Check if user already has this in their toWatch media list
-      const alreadyInToWatch = toWatchUserMedia.some(
-        (m) =>
-          m.title.toLowerCase().trim() === itemTitleKey ||
-          (!isNaN(itemTmdbId) && m.entry?.tmdb?.tmdbId === itemTmdbId)
-      );
-
-      if (!alreadyInToWatch) {
-        toWatchShowcase.push({
-          ...item,
-          shelf: "toWatch",
-        });
-      }
-    }
-
-    const allItems = [...toWatchUserMedia, ...toWatchShowcase];
-    const seen = new Set<string>();
-    const uniqueItems: (MarqueeMediaItem & { shelf: Shelf; entry?: MovieEntry })[] = [];
-    for (const item of allItems) {
-      if (!seen.has(item.posterUrl)) {
-        seen.add(item.posterUrl);
-        uniqueItems.push(item);
-      }
-    }
-
-    // Interleave TV shows and movies for visual variety
-    const shows = uniqueItems.filter((i) => i.mediaType === "tv");
-    const movies = uniqueItems.filter((i) => i.mediaType === "movie");
-    const interleaved: typeof uniqueItems = [];
-    const maxLen = Math.max(shows.length, movies.length);
-    for (let i = 0; i < maxLen; i++) {
-      if (shows[i]) interleaved.push(shows[i]);
-      if (movies[i]) interleaved.push(movies[i]);
-    }
-
-    const baseList = interleaved.length > 0 ? interleaved : uniqueItems;
-    // Duplicate once for seamless infinite marquee loop
-    return [...baseList, ...baseList];
-  }, [entries]);
-
-  // Click on a marquee poster opens the Choosing Panel modal directly
-  const handleMarqueeItemClick = useCallback(
-    (item: MarqueeMediaItem & { shelf?: Shelf; entry?: MovieEntry }) => {
-      // Directly open the Choosing Panel for this title without any unwanted navigation
-      setSelectedChoosingItem(item);
-    },
-    []
-  );
-
 
   // Journey data — group by year
   const journeyYears = useMemo(() => {
@@ -812,7 +716,7 @@ export default function Dashboard() {
             {/* Burger Menu Button (Mobile & full catalog access) */}
             <button
               onClick={() => setIsBurgerMenuOpen(true)}
-              className="p-2 sm:px-2.5 sm:py-2 rounded-xl bg-[#15151C] hover:bg-[#1E1E26] border border-[#292932] hover:border-[#3D3D4C] text-[#F5F5F5] transition-all flex items-center gap-1.5 group shadow-sm cursor-pointer"
+              className="lg:hidden p-2 sm:px-2.5 sm:py-2 rounded-xl bg-[#15151C] hover:bg-[#1E1E26] border border-[#292932] hover:border-[#3D3D4C] text-[#F5F5F5] transition-all flex items-center gap-1.5 group shadow-sm cursor-pointer"
               aria-label="Open navigation menu"
               id="burger-menu-button"
               title="Open Navigation Menu"
@@ -1007,120 +911,70 @@ export default function Dashboard() {
         </div>
       </header>
 
-      {/* ══ CINEMATIC MOVING POSTERS HERO BANNER (Directly Below Sticky Header) ══ */}
-      <div
-        ref={heroRef}
-        className="relative overflow-hidden h-[170px] sm:h-[200px] border-b border-[#292932]/40"
-      >
-        {/* Dynamic moving background: infinite marquee loop */}
-        <div className="hero-marquee-wrapper" role="region" aria-label="Featured movie and TV posters">
-          <div className="hero-marquee-track-left">
-            {marqueeItems.map((item, idx) => (
-              <div
-                key={`m-${item.id}-${idx}`}
-                role="button"
-                tabIndex={0}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleMarqueeItemClick(item);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleMarqueeItemClick(item);
-                  }
-                }}
-                className="hero-poster-card w-24 sm:w-28 md:w-32 aspect-[2/3] mx-1.5 sm:mx-2 overflow-hidden bg-stone-900 rounded-xl cursor-pointer"
-                title={`Click to choose shelf: ${item.title}`}
-              >
-                <MovieImage
-                  src={item.posterUrl}
-                  alt={item.title}
-                  title={item.title}
-                  mediaType={item.mediaType}
-                  loading="eager"
-                  className="w-full h-full object-cover pointer-events-none"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Cinematic gradient scrims */}
-        <div className="absolute inset-0 hero-overlay-bottom pointer-events-none" />
-        <div className="absolute inset-0 hero-overlay-side pointer-events-none" />
-
-        {/* Ambient subtle cinema atmosphere */}
-        <div className="absolute top-0 left-1/4 w-[500px] h-[300px] bg-[#E50914]/[0.03] rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[250px] bg-black/40 rounded-full blur-[100px] pointer-events-none" />
-      </div>
-
       {/* ── Main Shelves Container Anchor ── */}
       <div id="shelves-main-content" className="scroll-mt-4" />
 
-      {/* ── Main Hero Content (Cleanly Positioned BELOW Moving Background) ── */}
-      {/* ── Main Hero Content (Cleanly Positioned BELOW Moving Background) ── */}
+      {/* ── Editorial Cinema Library Dashboard Banner ── */}
       {activeNav === "watching" && (
-        <div className="relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div className="relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-3">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-[#292932]/50">
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[10px] font-bold tracking-widest uppercase bg-[#E50914]/15 text-[#E50914] border border-[#E50914]/30 shadow-sm shadow-[#E50914]/10">
+              <div className="flex items-center gap-2 mb-2.5">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase bg-[#E50914]/15 text-[#E50914] border border-[#E50914]/30 shadow-sm">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#E50914] animate-pulse" />
                   In Progress
                 </span>
-                <span className="text-xs text-[#A1A1AA] font-medium">
+                <span className="text-xs text-zinc-400 font-medium">
                   &bull; {watching.length} {watching.length === 1 ? "title" : "titles"}
                 </span>
               </div>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-white text-glow tracking-tight">
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
                 Currently Watching
-              </h2>
-              <p className="text-[#A1A1AA] text-xs sm:text-sm mt-1 max-w-lg">
-                Track series episode by episode, log movie minutes, and keep your screen in sync.
+              </h1>
+              <p className="text-zinc-400 text-xs sm:text-sm mt-1.5 max-w-lg leading-relaxed">
+                Active series and feature films in progress. Track episode checklists, log runtimes, and resume playback.
               </p>
             </div>
 
-            {/* Quick Runtime Metrics Banner: Overall in days & hours, Series and Movies in hours */}
+            {/* Editorial Runtime Metrics */}
             {watching.length > 0 && (
-              <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-                {/* Overall Watch Time in Days & Hours */}
-                <div className="liquid-glass-card px-3.5 py-2 flex items-center gap-2.5">
-                  <div className="p-1.5 rounded-lg bg-[#E50914]/12 text-[#E50914]">
+              <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
+                {/* Overall Watch Time */}
+                <div className="bg-[#15151C]/90 border border-[#292932] hover:border-zinc-700/80 rounded-xl px-4 py-2.5 flex items-center gap-3 transition-colors shadow-sm">
+                  <div className="p-2 rounded-lg bg-[#E50914]/10 text-[#E50914] border border-[#E50914]/20">
                     <Clock className="w-4 h-4" />
                   </div>
                   <div>
-                    <div className="text-xs font-bold font-mono text-[#F5F5F5]">
+                    <div className="text-xs font-bold font-mono text-[#F5F5F5] tracking-tight">
                       {formatDaysAndHours(stats.totalWatchTimeMins)}
                     </div>
-                    <div className="text-[10px] text-[#A1A1AA]">Overall Time</div>
+                    <div className="text-[10px] font-medium uppercase tracking-wider text-zinc-400">Total Watch Time</div>
                   </div>
                 </div>
 
-                {/* Series Time in Hours */}
-                <div className="liquid-glass-card px-3.5 py-2 flex items-center gap-2.5">
-                  <div className="p-1.5 rounded-lg bg-[#E50914]/12 text-[#E50914]">
+                {/* Series Time */}
+                <div className="bg-[#15151C]/90 border border-[#292932] hover:border-zinc-700/80 rounded-xl px-4 py-2.5 flex items-center gap-3 transition-colors shadow-sm">
+                  <div className="p-2 rounded-lg bg-[#E50914]/10 text-[#E50914] border border-[#E50914]/20">
                     <Tv className="w-4 h-4" />
                   </div>
                   <div>
-                    <div className="text-xs font-bold font-mono text-[#F5F5F5]">
+                    <div className="text-xs font-bold font-mono text-[#F5F5F5] tracking-tight">
                       {formatHours(stats.seriesMinutes)}
                     </div>
-                    <div className="text-[10px] text-[#A1A1AA]">Series Time</div>
+                    <div className="text-[10px] font-medium uppercase tracking-wider text-zinc-400">Series Time</div>
                   </div>
                 </div>
 
-                {/* Movie Time in Hours */}
-                <div className="liquid-glass-card px-3.5 py-2 flex items-center gap-2.5">
-                  <div className="p-1.5 rounded-lg bg-[#E50914]/12 text-[#E50914]">
+                {/* Movie Time */}
+                <div className="bg-[#15151C]/90 border border-[#292932] hover:border-zinc-700/80 rounded-xl px-4 py-2.5 flex items-center gap-3 transition-colors shadow-sm">
+                  <div className="p-2 rounded-lg bg-[#E50914]/10 text-[#E50914] border border-[#E50914]/20">
                     <FilmIcon className="w-4 h-4" />
                   </div>
                   <div>
-                    <div className="text-xs font-bold font-mono text-[#F5F5F5]">
+                    <div className="text-xs font-bold font-mono text-[#F5F5F5] tracking-tight">
                       {formatHours(stats.movieMinutes)}
                     </div>
-                    <div className="text-[10px] text-[#A1A1AA]">Movie Time</div>
+                    <div className="text-[10px] font-medium uppercase tracking-wider text-zinc-400">Movie Time</div>
                   </div>
                 </div>
               </div>
@@ -1129,15 +983,15 @@ export default function Dashboard() {
 
           {/* Unified Filter Toolbar for Currently Watching */}
           {watching.length > 0 && (
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-6 pt-4 border-t border-white/[0.06]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4">
               {/* Type Segmented Control */}
-              <div className="inline-flex p-1 rounded-xl bg-white/[0.04] border border-white/[0.08] backdrop-blur-md">
+              <div className="inline-flex p-1 rounded-xl bg-[#15151C] border border-[#292932]">
                 <button
                   onClick={() => setWatchingTypeFilter("all")}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                     watchingTypeFilter === "all"
                       ? "bg-[#E50914] text-white shadow-sm"
-                      : "text-[#A1A1AA] hover:text-[#F5F5F5]"
+                      : "text-zinc-400 hover:text-white"
                   }`}
                 >
                   <Play className="w-3 h-3 fill-current" />
@@ -1148,7 +1002,7 @@ export default function Dashboard() {
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                     watchingTypeFilter === "tv"
                       ? "bg-[#E50914] text-white shadow-sm"
-                      : "text-[#A1A1AA] hover:text-[#F5F5F5]"
+                      : "text-zinc-400 hover:text-white"
                   }`}
                 >
                   <Tv className="w-3 h-3" />
@@ -1159,7 +1013,7 @@ export default function Dashboard() {
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                     watchingTypeFilter === "movie"
                       ? "bg-[#E50914] text-white shadow-sm"
-                      : "text-[#A1A1AA] hover:text-[#F5F5F5]"
+                      : "text-zinc-400 hover:text-white"
                   }`}
                 >
                   <FilmIcon className="w-3 h-3" />
@@ -1170,7 +1024,7 @@ export default function Dashboard() {
               {/* Genre Filter Chips */}
               {watchingGenres.length > 0 && (
                 <div className="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar">
-                  <span className="text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider shrink-0 mr-1 flex items-center gap-1">
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider shrink-0 mr-1 flex items-center gap-1">
                     <Tags className="w-3 h-3 text-[#E50914]" />
                     Genre:
                   </span>
@@ -1179,7 +1033,7 @@ export default function Dashboard() {
                     className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all shrink-0 cursor-pointer ${
                       watchingGenreFilter === "all"
                         ? "bg-white/15 text-white border border-white/20 font-semibold"
-                        : "text-[#A1A1AA] hover:text-[#F5F5F5] bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.08]"
+                        : "text-zinc-400 hover:text-white bg-[#15151C] border border-[#292932] hover:bg-[#1E1E26]"
                     }`}
                   >
                     All
@@ -1191,7 +1045,7 @@ export default function Dashboard() {
                       className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all shrink-0 cursor-pointer ${
                         watchingGenreFilter === genre
                           ? "bg-white/15 text-white border border-white/20 font-semibold"
-                          : "text-[#A1A1AA] hover:text-[#F5F5F5] bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.08]"
+                          : "text-zinc-400 hover:text-white bg-[#15151C] border border-[#292932] hover:bg-[#1E1E26]"
                       }`}
                     >
                       {genre} <span className="opacity-60 text-[10px]">({count})</span>
@@ -1713,14 +1567,6 @@ export default function Dashboard() {
         }
         isOpen={!!selectedDetailEntry}
         onClose={() => setSelectedDetailEntry(null)}
-      />
-
-      {/* ── Marquee Choosing Panel Modal ──────────────────────────── */}
-      <ChoosingPanelModal
-        item={selectedChoosingItem}
-        isOpen={!!selectedChoosingItem}
-        onClose={() => setSelectedChoosingItem(null)}
-        onOpenFullDetail={(entry) => setSelectedDetailEntry(entry)}
       />
     </div>
   );

@@ -19,7 +19,6 @@ import { Inter } from "next/font/google";
 import { AuthProvider } from "@/lib/auth-context";
 import { JournalProvider } from "@/lib/journal-context";
 import { ThemeProvider } from "@/lib/theme-context";
-import GradientCursorTracker from "@/components/GradientCursorTracker";
 import "./globals.css";
 
 /**
@@ -74,12 +73,6 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <JournalProvider>
-              <div className="ambient-orbs" aria-hidden="true">
-                <div className="ambient-orb orb-crimson" />
-                <div className="ambient-orb orb-violet" />
-                <div className="ambient-orb orb-blue" />
-              </div>
-              <GradientCursorTracker />
               {children}
             </JournalProvider>
           </AuthProvider>
