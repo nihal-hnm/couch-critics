@@ -1057,19 +1057,21 @@ body {
 
 /* Primary text in light mode */
 .light .text-white:not(
-  [class*="bg-[#E50914]"], [class*="bg-[#E50914]"] *,
-  [class*="bg-[#FF3B3B]"], [class*="bg-[#FF3B3B]"] *,
-  [class*="bg-red-"], [class*="bg-red-"] *,
-  [class*="bg-emerald-"], [class*="bg-emerald-"] *,
+  button[class*="bg-[#E50914]"], button[class*="bg-[#E50914]"] *,
+  button[class*="bg-[#FF3B3B]"], button[class*="bg-[#FF3B3B]"] *,
+  button[class*="bg-red-"], button[class*="bg-red-"] *,
+  button[class*="bg-emerald-600"], button[class*="bg-emerald-600"] *,
+  .bg-emerald-600, .bg-emerald-600 *,
   .keep-white, .keep-white *
 ),
 .light .text-\[\#F5F5F5\],
 .light .text-\[\#f5f5f5\],
 .light [class*="text-[#F5F5F5]" i]:not(
-  [class*="bg-[#E50914]"], [class*="bg-[#E50914]"] *,
-  [class*="bg-[#FF3B3B]"], [class*="bg-[#FF3B3B]"] *,
-  [class*="bg-red-"], [class*="bg-red-"] *,
-  [class*="bg-emerald-"], [class*="bg-emerald-"] *,
+  button[class*="bg-[#E50914]"], button[class*="bg-[#E50914]"] *,
+  button[class*="bg-[#FF3B3B]"], button[class*="bg-[#FF3B3B]"] *,
+  button[class*="bg-red-"], button[class*="bg-red-"] *,
+  button[class*="bg-emerald-600"], button[class*="bg-emerald-600"] *,
+  .bg-emerald-600, .bg-emerald-600 *,
   .keep-white, .keep-white *
 ) {
   color: #0F172A !important;
@@ -1093,13 +1095,37 @@ body {
 .light .text-\[\#A1A1AA\],
 .light .text-\[\#a1a1aa\],
 .light [class*="text-[#A1A1AA]" i]:not(
-  [class*="bg-[#E50914]"], [class*="bg-[#E50914]"] *,
-  [class*="bg-[#FF3B3B]"], [class*="bg-[#FF3B3B]"] *,
-  [class*="bg-red-"], [class*="bg-red-"] *,
-  [class*="bg-emerald-"], [class*="bg-emerald-"] *,
+  button[class*="bg-[#E50914]"], button[class*="bg-[#E50914]"] *,
+  button[class*="bg-[#FF3B3B]"], button[class*="bg-[#FF3B3B]"] *,
+  button[class*="bg-red-"], button[class*="bg-red-"] *,
+  button[class*="bg-emerald-600"], button[class*="bg-emerald-600"] *,
+  .bg-emerald-600, .bg-emerald-600 *,
   .keep-white, .keep-white *
 ) {
   color: #64748B !important;
+}
+
+/* Episode row titles and text in light mode — never mix into mint green */
+.light [class*="bg-emerald-"] .truncate,
+.light [class*="bg-emerald-"] .font-semibold:not(button, button *),
+.light [class*="bg-emerald-"] span:not(button, button *, [class*="bg-emerald-600"] *),
+.light [class*="bg-emerald-950"] .text-white,
+.light [class*="bg-emerald-500/"] .text-white,
+.light [class*="bg-emerald-950/"] .text-white {
+  color: #064E3B !important;
+}
+
+/* Modal hero banner close button */
+.light .modal-close-btn,
+.light button[aria-label="Close modal"] {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+}
+.light .modal-close-btn:hover,
+.light button[aria-label="Close modal"]:hover {
+  background-color: rgba(0, 0, 0, 0.85) !important;
+  color: #FFFFFF !important;
 }
 
 .light .text-stone-500:not([class*="bg-[#E50914]"] *, .keep-white *),

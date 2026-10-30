@@ -603,10 +603,10 @@ export default function MediaDetailModal({
           {/* Close button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 rounded-xl bg-black/60 text-stone-200 hover:text-white hover:bg-black/80 transition-colors backdrop-blur-md border border-white/10 cursor-pointer z-10"
+            className="modal-close-btn absolute top-4 right-4 p-2 rounded-xl bg-black/60 hover:bg-black/85 text-white hover:text-white transition-colors backdrop-blur-md border border-white/20 cursor-pointer z-10 keep-white"
             aria-label="Close modal"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5 text-white" />
           </button>
 
           {/* Media Info Overlay */}
@@ -687,7 +687,7 @@ export default function MediaDetailModal({
                 onClick={() => handleShelfChange("watched")}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   entry.shelf === "watched"
-                    ? "bg-white/15 text-white shadow-sm"
+                    ? "bg-[#E50914] text-white shadow-sm"
                     : "text-[#A1A1AA] hover:text-white"
                 }`}
               >
@@ -1062,8 +1062,8 @@ export default function MediaDetailModal({
                                     key={ep.episodeNumber}
                                     className={`p-3 sm:p-3.5 rounded-xl border transition-all ${
                                       isWatched
-                                        ? "bg-emerald-950/20 border-emerald-500/30 text-white"
-                                        : "bg-[#15151C]/60 border-[#292932] text-[#A1A1AA] hover:border-stone-700 hover:bg-[#15151C]"
+                                        ? "bg-emerald-500/10 dark:bg-emerald-950/20 border-emerald-500/30 text-emerald-950 dark:text-white"
+                                        : "bg-white/60 dark:bg-[#15151C]/60 border-stone-200 dark:border-[#292932] text-stone-700 dark:text-[#A1A1AA] hover:border-stone-400 dark:hover:border-stone-700 hover:bg-stone-50 dark:hover:bg-[#15151C]"
                                     }`}
                                   >
                                     <div className="flex items-center justify-between gap-3">
@@ -1076,23 +1076,25 @@ export default function MediaDetailModal({
                                           className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 transition-all cursor-pointer ${
                                             isWatched
                                               ? "bg-emerald-600 text-white font-bold"
-                                              : "border border-[#292932] hover:border-emerald-400 bg-[#0B0B0F]"
+                                              : "border border-stone-300 dark:border-[#292932] hover:border-emerald-500 bg-stone-100 dark:bg-[#0B0B0F]"
                                           }`}
                                           aria-label={isWatched ? `Mark episode ${ep.episodeNumber} unwatched` : `Mark episode ${ep.episodeNumber} watched`}
                                         >
-                                          {isWatched ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : null}
+                                          {isWatched ? <Check className="w-3.5 h-3.5 stroke-[3] text-white" /> : null}
                                         </button>
                                         <div
                                           className="min-w-0 flex-1 cursor-pointer flex items-center gap-2 flex-wrap"
                                           onClick={() => toggleOverview(epCode)}
                                           title={isOverviewOpen ? "Click to hide overview" : "Click to view overview"}
                                         >
-                                          <span className="text-emerald-400 font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/25 shrink-0">
+                                          <span className="text-emerald-700 dark:text-emerald-400 font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/25 shrink-0">
                                             E{ep.episodeNumber}
                                           </span>
                                           <span
                                             className={`text-sm font-semibold truncate ${
-                                              isWatched ? "text-white" : "text-stone-200"
+                                              isWatched
+                                                ? "text-emerald-950 dark:text-white"
+                                                : "text-stone-800 dark:text-stone-200"
                                             }`}
                                           >
                                             {ep.title}
@@ -1108,8 +1110,8 @@ export default function MediaDetailModal({
                                         <span
                                           className={`text-[10px] px-2 py-0.5 rounded font-semibold uppercase tracking-wider hidden xs:inline-block ${
                                             isWatched
-                                              ? "bg-[#E50914]/15 text-[#F5F5F5] border border-[#E50914]/40"
-                                              : "bg-stone-800 text-stone-500"
+                                              ? "bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30"
+                                              : "bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-500 border border-stone-200 dark:border-transparent"
                                           }`}
                                         >
                                           {isWatched ? "Watched" : "Unwatched"}
@@ -1124,15 +1126,15 @@ export default function MediaDetailModal({
                                           }}
                                           className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all border cursor-pointer ${
                                             isOverviewOpen
-                                              ? "bg-[#E50914]/15 text-[#F5F5F5] border-[#E50914]/40 shadow-sm"
-                                              : "bg-stone-800/80 text-stone-300 hover:text-white hover:bg-stone-700/80 border-stone-700/60"
+                                              ? "bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border-emerald-500/40 shadow-sm"
+                                              : "bg-stone-100 dark:bg-stone-800/80 text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white hover:bg-stone-200 dark:hover:bg-stone-700/80 border-stone-200 dark:border-stone-700/60"
                                           }`}
                                           title={isOverviewOpen ? "Collapse overview" : "Watch episode overview"}
                                         >
                                           <span>Overview</span>
                                           <ChevronDown
                                             className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                                              isOverviewOpen ? "rotate-180 text-[#E50914]" : "text-stone-400"
+                                              isOverviewOpen ? "rotate-180 text-emerald-700 dark:text-emerald-400" : "text-stone-500 dark:text-stone-400"
                                             }`}
                                           />
                                         </button>
@@ -1141,8 +1143,8 @@ export default function MediaDetailModal({
 
                                     {/* Overview Dropdown Content */}
                                     {isOverviewOpen && (
-                                      <div className="mt-3 pt-3 border-t border-stone-800/70 pl-8 pr-1 animate-in fade-in slide-in-from-top-1 duration-200">
-                                        <p className="text-xs text-stone-300 leading-relaxed">
+                                      <div className="mt-3 pt-3 border-t border-emerald-500/20 dark:border-stone-800/70 pl-8 pr-1 animate-in fade-in slide-in-from-top-1 duration-200">
+                                        <p className="text-xs text-stone-700 dark:text-stone-300 leading-relaxed">
                                           {ep.overview ? (
                                             ep.overview
                                           ) : (
