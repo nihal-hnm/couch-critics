@@ -216,13 +216,18 @@ export default function SearchModal({
               <X className="w-4 h-4" />
             </button>
           )}
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-white/5 text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
-            aria-label="Close search"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-1.5">
+            <kbd className="hidden sm:inline-flex text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[#A1A1AA]">
+              ESC
+            </kbd>
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-lg hover:bg-white/5 text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+              aria-label="Close search"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* ── Results ────────────────────────────────────────── */}

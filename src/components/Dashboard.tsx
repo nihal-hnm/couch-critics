@@ -108,6 +108,10 @@ export default function Dashboard() {
         setIsBurgerMenuOpen(false);
         setIsUserMenuOpen(false);
       }
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
     }
     document.addEventListener("mousedown", handleClickOutside);
     window.addEventListener("keydown", handleKeyDown);
@@ -800,14 +804,216 @@ export default function Dashboard() {
         </div>
       </aside>
 
-      {/* ══ CINEMATIC MOVING POSTERS HERO BANNER ═══════════════════ */}
+      {/* ══ STICKY TOP APP HEADER ═════════════════════════════════ */}
+      <header className="sticky top-0 z-40 w-full bg-[#0B0B0F]/90 backdrop-blur-xl border-b border-[#292932]/80 transition-colors">
+        <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 flex items-center justify-between gap-3 sm:gap-4">
+          {/* Left: Burger Menu + Brand Logo */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* Burger Menu Button (Mobile & full catalog access) */}
+            <button
+              onClick={() => setIsBurgerMenuOpen(true)}
+              className="p-2 sm:px-2.5 sm:py-2 rounded-xl bg-[#15151C] hover:bg-[#1E1E26] border border-[#292932] hover:border-[#3D3D4C] text-[#F5F5F5] transition-all flex items-center gap-1.5 group shadow-sm cursor-pointer"
+              aria-label="Open navigation menu"
+              id="burger-menu-button"
+              title="Open Navigation Menu"
+            >
+              <Menu className="w-4 h-4 text-[#A1A1AA] group-hover:text-[#F5F5F5] transition-colors" />
+              <span className="text-[11px] font-semibold tracking-wider uppercase hidden sm:inline text-[#A1A1AA] group-hover:text-[#F5F5F5]">
+                Menu
+              </span>
+            </button>
+
+            {/* Logo / Brand */}
+            <button
+              type="button"
+              onClick={() => setActiveNav("watching")}
+              className="flex items-center gap-2 sm:gap-2.5 cursor-pointer group text-left p-1 rounded-xl hover:bg-white/[0.03] transition-colors"
+            >
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden border border-white/10 shrink-0 bg-[#07070A] flex items-center justify-center shadow-sm group-hover:border-[#E50914]/40 transition-colors">
+                <img src="/icon.png" alt="Couch Critics" className="w-full h-full object-cover" />
+              </div>
+              <div className="hidden xs:block">
+                <h1 className="text-xs sm:text-sm font-bold text-[#F5F5F5] tracking-wider uppercase font-mono group-hover:text-[#E50914] transition-colors leading-tight">
+                  COUCH CRITICS
+                </h1>
+                <p className="text-[10px] font-medium tracking-widest uppercase leading-tight text-[#A1A1AA]">
+                  {activeNav === "watching" && <span className="text-[#FF3B3B]">Currently Watching</span>}
+                  {activeNav === "toWatch" && <span className="text-amber-400">To Watch Backlog</span>}
+                  {activeNav === "watched" && <span className="text-emerald-400">Watched Archive</span>}
+                  {activeNav === "movies" && <span className="text-indigo-400">Movies Catalog</span>}
+                  {activeNav === "series" && <span className="text-purple-400">Series Catalog</span>}
+                  {activeNav === "genres" && <span className="text-orange-400">Browse by Genre</span>}
+                  {activeNav === "stats" && <span className="text-cyan-400">Watch Analytics</span>}
+                  {activeNav === "journey" && <span className="text-yellow-400">My Journey</span>}
+                  {activeNav === "favorites" && <span className="text-rose-400">Favorites</span>}
+                </p>
+              </div>
+            </button>
+          </div>
+
+          {/* Center: Desktop Pro Navigation Bar */}
+          <nav
+            className="hidden lg:flex items-center gap-1 p-1 bg-[#15151C]/90 border border-[#292932] rounded-xl shadow-inner backdrop-blur-md"
+            aria-label="Primary Navigation"
+          >
+            <button
+              type="button"
+              onClick={() => setActiveNav("watching")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeNav === "watching"
+                  ? "bg-[#E50914] text-white shadow-sm font-bold"
+                  : "text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5"
+              }`}
+            >
+              <Play className="w-3.5 h-3.5 fill-current" />
+              <span>Watching</span>
+              <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono ${
+                activeNav === "watching" ? "bg-black/30 text-white" : "bg-white/10 text-stone-300"
+              }`}>
+                {watching.length}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveNav("toWatch")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeNav === "toWatch"
+                  ? "bg-amber-600 text-white shadow-sm font-bold"
+                  : "text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5"
+              }`}
+            >
+              <BookmarkPlus className="w-3.5 h-3.5" />
+              <span>To Watch</span>
+              <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono ${
+                activeNav === "toWatch" ? "bg-black/30 text-white" : "bg-white/10 text-stone-300"
+              }`}>
+                {toWatch.length}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveNav("watched")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeNav === "watched"
+                  ? "bg-emerald-600 text-white shadow-sm font-bold"
+                  : "text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5"
+              }`}
+            >
+              <Award className="w-3.5 h-3.5" />
+              <span>Archive</span>
+              <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono ${
+                activeNav === "watched" ? "bg-black/30 text-white" : "bg-white/10 text-stone-300"
+              }`}>
+                {watched.length}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveNav("stats")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeNav === "stats"
+                  ? "bg-cyan-600 text-white shadow-sm font-bold"
+                  : "text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5"
+              }`}
+            >
+              <BarChart3 className="w-3.5 h-3.5" />
+              <span>Analytics</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsBurgerMenuOpen(true)}
+              className="px-2.5 py-1.5 rounded-lg text-xs font-medium text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5 transition-all flex items-center gap-1 cursor-pointer"
+              title="More catalogs (Movies, TV Series, Genres, Journey, Favorites)"
+            >
+              <span>More</span>
+              <ChevronDown className="w-3 h-3 opacity-70" />
+            </button>
+          </nav>
+
+          {/* Right: Quick Search + Add Title + Theme + Auth */}
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+            {/* Quick Search Button with ⌘K Badge */}
+            <button
+              type="button"
+              onClick={() => setIsSearchOpen(true)}
+              className="flex items-center gap-2 px-2.5 sm:px-3 py-2 rounded-xl bg-[#15151C] hover:bg-[#1E1E26] border border-[#292932] hover:border-[#3D3D4C] text-[#A1A1AA] hover:text-[#F5F5F5] transition-all cursor-pointer shadow-sm group"
+              aria-label="Search movies and series"
+              title="Search TMDB (⌘K)"
+            >
+              <SearchIcon className="w-3.5 h-3.5 group-hover:text-white transition-colors" />
+              <span className="text-xs hidden sm:inline">Search...</span>
+              <kbd className="hidden md:inline-flex items-center text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[#A1A1AA] group-hover:text-white">
+                ⌘K
+              </kbd>
+            </button>
+
+            {/* Primary Add Title Button */}
+            <button
+              type="button"
+              onClick={() => setIsSearchOpen(true)}
+              className="flex items-center gap-1.5 px-3 sm:px-3.5 py-2 bg-[#E50914] hover:bg-[#FF3B3B] text-white text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-black/40 font-semibold cursor-pointer active:scale-95 shrink-0"
+              id="add-movie-button"
+            >
+              <Plus className="w-4 h-4" />
+              <span className="hidden sm:inline">Add Title</span>
+            </button>
+
+            {/* Theme Toggle */}
+            <ThemeToggle variant="button" />
+
+            {/* Auth: Login button or User avatar menu */}
+            {!authLoading && (
+              user ? (
+                <div className="user-menu-wrapper" ref={userMenuRef}>
+                  <button
+                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    className="user-avatar-btn cursor-pointer"
+                    id="user-menu-button"
+                    aria-label="User menu"
+                  >
+                    <div className="user-avatar-icon">{userInitial}</div>
+                    <ChevronDown className="w-3.5 h-3.5" />
+                  </button>
+                  {isUserMenuOpen && (
+                    <div className="user-menu-dropdown">
+                      <div className="user-menu-email">{user.email}</div>
+                      <button
+                        onClick={handleSignOut}
+                        className="user-menu-item danger cursor-pointer"
+                        id="sign-out-button"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Sign Out
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  className="login-btn cursor-pointer"
+                  id="login-button"
+                >
+                  <LogIn className="w-4 h-4" />
+                  <span className="hidden sm:inline">Sign In</span>
+                </Link>
+              )
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* ══ CINEMATIC MOVING POSTERS HERO BANNER (Directly Below Sticky Header) ══ */}
       <div
         ref={heroRef}
-        className="relative overflow-hidden h-[210px] sm:h-[240px]"
+        className="relative overflow-hidden h-[170px] sm:h-[200px] border-b border-[#292932]/40"
       >
-        {/* ══ DYNAMIC MOVING BACKGROUND: 1 SINGLE SET OF POSTERS ══ */}
+        {/* Dynamic moving background: infinite marquee loop */}
         <div className="hero-marquee-wrapper" role="region" aria-label="Featured movie and TV posters">
-          {/* Single Continuous Row — Moving Left */}
           <div className="hero-marquee-track-left">
             {marqueeItems.map((item, idx) => (
               <div
@@ -825,7 +1031,7 @@ export default function Dashboard() {
                     handleMarqueeItemClick(item);
                   }
                 }}
-                className="hero-poster-card w-28 sm:w-32 md:w-36 aspect-[2/3] mx-2 sm:mx-2.5 overflow-hidden bg-stone-900 rounded-xl cursor-pointer"
+                className="hero-poster-card w-24 sm:w-28 md:w-32 aspect-[2/3] mx-1.5 sm:mx-2 overflow-hidden bg-stone-900 rounded-xl cursor-pointer"
                 title={`Click to choose shelf: ${item.title}`}
               >
                 <MovieImage
@@ -841,123 +1047,13 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Cinematic gradient scrims for text legibility and smooth edge fade */}
+        {/* Cinematic gradient scrims */}
         <div className="absolute inset-0 hero-overlay-bottom pointer-events-none" />
         <div className="absolute inset-0 hero-overlay-side pointer-events-none" />
 
         {/* Ambient subtle cinema atmosphere */}
         <div className="absolute top-0 left-1/4 w-[500px] h-[300px] bg-[#E50914]/[0.03] rounded-full blur-[140px] pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[250px] bg-black/40 rounded-full blur-[100px] pointer-events-none" />
-
-        {/* ── Header ─────────────────────────────────────────── */}
-        <header className="relative z-20 pointer-events-none w-full">
-          <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-5 pb-4 flex items-center justify-between">
-            <div className="flex items-center gap-3 pointer-events-auto">
-              {/* Burger Menu Button */}
-              <button
-                onClick={() => setIsBurgerMenuOpen(true)}
-                className="p-2 sm:px-3 sm:py-2.5 rounded-xl bg-[#15151C] hover:bg-[#1E1E26] border border-[#292932] hover:border-[#3D3D4C] text-[#F5F5F5] transition-all flex items-center gap-2 group shadow-sm cursor-pointer"
-                aria-label="Open navigation menu"
-                id="burger-menu-button"
-                title="Open Menu: Backlog, Watched, Catalogs & Stats"
-              >
-                <Menu className="w-5 h-5 text-[#A1A1AA] group-hover:text-[#F5F5F5] group-hover:scale-110 transition-transform" />
-                <span className="text-xs font-bold tracking-wider uppercase hidden sm:inline text-[#A1A1AA] group-hover:text-[#F5F5F5]">
-                  Menu
-                </span>
-              </button>
-
-              {/* Logo / Brand */}
-              <div
-                onClick={() => setActiveNav("watching")}
-                className="flex items-center gap-2.5 cursor-pointer group px-3 py-1.5 rounded-xl bg-[#15151C] border border-[#292932] shadow-sm backdrop-blur-md transition-all hover:border-[#3D3D4C]"
-              >
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden border border-white/10 shrink-0 bg-[#07070A] flex items-center justify-center">
-                  <img src="/icon.png" alt="Couch Critics" className="w-full h-full object-cover" />
-                </div>
-                <div>
-                  <h1 className="text-sm sm:text-base font-bold text-[#F5F5F5] tracking-wider uppercase font-mono group-hover:text-[#E50914] transition-colors leading-tight">
-                    COUCH CRITICS
-                  </h1>
-                  <p className="text-[10px] font-medium tracking-widest uppercase leading-tight">
-                    {activeNav === "watching" && <span className="text-[#FF3B3B]">Currently Watching</span>}
-                    {activeNav === "toWatch" && <span className="text-amber-400">To Watch Backlog</span>}
-                    {activeNav === "watched" && <span className="text-emerald-400">Watched Archive</span>}
-                    {activeNav === "movies" && <span className="text-indigo-400">Movies Catalog</span>}
-                    {activeNav === "series" && <span className="text-purple-400">Series Catalog</span>}
-                    {activeNav === "genres" && <span className="text-orange-400">Browse by Genre</span>}
-                    {activeNav === "stats" && <span className="text-cyan-400">Watch Analytics</span>}
-                    {activeNav === "journey" && <span className="text-yellow-400">My Journey</span>}
-                    {activeNav === "favorites" && <span className="text-rose-400">Favorites</span>}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Header Right Actions */}
-            <div className="flex items-center gap-2 sm:gap-3 pointer-events-auto">
-              {/* Light / Dark Mode Toggle */}
-              <ThemeToggle variant="button" />
-
-              <button
-                onClick={() => setIsSearchOpen(true)}
-                className="p-2.5 rounded-xl glass-card text-[#A1A1AA] hover:text-[#F5F5F5] transition-colors cursor-pointer"
-                aria-label="Search movies and series"
-                title="Search TMDB"
-              >
-                <SearchIcon className="w-4 h-4" />
-              </button>
-
-              <button
-                onClick={() => setIsSearchOpen(true)}
-                className="flex items-center gap-2 px-3.5 py-2.5 bg-[#E50914] hover:bg-[#FF3B3B] text-white text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-black/40 font-semibold cursor-pointer active:scale-95"
-                id="add-movie-button"
-              >
-                <Plus className="w-4 h-4" />
-                <span className="hidden sm:inline">Add Title</span>
-              </button>
-
-              {/* Auth: Login button or User avatar menu */}
-              {!authLoading && (
-                user ? (
-                  <div className="user-menu-wrapper" ref={userMenuRef}>
-                    <button
-                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                      className="user-avatar-btn cursor-pointer"
-                      id="user-menu-button"
-                      aria-label="User menu"
-                    >
-                      <div className="user-avatar-icon">{userInitial}</div>
-                      <ChevronDown className="w-3.5 h-3.5" />
-                    </button>
-                    {isUserMenuOpen && (
-                      <div className="user-menu-dropdown">
-                        <div className="user-menu-email">{user.email}</div>
-                        <button
-                          onClick={handleSignOut}
-                          className="user-menu-item danger cursor-pointer"
-                          id="sign-out-button"
-                        >
-                          <LogOut className="w-4 h-4" />
-                          Sign Out
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <Link
-                    href="/login"
-                    className="login-btn cursor-pointer"
-                    id="login-button"
-                  >
-                    <LogIn className="w-4 h-4" />
-                    <span className="hidden sm:inline">Sign In</span>
-                  </Link>
-                )
-              )}
-            </div>
-          </div>
-        </header>
       </div>
 
       {/* ── Main Shelves Container Anchor ── */}

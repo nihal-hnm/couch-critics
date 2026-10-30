@@ -844,6 +844,7 @@ body {
 .poster-lift:hover {
   transform: translateY(-4px) scale(1.02);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  border-color: var(--card-hover-border, #3D3D4C);
 }
 
 /* ─── Auth Modal ──────────────────────────────────────────────────────────── */
@@ -1371,6 +1372,16 @@ body {
 
 .light .spotlight-scrim {
   background: rgba(255, 255, 255, 0.92) !important;
+}
+
+.light header {
+  background-color: rgba(248, 249, 250, 0.92) !important;
+  border-bottom-color: #E4E4E7 !important;
+}
+
+.light header nav {
+  background-color: rgba(240, 240, 246, 0.9) !important;
+  border-color: #E4E4E7 !important;
 }
 
 /* Liquid Glass Cards in Light Mode */
