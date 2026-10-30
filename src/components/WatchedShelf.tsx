@@ -191,19 +191,19 @@ export default function WatchedShelf({
       <div
         key={entry.id}
         onClick={() => setSelectedEntry(entry)}
-        className="glass-card glass-card-hover overflow-hidden poster-lift stagger-item cursor-pointer group flex flex-col justify-between"
+        className="bg-[#15151C]/90 hover:bg-[#181820] border border-[#292932] hover:border-zinc-700/80 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all poster-lift stagger-item cursor-pointer group flex flex-col justify-between"
         style={{ animationDelay: `${idx * 40}ms` }}
       >
-        <div className="flex gap-3.5 p-4">
+        <div className="flex gap-4 p-4 items-start">
           {/* Poster with hover lift */}
-          <div className="relative shrink-0 group/poster w-20 aspect-[2/3] rounded-lg overflow-hidden shadow-md bg-[#15151C] border border-[#292932]">
+          <div className="relative shrink-0 group/poster w-24 aspect-[2/3] rounded-xl overflow-hidden shadow-md bg-[#0B0B0F] border border-white/10">
             <MovieImage
               src={entry.tmdb.posterUrl}
               alt={entry.tmdb.title}
               title={entry.tmdb.title}
               mediaType={entry.tmdb.mediaType}
               loading="lazy"
-              className="w-full h-full object-contain bg-black/40"
+              className="w-full h-full object-cover"
               fallbackIconClassName="w-7 h-7 text-stone-500 mb-1"
             />
             <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-[#E50914]/10 to-transparent opacity-0 group-hover/poster:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -253,7 +253,7 @@ export default function WatchedShelf({
               ) : null}
             </div>
 
-            <h4 className="font-bold text-[#F5F5F5] text-sm sm:text-base truncate group-hover:text-[#E50914] transition-colors">
+            <h4 className="font-bold text-white text-sm sm:text-base line-clamp-2 leading-snug group-hover:text-[#E50914] transition-colors">
               {entry.tmdb.title}
             </h4>
 
@@ -630,7 +630,7 @@ export default function WatchedShelf({
             </div>
 
             {sortedMovies.length > 0 ? (
-              <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
+              <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
                 {sortedMovies.map((entry, idx) => renderCard(entry, idx))}
               </div>
             ) : (
@@ -655,7 +655,7 @@ export default function WatchedShelf({
             </div>
 
             {sortedSeries.length > 0 ? (
-              <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
+              <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
                 {sortedSeries.map((entry, idx) => renderCard(entry, idx))}
               </div>
             ) : (
@@ -669,7 +669,7 @@ export default function WatchedShelf({
         /* Mode B: Filtered or Combined Single Grid */
         <div>
           {combinedEntries.length > 0 ? (
-            <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
+            <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
               {combinedEntries.map((entry, idx) => renderCard(entry, idx))}
             </div>
           ) : (

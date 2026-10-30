@@ -644,7 +644,7 @@ export default function Dashboard() {
 
       {/* ══ STICKY TOP APP HEADER ═════════════════════════════════ */}
       <header className="sticky top-0 z-40 w-full bg-[#0B0B0F]/90 backdrop-blur-xl border-b border-[#292932]/80 transition-colors">
-        <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 flex items-center justify-between gap-3 sm:gap-4">
+        <div className="max-w-[1720px] mx-auto w-full px-4 sm:px-6 lg:px-8 xl:px-10 py-2.5 sm:py-3 flex items-center justify-between gap-3 sm:gap-4">
           {/* Left: Burger Menu + Brand Logo */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {/* Burger Menu Button (Mobile & full catalog access) */}
@@ -974,7 +974,7 @@ export default function Dashboard() {
 
       {/* ── Editorial Cinema Library Dashboard Banner ── */}
       {activeNav === "watching" && (
-        <div className="relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-3">
+        <div className="relative z-10 max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 pt-8 pb-3">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-[#292932]/50">
             <div>
               <div className="flex items-center gap-2 mb-2.5">
@@ -1120,7 +1120,7 @@ export default function Dashboard() {
 
       {/* ── View 1: CURRENTLY WATCHING (Primary Home Screen) ─────── */}
       {activeNav === "watching" && (
-        <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+        <main className="max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-8">
           {watching.length > 0 ? (
             filteredWatching.length > 0 ? (
               <WatchingShelf entries={filteredWatching} />
@@ -1191,7 +1191,7 @@ export default function Dashboard() {
 
       {/* ── View 2: TO WATCH BACKLOG (From Burger Bar) ───────────── */}
       {activeNav === "toWatch" && (
-        <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <main className="max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-6">
           <TopReturnBanner
             title="To Watch Backlog"
             subtitle="Your wishlist of movies and TV series waiting to be watched"
@@ -1208,7 +1208,7 @@ export default function Dashboard() {
 
       {/* ── View 3: WATCHED ARCHIVE & REVIEWS (From Burger Bar) ──── */}
       {activeNav === "watched" && (
-        <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <main className="max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-6">
           <TopReturnBanner
             title="Watched Archive &amp; Reviews"
             subtitle={`${watchedMovies.length} ${watchedMovies.length === 1 ? "movie" : "movies"} and ${watchedSeries.length} completed TV ${watchedSeries.length === 1 ? "series" : "series"} (${watched.length} total)`}
@@ -1225,7 +1225,7 @@ export default function Dashboard() {
 
       {/* ── View 4: ALL MOVIES (From Burger Bar - Watched Only) ───── */}
       {activeNav === "movies" && (
-        <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+        <main className="max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-8">
           <TopReturnBanner
             title="All Movies"
             subtitle={`${watchedMovies.length} watched ${watchedMovies.length === 1 ? "movie" : "movies"} in your journal archive`}
@@ -1252,7 +1252,7 @@ export default function Dashboard() {
 
       {/* ── View 5: ALL TV SERIES (From Burger Bar - Watched Only) ─── */}
       {activeNav === "series" && (
-        <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+        <main className="max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-8">
           <TopReturnBanner
             title="All TV Series"
             subtitle={`${watchedSeries.length} completed TV ${watchedSeries.length === 1 ? "series" : "series"} in your journal archive`}
@@ -1279,7 +1279,7 @@ export default function Dashboard() {
 
       {/* ── View 6: BROWSE BY GENRE (From Burger Bar) ──────────────── */}
       {activeNav === "genres" && (
-        <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <main className="max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-6">
           <TopReturnBanner
             title="Browse by Genre"
             subtitle={`Explore ${entries.length} titles across ${allGenres.length} genres with watch time tracking`}
@@ -1484,7 +1484,7 @@ export default function Dashboard() {
 
       {/* ── View 7: WATCH ANALYTICS (From Burger Bar) ────────────── */}
       {activeNav === "stats" && (
-        <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <main className="max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-6">
           <TopReturnBanner
             title="Watch Analytics"
             subtitle="Consumption metrics, individual movie vs series minutes, and genre distribution"
@@ -1501,7 +1501,7 @@ export default function Dashboard() {
 
       {/* ── View 7: MY JOURNEY (From Burger Bar) ─────────────────── */}
       {activeNav === "journey" && (
-        <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <main className="max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-6">
           <TopReturnBanner
             title="My Journey"
             subtitle="A timeline of the stories experienced across the years"
@@ -1551,7 +1551,7 @@ export default function Dashboard() {
 
       {/* ── View 8: FAVORITES (From Burger Bar) ──────────────────── */}
       {activeNav === "favorites" && (
-        <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <main className="max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-6">
           <TopReturnBanner
             title="My Favorites"
             subtitle="Films and shows you rated 8/10 or higher"
