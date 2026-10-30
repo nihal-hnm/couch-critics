@@ -84,6 +84,7 @@ export default function Dashboard() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
   const [watchingTypeFilter, setWatchingTypeFilter] = useState<"all" | "tv" | "movie">("all");
   const [watchingGenreFilter, setWatchingGenreFilter] = useState<string>("all");
   const [selectedGenre, setSelectedGenre] = useState<string>("all");
@@ -91,6 +92,7 @@ export default function Dashboard() {
   const [selectedDetailEntry, setSelectedDetailEntry] = useState<MovieEntry | null>(null);
 
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const moreMenuRef = useRef<HTMLDivElement>(null);
 
   // Close menus on outside click or Escape key
   useEffect(() => {
@@ -98,11 +100,15 @@ export default function Dashboard() {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
         setIsUserMenuOpen(false);
       }
+      if (moreMenuRef.current && !moreMenuRef.current.contains(e.target as Node)) {
+        setIsMoreMenuOpen(false);
+      }
     }
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
         setIsBurgerMenuOpen(false);
         setIsUserMenuOpen(false);
+        setIsMoreMenuOpen(false);
       }
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
@@ -356,27 +362,19 @@ export default function Dashboard() {
                 setActiveNav("watching");
                 setIsBurgerMenuOpen(false);
               }}
-              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer group ${
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
                 activeNav === "watching"
-                  ? "bg-gradient-to-r from-[#E50914] to-[#C10711] text-white shadow-lg shadow-[#E50914]/25"
-                  : "text-stone-300 hover:text-white hover:bg-red-500/5"
+                  ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
+                  : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
               }`}
             >
               <div className="flex items-center gap-3">
-                <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
-                  activeNav === "watching"
-                    ? "bg-white/20 text-white"
-                    : "bg-red-500/10 border border-red-500/25 text-[#FF3B3B] group-hover:bg-red-500/20"
-                }`}>
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-[#E50914]/15 border border-[#E50914]/30 text-[#E50914]">
                   <Play className="w-3.5 h-3.5 fill-current" />
                 </div>
                 <span className="text-left font-medium">Currently Watching</span>
               </div>
-              <span className={`px-1.5 py-0.5 rounded-md text-xs font-mono ${
-                activeNav === "watching"
-                  ? "bg-white/20 text-white"
-                  : "bg-red-950/40 text-red-300 border border-red-500/25"
-              }`}>
+              <span className="px-2 py-0.5 rounded-md text-xs font-mono bg-white/[0.06] border border-white/10 text-zinc-300">
                 {watching.length}
               </span>
             </button>
@@ -384,7 +382,7 @@ export default function Dashboard() {
 
           {/* Shelves & Catalogs */}
           <div>
-            <div className="px-3 pb-2 text-[10px] font-bold text-stone-500 uppercase tracking-wider">
+            <div className="px-3 pb-2 text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
               Your Library &amp; Shelves
             </div>
             <div className="space-y-1">
@@ -395,25 +393,17 @@ export default function Dashboard() {
                 }}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
                   activeNav === "toWatch"
-                    ? "bg-gradient-to-r from-amber-500/20 via-amber-600/10 to-transparent text-amber-200 border border-amber-500/40 shadow-md shadow-amber-950/40 font-semibold"
-                    : "text-stone-300 hover:text-white hover:bg-amber-500/5"
+                    ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
+                    : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
-                    activeNav === "toWatch"
-                      ? "bg-amber-500 text-stone-950 font-bold"
-                      : "bg-amber-500/10 border border-amber-500/25 text-amber-400 group-hover:bg-amber-500/20"
-                  }`}>
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-amber-500/15 border border-amber-500/30 text-amber-400">
                     <BookmarkPlus className="w-3.5 h-3.5" />
                   </div>
                   <span>To Watch (Backlog)</span>
                 </div>
-                <span className={`px-1.5 py-0.5 rounded-md text-xs font-mono ${
-                  activeNav === "toWatch"
-                    ? "bg-amber-500/25 text-amber-200 border border-amber-500/30"
-                    : "bg-amber-950/40 text-amber-300 border border-amber-500/25"
-                }`}>
+                <span className="px-2 py-0.5 rounded-md text-xs font-mono bg-white/[0.06] border border-white/10 text-zinc-300">
                   {toWatch.length}
                 </span>
               </button>
@@ -425,29 +415,21 @@ export default function Dashboard() {
                 }}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
                   activeNav === "watched"
-                    ? "bg-gradient-to-r from-emerald-500/20 via-emerald-600/10 to-transparent text-emerald-200 border border-emerald-500/40 shadow-md shadow-emerald-950/40 font-semibold"
-                    : "text-stone-300 hover:text-white hover:bg-emerald-500/5"
+                    ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
+                    : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
-                    activeNav === "watched"
-                      ? "bg-emerald-500 text-stone-950 font-bold"
-                      : "bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 group-hover:bg-emerald-500/20"
-                  }`}>
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
                     <Award className="w-3.5 h-3.5" />
                   </div>
                   <span>Watched Archive</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-950/40 text-emerald-300/80 border border-emerald-500/20" title="Movies & Shows breakdown">
+                  <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-white/[0.04] text-zinc-400 border border-white/10" title="Movies & Shows breakdown">
                     {watchedMovies.length}M · {watchedSeries.length}S
                   </span>
-                  <span className={`px-1.5 py-0.5 rounded-md text-xs font-mono ${
-                    activeNav === "watched"
-                      ? "bg-emerald-500/25 text-emerald-200 border border-emerald-500/30"
-                      : "bg-emerald-950/40 text-emerald-300 border border-emerald-500/25"
-                  }`}>
+                  <span className="px-2 py-0.5 rounded-md text-xs font-mono bg-white/[0.06] border border-white/10 text-zinc-300">
                     {watched.length}
                   </span>
                 </div>
@@ -460,25 +442,17 @@ export default function Dashboard() {
                 }}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
                   activeNav === "movies"
-                    ? "bg-gradient-to-r from-indigo-500/20 via-indigo-600/10 to-transparent text-indigo-200 border border-indigo-500/40 shadow-md shadow-indigo-950/40 font-semibold"
-                    : "text-stone-300 hover:text-white hover:bg-indigo-500/5"
+                    ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
+                    : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
-                    activeNav === "movies"
-                      ? "bg-indigo-500 text-white font-bold"
-                      : "bg-indigo-500/10 border border-indigo-500/25 text-indigo-400 group-hover:bg-indigo-500/20"
-                  }`}>
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-indigo-500/15 border border-indigo-500/30 text-indigo-400">
                     <FilmIcon className="w-3.5 h-3.5" />
                   </div>
                   <span>All Movies</span>
                 </div>
-                <span className={`px-1.5 py-0.5 rounded-md text-xs font-mono ${
-                  activeNav === "movies"
-                    ? "bg-indigo-500/25 text-indigo-200 border border-indigo-500/30"
-                    : "bg-indigo-950/40 text-indigo-300 border border-indigo-500/25"
-                }`}>
+                <span className="px-2 py-0.5 rounded-md text-xs font-mono bg-white/[0.06] border border-white/10 text-zinc-300">
                   {watchedMovies.length}
                 </span>
               </button>
@@ -490,25 +464,17 @@ export default function Dashboard() {
                 }}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
                   activeNav === "series"
-                    ? "bg-gradient-to-r from-purple-500/20 via-purple-600/10 to-transparent text-purple-200 border border-purple-500/40 shadow-md shadow-purple-950/40 font-semibold"
-                    : "text-stone-300 hover:text-white hover:bg-purple-500/5"
+                    ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
+                    : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
-                    activeNav === "series"
-                      ? "bg-purple-500 text-white font-bold"
-                      : "bg-purple-500/10 border border-purple-500/25 text-purple-400 group-hover:bg-purple-500/20"
-                  }`}>
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-purple-500/15 border border-purple-500/30 text-purple-400">
                     <Tv className="w-3.5 h-3.5" />
                   </div>
                   <span>All TV Series</span>
                 </div>
-                <span className={`px-1.5 py-0.5 rounded-md text-xs font-mono ${
-                  activeNav === "series"
-                    ? "bg-purple-500/25 text-purple-200 border border-purple-500/30"
-                    : "bg-purple-950/40 text-purple-300 border border-purple-500/25"
-                }`}>
+                <span className="px-2 py-0.5 rounded-md text-xs font-mono bg-white/[0.06] border border-white/10 text-zinc-300">
                   {watchedSeries.length}
                 </span>
               </button>
@@ -520,25 +486,17 @@ export default function Dashboard() {
                 }}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
                   activeNav === "genres"
-                    ? "bg-gradient-to-r from-orange-500/20 via-orange-600/10 to-transparent text-orange-200 border border-orange-500/40 shadow-md shadow-orange-950/40 font-semibold"
-                    : "text-stone-300 hover:text-white hover:bg-orange-500/5"
+                    ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
+                    : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
-                    activeNav === "genres"
-                      ? "bg-orange-500 text-white font-bold"
-                      : "bg-orange-500/10 border border-orange-500/25 text-orange-400 group-hover:bg-orange-500/20"
-                  }`}>
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-orange-500/15 border border-orange-500/30 text-orange-400">
                     <Tags className="w-3.5 h-3.5" />
                   </div>
                   <span>Browse by Genre</span>
                 </div>
-                <span className={`px-1.5 py-0.5 rounded-md text-xs font-mono ${
-                  activeNav === "genres"
-                    ? "bg-orange-500/25 text-orange-200 border border-orange-500/30"
-                    : "bg-orange-950/40 text-orange-300 border border-orange-500/25"
-                }`}>
+                <span className="px-2 py-0.5 rounded-md text-xs font-mono bg-white/[0.06] border border-white/10 text-zinc-300">
                   {allGenres.length}
                 </span>
               </button>
@@ -547,7 +505,7 @@ export default function Dashboard() {
 
           {/* Insights & Discovery */}
           <div>
-            <div className="px-3 pb-2 text-[10px] font-bold text-stone-500 uppercase tracking-wider">
+            <div className="px-3 pb-2 text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
               Insights &amp; Memories
             </div>
             <div className="space-y-1">
@@ -558,25 +516,17 @@ export default function Dashboard() {
                 }}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
                   activeNav === "stats"
-                    ? "bg-gradient-to-r from-cyan-500/20 via-cyan-600/10 to-transparent text-cyan-200 border border-cyan-500/40 shadow-md shadow-cyan-950/40 font-semibold"
-                    : "text-stone-300 hover:text-white hover:bg-cyan-500/5"
+                    ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
+                    : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
-                    activeNav === "stats"
-                      ? "bg-cyan-500 text-stone-950 font-bold"
-                      : "bg-cyan-500/10 border border-cyan-500/25 text-cyan-400 group-hover:bg-cyan-500/20"
-                  }`}>
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-cyan-500/15 border border-cyan-500/30 text-cyan-400">
                     <BarChart3 className="w-3.5 h-3.5" />
                   </div>
                   <span>Watch Analytics</span>
                 </div>
-                <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-mono ${
-                  activeNav === "stats"
-                    ? "bg-cyan-500/25 text-cyan-200 border border-cyan-500/30 font-bold"
-                    : "bg-cyan-950/40 text-cyan-300 border border-cyan-500/25"
-                }`}>
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-white/[0.06] border border-white/10 text-zinc-300">
                   {stats.totalWatchTimeMins > 0 ? formatDaysAndHours(stats.totalWatchTimeMins) : "0d 0h"}
                 </span>
               </button>
@@ -588,25 +538,17 @@ export default function Dashboard() {
                 }}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
                   activeNav === "favorites"
-                    ? "bg-gradient-to-r from-rose-500/20 via-rose-600/10 to-transparent text-rose-200 border border-rose-500/40 shadow-md shadow-rose-950/40 font-semibold"
-                    : "text-stone-300 hover:text-white hover:bg-rose-500/5"
+                    ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
+                    : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
-                    activeNav === "favorites"
-                      ? "bg-rose-500 text-white font-bold"
-                      : "bg-rose-500/10 border border-rose-500/25 text-rose-400 group-hover:bg-rose-500/20"
-                  }`}>
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-rose-500/15 border border-rose-500/30 text-rose-400">
                     <Heart className="w-3.5 h-3.5 fill-current" />
                   </div>
                   <span>My Favorites</span>
                 </div>
-                <span className={`px-1.5 py-0.5 rounded-md text-xs font-mono ${
-                  activeNav === "favorites"
-                    ? "bg-rose-500/25 text-rose-200 border border-rose-500/30"
-                    : "bg-rose-950/40 text-rose-300 border border-rose-500/25"
-                }`}>
+                <span className="px-2 py-0.5 rounded-md text-xs font-mono bg-white/[0.06] border border-white/10 text-zinc-300">
                   {favorites.length}
                 </span>
               </button>
@@ -618,25 +560,17 @@ export default function Dashboard() {
                 }}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
                   activeNav === "journey"
-                    ? "bg-gradient-to-r from-yellow-500/20 via-yellow-600/10 to-transparent text-yellow-200 border border-yellow-500/40 shadow-md shadow-yellow-950/40 font-semibold"
-                    : "text-stone-300 hover:text-white hover:bg-yellow-500/5"
+                    ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
+                    : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
-                    activeNav === "journey"
-                      ? "bg-yellow-500 text-stone-950 font-bold"
-                      : "bg-yellow-500/10 border border-yellow-500/25 text-yellow-400 group-hover:bg-yellow-500/20"
-                  }`}>
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-yellow-500/15 border border-yellow-500/30 text-yellow-400">
                     <MapIcon className="w-3.5 h-3.5" />
                   </div>
                   <span>My Journey</span>
                 </div>
-                <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-mono ${
-                  activeNav === "journey"
-                    ? "bg-yellow-500/25 text-yellow-200 border border-yellow-500/30"
-                    : "bg-yellow-950/40 text-yellow-300 border border-yellow-500/25"
-                }`}>
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-white/[0.06] border border-white/10 text-zinc-300">
                   {journeyYears.length} {journeyYears.length === 1 ? "yr" : "yrs"}
                 </span>
               </button>
@@ -765,14 +699,14 @@ export default function Dashboard() {
               onClick={() => setActiveNav("watching")}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeNav === "watching"
-                  ? "bg-[#E50914] text-white shadow-sm font-bold"
-                  : "text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5"
+                  ? "bg-white/10 text-white shadow-sm border border-white/15"
+                  : "text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5 border border-transparent"
               }`}
             >
-              <Play className="w-3.5 h-3.5 fill-current" />
+              <Play className="w-3.5 h-3.5 fill-current text-[#E50914]" />
               <span>Watching</span>
               <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono ${
-                activeNav === "watching" ? "bg-black/30 text-white" : "bg-white/10 text-stone-300"
+                activeNav === "watching" ? "bg-white/15 text-white" : "bg-white/5 text-[#A1A1AA]"
               }`}>
                 {watching.length}
               </span>
@@ -783,14 +717,14 @@ export default function Dashboard() {
               onClick={() => setActiveNav("toWatch")}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeNav === "toWatch"
-                  ? "bg-amber-600 text-white shadow-sm font-bold"
-                  : "text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5"
+                  ? "bg-white/10 text-white shadow-sm border border-white/15"
+                  : "text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5 border border-transparent"
               }`}
             >
-              <BookmarkPlus className="w-3.5 h-3.5" />
+              <BookmarkPlus className="w-3.5 h-3.5 text-amber-400" />
               <span>To Watch</span>
               <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono ${
-                activeNav === "toWatch" ? "bg-black/30 text-white" : "bg-white/10 text-stone-300"
+                activeNav === "toWatch" ? "bg-white/15 text-white" : "bg-white/5 text-[#A1A1AA]"
               }`}>
                 {toWatch.length}
               </span>
@@ -801,14 +735,14 @@ export default function Dashboard() {
               onClick={() => setActiveNav("watched")}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeNav === "watched"
-                  ? "bg-emerald-600 text-white shadow-sm font-bold"
-                  : "text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5"
+                  ? "bg-white/10 text-white shadow-sm border border-white/15"
+                  : "text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5 border border-transparent"
               }`}
             >
-              <Award className="w-3.5 h-3.5" />
+              <Award className="w-3.5 h-3.5 text-emerald-400" />
               <span>Archive</span>
               <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono ${
-                activeNav === "watched" ? "bg-black/30 text-white" : "bg-white/10 text-stone-300"
+                activeNav === "watched" ? "bg-white/15 text-white" : "bg-white/5 text-[#A1A1AA]"
               }`}>
                 {watched.length}
               </span>
@@ -819,23 +753,147 @@ export default function Dashboard() {
               onClick={() => setActiveNav("stats")}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeNav === "stats"
-                  ? "bg-cyan-600 text-white shadow-sm font-bold"
-                  : "text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5"
+                  ? "bg-white/10 text-white shadow-sm border border-white/15"
+                  : "text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5 border border-transparent"
               }`}
             >
-              <BarChart3 className="w-3.5 h-3.5" />
+              <BarChart3 className="w-3.5 h-3.5 text-cyan-400" />
               <span>Analytics</span>
             </button>
 
-            <button
-              type="button"
-              onClick={() => setIsBurgerMenuOpen(true)}
-              className="px-2.5 py-1.5 rounded-lg text-xs font-medium text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5 transition-all flex items-center gap-1 cursor-pointer"
-              title="More catalogs (Movies, TV Series, Genres, Journey, Favorites)"
-            >
-              <span>More</span>
-              <ChevronDown className="w-3 h-3 opacity-70" />
-            </button>
+            {/* Desktop "More" Dropdown Menu */}
+            <div className="relative" ref={moreMenuRef}>
+              <button
+                type="button"
+                onClick={() => setIsMoreMenuOpen((prev) => !prev)}
+                className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1 cursor-pointer ${
+                  ["movies", "series", "genres", "journey", "favorites"].includes(activeNav) || isMoreMenuOpen
+                    ? "bg-white/10 text-white border border-white/15"
+                    : "text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5 border border-transparent"
+                }`}
+                aria-expanded={isMoreMenuOpen}
+                aria-haspopup="true"
+                title="More catalogs (Movies, TV Series, Genres, Journey, Favorites)"
+              >
+                <span>
+                  {activeNav === "movies"
+                    ? "Movies"
+                    : activeNav === "series"
+                      ? "Series"
+                      : activeNav === "genres"
+                        ? "Genres"
+                        : activeNav === "journey"
+                          ? "Journey"
+                          : activeNav === "favorites"
+                            ? "Favorites"
+                            : "More"}
+                </span>
+                <ChevronDown className={`w-3 h-3 opacity-70 transition-transform ${isMoreMenuOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              {isMoreMenuOpen && (
+                <div
+                  className="absolute right-0 top-full mt-2 w-56 rounded-xl bg-[#15151C] border border-[#292932] shadow-2xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150"
+                  role="menu"
+                >
+                  <button
+                    onClick={() => {
+                      setActiveNav("movies");
+                      setIsMoreMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors cursor-pointer ${
+                      activeNav === "movies"
+                        ? "bg-white/10 text-white font-semibold"
+                        : "text-[#A1A1AA] hover:text-white hover:bg-white/5"
+                    }`}
+                    role="menuitem"
+                  >
+                    <div className="flex items-center gap-2">
+                      <FilmIcon className="w-3.5 h-3.5 text-indigo-400" />
+                      <span>All Movies</span>
+                    </div>
+                    <span className="font-mono text-[10px] text-zinc-500">{watchedMovies.length}</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setActiveNav("series");
+                      setIsMoreMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors cursor-pointer ${
+                      activeNav === "series"
+                        ? "bg-white/10 text-white font-semibold"
+                        : "text-[#A1A1AA] hover:text-white hover:bg-white/5"
+                    }`}
+                    role="menuitem"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Tv className="w-3.5 h-3.5 text-purple-400" />
+                      <span>All TV Series</span>
+                    </div>
+                    <span className="font-mono text-[10px] text-zinc-500">{watchedSeries.length}</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setActiveNav("genres");
+                      setIsMoreMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors cursor-pointer ${
+                      activeNav === "genres"
+                        ? "bg-white/10 text-white font-semibold"
+                        : "text-[#A1A1AA] hover:text-white hover:bg-white/5"
+                    }`}
+                    role="menuitem"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Tags className="w-3.5 h-3.5 text-orange-400" />
+                      <span>Browse by Genre</span>
+                    </div>
+                    <span className="font-mono text-[10px] text-zinc-500">{allGenres.length}</span>
+                  </button>
+
+                  <div className="my-1 border-t border-[#292932]" />
+
+                  <button
+                    onClick={() => {
+                      setActiveNav("favorites");
+                      setIsMoreMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors cursor-pointer ${
+                      activeNav === "favorites"
+                        ? "bg-white/10 text-white font-semibold"
+                        : "text-[#A1A1AA] hover:text-white hover:bg-white/5"
+                    }`}
+                    role="menuitem"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Heart className="w-3.5 h-3.5 text-rose-400" />
+                      <span>Favorites (8+)</span>
+                    </div>
+                    <span className="font-mono text-[10px] text-zinc-500">{favorites.length}</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setActiveNav("journey");
+                      setIsMoreMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors cursor-pointer ${
+                      activeNav === "journey"
+                        ? "bg-white/10 text-white font-semibold"
+                        : "text-[#A1A1AA] hover:text-white hover:bg-white/5"
+                    }`}
+                    role="menuitem"
+                  >
+                    <div className="flex items-center gap-2">
+                      <MapIcon className="w-3.5 h-3.5 text-yellow-400" />
+                      <span>My Journey</span>
+                    </div>
+                  </button>
+                </div>
+              )}
+            </div>
           </nav>
 
           {/* Right: Quick Search + Add Title + Theme + Auth */}
@@ -1593,7 +1651,7 @@ function TopReturnBanner({
   onOpenMenu?: () => void;
 }) {
   return (
-    <div className={`relative flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl liquid-glass-card ${accentBorderColor} overflow-hidden`}>
+    <div className={`relative flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-[#15151C]/90 border border-[#292932] ${accentBorderColor} overflow-hidden shadow-sm`}>
       {accentBgGlow && (
         <div className={`absolute top-0 left-0 w-96 h-32 pointer-events-none blur-3xl opacity-15 ${accentBgGlow}`} />
       )}

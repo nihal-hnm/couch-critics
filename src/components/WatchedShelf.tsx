@@ -464,7 +464,7 @@ export default function WatchedShelf({
                 onClick={() => setMediaFilter("all")}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
                   mediaFilter === "all"
-                    ? "bg-emerald-600 text-white shadow-md shadow-emerald-950/40 border border-emerald-500/40"
+                    ? "bg-[#E50914] text-white shadow-sm font-semibold"
                     : "text-[#A1A1AA] hover:text-white bg-white/5 hover:bg-white/10"
                 }`}
               >
@@ -478,11 +478,11 @@ export default function WatchedShelf({
                 onClick={() => setMediaFilter("movie")}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
                   mediaFilter === "movie"
-                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-950/40 border border-indigo-500/40"
+                    ? "bg-[#E50914] text-white shadow-sm font-semibold"
                     : "text-[#A1A1AA] hover:text-white bg-white/5 hover:bg-white/10"
                 }`}
               >
-                <Film className="w-3.5 h-3.5 text-indigo-200" />
+                <Film className="w-3.5 h-3.5 text-zinc-300" />
                 <span>Movies</span>
                 <span className="px-1.5 py-0.5 rounded-md text-[10px] bg-black/40 font-mono">
                   {movieCount}
@@ -493,11 +493,11 @@ export default function WatchedShelf({
                 onClick={() => setMediaFilter("tv")}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
                   mediaFilter === "tv"
-                    ? "bg-purple-600 text-white shadow-md shadow-purple-950/40 border border-purple-500/40"
+                    ? "bg-[#E50914] text-white shadow-sm font-semibold"
                     : "text-[#A1A1AA] hover:text-white bg-white/5 hover:bg-white/10"
                 }`}
               >
-                <Tv className="w-3.5 h-3.5 text-purple-200" />
+                <Tv className="w-3.5 h-3.5 text-zinc-300" />
                 <span>TV Series</span>
                 <span className="px-1.5 py-0.5 rounded-md text-[10px] bg-black/40 font-mono">
                   {seriesCount}

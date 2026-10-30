@@ -108,7 +108,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
               placeholder="Filter by title or genre..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 liquid-glass-card text-sm text-[#F5F5F5] placeholder-[#A1A1AA]/50 outline-none focus:border-[#E50914]/50 transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 bg-[#15151C] border border-[#292932] rounded-xl text-sm text-[#F5F5F5] placeholder-[#A1A1AA]/50 outline-none focus:border-[#E50914]/50 transition-colors"
               id="towatch-search"
             />
           </div>
@@ -119,7 +119,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm transition-all cursor-pointer ${
               showFilters
                 ? "bg-[#E50914]/15 text-[#E50914] border-[#E50914]/40 font-semibold"
-                : "liquid-glass-card text-[#A1A1AA] hover:text-white"
+                : "bg-[#15151C] border-[#292932] text-[#A1A1AA] hover:text-white hover:border-zinc-700"
             }`}
           >
             <SlidersHorizontal className="w-4 h-4" />
