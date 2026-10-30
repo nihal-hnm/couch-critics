@@ -329,7 +329,7 @@ export default function Dashboard() {
         {/* Drawer Header */}
         <div className="p-5 border-b border-[#292932] flex items-center justify-between bg-black/40">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg overflow-hidden border border-white/10 shrink-0 bg-[#07070A] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 flex items-center justify-center shadow-sm ring-1 ring-white/10">
               <img src="/icon.png" alt="Couch Critics" className="w-full h-full object-cover" />
             </div>
             <div>
@@ -667,7 +667,7 @@ export default function Dashboard() {
               onClick={() => setActiveNav("watching")}
               className="flex items-center gap-2 sm:gap-2.5 cursor-pointer group text-left p-1 rounded-xl hover:bg-white/[0.03] transition-colors"
             >
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden border border-white/10 shrink-0 bg-[#07070A] flex items-center justify-center shadow-sm group-hover:border-[#E50914]/40 transition-colors">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden shrink-0 flex items-center justify-center shadow-sm ring-1 ring-white/10 group-hover:ring-[#F9B838]/50 transition-all">
                 <img src="/icon.png" alt="Couch Critics" className="w-full h-full object-cover" />
               </div>
               <div className="hidden xs:block">
