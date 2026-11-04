@@ -19,6 +19,7 @@ import { Inter } from "next/font/google";
 import { AuthProvider } from "@/lib/auth-context";
 import { JournalProvider } from "@/lib/journal-context";
 import { ThemeProvider } from "@/lib/theme-context";
+import CinematicIntro from "@/components/CinematicIntro";
 import "./globals.css";
 
 /**
@@ -75,6 +76,8 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <JournalProvider>
+              {/* Cinematic intro overlay — plays once per session */}
+              <CinematicIntro />
               {children}
             </JournalProvider>
           </AuthProvider>
