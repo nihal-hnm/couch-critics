@@ -42,7 +42,6 @@ import {
   RotateCcw,
   SlidersHorizontal,
   Tags,
-  ArrowLeft,
   Share2,
   BookOpen,
   Database,
@@ -746,18 +745,8 @@ export default function Dashboard() {
                 <h1 className="text-xs sm:text-sm font-bold text-[#F5F5F5] tracking-wider uppercase font-mono group-hover:text-[#E50914] transition-colors leading-tight">
                   COUCH CRITICS
                 </h1>
-                <p className="text-[10px] font-medium tracking-widest uppercase leading-tight text-[#A1A1AA]">
-                  {activeNav === "watching" && <span className="text-[#FF3B3B]">Currently Watching</span>}
-                  {activeNav === "toWatch" && <span className="text-amber-400">To Watch Backlog</span>}
-                  {activeNav === "watched" && <span className="text-emerald-400">Watched Archive</span>}
-                  {activeNav === "movies" && <span className="text-indigo-400">Movies Catalog</span>}
-                  {activeNav === "series" && <span className="text-purple-400">Series Catalog</span>}
-                  {activeNav === "genres" && <span className="text-orange-400">Browse by Genre</span>}
-                  {activeNav === "stats" && <span className="text-cyan-400">Watch Analytics</span>}
-                  {activeNav === "journey" && <span className="text-yellow-400">My Journey</span>}
-                  {activeNav === "favorites" && <span className="text-rose-400">Favorites</span>}
-                  {activeNav === "diary" && <span className="text-emerald-400">Watch Diary</span>}
-                  {activeNav === "collections" && <span className="text-rose-400">Curated Collections</span>}
+                <p className="text-[10px] font-mono tracking-widest uppercase leading-tight text-zinc-500">
+                  Cinema Journal
                 </p>
               </div>
             </button>
@@ -1024,30 +1013,19 @@ export default function Dashboard() {
 
           {/* Right: Quick Search + Add Title + Theme + Auth */}
           <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
-            {/* Quick Search Button with ⌘K Badge */}
+            {/* Unified Search & Add Title Button */}
             <button
               type="button"
               onClick={() => setIsSearchOpen(true)}
-              className="flex items-center gap-2 px-2.5 sm:px-3 py-2 rounded-xl bg-[#15151C] hover:bg-[#1E1E26] border border-[#292932] hover:border-[#3D3D4C] text-[#A1A1AA] hover:text-[#F5F5F5] transition-all cursor-pointer shadow-sm group"
-              aria-label="Search movies and series"
-              title="Search TMDB (⌘K)"
+              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#15151C] hover:bg-[#1E1E26] border border-[#292932] hover:border-[#E50914]/50 text-[#A1A1AA] hover:text-[#F5F5F5] transition-all cursor-pointer shadow-sm group shrink-0"
+              aria-label="Search and add movies or series"
+              title="Search & Add Titles (⌘K)"
             >
-              <SearchIcon className="w-3.5 h-3.5 group-hover:text-white transition-colors" />
-              <span className="text-xs hidden sm:inline">Search...</span>
-              <kbd className="hidden md:inline-flex items-center text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[#A1A1AA] group-hover:text-white">
+              <SearchIcon className="w-3.5 h-3.5 text-[#E50914] group-hover:scale-110 transition-transform" />
+              <span className="text-xs hidden sm:inline font-medium">Search &amp; Add...</span>
+              <kbd className="hidden md:inline-flex items-center text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-zinc-400 group-hover:text-white">
                 ⌘K
               </kbd>
-            </button>
-
-            {/* Primary Add Title Button */}
-            <button
-              type="button"
-              onClick={() => setIsSearchOpen(true)}
-              className="flex items-center gap-1.5 px-3 sm:px-3.5 py-2 bg-[#E50914] hover:bg-[#FF3B3B] text-white text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-black/40 font-semibold cursor-pointer active:scale-95 shrink-0"
-              id="add-movie-button"
-            >
-              <Plus className="w-4 h-4" />
-              <span className="hidden sm:inline">Add Title</span>
             </button>
 
             {/* Share Journal Button */}
@@ -1338,51 +1316,23 @@ export default function Dashboard() {
         </main>
       )}
 
-      {/* ── View 2: TO WATCH BACKLOG (From Burger Bar) ───────────── */}
+      {/* ── View 2: TO WATCH BACKLOG ───────────────────────────── */}
       {activeNav === "toWatch" && (
         <main className="max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-6">
-          <TopReturnBanner
-            title="To Watch Backlog"
-            subtitle="Your wishlist of movies and TV series waiting to be watched"
-            icon={<BookmarkPlus className="w-4 h-4 text-amber-400" />}
-            accentBorderColor="border-t-2 border-t-amber-500/70"
-            accentBgGlow="bg-amber-500"
-            watchingCount={watching.length}
-            onBackToWatching={() => setActiveNav("watching")}
-          />
           <ToWatchShelf entries={toWatch} />
         </main>
       )}
 
-      {/* ── View 3: WATCHED ARCHIVE & REVIEWS (From Burger Bar) ──── */}
+      {/* ── View 3: WATCHED ARCHIVE & REVIEWS ──────────────────── */}
       {activeNav === "watched" && (
         <main className="max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-6">
-          <TopReturnBanner
-            title="Watched Archive &amp; Reviews"
-            subtitle={`${watchedMovies.length} ${watchedMovies.length === 1 ? "movie" : "movies"} and ${watchedSeries.length} completed TV ${watchedSeries.length === 1 ? "series" : "series"} (${watched.length} total)`}
-            icon={<Award className="w-4 h-4 text-emerald-400" />}
-            accentBorderColor="border-t-2 border-t-emerald-500/70"
-            accentBgGlow="bg-emerald-500"
-            watchingCount={watching.length}
-            onBackToWatching={() => setActiveNav("watching")}
-          />
           <WatchedShelf entries={watched} />
         </main>
       )}
 
-      {/* ── View 4: ALL MOVIES (From Burger Bar - Watched Only) ───── */}
+      {/* ── View 4: ALL MOVIES (Watched Only) ───────────────────── */}
       {activeNav === "movies" && (
-        <main className="max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-8">
-          <TopReturnBanner
-            title="All Movies"
-            subtitle={`${watchedMovies.length} watched ${watchedMovies.length === 1 ? "movie" : "movies"} in your journal archive`}
-            icon={<FilmIcon className="w-4 h-4 text-indigo-400" />}
-            accentBorderColor="border-t-2 border-t-indigo-500/70"
-            accentBgGlow="bg-indigo-500"
-            watchingCount={watching.length}
-            onBackToWatching={() => setActiveNav("watching")}
-          />
-
+        <main className="max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-6">
           {watchedMovies.length > 0 ? (
             <WatchedShelf entries={watchedMovies} defaultMediaType="movie" hideMediaTypeFilter />
           ) : (
@@ -1396,19 +1346,9 @@ export default function Dashboard() {
         </main>
       )}
 
-      {/* ── View 5: ALL TV SERIES (From Burger Bar - Watched Only) ─── */}
+      {/* ── View 5: ALL TV SERIES (Watched Only) ─────────────────── */}
       {activeNav === "series" && (
-        <main className="max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-8">
-          <TopReturnBanner
-            title="All TV Series"
-            subtitle={`${watchedSeries.length} completed TV ${watchedSeries.length === 1 ? "series" : "series"} in your journal archive`}
-            icon={<Tv className="w-4 h-4 text-purple-400" />}
-            accentBorderColor="border-t-2 border-t-purple-500/70"
-            accentBgGlow="bg-purple-500"
-            watchingCount={watching.length}
-            onBackToWatching={() => setActiveNav("watching")}
-          />
-
+        <main className="max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-6">
           {watchedSeries.length > 0 ? (
             <WatchedShelf entries={watchedSeries} defaultMediaType="tv" hideMediaTypeFilter />
           ) : (
@@ -1422,18 +1362,9 @@ export default function Dashboard() {
         </main>
       )}
 
-      {/* ── View 6: BROWSE BY GENRE (From Burger Bar) ──────────────── */}
+      {/* ── View 6: BROWSE BY GENRE ──────────────────────────────── */}
       {activeNav === "genres" && (
         <main className="max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-6">
-          <TopReturnBanner
-            title="Browse by Genre"
-            subtitle={`Explore ${entries.length} titles across ${allGenres.length} genres with watch time tracking`}
-            icon={<Tags className="w-4 h-4 text-orange-400" />}
-            accentBorderColor="border-t-2 border-t-orange-500/70"
-            accentBgGlow="bg-orange-500"
-            watchingCount={watching.length}
-            onBackToWatching={() => setActiveNav("watching")}
-          />
 
           {/* Genre Runtime Stats Banner */}
           <div className="p-5 rounded-2xl border border-[#292932] bg-[#15151C]">
@@ -1626,34 +1557,27 @@ export default function Dashboard() {
         </main>
       )}
 
-      {/* ── View 7: WATCH ANALYTICS (From Burger Bar) ────────────── */}
+      {/* ── View 7: WATCH ANALYTICS ────────────────────────────── */}
       {activeNav === "stats" && (
         <main className="max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-6">
-          <TopReturnBanner
-            title="Watch Analytics"
-            subtitle="Consumption metrics, individual movie vs series minutes, and genre distribution"
-            icon={<BarChart3 className="w-4 h-4 text-cyan-400" />}
-            accentBorderColor="border-t-2 border-t-cyan-500/70"
-            accentBgGlow="bg-cyan-500"
-            watchingCount={watching.length}
-            onBackToWatching={() => setActiveNav("watching")}
-          />
           <AnalyticsDashboard entries={entries} />
         </main>
       )}
 
-      {/* ── View 7: MY JOURNEY (From Burger Bar) ─────────────────── */}
+      {/* ── View 8: MY JOURNEY ─────────────────────────────────── */}
       {activeNav === "journey" && (
         <main className="max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-6">
-          <TopReturnBanner
-            title="My Journey"
-            subtitle="A timeline of the stories experienced across the years"
-            icon={<MapIcon className="w-4 h-4 text-yellow-400" />}
-            accentBorderColor="border-t-2 border-t-yellow-500/70"
-            accentBgGlow="bg-yellow-500"
-            watchingCount={watching.length}
-            onBackToWatching={() => setActiveNav("watching")}
-          />
+          <div className="flex items-center justify-between border-b border-[#292932] pb-3">
+            <div className="flex items-center gap-2.5">
+              <div className="p-1.5 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-yellow-400">
+                <MapIcon className="w-4 h-4" />
+              </div>
+              <h2 className="text-base font-bold text-white tracking-tight">My Journey</h2>
+            </div>
+            <span className="text-xs font-mono text-zinc-400">
+              {journeyYears.length} {journeyYears.length === 1 ? "year" : "years"}
+            </span>
+          </div>
 
           {journeyYears.length > 0 ? (
             <div className="space-y-8">
@@ -1691,18 +1615,20 @@ export default function Dashboard() {
         </main>
       )}
 
-      {/* ── View 8: FAVORITES (From Burger Bar) ──────────────────── */}
+      {/* ── View 9: FAVORITES ──────────────────────────────────── */}
       {activeNav === "favorites" && (
         <main className="max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-6">
-          <TopReturnBanner
-            title="My Favorites"
-            subtitle="Films and shows you rated 8/10 or higher"
-            icon={<Heart className="w-4 h-4 text-rose-400 fill-rose-500/30" />}
-            accentBorderColor="border-t-2 border-t-rose-500/70"
-            accentBgGlow="bg-rose-500"
-            watchingCount={watching.length}
-            onBackToWatching={() => setActiveNav("watching")}
-          />
+          <div className="flex items-center justify-between border-b border-[#292932] pb-3">
+            <div className="flex items-center gap-2.5">
+              <div className="p-1.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400">
+                <Heart className="w-4 h-4 fill-current" />
+              </div>
+              <h2 className="text-base font-bold text-white tracking-tight">Favorites (8+ Rated)</h2>
+            </div>
+            <span className="text-xs font-mono text-zinc-400">
+              {favorites.length} {favorites.length === 1 ? "title" : "titles"}
+            </span>
+          </div>
 
           {favorites.length > 0 ? (
             <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
@@ -1801,61 +1727,11 @@ export default function Dashboard() {
   );
 }
 
-/* ─── Top Return Banner (Shown when viewing non-watching shelves) ─────────── */
-function TopReturnBanner({
-  title,
-  subtitle,
-  icon,
-  accentBorderColor = "border-t-2 border-t-[#E50914]",
-  accentBgGlow = "",
-  watchingCount,
-  onBackToWatching,
-}: {
-  title: string;
-  subtitle: string;
-  icon: ReactNode;
-  accentBorderColor?: string;
-  accentBgGlow?: string;
-  watchingCount: number;
-  onBackToWatching: () => void;
-}) {
-  return (
-    <div className={`relative flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-[#15151C]/90 border border-[#292932] ${accentBorderColor} overflow-hidden shadow-sm`}>
-      {accentBgGlow && (
-        <div className={`absolute top-0 left-0 w-96 h-32 pointer-events-none blur-3xl opacity-15 ${accentBgGlow}`} />
-      )}
-      <div className="relative z-10 flex items-center gap-3.5">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-white/[0.04] border border-white/10 shadow-sm">{icon}</div>
-            <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">{title}</h2>
-          </div>
-          <p className="text-xs text-[#A1A1AA] mt-1">{subtitle}</p>
-        </div>
-      </div>
-
-      <button
-        onClick={onBackToWatching}
-        className="relative z-10 flex items-center justify-center gap-2 px-4 py-2.5 bg-white/[0.06] hover:bg-white/[0.12] text-white hover:text-white border border-white/10 text-xs font-semibold rounded-xl transition-all hover:scale-[1.02] cursor-pointer shrink-0 shadow-sm"
-      >
-        <ArrowLeft className="w-3.5 h-3.5 text-[#E50914]" />
-        <span>Back to Currently Watching</span>
-        {watchingCount > 0 && (
-          <span className="px-1.5 py-0.5 rounded-md bg-[#E50914]/20 text-[#E50914] text-[10px] font-bold">
-            {watchingCount}
-          </span>
-        )}
-      </button>
-    </div>
-  );
-}
-
-/* ─── Poster Card Component (Interactive & Clickable) ─────────────────────── */
+/* ─── Poster Card Component (Interactive & Clean Cinematic Artwork) ─────── */
 function PosterCard({
   entry,
   index,
   showRating = false,
-  showShelfBadge = false,
   onClick,
 }: {
   key?: string | number;
@@ -1873,39 +1749,15 @@ function PosterCard({
       className="poster-card group stagger-item cursor-pointer hover:scale-[1.03] transition-all"
       style={{ animationDelay: `${index * 30}ms` }}
     >
-      <div className="poster-card-image relative overflow-hidden bg-stone-900">
+      <div className="poster-card-image relative overflow-hidden bg-stone-900 rounded-xl">
         <MovieImage
           src={entry.tmdb.posterUrl}
           alt={entry.tmdb.title}
           title={entry.tmdb.title}
           mediaType={entry.tmdb.mediaType}
-          className="w-full h-full object-cover transition-transform duration-300"
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           fallbackIconClassName="w-8 h-8 text-stone-700"
         />
-
-        {/* Media type badge */}
-        <div className="absolute top-1.5 left-1.5 z-10">
-          <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-black/80 text-[9px] text-[#A1A1AA] border border-white/10 uppercase tracking-wider font-semibold">
-            {isTV ? "TV" : "Film"}
-          </span>
-        </div>
-
-        {/* Optional Shelf badge */}
-        {showShelfBadge && (
-          <div className="absolute top-1.5 right-1.5 z-10">
-            <span
-              className={`px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider border shadow-sm ${
-                entry.shelf === "watching"
-                  ? "bg-[#E50914] text-white border-[#E50914]"
-                  : entry.shelf === "toWatch"
-                  ? "bg-[#292932] text-[#F5F5F5] border-[#3D3D4C]"
-                  : "bg-[#15151C] text-[#F5C542] border-[#292932]"
-              }`}
-            >
-              {entry.shelf === "watching" ? "Watching" : entry.shelf === "toWatch" ? "To Watch" : "Watched"}
-            </span>
-          </div>
-        )}
 
         {/* TV Series Episode Progress Bar */}
         {isTV && entry.shelf === "watching" && entry.progress && (

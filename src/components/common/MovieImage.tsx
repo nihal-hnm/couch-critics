@@ -66,7 +66,7 @@ export function MovieImage({
           setUseProxyFallback(false);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
 
     return () => {
       mounted = false;
