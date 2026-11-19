@@ -315,7 +315,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
                         alt={show.title}
                         title={show.title}
                         mediaType="tv"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        className="w-full h-full object-cover "
                         fallbackIconClassName="w-6 h-6 text-stone-600"
                       />
                     </div>
@@ -620,14 +620,7 @@ function StatCard({
       }`}
       style={{ animationDelay: `${delay}ms` }}
     >
-      <div
-        className={`absolute -top-8 -right-8 w-24 h-24 rounded-full blur-2xl transition-all duration-500 ${
-          glowColor ||
-          (accentStar
-            ? "bg-[#F5C542]/5 group-hover:bg-[#F5C542]/10"
-            : "bg-[#D97706]/5 group-hover:bg-[#D97706]/10")
-        }`}
-      />
+      
       <div className="relative">
         <div
           className={`flex items-center gap-2 mb-2 ${
@@ -635,7 +628,7 @@ function StatCard({
           }`}
         >
           {icon}
-          <span className="text-xs uppercase tracking-wider font-medium text-[#A1A1AA]">
+          <span className="text-xs font-medium text-stone-400">
             {label}
           </span>
         </div>
@@ -662,7 +655,7 @@ function HistoryCard({
   return (
     <div
       onClick={onClick}
-      className="group rounded-xl overflow-hidden border border-[#292932] bg-[#15151C] hover:border-[#D97706]/50 transition-all duration-300 stagger-item cursor-pointer hover:scale-[1.02]"
+      className="group rounded-xl overflow-hidden border border-[#292932] bg-[#15151C] hover:border-[#D97706]/50 transition-all duration-300 stagger-item cursor-pointer "
       style={{ animationDelay: `${index * 30}ms` }}
     >
       {/* Poster */}
@@ -672,7 +665,7 @@ function HistoryCard({
           alt={entry.tmdb.title}
           title={entry.tmdb.title}
           mediaType={entry.tmdb.mediaType}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-cover "
           fallbackIconClassName="w-6 h-6 text-stone-700"
           loading="lazy"
         />

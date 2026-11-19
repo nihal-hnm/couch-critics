@@ -379,7 +379,7 @@ export default function WatchedShelf({
             onClick={(e) => e.stopPropagation()}
           >
             <div>
-              <label className="text-[11px] text-[#A1A1AA] font-semibold uppercase tracking-wider">
+              <label className="text-xs text-stone-400 font-medium">
                 Rating (1 - 10)
               </label>
               <div className="flex gap-1 mt-1">
@@ -387,7 +387,7 @@ export default function WatchedShelf({
                   <button
                     key={i}
                     onClick={() => setEditRating(i + 1)}
-                    className={`text-lg transition-all duration-150 hover:scale-110 cursor-pointer ${
+                    className={`text-lg transition-all duration-150 cursor-pointer ${
                       i < editRating ? "text-[#F5C542]" : "text-[#292932] hover:text-[#F5C542]/50"
                     }`}
                   >
@@ -401,7 +401,7 @@ export default function WatchedShelf({
             </div>
 
             <div>
-              <label className="text-[11px] text-[#A1A1AA] font-semibold uppercase tracking-wider">
+              <label className="text-xs text-stone-400 font-medium">
                 Notes &amp; Takeaways
               </label>
               <textarea
@@ -413,7 +413,7 @@ export default function WatchedShelf({
             </div>
 
             <div>
-              <label className="text-[11px] text-[#A1A1AA] font-semibold uppercase tracking-wider">
+              <label className="text-xs text-stone-400 font-medium">
                 Tags (comma-separated)
               </label>
               <input

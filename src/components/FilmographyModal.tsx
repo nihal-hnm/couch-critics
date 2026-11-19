@@ -185,12 +185,12 @@ export function FilmographyModal({
             )}
             <div>
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono tracking-widest uppercase bg-[#D97706]/15 border border-[#D97706]/30 text-[#D97706] font-semibold">
+                <span className="px-2 py-0.5 rounded text-xs text-stone-300 bg-white/[0.06] border border-white/10">
                   {data?.knownForDepartment || role}
                 </span>
                 <span className="text-xs text-[#A1A1AA] font-mono">Filmography Tracker</span>
               </div>
-              <h3 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white mt-1">
+              <h3 className="text-xl sm:text-2xl font-semibold text-white mt-1">
                 {data?.name || personName}
               </h3>
             </div>
@@ -215,7 +215,7 @@ export function FilmographyModal({
                   Career Completion: <strong className="text-white font-mono">{stats.watched}</strong> of{" "}
                   <strong className="text-white font-mono">{stats.total}</strong> watched
                 </span>
-                <span className="font-mono text-emerald-400 font-bold">{stats.percent}% Complete</span>
+                <span className="font-mono text-stone-200 font-semibold tabular-nums">{stats.percent}% Complete</span>
               </div>
               <div className="w-full h-2 rounded-full bg-white/5 overflow-hidden border border-white/10">
                 <div
@@ -324,7 +324,7 @@ export function FilmographyModal({
                         alt={credit.title}
                         title={credit.title}
                         mediaType={credit.mediaType}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-cover "
                       />
 
                       {/* Status Badges */}

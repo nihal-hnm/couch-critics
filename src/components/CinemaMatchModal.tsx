@@ -365,7 +365,7 @@ export function CinemaMatchModal({
             <div className="w-10 h-10 rounded-lg bg-white/[0.06] border border-white/10 flex items-center justify-center text-stone-200"><Users className="w-5 h-5" /></div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono tracking-widest uppercase bg-amber-500/15 border border-amber-500/30 text-amber-300 font-semibold">
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-mono  bg-amber-500/15 border border-amber-500/30 text-amber-300 font-semibold">
                   Taste compatibility
                 </span>
               </div>

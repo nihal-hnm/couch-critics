@@ -281,22 +281,9 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                 className="relative p-4 sm:p-5 overflow-hidden cursor-pointer flex-1 flex flex-col justify-between"
                 onClick={() => setSelectedEntry(entry)}
               >
-                {/* Ambient Blurred Backdrop behind the card */}
-                {(entry.tmdb.backdropUrl || entry.tmdb.posterUrl) && (
-                  <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20 dark:opacity-15">
-                    <img
-                      src={getOptimizedImageUrl(entry.tmdb.backdropUrl || entry.tmdb.posterUrl)}
-                      alt=""
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover blur-xl scale-110"
-                    />
-                    <div className="absolute inset-0 card-ambient-scrim pointer-events-none" />
-                  </div>
-                )}
-
                 <div className="relative z-10 flex gap-4 sm:gap-5 items-start flex-1">
                   {/* ── FULL UNZOOMED COVER POSTER ── */}
-                  <div className="w-28 sm:w-32 aspect-[2/3] rounded-xl overflow-hidden shadow-md border border-white/10 shrink-0 bg-[#0B0B0F] group-hover:scale-[1.02] transition-transform duration-300">
+                  <div className="w-28 sm:w-32 aspect-[2/3] rounded-xl overflow-hidden shadow-sm border border-white/10 shrink-0 bg-[#0B0B0F]">
                     <MovieImage
                       src={entry.tmdb.posterUrl}
                       alt={entry.tmdb.title}

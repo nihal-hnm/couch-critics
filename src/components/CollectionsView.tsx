@@ -320,7 +320,7 @@ export function CollectionsView({ entries, onSelectEntry }: CollectionsViewProps
                         alt={entry.tmdb.title}
                         title={entry.tmdb.title}
                         mediaType={entry.tmdb.mediaType}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        className="w-full h-full object-cover "
                       />
                       {entry.review?.rating && (
                         <div className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded bg-black/80 text-[10px] font-bold font-mono text-[#F5C542] border border-[#F5C542]/30 flex items-center gap-0.5">

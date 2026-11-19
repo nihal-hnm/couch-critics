@@ -1044,7 +1044,7 @@ export default function Dashboard() {
               aria-label="Search and add movies or series"
               title="Search & Add Titles (⌘K)"
             >
-              <SearchIcon className="w-3.5 h-3.5 text-[#D97706] group-hover:scale-110 transition-transform" />
+              <SearchIcon className="w-3.5 h-3.5 text-[#D97706] " />
               <span className="text-xs hidden sm:inline font-medium">Search titles...</span>
               <kbd className="hidden md:inline-flex items-center text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-zinc-400 group-hover:text-white">
                 ⌘K
@@ -1070,7 +1070,7 @@ export default function Dashboard() {
               title="Share your Journal (Watched, Watching, To Watch)"
               aria-label="Share journal"
             >
-              <Share2 className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform" />
+              <Share2 className="w-3.5 h-3.5 text-amber-400 " />
               <span className="text-xs hidden md:inline font-medium">Share</span>
             </button>
 
@@ -1766,7 +1766,7 @@ function PosterCard({
   return (
     <div
       onClick={onClick}
-      className="poster-card group stagger-item cursor-pointer hover:scale-[1.03] transition-all"
+      className="poster-card group stagger-item cursor-pointer transition-[border-color] duration-150"
       style={{ animationDelay: `${index * 30}ms` }}
     >
       <div className="poster-card-image relative overflow-hidden bg-stone-900 rounded-xl">
@@ -1775,7 +1775,7 @@ function PosterCard({
           alt={entry.tmdb.title}
           title={entry.tmdb.title}
           mediaType={entry.tmdb.mediaType}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          className="w-full h-full object-cover "
           fallbackIconClassName="w-8 h-8 text-stone-700"
         />
 
@@ -1783,7 +1783,7 @@ function PosterCard({
         {isTV && entry.shelf === "watching" && entry.progress && (
           <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-stone-950/80 z-10 border-t border-black/40">
             <div
-              className="h-full bg-gradient-to-r from-emerald-500 to-green-400 shadow-[0_0_8px_rgba(16,185,129,0.6)]"
+              className="h-full bg-[#D97706]"
               style={{
                 width: `${Math.min(
                   100,

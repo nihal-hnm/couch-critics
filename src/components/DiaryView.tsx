@@ -268,7 +268,7 @@ export function DiaryView({ entries, onSelectEntry }: DiaryViewProps) {
                         alt={entry.tmdb.title}
                         title={entry.tmdb.title}
                         mediaType={entry.tmdb.mediaType}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        className="w-full h-full object-cover "
                         fallbackIconClassName="w-5 h-5 text-stone-600"
                       />
                     </div>

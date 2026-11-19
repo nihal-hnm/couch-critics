@@ -152,7 +152,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
           <button
             onClick={pickRandom}
             disabled={filteredEntries.length === 0 || isSpinning}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#D97706] to-[#B45309] hover:from-[#F59E0B] hover:to-[#D97706] text-white rounded-xl text-sm font-semibold transition-all shadow-md shadow-[#D97706]/25 hover:shadow-lg hover:shadow-[#D97706]/40 hover:scale-[1.02] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 bg-[#D97706] hover:bg-[#F59E0B] text-white rounded-lg text-xs font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
             <Shuffle className={`w-4 h-4 text-white ${isSpinning ? "animate-spin" : ""}`} />
             <span>{isSpinning ? "Spinning..." : "Pick for Tonight"}</span>
@@ -163,7 +163,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
         {showFilters && (
           <div className="flex flex-wrap gap-3 p-4 bg-[#15151C] rounded-2xl border border-[#292932] animate-in slide-in-from-bottom-4 duration-200">
             <div className="space-y-1.5">
-              <label className="text-xs text-[#A1A1AA] uppercase tracking-wider">
+              <label className="text-xs text-stone-400 font-medium">
                 Media Type
               </label>
               <select
@@ -178,7 +178,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs text-[#A1A1AA] uppercase tracking-wider">
+              <label className="text-xs text-stone-400 font-medium">
                 Genre
               </label>
               <select
@@ -196,7 +196,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs text-[#A1A1AA] uppercase tracking-wider">
+              <label className="text-xs text-stone-400 font-medium">
                 Max Runtime
               </label>
               <select
@@ -223,22 +223,9 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
 
       {/* ── Picked Movie Spotlight ──────────────────────────── */}
       {pickedMovie && (
-        <div className={`relative p-5 rounded-2xl border transition-all duration-300 bg-[#15151C] overflow-hidden animate-in zoom-in-95 ${
-          isSpinning ? "border-[#D97706] shadow-lg shadow-[#D97706]/20" : "border-amber-500/50 shadow-xl shadow-amber-500/10"
+        <div className={`relative p-5 rounded-xl border bg-[#15151C] overflow-hidden ${
+          isSpinning ? "border-amber-500/40" : "border-white/10"
         }`}>
-          {/* Ambient backdrop from the picked poster */}
-          {pickedMovie.tmdb.posterUrl && (
-            <div className="absolute inset-0">
-              <img
-                src={getOptimizedImageUrl(pickedMovie.tmdb.posterUrl)}
-                alt=""
-                referrerPolicy="no-referrer"
-                className="w-full h-full object-cover opacity-10 blur-2xl"
-              />
-              <div className="absolute inset-0 spotlight-scrim" />
-            </div>
-          )}
-
           <div className="relative z-10">
             <button
               onClick={() => setPickedMovie(null)}

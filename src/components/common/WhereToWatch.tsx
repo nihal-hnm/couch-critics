@@ -221,7 +221,7 @@ export function WhereToWatch({
             </h4>
           </div>
           <div className="flex items-center gap-1.5 text-[11px] text-stone-500 font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/80 animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/80" />
             <span>Available in India</span>
           </div>
         </div>
