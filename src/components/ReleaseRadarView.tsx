@@ -3,8 +3,8 @@
  * TV Series Release Radar & Air Date Tracker
  * =============================================================================
  *
- * Tracks live episode air dates, season returns, and production status for
- * TV series across user shelves (Watching & Backlog).
+ * Tracks live episode air dates, season returns, and production renewal status
+ * for TV series queued in your To-Watch backlog (deduplicated, without watched/watching clutter).
  */
 
 "use client";
@@ -18,10 +18,9 @@ import {
   RefreshCw,
   Sparkles,
   ChevronRight,
-  AlertCircle,
-  Film,
-  Play,
   BookmarkPlus,
+  Radio,
+  Search,
 } from "lucide-react";
 import type { MovieEntry } from "@/lib/types";
 import { getTVReleaseRadar, type TVReleaseRadarInfo } from "@/lib/tmdb";
@@ -43,16 +42,34 @@ export function ReleaseRadarView({ entries, onOpenSearch }: ReleaseRadarViewProp
   const [radarData, setRadarData] = useState<Record<string, TVReleaseRadarInfo | null>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [selectedEntry, setSelectedEntry] = useState<MovieEntry | null>(null);
-  const [shelfFilter, setShelfFilter] = useState<"all" | "watching" | "toWatch">("all");
   const [statusFilter, setStatusFilter] = useState<"all" | "airingSoon" | "returning" | "ended">("all");
 
-  // Gather TV series from library
+  // Gather TV series — strictly To Watch (Backlog), deduplicated by tmdbId and title
+  // ("watched" and "watching" entries are completely removed from TV Radar)
   const tvEntries = useMemo(() => {
-    return entries.filter(
-      (e) =>
-        e.tmdb?.mediaType === "tv" &&
-        (e.shelf === "watching" || e.shelf === "toWatch" || e.shelf === "watched")
-    );
+    const seenIds = new Set<number>();
+    const seenTitles = new Set<string>();
+    const list: MovieEntry[] = [];
+
+    for (const e of entries) {
+      if (e.tmdb?.mediaType !== "tv") continue;
+      // Exclude Watched and Watching shelves as requested
+      if (e.shelf === "watched" || e.shelf === "watching") continue;
+      if (e.shelf !== "toWatch") continue;
+
+      const id = e.tmdb.tmdbId;
+      const title = e.tmdb.title?.toLowerCase().trim();
+
+      // Deduplicate strictly
+      if (id && seenIds.has(id)) continue;
+      if (title && seenTitles.has(title)) continue;
+
+      if (id) seenIds.add(id);
+      if (title) seenTitles.add(title);
+      list.push(e);
+    }
+
+    return list;
   }, [entries]);
 
   // Fetch radar info for all TV series
@@ -128,41 +145,36 @@ export function ReleaseRadarView({ entries, onOpenSearch }: ReleaseRadarViewProp
     };
   }
 
-  // Filtered entries
+  // Filtered & sorted entries
   const filtered = useMemo(() => {
-    return combinedEntries.filter(({ entry, radar }) => {
-      // Shelf filter
-      if (shelfFilter !== "all" && entry.shelf !== shelfFilter) return false;
+    return combinedEntries
+      .filter(({ radar }) => {
+        if (statusFilter === "airingSoon") {
+          return Boolean(radar?.nextEpisode?.airDate);
+        }
+        if (statusFilter === "returning") {
+          return (
+            radar?.status === "Returning Series" ||
+            radar?.inProduction ||
+            (radar?.status !== "Ended" && radar?.status !== "Canceled" && !radar?.nextEpisode)
+          );
+        }
+        if (statusFilter === "ended") {
+          return radar?.status === "Ended" || radar?.status === "Canceled";
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        // Sort priority: Airing soonest first, then returning series, then alphabetical
+        const aDate = a.radar?.nextEpisode?.airDate;
+        const bDate = b.radar?.nextEpisode?.airDate;
+        if (aDate && bDate) return aDate.localeCompare(bDate);
+        if (aDate && !bDate) return -1;
+        if (!aDate && bDate) return 1;
 
-      // Status filter
-      if (statusFilter === "airingSoon") {
-        return Boolean(radar?.nextEpisode?.airDate);
-      }
-      if (statusFilter === "returning") {
-        return (
-          radar?.status === "Returning Series" ||
-          radar?.inProduction ||
-          (radar?.status !== "Ended" && radar?.status !== "Canceled" && !radar?.nextEpisode)
-        );
-      }
-      if (statusFilter === "ended") {
-        return radar?.status === "Ended" || radar?.status === "Canceled";
-      }
-      return true;
-    }).sort((a, b) => {
-      // Sort priority: Airing soonest first, then currently watching, then alphabetical
-      const aDate = a.radar?.nextEpisode?.airDate;
-      const bDate = b.radar?.nextEpisode?.airDate;
-      if (aDate && bDate) return aDate.localeCompare(bDate);
-      if (aDate && !bDate) return -1;
-      if (!aDate && bDate) return 1;
-
-      if (a.entry.shelf === "watching" && b.entry.shelf !== "watching") return -1;
-      if (a.entry.shelf !== "watching" && b.entry.shelf === "watching") return 1;
-
-      return a.entry.tmdb.title.localeCompare(b.entry.tmdb.title);
-    });
-  }, [combinedEntries, shelfFilter, statusFilter]);
+        return a.entry.tmdb.title.localeCompare(b.entry.tmdb.title);
+      });
+  }, [combinedEntries, statusFilter]);
 
   // Metrics
   const metrics = useMemo(() => {
@@ -187,14 +199,14 @@ export function ReleaseRadarView({ entries, onOpenSearch }: ReleaseRadarViewProp
     return (
       <div className="max-w-4xl mx-auto py-16 px-4 text-center">
         <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#15151C] border border-[#292932] flex items-center justify-center text-[#E50914]">
-          <Tv className="w-8 h-8" />
+          <Radio className="w-8 h-8 text-emerald-400" />
         </div>
-        <h2 className="text-xl font-bold text-white mb-2">No TV Series Tracked Yet</h2>
-        <p className="text-sm text-[#A1A1AA] max-w-md mx-auto mb-6">
-          Add TV series like <span className="text-white font-medium">Severance</span>,{" "}
+        <h2 className="text-xl font-bold text-white mb-2">No TV Series on Release Radar</h2>
+        <p className="text-sm text-[#A1A1AA] max-w-md mx-auto mb-6 leading-relaxed">
+          Add upcoming or backlogged TV series (like <span className="text-white font-medium">Severance</span>,{" "}
           <span className="text-white font-medium">The Last of Us</span>, or{" "}
-          <span className="text-white font-medium">The Bear</span> to your Watching or Backlog shelf to unlock
-          real-time release radar, episode countdowns, and renewal schedules.
+          <span className="text-white font-medium">The Bear</span>) to your <strong className="text-amber-400">To Watch (Backlog)</strong> to
+          track live air dates, episode countdowns, and renewal schedules here.
         </p>
         {onOpenSearch && (
           <button
@@ -202,7 +214,7 @@ export function ReleaseRadarView({ entries, onOpenSearch }: ReleaseRadarViewProp
             className="px-5 py-2.5 rounded-xl bg-[#E50914] hover:bg-[#FF3B3B] text-white font-medium text-sm transition-colors shadow-lg shadow-red-950/30 inline-flex items-center gap-2 cursor-pointer"
           >
             <Sparkles className="w-4 h-4" />
-            Discover & Track TV Shows
+            Search &amp; Add TV Series
           </button>
         )}
       </div>
@@ -214,15 +226,15 @@ export function ReleaseRadarView({ entries, onOpenSearch }: ReleaseRadarViewProp
       {/* ── Top Hero / Release Radar Banner ── */}
       <div className="p-6 rounded-2xl bg-[#15151C] border border-[#292932] flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xl">
         <div>
-          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[#E50914] font-semibold mb-1">
-            <span className="w-2 h-2 rounded-full bg-[#E50914] animate-ping" />
+          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-emerald-400 font-semibold mb-1">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
             Live Release Radar
           </div>
           <h2 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
             TV Air Date &amp; Season Tracker
           </h2>
           <p className="text-sm text-[#A1A1AA] mt-1 max-w-xl">
-            Real-time schedule for next episodes, upcoming season renewals, and finale statuses across your active series.
+            Real-time schedule for next episodes, upcoming season renewals, and finale statuses across your queued series.
           </p>
         </div>
 
@@ -248,14 +260,13 @@ export function ReleaseRadarView({ entries, onOpenSearch }: ReleaseRadarViewProp
             title="Refresh Air Dates from TMDB"
             aria-label="Refresh TV air date tracker"
           >
-            <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin text-[#E50914]" : ""}`} />
+            <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin text-emerald-400" : ""}`} />
           </button>
         </div>
       </div>
 
-      {/* ── Filters & Controls Bar ── */}
+      {/* ── Status Filter Controls Bar ── */}
       <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl bg-[#15151C] border border-[#292932]">
-        {/* Status Filters */}
         <div className="flex flex-wrap items-center gap-1.5">
           <button
             onClick={() => setStatusFilter("all")}
@@ -265,7 +276,7 @@ export function ReleaseRadarView({ entries, onOpenSearch }: ReleaseRadarViewProp
                 : "text-[#A1A1AA] hover:text-white hover:bg-white/5 border border-transparent"
             }`}
           >
-            All Shows ({tvEntries.length})
+            All Queued ({tvEntries.length})
           </button>
           <button
             onClick={() => setStatusFilter("airingSoon")}
@@ -300,49 +311,26 @@ export function ReleaseRadarView({ entries, onOpenSearch }: ReleaseRadarViewProp
           </button>
         </div>
 
-        {/* Shelf Filter */}
-        <div className="flex items-center gap-1 bg-[#0B0B0F] p-1 rounded-lg border border-[#292932]">
+        {onOpenSearch && (
           <button
-            onClick={() => setShelfFilter("all")}
-            className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer ${
-              shelfFilter === "all" ? "bg-white/15 text-white" : "text-[#A1A1AA] hover:text-white"
-            }`}
+            onClick={onOpenSearch}
+            className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[#0B0B0F] border border-[#292932] hover:border-zinc-500 text-stone-300 hover:text-white transition-colors cursor-pointer flex items-center gap-1.5"
           >
-            All Shelves
+            <Search className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Add More Shows</span>
           </button>
-          <button
-            onClick={() => setShelfFilter("watching")}
-            className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer flex items-center gap-1 ${
-              shelfFilter === "watching" ? "bg-white/15 text-white" : "text-[#A1A1AA] hover:text-white"
-            }`}
-          >
-            <Play className="w-2.5 h-2.5 fill-current text-[#E50914]" />
-            Watching
-          </button>
-          <button
-            onClick={() => setShelfFilter("toWatch")}
-            className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer flex items-center gap-1 ${
-              shelfFilter === "toWatch" ? "bg-white/15 text-white" : "text-[#A1A1AA] hover:text-white"
-            }`}
-          >
-            <BookmarkPlus className="w-2.5 h-2.5 text-amber-400" />
-            Backlog
-          </button>
-        </div>
+        )}
       </div>
 
-      {/* ── Main Radar Cards Grid ── */}
+      {/* ── Main Radar Cards Grid (Deduplicated) ── */}
       {filtered.length === 0 ? (
         <div className="p-12 text-center bg-[#15151C] border border-[#292932] rounded-2xl">
           <p className="text-sm text-[#A1A1AA]">No series match this filter.</p>
           <button
-            onClick={() => {
-              setStatusFilter("all");
-              setShelfFilter("all");
-            }}
-            className="mt-3 text-xs text-[#E50914] hover:underline cursor-pointer"
+            onClick={() => setStatusFilter("all")}
+            className="mt-3 text-xs text-emerald-400 hover:underline cursor-pointer font-medium"
           >
-            Reset Filters
+            Reset Filter
           </button>
         </div>
       ) : (
@@ -360,21 +348,11 @@ export function ReleaseRadarView({ entries, onOpenSearch }: ReleaseRadarViewProp
                 className="bg-[#15151C] hover:bg-[#181820] border border-[#292932] hover:border-zinc-700/80 rounded-2xl p-4 transition-all shadow-md hover:shadow-xl cursor-pointer group flex flex-col justify-between"
               >
                 <div>
-                  {/* Top Status & Shelf Badge */}
+                  {/* Top Status Badge */}
                   <div className="flex items-center justify-between gap-2 mb-3">
-                    <span
-                      className={`text-[10px] font-mono uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md border flex items-center gap-1 ${
-                        entry.shelf === "watching"
-                          ? "bg-[#E50914]/15 border-[#E50914]/30 text-[#E50914]"
-                          : entry.shelf === "toWatch"
-                            ? "bg-amber-500/15 border-amber-500/30 text-amber-400"
-                            : "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
-                      }`}
-                    >
-                      {entry.shelf === "watching" && <Play className="w-2.5 h-2.5 fill-current" />}
-                      {entry.shelf === "toWatch" && <BookmarkPlus className="w-2.5 h-2.5" />}
-                      {entry.shelf === "watched" && <CheckCircle2 className="w-2.5 h-2.5" />}
-                      {entry.shelf === "watching" ? "Watching" : entry.shelf === "toWatch" ? "Backlog" : "Archived"}
+                    <span className="text-[10px] font-mono uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md border bg-amber-500/10 border-amber-500/25 text-amber-300 flex items-center gap-1">
+                      <BookmarkPlus className="w-2.5 h-2.5 text-amber-400" />
+                      To Watch
                     </span>
 
                     {/* Live TMDB Status */}
@@ -423,15 +401,10 @@ export function ReleaseRadarView({ entries, onOpenSearch }: ReleaseRadarViewProp
                       <p className="text-xs text-[#A1A1AA] mt-0.5">
                         {entry.tmdb.releaseYear} • {entry.tmdb.genres?.slice(0, 2).join(", ")}
                       </p>
-
-                      {/* Episode Progress Status */}
-                      {entry.progress && (
-                        <div className="mt-2 text-xs text-stone-300 flex items-center gap-1.5">
-                          <span className="font-mono text-zinc-400 text-[11px]">Progress:</span>
-                          <span className="font-semibold text-emerald-400 font-mono text-[11px]">
-                            S{entry.progress.currentSeason || 1} · Ep {entry.progress.currentEpisode || 1}
-                          </span>
-                        </div>
+                      {entry.tmdb.overview && (
+                        <p className="text-[11px] text-zinc-500 mt-1.5 line-clamp-2 leading-relaxed">
+                          {entry.tmdb.overview}
+                        </p>
                       )}
                     </div>
                   </div>

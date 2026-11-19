@@ -88,17 +88,29 @@ export default function WatchedShelf({
     setEditingId(null);
   }
 
-  // ─── Exact Counts Calculation ──────────────────────────────────────────────
+  // ─── Deduplicated Exact Counts Calculation ──────────────────────────────────
+  const uniqueEntries = useMemo(() => {
+    const seen = new Set<string>();
+    return entries.filter((e) => {
+      const key = e.tmdb?.tmdbId
+        ? `tmdb-${e.tmdb.tmdbId}`
+        : `title-${e.tmdb?.title?.toLowerCase().trim()}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }, [entries]);
+
   const allMovies = useMemo(
-    () => entries.filter((e) => e.tmdb.mediaType === "movie"),
-    [entries]
+    () => uniqueEntries.filter((e) => e.tmdb.mediaType === "movie"),
+    [uniqueEntries]
   );
   const allSeries = useMemo(
-    () => entries.filter((e) => e.tmdb.mediaType === "tv"),
-    [entries]
+    () => uniqueEntries.filter((e) => e.tmdb.mediaType === "tv"),
+    [uniqueEntries]
   );
 
-  const totalCount = entries.length;
+  const totalCount = uniqueEntries.length;
   const movieCount = allMovies.length;
   const seriesCount = allSeries.length;
 

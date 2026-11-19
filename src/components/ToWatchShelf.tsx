@@ -53,7 +53,14 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
   }, [entries]);
 
   const filteredEntries = useMemo(() => {
+    const seen = new Set<string>();
     return entries.filter((entry) => {
+      const key = entry.tmdb?.tmdbId
+        ? `tmdb-${entry.tmdb.tmdbId}`
+        : `title-${entry.tmdb?.title?.toLowerCase().trim()}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+
       const matchesSearch =
         !searchQuery ||
         entry.tmdb.title.toLowerCase().includes(searchQuery.toLowerCase()) ||

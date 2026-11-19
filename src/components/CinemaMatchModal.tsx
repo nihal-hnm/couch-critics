@@ -304,10 +304,13 @@ export function CinemaMatchModal({
       const inMyBacklog = myToWatchByTmdb.has(friendEntry.tmdb.tmdbId);
 
       if (!amWatchingOrWatched) {
-        if (inMyBacklog && (friendEntry.shelf === "toWatch" || (friendEntry.review?.rating || 0) >= 8)) {
-          movieNightPicks.push(friendEntry);
-        } else if (friendEntry.shelf === "toWatch") {
-          movieNightPicks.push(friendEntry);
+        const alreadyInPicks = movieNightPicks.some((p) => p.tmdb.tmdbId === friendEntry.tmdb.tmdbId);
+        if (!alreadyInPicks) {
+          if (inMyBacklog && (friendEntry.shelf === "toWatch" || (friendEntry.review?.rating || 0) >= 8)) {
+            movieNightPicks.push(friendEntry);
+          } else if (friendEntry.shelf === "toWatch") {
+            movieNightPicks.push(friendEntry);
+          }
         }
       }
     });

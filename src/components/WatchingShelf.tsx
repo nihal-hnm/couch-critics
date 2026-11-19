@@ -9,7 +9,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Play,
   CheckCircle2,
@@ -244,7 +244,24 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
     setNotes("");
   }
 
-  if (entries.length === 0) {
+  // Deduplicate entries to guarantee no duplicate cards
+  const uniqueEntries = useMemo(() => {
+    const seenIds = new Set<number>();
+    const seenTitles = new Set<string>();
+    const list: MovieEntry[] = [];
+    for (const e of entries) {
+      const id = e.tmdb?.tmdbId;
+      const title = e.tmdb?.title?.toLowerCase().trim();
+      if (id && seenIds.has(id)) continue;
+      if (title && seenTitles.has(title)) continue;
+      if (id) seenIds.add(id);
+      if (title) seenTitles.add(title);
+      list.push(e);
+    }
+    return list;
+  }, [entries]);
+
+  if (uniqueEntries.length === 0) {
     return (
       <div className="text-center py-20">
         <div className="inline-flex p-4 rounded-2xl bg-[#15151C] border border-[#292932] mb-4 text-[#E50914]">
@@ -264,7 +281,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
   return (
     <>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-        {entries.map((entry, index) => {
+        {uniqueEntries.map((entry, index) => {
           const sp = getTVSeasonProgress(entry);
           const isMovie = sp.isMovie;
 
