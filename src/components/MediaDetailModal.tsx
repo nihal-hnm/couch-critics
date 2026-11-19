@@ -705,8 +705,8 @@ export default function MediaDetailModal({
                 {entry.tmdb.title}
               </h2>
               {entry.tmdb.director && (
-                <p className="text-xs text-stone-300 mt-1 flex items-center gap-1">
-                  <span>{isTV ? "Created by" : "Directed by"}</span>
+                <div className="mt-1.5 flex items-center gap-2 flex-wrap">
+                  <span className="text-xs text-stone-400">{isTV ? "Created by:" : "Directed by:"}</span>
                   <button
                     onClick={() =>
                       setSelectedPerson({
@@ -714,12 +714,15 @@ export default function MediaDetailModal({
                         role: isTV ? "Creator" : "Director",
                       })
                     }
-                    className="text-white font-semibold hover:text-[#E50914] underline decoration-stone-600 hover:decoration-[#E50914] transition-colors cursor-pointer"
-                    title={`View ${entry.tmdb.director}'s filmography & completion`}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#15151C]/90 hover:bg-[#E50914]/20 border border-white/20 hover:border-[#E50914]/50 text-white font-semibold hover:text-[#E50914] text-xs transition-all shadow-sm cursor-pointer group"
+                    title={`View ${entry.tmdb.director}'s career filmography & completion tracker`}
                   >
-                    {entry.tmdb.director} ↗
+                    <span>{entry.tmdb.director}</span>
+                    <span className="text-[10px] font-mono px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 font-semibold border border-amber-500/30">
+                      Filmography Tracker ↗
+                    </span>
                   </button>
-                </p>
+                </div>
               )}
             </div>
           </div>
@@ -1304,9 +1307,14 @@ export default function MediaDetailModal({
               {/* Top Cast Gallery */}
               {castMembers && castMembers.length > 0 && (
                 <div>
-                  <h4 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">
-                    Top Cast
-                  </h4>
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-xs font-semibold text-stone-400 uppercase tracking-wider">
+                      Top Cast
+                    </h4>
+                    <span className="text-[10px] text-amber-400/90 font-mono flex items-center gap-1">
+                      <Sparkles className="w-3 h-3 text-amber-400" /> Click actor for filmography
+                    </span>
+                  </div>
                   <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
                     {castMembers.map((actor) => (
                       <div

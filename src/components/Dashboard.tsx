@@ -878,6 +878,36 @@ export default function Dashboard() {
               </span>
             </button>
 
+            {/* TV Release Radar (Primary Navigation Tab) */}
+            <button
+              type="button"
+              onClick={() => setActiveNav("radar")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeNav === "radar"
+                  ? "bg-white/10 text-white shadow-sm border border-white/15 font-bold"
+                  : "text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5 border border-transparent"
+              }`}
+              title="TV Series Release Radar & Air Dates"
+            >
+              <Radio className="w-3.5 h-3.5 text-emerald-400" />
+              <span>TV Radar</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            </button>
+
+            {/* Cinema Match Taste Compatibility (Primary Navigation Button) */}
+            <button
+              type="button"
+              onClick={() => setIsCinemaMatchOpen(true)}
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer text-[#A1A1AA] hover:text-white hover:bg-white/5 border border-transparent"
+              title="Cinema Match — Check Taste Compatibility with Friends"
+            >
+              <Users className="w-3.5 h-3.5 text-indigo-400" />
+              <span>Cinema Match</span>
+              <span className="px-1 py-0.2 rounded text-[9px] font-mono bg-indigo-500/15 text-indigo-300 border border-indigo-500/25">
+                MATCH
+              </span>
+            </button>
+
             <button
               type="button"
               onClick={() => setActiveNav("stats")}
@@ -1271,6 +1301,82 @@ export default function Dashboard() {
                 </div>
               </div>
             )}
+          </div>
+
+          {/* ── Feature Discovery & Quick Access Bar ── */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {/* Feature 6: TV Release Radar */}
+            <button
+              onClick={() => setActiveNav("radar")}
+              className="p-3.5 rounded-xl bg-[#15151C] hover:bg-[#1A1A24] border border-emerald-500/25 hover:border-emerald-500/50 transition-all text-left flex items-center justify-between group shadow-sm cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 group-hover:scale-105 transition-transform">
+                  <Radio className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors">
+                      TV Release Radar
+                    </span>
+                    <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">
+                      LIVE
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-zinc-400 mt-0.5">
+                    Air date schedules &amp; returning series radar
+                  </p>
+                </div>
+              </div>
+              <ChevronDown className="w-4 h-4 text-stone-500 group-hover:text-emerald-400 -rotate-90 transition-transform" />
+            </button>
+
+            {/* Feature 4: Cinema Match Taste Compatibility */}
+            <button
+              onClick={() => setIsCinemaMatchOpen(true)}
+              className="p-3.5 rounded-xl bg-[#15151C] hover:bg-[#1A1A24] border border-indigo-500/25 hover:border-indigo-500/50 transition-all text-left flex items-center justify-between group shadow-sm cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0 group-hover:scale-105 transition-transform">
+                  <Users className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-white group-hover:text-indigo-300 transition-colors">
+                      Cinema Match
+                    </span>
+                    <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-300 font-semibold border border-indigo-500/30">
+                      NEW
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-zinc-400 mt-0.5">
+                    Friends taste compatibility &amp; movie night picks
+                  </p>
+                </div>
+              </div>
+              <ChevronDown className="w-4 h-4 text-stone-500 group-hover:text-indigo-400 -rotate-90 transition-transform" />
+            </button>
+
+            {/* Feature 3: Filmography Completion Info */}
+            <div className="hidden lg:flex p-3.5 rounded-xl bg-[#15151C] border border-amber-500/25 items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+                  <Award className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-white">Filmography Tracker</span>
+                    <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 font-semibold border border-amber-500/30">
+                      ACTIVE
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-zinc-400 mt-0.5">
+                    Click any Director or Cast member in details
+                  </p>
+                </div>
+              </div>
+              <Sparkles className="w-4 h-4 text-amber-400/60" />
+            </div>
           </div>
 
           {/* Unified Filter Toolbar for Currently Watching */}
