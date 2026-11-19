@@ -46,6 +46,9 @@ import {
   BookOpen,
   Database,
   Layers,
+  Radio,
+  Users,
+  Sparkles,
 } from "lucide-react";
 import { useJournal } from "@/lib/journal-context";
 import { useAuth } from "@/lib/auth-context";
@@ -76,6 +79,12 @@ const CollectionsView = dynamic(
   () => import("@/components/CollectionsView").then((m) => m.CollectionsView),
   { ssr: false }
 );
+const CinemaMatchModal = dynamic(() => import("@/components/CinemaMatchModal"), {
+  ssr: false,
+});
+const ReleaseRadarView = dynamic(() => import("@/components/ReleaseRadarView"), {
+  ssr: false,
+});
 
 export type NavKey =
   | "watching"
@@ -88,7 +97,8 @@ export type NavKey =
   | "journey"
   | "favorites"
   | "diary"
-  | "collections";
+  | "collections"
+  | "radar";
 
 import Link from "next/link";
 import { MovieImage } from "./common/MovieImage";
@@ -110,6 +120,7 @@ export default function Dashboard() {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [shareScope, setShareScope] = useState<ShareScope>("all");
   const [isImportExportOpen, setIsImportExportOpen] = useState(false);
+  const [isCinemaMatchOpen, setIsCinemaMatchOpen] = useState(false);
 
   const userMenuRef = useRef<HTMLDivElement>(null);
   const moreMenuRef = useRef<HTMLDivElement>(null);
@@ -154,6 +165,8 @@ export default function Dashboard() {
           setActiveNav("watched");
         } else if (e.key === "4") {
           setActiveNav("diary");
+        } else if (e.key === "5") {
+          setActiveNav("radar");
         }
       }
     }
@@ -372,18 +385,28 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* Drawer Share Action */}
-        <div className="p-3 border-b border-[#292932] bg-white/[0.02]">
+        {/* Drawer Actions: Share & Cinema Match */}
+        <div className="p-3 border-b border-[#292932] bg-white/[0.02] grid grid-cols-2 gap-2">
           <button
             onClick={() => {
               setIsBurgerMenuOpen(false);
               setShareScope("all");
               setIsShareModalOpen(true);
             }}
-            className="w-full py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-amber-500/15 via-red-500/10 to-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-semibold flex items-center justify-center gap-2 hover:bg-amber-500/25 transition-all shadow-sm cursor-pointer"
+            className="py-2.5 px-2 rounded-xl bg-gradient-to-r from-amber-500/15 via-red-500/10 to-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-semibold flex items-center justify-center gap-1.5 hover:bg-amber-500/25 transition-all shadow-sm cursor-pointer"
           >
-            <Share2 className="w-4 h-4 text-amber-400" />
-            <span>Share My Journal & Shelves</span>
+            <Share2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+            <span className="truncate">Share Shelves</span>
+          </button>
+          <button
+            onClick={() => {
+              setIsBurgerMenuOpen(false);
+              setIsCinemaMatchOpen(true);
+            }}
+            className="py-2.5 px-2 rounded-xl bg-gradient-to-r from-indigo-500/15 via-purple-500/10 to-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-semibold flex items-center justify-center gap-1.5 hover:bg-indigo-500/25 transition-all shadow-sm cursor-pointer"
+          >
+            <Users className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+            <span className="truncate">Cinema Match</span>
           </button>
         </div>
 
@@ -535,6 +558,28 @@ export default function Dashboard() {
                 </div>
                 <span className="px-2 py-0.5 rounded-md text-xs font-mono bg-white/[0.06] border border-white/10 text-zinc-300">
                   {allGenres.length}
+                </span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setActiveNav("radar");
+                  setIsBurgerMenuOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
+                  activeNav === "radar"
+                    ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
+                    : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
+                    <Radio className="w-3.5 h-3.5" />
+                  </div>
+                  <span>TV Release Radar</span>
+                </div>
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">
+                  LIVE
                 </span>
               </button>
             </div>
@@ -852,26 +897,28 @@ export default function Dashboard() {
                 type="button"
                 onClick={() => setIsMoreMenuOpen((prev) => !prev)}
                 className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1 cursor-pointer ${
-                  ["movies", "series", "genres", "journey", "favorites"].includes(activeNav) || isMoreMenuOpen
+                  ["movies", "series", "genres", "journey", "favorites", "radar"].includes(activeNav) || isMoreMenuOpen
                     ? "bg-white/10 text-white border border-white/15"
                     : "text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5 border border-transparent"
                 }`}
                 aria-expanded={isMoreMenuOpen}
                 aria-haspopup="true"
-                title="More catalogs (Movies, TV Series, Genres, Journey, Favorites)"
+                title="More catalogs & tools"
               >
                 <span>
-                  {activeNav === "movies"
-                    ? "Movies"
-                    : activeNav === "series"
-                      ? "Series"
-                      : activeNav === "genres"
-                        ? "Genres"
-                        : activeNav === "journey"
-                          ? "Journey"
-                          : activeNav === "favorites"
-                            ? "Favorites"
-                            : "More"}
+                  {activeNav === "radar"
+                    ? "TV Radar"
+                    : activeNav === "movies"
+                      ? "Movies"
+                      : activeNav === "series"
+                        ? "Series"
+                        : activeNav === "genres"
+                          ? "Genres"
+                          : activeNav === "journey"
+                            ? "Journey"
+                            : activeNav === "favorites"
+                              ? "Favorites"
+                              : "More"}
                 </span>
                 <ChevronDown className={`w-3 h-3 opacity-70 transition-transform ${isMoreMenuOpen ? "rotate-180" : ""}`} />
               </button>
@@ -1011,6 +1058,44 @@ export default function Dashboard() {
                       <Layers className="w-3.5 h-3.5 text-rose-400" />
                       <span>Collections</span>
                     </div>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setActiveNav("radar");
+                      setIsMoreMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors cursor-pointer ${
+                      activeNav === "radar"
+                        ? "bg-white/10 text-white font-semibold"
+                        : "text-[#A1A1AA] hover:text-white hover:bg-white/5"
+                    }`}
+                    role="menuitem"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Radio className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>TV Release Radar</span>
+                    </div>
+                    <span className="font-mono text-[9px] px-1 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
+                      LIVE
+                    </span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setIsCinemaMatchOpen(true);
+                      setIsMoreMenuOpen(false);
+                    }}
+                    className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs text-[#A1A1AA] hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+                    role="menuitem"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Users className="w-3.5 h-3.5 text-indigo-400" />
+                      <span>Cinema Match (Friends)</span>
+                    </div>
+                    <span className="font-mono text-[9px] px-1 py-0.5 rounded bg-indigo-500/15 text-indigo-400 border border-indigo-500/25">
+                      NEW
+                    </span>
                   </button>
 
                   <div className="my-1 border-t border-[#292932]" />
@@ -1691,6 +1776,16 @@ export default function Dashboard() {
         />
       )}
 
+      {/* ── View 11: TV SERIES RELEASE RADAR ─────────────────────── */}
+      {activeNav === "radar" && (
+        <main className="max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-6">
+          <ReleaseRadarView
+            entries={entries}
+            onOpenSearch={() => setIsSearchOpen(true)}
+          />
+        </main>
+      )}
+
       {/* ── Floating Action Button (Mobile) ──────────────────────── */}
       <button
         onClick={() => setIsSearchOpen(true)}
@@ -1744,6 +1839,13 @@ export default function Dashboard() {
       <ImportExportModal
         isOpen={isImportExportOpen}
         onClose={() => setIsImportExportOpen(false)}
+      />
+
+      {/* ── Cinema Match (Taste Compatibility & Friends) ─────────── */}
+      <CinemaMatchModal
+        isOpen={isCinemaMatchOpen}
+        onClose={() => setIsCinemaMatchOpen(false)}
+        myEntries={entries}
       />
     </div>
   );

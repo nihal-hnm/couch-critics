@@ -40,6 +40,7 @@ import { useJournal } from "@/lib/journal-context";
 import { fetchSeasonEpisodes, getMovieDetails, buildWatchedEpisodes, getMovieTrailer } from "@/lib/tmdb";
 import { getCachedTVSeasons } from "@/lib/tv-seasons-cache";
 import { MovieImage } from "./common/MovieImage";
+import { FilmographyModal } from "./FilmographyModal";
 import { getOptimizedImageUrl } from "@/lib/image-utils";
 import { WhereToWatch } from "./common/WhereToWatch";
 
@@ -96,6 +97,11 @@ export default function MediaDetailModal({
   const [isPlayingTrailer, setIsPlayingTrailer] = useState(false);
   const [isLoadingTrailer, setIsLoadingTrailer] = useState(false);
   const [castMembers, setCastMembers] = useState<CastMember[]>(entry?.tmdb?.cast ?? []);
+  const [selectedPerson, setSelectedPerson] = useState<{
+    name: string;
+    id?: number | null;
+    role?: string;
+  } | null>(null);
 
   // Synchronize state when entry changes
   useEffect(() => {
@@ -699,9 +705,20 @@ export default function MediaDetailModal({
                 {entry.tmdb.title}
               </h2>
               {entry.tmdb.director && (
-                <p className="text-xs text-stone-300 mt-1">
-                  {isTV ? "Created by" : "Directed by"}{" "}
-                  <span className="text-white font-semibold">{entry.tmdb.director}</span>
+                <p className="text-xs text-stone-300 mt-1 flex items-center gap-1">
+                  <span>{isTV ? "Created by" : "Directed by"}</span>
+                  <button
+                    onClick={() =>
+                      setSelectedPerson({
+                        name: entry.tmdb.director,
+                        role: isTV ? "Creator" : "Director",
+                      })
+                    }
+                    className="text-white font-semibold hover:text-[#E50914] underline decoration-stone-600 hover:decoration-[#E50914] transition-colors cursor-pointer"
+                    title={`View ${entry.tmdb.director}'s filmography & completion`}
+                  >
+                    {entry.tmdb.director} ↗
+                  </button>
                 </p>
               )}
             </div>
@@ -1294,14 +1311,22 @@ export default function MediaDetailModal({
                     {castMembers.map((actor) => (
                       <div
                         key={actor.id}
-                        className="w-24 shrink-0 rounded-xl bg-[#0B0B0F] border border-[#292932] overflow-hidden p-2 text-center"
+                        onClick={() =>
+                          setSelectedPerson({
+                            id: actor.id,
+                            name: actor.name,
+                            role: "Actor",
+                          })
+                        }
+                        className="w-24 shrink-0 rounded-xl bg-[#0B0B0F] border border-[#292932] hover:border-amber-400/50 hover:bg-[#15151C] transition-all cursor-pointer overflow-hidden p-2 text-center group"
+                        title={`View ${actor.name}'s filmography & completion`}
                       >
-                        <div className="w-16 h-16 mx-auto rounded-full overflow-hidden bg-stone-900 border border-[#292932] mb-1.5 shadow-sm">
+                        <div className="w-16 h-16 mx-auto rounded-full overflow-hidden bg-stone-900 border border-[#292932] group-hover:border-amber-400/50 mb-1.5 shadow-sm transition-colors">
                           {actor.profileUrl ? (
                             <img
                               src={actor.profileUrl}
                               alt={actor.name}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                               loading="lazy"
                             />
                           ) : (
@@ -1310,7 +1335,7 @@ export default function MediaDetailModal({
                             </div>
                           )}
                         </div>
-                        <p className="text-[11px] font-semibold text-white truncate" title={actor.name}>
+                        <p className="text-[11px] font-semibold text-white group-hover:text-amber-300 truncate transition-colors" title={actor.name}>
                           {actor.name}
                         </p>
                         <p className="text-[10px] text-[#A1A1AA] truncate" title={actor.character}>
@@ -1519,6 +1544,15 @@ export default function MediaDetailModal({
           </button>
         </div>
       </div>
+
+      {/* ── Director & Actor Filmography Tracker ── */}
+      <FilmographyModal
+        isOpen={!!selectedPerson}
+        personName={selectedPerson?.name || ""}
+        personId={selectedPerson?.id}
+        role={selectedPerson?.role}
+        onClose={() => setSelectedPerson(null)}
+      />
     </div>
   );
 }

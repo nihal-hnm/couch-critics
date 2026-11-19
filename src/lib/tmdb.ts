@@ -656,4 +656,239 @@ export async function getMovieRecommendations(
   }
 }
 
+// ─── Person Filmography & TV Release Radar Services ──────────────────────────
+
+export interface PersonCreditItem {
+  id: number;
+  title: string;
+  posterUrl: string | null;
+  releaseYear: string;
+  mediaType: "movie" | "tv";
+  role: string;
+  voteAverage: number;
+}
+
+export interface PersonFilmographyData {
+  personId: number;
+  name: string;
+  profileUrl: string | null;
+  knownForDepartment: string;
+  biography?: string;
+  credits: PersonCreditItem[];
+}
+
+const personFilmographyCache = new Map<string, PersonFilmographyData>();
+
+/**
+ * Fetch full filmography for an actor or director by ID or Name.
+ */
+export async function getPersonFilmography(
+  personId?: number | null,
+  personName?: string
+): Promise<PersonFilmographyData | null> {
+  const cacheKey = personId ? `id-${personId}` : `name-${(personName || "").toLowerCase().trim()}`;
+  if (personFilmographyCache.has(cacheKey)) {
+    return personFilmographyCache.get(cacheKey)!;
+  }
+
+  try {
+    let resolvedId = personId;
+    let resolvedName = personName || "Unknown Artist";
+    let profilePath: string | null = null;
+    let department = "Directing";
+
+    // If ID is missing, search person by name
+    if (!resolvedId && personName) {
+      const searchRes = await tmdbFetch<{
+        results: {
+          id: number;
+          name: string;
+          profile_path: string | null;
+          known_for_department: string;
+        }[];
+      }>("/search/person", { query: personName.trim() });
+
+      if (searchRes.results && searchRes.results.length > 0) {
+        resolvedId = searchRes.results[0].id;
+        resolvedName = searchRes.results[0].name;
+        profilePath = searchRes.results[0].profile_path;
+        department = searchRes.results[0].known_for_department;
+      }
+    }
+
+    if (!resolvedId) return null;
+
+    // Fetch credits & bio in parallel
+    const [creditsRes, bioRes] = await Promise.all([
+      tmdbFetch<{
+        cast?: {
+          id: number;
+          title?: string;
+          name?: string;
+          poster_path: string | null;
+          release_date?: string;
+          first_air_date?: string;
+          media_type: string;
+          character?: string;
+          vote_average?: number;
+          vote_count?: number;
+        }[];
+        crew?: {
+          id: number;
+          title?: string;
+          name?: string;
+          poster_path: string | null;
+          release_date?: string;
+          first_air_date?: string;
+          media_type: string;
+          job?: string;
+          department?: string;
+          vote_average?: number;
+          vote_count?: number;
+        }[];
+      }>(`/person/${resolvedId}/combined_credits`),
+      tmdbFetch<{
+        name: string;
+        biography?: string;
+        profile_path: string | null;
+        known_for_department?: string;
+      }>(`/person/${resolvedId}`).catch(() => null),
+    ]);
+
+    if (bioRes) {
+      resolvedName = bioRes.name || resolvedName;
+      profilePath = bioRes.profile_path || profilePath;
+      department = bioRes.known_for_department || department;
+    }
+
+    const isDirector = department.toLowerCase().includes("direct");
+    const rawCredits = isDirector && creditsRes.crew ? creditsRes.crew.filter((c) => c.job === "Director") : creditsRes.cast || [];
+
+    // Deduplicate and sort by release date desc
+    const seen = new Set<number>();
+    const credits: PersonCreditItem[] = [];
+
+    for (const item of rawCredits) {
+      if (seen.has(item.id)) continue;
+      seen.add(item.id);
+
+      const title = item.title || item.name;
+      if (!title) continue;
+
+      const year = (item.release_date || item.first_air_date || "").slice(0, 4);
+
+      credits.push({
+        id: item.id,
+        title,
+        posterUrl: item.poster_path ? `${TMDB_IMAGE_BASE}${item.poster_path}` : null,
+        releaseYear: year || "N/A",
+        mediaType: item.media_type === "tv" ? "tv" : "movie",
+        role: "character" in item ? (item as any).character || "Cast" : "job" in item ? (item as any).job || "Director" : "Cast",
+        voteAverage: item.vote_average || 0,
+      });
+    }
+
+    // Sort: most recent first, with valid years on top
+    credits.sort((a, b) => {
+      const yearA = parseInt(a.releaseYear, 10) || 0;
+      const yearB = parseInt(b.releaseYear, 10) || 0;
+      return yearB - yearA;
+    });
+
+    const result: PersonFilmographyData = {
+      personId: resolvedId,
+      name: resolvedName,
+      profileUrl: profilePath ? `${TMDB_IMAGE_BASE}${profilePath}` : null,
+      knownForDepartment: department,
+      biography: bioRes?.biography || "",
+      credits,
+    };
+
+    personFilmographyCache.set(cacheKey, result);
+    return result;
+  } catch (err) {
+    console.warn("Failed to load filmography:", err);
+    return null;
+  }
+}
+
+export interface TVReleaseRadarInfo {
+  tmdbId: number;
+  status: string; // "Returning Series", "Ended", "Canceled", "In Production"
+  inProduction: boolean;
+  nextEpisode?: {
+    airDate: string;
+    episodeNumber: number;
+    seasonNumber: number;
+    name: string;
+    overview?: string;
+  } | null;
+  lastEpisode?: {
+    airDate: string;
+    episodeNumber: number;
+    seasonNumber: number;
+    name: string;
+  } | null;
+}
+
+const tvRadarCache = new Map<number, TVReleaseRadarInfo>();
+
+/**
+ * Fetch air dates and production status for a TV series.
+ */
+export async function getTVReleaseRadar(tmdbId: number): Promise<TVReleaseRadarInfo | null> {
+  if (tvRadarCache.has(tmdbId)) {
+    return tvRadarCache.get(tmdbId)!;
+  }
+
+  try {
+    const data = await tmdbFetch<{
+      id: number;
+      status: string;
+      in_production: boolean;
+      next_episode_to_air?: {
+        air_date: string;
+        episode_number: number;
+        season_number: number;
+        name: string;
+        overview?: string;
+      } | null;
+      last_episode_to_air?: {
+        air_date: string;
+        episode_number: number;
+        season_number: number;
+        name: string;
+      } | null;
+    }>(`/tv/${tmdbId}`);
+
+    const info: TVReleaseRadarInfo = {
+      tmdbId,
+      status: data.status || "Unknown",
+      inProduction: Boolean(data.in_production),
+      nextEpisode: data.next_episode_to_air
+        ? {
+            airDate: data.next_episode_to_air.air_date,
+            episodeNumber: data.next_episode_to_air.episode_number,
+            seasonNumber: data.next_episode_to_air.season_number,
+            name: data.next_episode_to_air.name,
+            overview: data.next_episode_to_air.overview,
+          }
+        : null,
+      lastEpisode: data.last_episode_to_air
+        ? {
+            airDate: data.last_episode_to_air.air_date,
+            episodeNumber: data.last_episode_to_air.episode_number,
+            seasonNumber: data.last_episode_to_air.season_number,
+            name: data.last_episode_to_air.name,
+          }
+        : null,
+    };
+
+    tvRadarCache.set(tmdbId, info);
+    return info;
+  } catch {
+    return null;
+  }
+}
+
 
