@@ -4,7 +4,7 @@
  * =============================================================================
  *
  * Redesigned with the warm cinematic aesthetic:
- *  - Glassmorphism modal with warm backdrop
+ *  - Crisp solid modal with dark backdrop
  *  - Purple-tinted search bar with cinematic glow
  *  - Warm hover effects on search results
  *  - Gold accent buttons for adding movies
@@ -185,11 +185,11 @@ export default function SearchModal({
      * itself — clicks inside it don't bubble up to close the backdrop.
      */
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-2xl max-h-[85vh] rounded-t-2xl sm:rounded-2xl glass-card shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300 border border-[#292932]"
+        className="w-full max-w-2xl max-h-[85vh] rounded-t-2xl sm:rounded-2xl bg-[#15151C] shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300 border border-[#292932]"
         style={{
           boxShadow: "0 20px 60px rgba(0, 0, 0, 0.7)",
         }}
@@ -255,7 +255,7 @@ export default function SearchModal({
               return (
                 <div
                   key={movie.tmdbId}
-                  className="flex gap-3 p-3 rounded-xl glass-card glass-card-hover border border-[#292932] transition-all duration-200 group stagger-item"
+                  className="flex gap-3 p-3 rounded-xl bg-[#15151C] hover:bg-[#1E1E26] border border-[#292932] hover:border-[#3D3D4C] transition-all duration-200 group stagger-item"
                   style={{ animationDelay: `${idx * 40}ms` }}
                 >
                   {/* Poster thumbnail */}

@@ -185,7 +185,7 @@ export default function LoginPage() {
 
       {/* ── MAIN CINEMATIC AUTH CARD ─────────────────────────────────────── */}
       <main className="relative z-20 flex-1 flex items-center justify-center px-4 py-8 sm:py-12">
-        <div className="w-full max-w-[460px] bg-black/85 sm:bg-[#15151C] backdrop-blur-2xl rounded-2xl p-8 sm:p-14 border border-[#292932] shadow-2xl shadow-black/80 transition-all">
+        <div className="w-full max-w-[460px] bg-[#15151C] rounded-2xl p-8 sm:p-14 border border-[#292932] shadow-2xl shadow-black/80 transition-all">
           {/* If already signed in */}
           {user ? (
             <div className="text-center space-y-6">
@@ -438,7 +438,7 @@ export default function LoginPage() {
       </main>
 
       {/* ── CINEMATIC PAGE FOOTER ─────────────────────────────────────── */}
-      <footer className="relative z-20 w-full bg-[#0B0B0F]/90 backdrop-blur-md border-t border-[#292932] py-8 px-6 sm:px-12 text-[#A1A1AA] text-xs">
+      <footer className="relative z-20 w-full bg-[#0B0B0F] border-t border-[#292932] py-8 px-6 sm:px-12 text-[#A1A1AA] text-xs">
         <div className="max-w-6xl mx-auto space-y-6">
           <p className="text-[#A1A1AA]">
             Questions? Contact{" "}
@@ -494,7 +494,7 @@ export default function LoginPage() {
 
       {/* ── Help Modal ────────────────────────────────────────────────────── */}
       {showHelpModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 animate-in fade-in">
           <div className="bg-[#15151C] border border-[#292932] rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-2xl">
             <div className="flex items-center gap-2 text-[#E50914]">
               <HelpCircle className="w-5 h-5 text-[#E50914]" />

@@ -434,7 +434,7 @@ export default function ShareModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-3 sm:p-5 animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div

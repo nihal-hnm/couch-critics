@@ -5,7 +5,7 @@
  *
  * Redesigned with the warm cinematic aesthetic:
  *  - Poster-forward grid with warm hover effects
- *  - Glassmorphism filter bar
+ *  - Solid modern filter bar
  *  - Purple/gold "Pick for Tonight" roulette button
  *  - Warm gradient overlays on hover
  */
@@ -137,7 +137,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
 
         {/* Expanded filters */}
         {showFilters && (
-          <div className="flex flex-wrap gap-3 p-4 glass-card border border-[#292932] animate-in slide-in-from-bottom-4 duration-200">
+          <div className="flex flex-wrap gap-3 p-4 bg-[#15151C] rounded-2xl border border-[#292932] animate-in slide-in-from-bottom-4 duration-200">
             <div className="space-y-1.5">
               <label className="text-xs text-[#A1A1AA] uppercase tracking-wider">
                 Genre
@@ -345,7 +345,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
 
             {/* Runtime badge */}
             {entry.tmdb.runtime > 0 && (
-              <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm text-[10px] text-[#F5F5F5] border border-[#292932] px-1.5 py-0.5 rounded-md flex items-center gap-1">
+              <div className="absolute top-2 right-2 bg-black/80 text-[10px] text-[#F5F5F5] border border-[#292932] px-1.5 py-0.5 rounded-md flex items-center gap-1">
                 <Clock className="w-2.5 h-2.5" />
                 {entry.tmdb.runtime}m
               </div>

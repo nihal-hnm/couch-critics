@@ -574,7 +574,7 @@ export default function MediaDetailModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
@@ -599,7 +599,7 @@ export default function MediaDetailModal({
           {/* Close button */}
           <button
             onClick={onClose}
-            className="modal-close-btn absolute top-4 right-4 p-2 rounded-xl bg-black/60 hover:bg-black/85 text-white hover:text-white transition-colors backdrop-blur-md border border-white/20 cursor-pointer z-10 keep-white"
+            className="modal-close-btn absolute top-4 right-4 p-2 rounded-xl bg-black/80 hover:bg-black text-white hover:text-white transition-colors border border-white/20 cursor-pointer z-10 keep-white"
             aria-label="Close modal"
           >
             <X className="w-5 h-5 text-white" />
@@ -620,7 +620,7 @@ export default function MediaDetailModal({
             )}
             <div className="flex-1 min-w-0 keep-white">
               <div className="flex flex-wrap items-center gap-2 mb-1.5 keep-white">
-                <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-white/10 text-white border border-white/15 flex items-center gap-1 backdrop-blur-sm">
+                <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-black/70 text-white border border-white/15 flex items-center gap-1">
                   {isTV ? <Tv className="w-3 h-3 text-[#E50914]" /> : <Film className="w-3 h-3 text-[#E50914]" />}
                   {isTV ? "TV Series" : "Movie"}
                 </span>
@@ -632,7 +632,7 @@ export default function MediaDetailModal({
                   </span>
                 )}
                 {entry.review?.rating && (
-                  <span className="flex items-center gap-1 text-xs text-[#F5C542] font-semibold bg-black/40 px-2 py-0.5 rounded border border-[#F5C542]/30 backdrop-blur-sm">
+                  <span className="flex items-center gap-1 text-xs text-[#F5C542] font-semibold bg-black/70 px-2 py-0.5 rounded border border-[#F5C542]/30">
                     <Star className="w-3 h-3 fill-[#F5C542]" />
                     {entry.review.rating}/10
                   </span>

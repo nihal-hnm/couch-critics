@@ -145,7 +145,7 @@ export default function SharePage() {
   return (
     <div className="share-page min-h-screen bg-[#F8FAFC] dark:bg-[#07070A] text-[#0F172A] dark:text-white flex flex-col font-sans">
       {/* ══ STICKY HEADER ══ */}
-      <header className="share-header sticky top-0 z-40 w-full bg-white/95 dark:bg-[#0B0B0F]/90 backdrop-blur-xl border-b border-[#E2E8F0] dark:border-[#292932]/80 transition-colors">
+      <header className="share-header sticky top-0 z-40 w-full bg-white dark:bg-[#0B0B0F] border-b border-[#E2E8F0] dark:border-[#292932]/80 transition-colors">
         <div className="max-w-[1720px] mx-auto w-full px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2.5 group cursor-pointer">
             <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 flex items-center justify-center shadow-sm ring-1 ring-slate-200 dark:ring-white/10 group-hover:ring-[#E50914]/50 transition-all">
@@ -248,7 +248,7 @@ export default function SharePage() {
       </section>
 
       {/* ══ CONTROLS & SHELF TABS ══ */}
-      <section className="share-controls-bar sticky top-[57px] z-30 w-full bg-white/95 dark:bg-[#0B0B0F]/95 backdrop-blur-md border-b border-[#E2E8F0] dark:border-[#292932] transition-colors">
+      <section className="share-controls-bar sticky top-[57px] z-30 w-full bg-white dark:bg-[#0B0B0F] border-b border-[#E2E8F0] dark:border-[#292932] transition-colors">
         <div className="max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row md:items-center justify-between gap-3">
           {/* Shelves Selector */}
           <div className="share-filter-track flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-[#15151C] border border-[#CBD5E1] dark:border-[#292932] rounded-xl overflow-x-auto scrollbar-none">
@@ -445,7 +445,7 @@ export default function SharePage() {
 
                     {/* Media Type (Top Right) */}
                     <div className="absolute top-2.5 right-2.5">
-                      <span className="px-1.5 py-0.5 rounded text-[10px] font-mono uppercase bg-black/70 border border-white/10 text-white backdrop-blur-md">
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-mono uppercase bg-black/85 border border-white/10 text-white">
                         {isTv ? "TV" : "Movie"}
                       </span>
                     </div>
@@ -453,7 +453,7 @@ export default function SharePage() {
                     {/* Rating or Progress (Bottom) */}
                     {isWatched && entry.review?.rating ? (
                       <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between">
-                        <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-500/30 border border-amber-400/50 backdrop-blur-md">
+                        <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-black/85 border border-amber-400/50">
                           <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                           <span className="text-xs font-bold font-mono text-amber-300">
                             {entry.review.rating}/10
@@ -548,7 +548,7 @@ export default function SharePage() {
       {/* ══ DETAIL POPUP MODAL ══ */}
       {selectedEntry && (
         <div
-          className="fixed inset-0 z-50 bg-black/60 dark:bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-150"
+          className="fixed inset-0 z-50 bg-black/70 dark:bg-black/85 flex items-center justify-center p-4 animate-in fade-in duration-150"
           onClick={() => setSelectedEntry(null)}
         >
           <div

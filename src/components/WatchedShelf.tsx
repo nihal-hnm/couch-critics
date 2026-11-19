@@ -437,8 +437,7 @@ export default function WatchedShelf({
   // ─── Empty State ───────────────────────────────────────────────────────────
   if (totalCount === 0) {
     return (
-      <div className="text-center py-20 liquid-glass-card rounded-3xl relative overflow-hidden max-w-lg mx-auto">
-        <div className="glass-specular" />
+      <div className="text-center py-20 bg-[#15151C] border border-[#292932] rounded-3xl relative overflow-hidden max-w-lg mx-auto">
         <div className="w-16 h-16 mx-auto rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-center mb-4 text-[#A1A1AA]">
           <Award className="w-8 h-8 text-[#A1A1AA]" />
         </div>
@@ -453,7 +452,7 @@ export default function WatchedShelf({
   return (
     <div className="space-y-6">
       {/* ── Control Bar: Media Filter, Search & Sorter ──────────────────────── */}
-      <div className="glass-card p-4 rounded-2xl border border-[#292932] space-y-4">
+      <div className="bg-[#15151C] p-4 rounded-2xl border border-[#292932] space-y-4">
         {/* Top Row: Type Tabs & Sorter */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           {/* Media Type Tabs (All | Movies | TV Series) */}
@@ -633,7 +632,7 @@ export default function WatchedShelf({
                 {sortedMovies.map((entry, idx) => renderCard(entry, idx))}
               </div>
             ) : (
-              <div className="p-6 text-center glass-card rounded-xl border border-[#292932] text-[#A1A1AA] text-xs">
+              <div className="p-6 text-center bg-[#15151C] rounded-xl border border-[#292932] text-[#A1A1AA] text-xs">
                 {searchQuery ? "No movies matched your search." : "No watched movies yet."}
               </div>
             )}
@@ -658,7 +657,7 @@ export default function WatchedShelf({
                 {sortedSeries.map((entry, idx) => renderCard(entry, idx))}
               </div>
             ) : (
-              <div className="p-6 text-center glass-card rounded-xl border border-[#292932] text-[#A1A1AA] text-xs">
+              <div className="p-6 text-center bg-[#15151C] rounded-xl border border-[#292932] text-[#A1A1AA] text-xs">
                 {searchQuery ? "No TV series matched your search." : "No completed TV series yet."}
               </div>
             )}
@@ -672,7 +671,7 @@ export default function WatchedShelf({
               {combinedEntries.map((entry, idx) => renderCard(entry, idx))}
             </div>
           ) : (
-            <div className="p-12 text-center glass-card rounded-2xl border border-[#292932]">
+            <div className="p-12 text-center bg-[#15151C] rounded-2xl border border-[#292932]">
               <p className="text-[#A1A1AA] text-sm">
                 No titles found matching your filter or search query.
               </p>

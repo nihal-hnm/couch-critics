@@ -256,7 +256,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
           return (
             <div
               key={entry.id}
-              className="bg-[#15151C]/90 hover:bg-[#181820] border border-[#292932] hover:border-zinc-700/80 rounded-2xl overflow-hidden flex flex-col justify-between shadow-md hover:shadow-xl transition-all relative h-full group"
+              className="bg-[#15151C] hover:bg-[#181820] border border-[#292932] hover:border-zinc-700/80 rounded-2xl overflow-hidden flex flex-col justify-between shadow-md hover:shadow-xl transition-all relative h-full group"
               style={{ animationDelay: `${index * 80}ms` }}
             >
               {/* ── Card Header: Ambient Backdrop + Full Poster + Info ── */}
@@ -502,7 +502,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
 
               {/* ── Quick Complete Modal ───────────────────────── */}
               {completingId === entry.id && (
-                <div className="absolute inset-0 bg-[#0a0a0a]/95 backdrop-blur-md flex flex-col items-center justify-center p-6 z-10 animate-in fade-in duration-200">
+                <div className="absolute inset-0 bg-[#0a0a0a] flex flex-col items-center justify-center p-6 z-10 animate-in fade-in duration-200">
                   <CheckCircle2 className="w-8 h-8 text-emerald-400 mb-3" />
                   <p className="text-white font-semibold mb-4">
                     Rate &ldquo;{entry.tmdb.title}&rdquo;

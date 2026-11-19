@@ -293,7 +293,7 @@ export default function Dashboard() {
       {/* ══ BURGER MENU SLIDE-OUT DRAWER ═══════════════════════════ */}
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 bg-black/80 backdrop-blur-md z-50 transition-opacity duration-300 ${
+        className={`fixed inset-0 bg-black/80 z-50 transition-opacity duration-300 ${
           isBurgerMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setIsBurgerMenuOpen(false)}
@@ -638,7 +638,7 @@ export default function Dashboard() {
       </aside>
 
       {/* ══ STICKY TOP APP HEADER ═════════════════════════════════ */}
-      <header className="sticky top-0 z-40 w-full bg-[#0B0B0F]/90 backdrop-blur-xl border-b border-[#292932]/80 transition-colors">
+      <header className="sticky top-0 z-40 w-full bg-[#0B0B0F] border-b border-[#292932]/80 transition-colors">
         <div className="max-w-[1720px] mx-auto w-full px-4 sm:px-6 lg:px-8 xl:px-10 py-2.5 sm:py-3 flex items-center justify-between gap-3 sm:gap-4">
           {/* Left: Burger Menu + Brand Logo */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
@@ -686,7 +686,7 @@ export default function Dashboard() {
 
           {/* Center: Desktop Pro Navigation Bar */}
           <nav
-            className="hidden lg:flex items-center gap-1 p-1 bg-[#15151C]/90 border border-[#292932] rounded-xl shadow-inner backdrop-blur-md"
+            className="hidden lg:flex items-center gap-1 p-1 bg-[#15151C] border border-[#292932] rounded-xl shadow-inner"
             aria-label="Primary Navigation"
           >
             <button
@@ -1143,7 +1143,7 @@ export default function Dashboard() {
             filteredWatching.length > 0 ? (
               <WatchingShelf entries={filteredWatching} />
             ) : (
-              <div className="glass-card p-12 text-center rounded-2xl border border-[#292932]">
+              <div className="bg-[#15151C] p-12 text-center rounded-2xl border border-[#292932]">
                 <div className="inline-flex p-4 rounded-2xl bg-[#15151C] border border-[#292932] mb-4 text-[#E50914]">
                   {watchingTypeFilter === "tv" ? <Tv className="w-8 h-8" /> : <FilmIcon className="w-8 h-8" />}
                 </div>
@@ -1163,7 +1163,7 @@ export default function Dashboard() {
             )
           ) : (
             /* Clean Empty State when zero titles are in Currently Watching */
-            <div className="glass-card p-8 sm:p-12 text-center rounded-2xl border border-[#292932] relative overflow-hidden my-4">
+            <div className="bg-[#15151C] p-8 sm:p-12 text-center rounded-2xl border border-[#292932] relative overflow-hidden my-4">
               <div className="relative z-10 max-w-md mx-auto">
                 <div className="inline-flex p-4 rounded-2xl bg-[#15151C] border border-[#292932] mb-4 animate-float text-[#E50914]">
                   <Play className="w-8 h-8 fill-current" />
@@ -1305,7 +1305,7 @@ export default function Dashboard() {
           />
 
           {/* Genre Runtime Stats Banner */}
-          <div className="glass-card p-5 rounded-2xl border border-[#292932] bg-[#15151C]">
+          <div className="p-5 rounded-2xl border border-[#292932] bg-[#15151C]">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2">
@@ -1465,7 +1465,7 @@ export default function Dashboard() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 glass-card rounded-2xl border border-[#292932]">
+            <div className="text-center py-16 bg-[#15151C] rounded-2xl border border-[#292932]">
               <Tags className="w-12 h-12 text-[#A1A1AA] mx-auto mb-3" />
               <h3 className="text-base font-semibold text-white">
                 No titles found in {selectedGenre === "all" ? "this filter" : `"${selectedGenre}"`}
@@ -1527,7 +1527,7 @@ export default function Dashboard() {
           {journeyYears.length > 0 ? (
             <div className="space-y-8">
               {journeyYears.map(([year, yearEntries]) => (
-                <div key={year} className="glass-card p-6 rounded-2xl border border-[#292932]">
+                <div key={year} className="bg-[#15151C] p-6 rounded-2xl border border-[#292932]">
                   <div className="flex items-center gap-3 mb-5">
                     <h3 className="text-3xl font-bold text-white font-mono">{year}</h3>
                     <div className="flex-1 h-px bg-gradient-to-r from-[#292932] to-transparent" />
@@ -1683,7 +1683,7 @@ function TopReturnBanner({
 
       <button
         onClick={onBackToWatching}
-        className="relative z-10 flex items-center justify-center gap-2 px-4 py-2.5 bg-white/[0.06] hover:bg-white/[0.12] text-white hover:text-white border border-white/10 text-xs font-semibold rounded-xl backdrop-blur-md transition-all hover:scale-[1.02] cursor-pointer shrink-0 shadow-sm"
+        className="relative z-10 flex items-center justify-center gap-2 px-4 py-2.5 bg-white/[0.06] hover:bg-white/[0.12] text-white hover:text-white border border-white/10 text-xs font-semibold rounded-xl transition-all hover:scale-[1.02] cursor-pointer shrink-0 shadow-sm"
       >
         <ArrowLeft className="w-3.5 h-3.5 text-[#E50914]" />
         <span>Back to Currently Watching</span>
@@ -1732,7 +1732,7 @@ function PosterCard({
 
         {/* Media type badge */}
         <div className="absolute top-1.5 left-1.5 z-10">
-          <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-sm text-[9px] text-[#A1A1AA] border border-white/10 uppercase tracking-wider font-semibold">
+          <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-black/80 text-[9px] text-[#A1A1AA] border border-white/10 uppercase tracking-wider font-semibold">
             {isTV ? "TV" : "Film"}
           </span>
         </div>
@@ -1741,7 +1741,7 @@ function PosterCard({
         {showShelfBadge && (
           <div className="absolute top-1.5 right-1.5 z-10">
             <span
-              className={`px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider backdrop-blur-sm border shadow-sm ${
+              className={`px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider border shadow-sm ${
                 entry.shelf === "watching"
                   ? "bg-[#E50914] text-white border-[#E50914]"
                   : entry.shelf === "toWatch"

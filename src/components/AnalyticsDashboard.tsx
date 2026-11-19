@@ -184,7 +184,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
         </div>
 
         {/* ── Watch Time Calculation: Movies vs Series Individual Breakdown ──── */}
-        <div className="glass-card p-6 stagger-item space-y-4 border border-[#292932]" style={{ animationDelay: "190ms" }}>
+        <div className="bg-[#15151C] rounded-2xl p-6 stagger-item space-y-4 border border-[#292932]" style={{ animationDelay: "190ms" }}>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-xl bg-white/5 border border-[#292932] text-[#A1A1AA]">
@@ -278,7 +278,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
 
         {/* ── EPISODE-WISE WATCHING BREAKDOWN (TV SERIES) ──────────── */}
         {analytics.tvShowsProgress.length > 0 && (
-          <div className="glass-card p-6 stagger-item space-y-5 border border-[#292932]" style={{ animationDelay: "200ms" }}>
+          <div className="bg-[#15151C] rounded-2xl p-6 stagger-item space-y-5 border border-[#292932]" style={{ animationDelay: "200ms" }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-xl bg-white/5 border border-[#292932] text-[#A1A1AA]">
@@ -415,7 +415,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
 
         {/* ── Genre Sorter ───────────────────────────────────────── */}
         {genreList.length > 0 && (
-          <div className="glass-card p-6 stagger-item border border-[#292932]" style={{ animationDelay: "240ms" }}>
+          <div className="bg-[#15151C] rounded-2xl p-6 stagger-item border border-[#292932]" style={{ animationDelay: "240ms" }}>
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-4 h-4 text-[#A1A1AA]" />
               <h3 className="text-sm font-semibold text-white">
@@ -516,7 +516,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
 
         {/* ── Filtered Watch History Grid ─────────────────────────── */}
         {analytics.filteredEntries.length > 0 && (
-          <div className="glass-card p-6 stagger-item space-y-4 border border-[#292932]" style={{ animationDelay: "360ms" }}>
+          <div className="bg-[#15151C] rounded-2xl p-6 stagger-item space-y-4 border border-[#292932]" style={{ animationDelay: "360ms" }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Eye className="w-4 h-4 text-[#A1A1AA]" />
@@ -553,7 +553,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
 
         {/* ── Empty filter state ──────────────────────────────────── */}
         {analytics.filteredEntries.length === 0 && entries.length > 0 && (
-          <div className="glass-card p-10 text-center stagger-item border border-[#292932]" style={{ animationDelay: "360ms" }}>
+          <div className="bg-[#15151C] rounded-2xl p-10 text-center stagger-item border border-[#292932]" style={{ animationDelay: "360ms" }}>
             <div className="inline-flex p-4 rounded-2xl bg-white/5 border border-[#292932] mb-4">
               <BarChart3 className="w-8 h-8 text-[#A1A1AA]/50" />
             </div>
@@ -615,7 +615,7 @@ function StatCard({
   return (
     <div
       id={id}
-      className={`glass-card p-5 stagger-item relative overflow-hidden group border border-[#292932] transition-colors duration-300 ${
+      className={`bg-[#15151C] rounded-2xl p-5 stagger-item relative overflow-hidden group border border-[#292932] transition-colors duration-300 ${
         borderColor || "group-hover:border-[#E50914]/30"
       }`}
       style={{ animationDelay: `${delay}ms` }}
@@ -679,7 +679,7 @@ function HistoryCard({
 
         {/* Media type badge */}
         <div className="absolute top-1.5 left-1.5">
-          <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-black/70 backdrop-blur-sm text-[10px] text-[#A1A1AA] border border-[#292932]">
+          <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-black/80 text-[10px] text-[#A1A1AA] border border-[#292932]">
             {isTV ? <Tv className="w-2.5 h-2.5" /> : <Film className="w-2.5 h-2.5" />}
             {isTV ? "TV" : "Film"}
           </span>
@@ -688,7 +688,7 @@ function HistoryCard({
         {/* Rating badge */}
         {entry.review?.rating && (
           <div className="absolute top-1.5 right-1.5">
-            <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-black/70 backdrop-blur-sm text-[10px] text-[#F5C542] border border-[#292932]">
+            <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-black/80 text-[10px] text-[#F5C542] border border-[#292932]">
               <Star className="w-2.5 h-2.5 fill-[#F5C542]" />
               {entry.review.rating}
             </span>
