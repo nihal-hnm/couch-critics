@@ -858,9 +858,6 @@ export default function Dashboard() {
             >
               <Users className="w-3.5 h-3.5 text-indigo-400" />
               <span>Cinema Match</span>
-              <span className="px-1 py-0.2 rounded text-[9px] font-mono bg-indigo-500/15 text-indigo-300 border border-indigo-500/25">
-                MATCH
-              </span>
             </button>
 
             <button
@@ -1156,13 +1153,9 @@ export default function Dashboard() {
         <div className="relative z-10 max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 pt-8 pb-3">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-[#292932]/50">
             <div>
-              <div className="flex items-center gap-2 mb-2.5">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase bg-[#E50914]/15 text-[#E50914] border border-[#E50914]/30 shadow-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#E50914] animate-pulse" />
-                  In Progress
-                </span>
-                <span className="text-xs text-zinc-400 font-medium">
-                  &bull; {watching.length} {watching.length === 1 ? "title" : "titles"}
+              <div className="mb-2">
+                <span className="text-xs text-zinc-400 font-medium font-mono uppercase tracking-wider">
+                  {watching.length} {watching.length === 1 ? "title" : "titles"} in progress
                 </span>
               </div>
               <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">

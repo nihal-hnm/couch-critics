@@ -310,15 +310,12 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                   {/* ── Info & Badges & Action Buttons ── */}
                   <div className="flex-1 min-w-0 flex flex-col justify-between self-stretch">
                     <div>
-                      {/* Top Row: Badge + Floating Action Buttons */}
-                      <div className="flex items-center justify-between gap-2 mb-2">
-                        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#E50914]/12 border border-[#E50914]/25 shrink-0">
-                          <div className="w-1.5 h-1.5 rounded-full bg-[#E50914] animate-pulse" />
-                          <span className="text-[10px] font-semibold text-[#E50914] uppercase tracking-wider flex items-center gap-1 whitespace-nowrap">
-                            {isMovie ? <Film className="w-2.5 h-2.5" /> : <Tv className="w-2.5 h-2.5" />}
-                            In Progress
-                          </span>
-                        </div>
+                      {/* Top Row: Media Type indicator + Floating Action Buttons */}
+                      <div className="flex items-center justify-between gap-2 mb-1.5">
+                        <span className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider flex items-center gap-1 font-mono">
+                          {isMovie ? <Film className="w-3 h-3 text-indigo-400" /> : <Tv className="w-3 h-3 text-purple-400" />}
+                          {isMovie ? "Movie" : "Series"}
+                        </span>
 
                         {/* Top quick action: Remove only (uncluttered) */}
                         <div
@@ -327,7 +324,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                         >
                           <button
                             onClick={() => removeEntry(entry.id)}
-                            className="p-1.5 rounded-lg text-white/40 hover:text-red-400 hover:bg-white/5 transition-colors cursor-pointer"
+                            className="p-1 rounded-lg text-white/30 hover:text-red-400 hover:bg-white/5 transition-colors cursor-pointer"
                             title="Remove from journal"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
