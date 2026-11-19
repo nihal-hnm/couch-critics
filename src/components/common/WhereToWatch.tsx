@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { ExternalLink, Play, Search, Tv } from "lucide-react";
-import type { TitleWatchInfo, StreamingPlatform } from "@/lib/streaming-types";
+import type { TitleWatchInfo } from "@/lib/streaming-types";
 import { getVerifiedWatchInfo, getJustWatchSearchUrl } from "@/lib/streaming-registry";
 
 interface WhereToWatchProps {

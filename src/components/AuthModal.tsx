@@ -12,7 +12,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useAuth } from "@/lib/auth-context";
 import Link from "next/link";
-import { LogIn, UserPlus, X, Mail, Lock, Eye, EyeOff, Film } from "lucide-react";
+import { LogIn, UserPlus, X, Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 type AuthMode = "login" | "signup";
 

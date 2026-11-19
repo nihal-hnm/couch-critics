@@ -24,22 +24,18 @@ import { useState, useMemo, useRef, useEffect, useCallback, type ReactNode } fro
 import {
   Plus,
   Film as FilmIcon,
-  Sparkles,
   Clock,
   Star,
   Tv,
-  Home,
   BarChart3,
   Heart,
   Map as MapIcon,
   Search as SearchIcon,
-  ChevronRight,
   Play,
   BookmarkPlus,
   Award,
   LogIn,
   LogOut,
-  User as UserIcon,
   ChevronDown,
   Menu,
   X,
@@ -51,7 +47,7 @@ import {
 } from "lucide-react";
 import { useJournal } from "@/lib/journal-context";
 import { useAuth } from "@/lib/auth-context";
-import type { Shelf, MovieEntry } from "@/lib/types";
+import type { MovieEntry } from "@/lib/types";
 import SearchModal from "@/components/SearchModal";
 import AuthModal from "@/components/AuthModal";
 import ShareModal from "@/components/ShareModal";
@@ -62,7 +58,7 @@ import WatchedShelf from "@/components/WatchedShelf";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
 import MediaDetailModal from "@/components/MediaDetailModal";
 import ThemeToggle from "@/components/ThemeToggle";
-import { computeStats, formatWatchTime, formatDaysAndHours, formatHours } from "@/lib/stats";
+import { computeStats, formatDaysAndHours, formatHours } from "@/lib/stats";
 
 export type NavKey =
   | "watching"
@@ -77,7 +73,6 @@ export type NavKey =
 
 import Link from "next/link";
 import { MovieImage } from "./common/MovieImage";
-import { getOptimizedImageUrl } from "@/lib/image-utils";
 
 export default function Dashboard() {
   const { entries, isLoaded } = useJournal();
@@ -170,16 +165,6 @@ export default function Dashboard() {
     [watched]
   );
 
-  // Sub-categorized toWatch entries
-  const toWatchMovies = useMemo(
-    () => toWatch.filter((e) => e.tmdb.mediaType === "movie"),
-    [toWatch]
-  );
-  const toWatchSeries = useMemo(
-    () => toWatch.filter((e) => e.tmdb.mediaType === "tv"),
-    [toWatch]
-  );
-
   // All unique genres across entire journal with counts
   const allGenres = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -266,16 +251,6 @@ export default function Dashboard() {
 
   // Overall statistics
   const stats = useMemo(() => computeStats(entries), [entries]);
-
-  // Movies vs TV shows
-  const movies = useMemo(
-    () => entries.filter((e) => e.tmdb.mediaType === "movie"),
-    [entries]
-  );
-  const series = useMemo(
-    () => entries.filter((e) => e.tmdb.mediaType === "tv"),
-    [entries]
-  );
 
   // Favorites: top rated watched entries
   const favorites = useMemo(() => {
@@ -1243,7 +1218,6 @@ export default function Dashboard() {
             accentBgGlow="bg-amber-500"
             watchingCount={watching.length}
             onBackToWatching={() => setActiveNav("watching")}
-            onOpenMenu={() => setIsBurgerMenuOpen(true)}
           />
           <ToWatchShelf entries={toWatch} />
         </main>
@@ -1260,7 +1234,6 @@ export default function Dashboard() {
             accentBgGlow="bg-emerald-500"
             watchingCount={watching.length}
             onBackToWatching={() => setActiveNav("watching")}
-            onOpenMenu={() => setIsBurgerMenuOpen(true)}
           />
           <WatchedShelf entries={watched} />
         </main>
@@ -1277,7 +1250,6 @@ export default function Dashboard() {
             accentBgGlow="bg-indigo-500"
             watchingCount={watching.length}
             onBackToWatching={() => setActiveNav("watching")}
-            onOpenMenu={() => setIsBurgerMenuOpen(true)}
           />
 
           {watchedMovies.length > 0 ? (
@@ -1304,7 +1276,6 @@ export default function Dashboard() {
             accentBgGlow="bg-purple-500"
             watchingCount={watching.length}
             onBackToWatching={() => setActiveNav("watching")}
-            onOpenMenu={() => setIsBurgerMenuOpen(true)}
           />
 
           {watchedSeries.length > 0 ? (
@@ -1331,7 +1302,6 @@ export default function Dashboard() {
             accentBgGlow="bg-orange-500"
             watchingCount={watching.length}
             onBackToWatching={() => setActiveNav("watching")}
-            onOpenMenu={() => setIsBurgerMenuOpen(true)}
           />
 
           {/* Genre Runtime Stats Banner */}
@@ -1536,7 +1506,6 @@ export default function Dashboard() {
             accentBgGlow="bg-cyan-500"
             watchingCount={watching.length}
             onBackToWatching={() => setActiveNav("watching")}
-            onOpenMenu={() => setIsBurgerMenuOpen(true)}
           />
           <AnalyticsDashboard entries={entries} />
         </main>
@@ -1553,7 +1522,6 @@ export default function Dashboard() {
             accentBgGlow="bg-yellow-500"
             watchingCount={watching.length}
             onBackToWatching={() => setActiveNav("watching")}
-            onOpenMenu={() => setIsBurgerMenuOpen(true)}
           />
 
           {journeyYears.length > 0 ? (
@@ -1603,7 +1571,6 @@ export default function Dashboard() {
             accentBgGlow="bg-rose-500"
             watchingCount={watching.length}
             onBackToWatching={() => setActiveNav("watching")}
-            onOpenMenu={() => setIsBurgerMenuOpen(true)}
           />
 
           {favorites.length > 0 ? (
@@ -1690,7 +1657,6 @@ function TopReturnBanner({
   accentBgGlow = "",
   watchingCount,
   onBackToWatching,
-  onOpenMenu,
 }: {
   title: string;
   subtitle: string;
@@ -1699,7 +1665,6 @@ function TopReturnBanner({
   accentBgGlow?: string;
   watchingCount: number;
   onBackToWatching: () => void;
-  onOpenMenu?: () => void;
 }) {
   return (
     <div className={`relative flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-[#15151C]/90 border border-[#292932] ${accentBorderColor} overflow-hidden shadow-sm`}>

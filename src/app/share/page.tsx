@@ -19,16 +19,12 @@ import {
   Clock,
   CheckCircle2,
   Search,
-  Share2,
   ExternalLink,
   ChevronRight,
-  Sparkles,
-  ArrowLeft,
   X,
-  BookmarkPlus,
   Compass,
 } from "lucide-react";
-import type { MovieEntry, Shelf } from "@/lib/types";
+import type { MovieEntry } from "@/lib/types";
 import { decodeSharePayload, type SharedJournalPayload } from "@/lib/share-utils";
 import { STARTER_ENTRIES } from "@/lib/starter-data";
 import ThemeToggle from "@/components/ThemeToggle";

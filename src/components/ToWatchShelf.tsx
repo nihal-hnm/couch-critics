@@ -20,11 +20,9 @@ import {
   Play,
   CheckCircle2,
   Trash2,
-  Film,
   Sparkles,
   X,
   SlidersHorizontal,
-  Star,
 } from "lucide-react";
 import type { MovieEntry } from "@/lib/types";
 import { useJournal } from "@/lib/journal-context";

@@ -17,7 +17,6 @@
 
 import { useState, useMemo, useCallback } from "react";
 import {
-  Clock,
   Film,
   Tv,
   Star,
@@ -25,16 +24,12 @@ import {
   Timer,
   Clapperboard,
   ListVideo,
-  Hash,
   X,
   Flame,
   BarChart3,
   Calendar,
   Eye,
   Play,
-  CheckCircle2,
-  ChevronRight,
-  Sparkles,
 } from "lucide-react";
 import type { MovieEntry } from "@/lib/types";
 import {
@@ -45,7 +40,6 @@ import {
   computeAnalytics,
   formatHours,
   formatHoursVerbose,
-  type TVShowEpisodeStats,
 } from "@/lib/analytics";
 import MediaDetailModal from "./MediaDetailModal";
 import { MovieImage } from "./common/MovieImage";

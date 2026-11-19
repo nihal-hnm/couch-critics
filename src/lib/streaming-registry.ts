@@ -9,7 +9,7 @@
  *  - Dynamic fallback resolution via JustWatch & TMDB Watch Providers
  */
 
-import type { StreamingPlatform, StreamingPlatformId, TitleWatchInfo } from "./streaming-types";
+import type { StreamingPlatformId, TitleWatchInfo } from "./streaming-types";
 
 // ─── Platform Metadata Configuration ──────────────────────────────────────────
 
@@ -1722,7 +1722,7 @@ Object.entries(VERIFIED_TITLE_REGISTRY).forEach(([id, info]) => {
 export function getVerifiedWatchInfo(
   tmdbId?: number | null,
   title?: string | null,
-  mediaType: "movie" | "tv" = "movie"
+  _mediaType: "movie" | "tv" = "movie"
 ): TitleWatchInfo | null {
   if (tmdbId && VERIFIED_TITLE_REGISTRY[String(tmdbId)]) {
     return VERIFIED_TITLE_REGISTRY[String(tmdbId)];

@@ -3,7 +3,6 @@ import {
   getVerifiedWatchInfo,
   matchProviderNameToPlatform,
   getJustWatchSearchUrl,
-  PLATFORM_CONFIGS,
 } from "@/lib/streaming-registry";
 import type { StreamingPlatform, TitleWatchInfo } from "@/lib/streaming-types";
 

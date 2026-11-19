@@ -29,7 +29,6 @@ import {
   RotateCcw,
   Tv,
   Search,
-  SlidersHorizontal,
   Clock,
   Layers,
   LayoutGrid,
