@@ -10,8 +10,8 @@
  * - Subtle borders: #292932
  * - Primary text: #F5F5F5
  * - Secondary text: #A1A1AA
- * - Primary accent: #E50914 (Buttons, active states, highlights)
- * - Accent hover: #FF3B3B
+ * - Primary accent: #D97706 (Buttons, active states, highlights)
+ * - Accent hover: #F59E0B
  * - Ratings & stars: #F5C542
  */
 
@@ -39,15 +39,15 @@
   --color-midnight-border: #292932;
   --color-midnight-text: #F5F5F5;
   --color-midnight-muted: #A1A1AA;
-  --color-cinema-red: #E50914;
-  --color-cinema-red-hover: #FF3B3B;
+  --color-cinema-red: #D97706;
+  --color-cinema-red-hover: #F59E0B;
   --color-cinema-gold: #F5C542;
 
   /* Cinema Accents */
-  --color-cinema-purple: #E50914;
-  --color-purple-glow: rgba(229, 9, 20, 0.2);
+  --color-cinema-purple: #D97706;
+  --color-purple-glow: rgba(217, 119, 6, 0.2);
   --color-gold: #F5C542;
-  --color-warm-surface: rgba(229, 9, 20, 0.06);
+  --color-warm-surface: rgba(217, 119, 6, 0.06);
   --color-warm-border: #292932;
   --color-warm-hover: rgba(255, 255, 255, 0.04);
 
@@ -85,24 +85,42 @@
   --color-yellow-400: #F5C542;
   --color-yellow-500: #F5C542;
 
-  /* Remap purple palette to restrained Midnight Cinema tokens */
+    /* Remap purple palette to restrained Midnight Cinema tokens */
   --color-purple-50: #FAFAFA;
   --color-purple-100: #F5F5F5;
   --color-purple-200: #E4E4E7;
   --color-purple-300: #A1A1AA;
-  --color-purple-400: #A1A1AA;
-  --color-purple-500: #E50914;
-  --color-purple-600: #E50914;
-  --color-purple-700: #C10711;
-  --color-purple-800: #9E050D;
+  --color-purple-400: #D97706;
+  --color-purple-500: #D97706;
+  --color-purple-600: #B45309;
+  --color-purple-700: #92400E;
+  --color-purple-800: #78350F;
   --color-purple-900: #292932;
   --color-purple-950: #15151C;
 
+  /* Remap indigo palette */
+  --color-indigo-50: #FAFAFA;
+  --color-indigo-100: #F5F5F5;
+  --color-indigo-200: #E4E4E7;
+  --color-indigo-300: #A1A1AA;
+  --color-indigo-400: #D4D4D8;
+  --color-indigo-500: #D97706;
+  --color-indigo-600: #B45309;
+  --color-indigo-700: #92400E;
+  --color-indigo-800: #78350F;
+  --color-indigo-900: #292932;
+  --color-indigo-950: #15151C;
+
+  /* Remap cyan palette */
+  --color-cyan-300: #D4D4D8;
+  --color-cyan-400: #F59E0B;
+  --color-cyan-500: #D97706;
+
   /* Remap orange palette */
   --color-orange-300: #A1A1AA;
-  --color-orange-400: #FF3B3B;
-  --color-orange-500: #E50914;
-  --color-orange-600: #E50914;
+  --color-orange-400: #F59E0B;
+  --color-orange-500: #D97706;
+  --color-orange-600: #D97706;
 }
 
 /* ─── Light / Dark Theme Tokens ─────────────────────────────────────────── */
@@ -197,17 +215,17 @@
   --color-purple-100: #FED7D7;
   --color-purple-200: #FEB2B2;
   --color-purple-300: #52525E;
-  --color-purple-400: #C10711;
-  --color-purple-500: #E50914;
-  --color-purple-600: #C10711;
-  --color-purple-700: #9E050D;
-  --color-purple-800: #7A040A;
-  --color-purple-900: #570206;
+  --color-purple-400: #B45309;
+  --color-purple-500: #D97706;
+  --color-purple-600: #B45309;
+  --color-purple-700: #92400E;
+  --color-purple-800: #78350F;
+  --color-purple-900: #451A03;
   --color-gold: #B45309;
   --color-orange-300: #52525E;
-  --color-orange-400: #C10711;
-  --color-orange-500: #E50914;
-  --color-orange-600: #C10711;
+  --color-orange-400: #B45309;
+  --color-orange-500: #D97706;
+  --color-orange-600: #B45309;
 
   color-scheme: light;
 }
@@ -276,15 +294,15 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: 0.625rem;
-  background: rgba(229, 9, 20, 0.12);
-  color: #E50914;
-  border: 1px solid rgba(229, 9, 20, 0.25);
+  background: rgba(217, 119, 6, 0.12);
+  color: #D97706;
+  border: 1px solid rgba(217, 119, 6, 0.25);
 }
 
 .section-icon.favorite {
-  background: rgba(229, 9, 20, 0.12);
-  color: #E50914;
-  border-color: rgba(229, 9, 20, 0.25);
+  background: rgba(217, 119, 6, 0.12);
+  color: #D97706;
+  border-color: rgba(217, 119, 6, 0.25);
 }
 
 .section-icon.journey {
@@ -351,9 +369,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(229, 9, 20, 0.12);
-  color: #E50914;
-  border: 1px solid rgba(229, 9, 20, 0.25);
+  background: rgba(217, 119, 6, 0.12);
+  color: #D97706;
+  border: 1px solid rgba(217, 119, 6, 0.25);
 }
 
 /* ─── Poster Scroll Row ──────────────────────────────────────────────────── */
@@ -512,11 +530,11 @@ body {
 @keyframes glow-pulse {
   0%,
   100% {
-    box-shadow: 0 0 15px rgba(229, 9, 20, 0.15);
+    box-shadow: 0 0 15px rgba(217, 119, 6, 0.15);
   }
 
   50% {
-    box-shadow: 0 0 25px rgba(229, 9, 20, 0.28);
+    box-shadow: 0 0 25px rgba(217, 119, 6, 0.28);
   }
 }
 
@@ -603,7 +621,7 @@ body {
 
 /* ─── Selection ───────────────────────────────────────────────────────────── */
 ::selection {
-  background: rgba(229, 9, 20, 0.35);
+  background: rgba(217, 119, 6, 0.35);
   color: #F5F5F5;
 }
 
@@ -611,7 +629,7 @@ body {
 
 /* Subtle cinema text glow */
 .text-glow {
-  text-shadow: 0 0 20px rgba(229, 9, 20, 0.25);
+  text-shadow: 0 0 20px rgba(217, 119, 6, 0.25);
 }
 
 /* Poster card hover lift */
@@ -678,7 +696,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #E50914;
+  color: #D97706;
   font-weight: 700;
   font-size: 1.1rem;
 }
@@ -716,8 +734,8 @@ body {
 }
 
 .auth-modal-error {
-  background: rgba(229, 9, 20, 0.12);
-  border: 1px solid rgba(229, 9, 20, 0.3);
+  background: rgba(217, 119, 6, 0.12);
+  border: 1px solid rgba(217, 119, 6, 0.3);
   border-radius: 8px;
   padding: 0.75rem 1rem;
   color: #FCA5A5;
@@ -772,8 +790,8 @@ body {
 }
 
 .auth-input:focus {
-  border-color: #E50914;
-  box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
+  border-color: #D97706;
+  box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2);
 }
 
 .auth-input-toggle {
@@ -799,7 +817,7 @@ body {
   gap: 0.5rem;
   margin-top: 0.5rem;
   padding: 0.75rem;
-  background: #E50914;
+  background: #D97706;
   border: none;
   border-radius: 10px;
   color: #F5F5F5;
@@ -810,8 +828,8 @@ body {
 }
 
 .auth-submit-btn:hover:not(:disabled) {
-  background: #FF3B3B;
-  box-shadow: 0 4px 20px rgba(229, 9, 20, 0.35);
+  background: #F59E0B;
+  box-shadow: 0 4px 20px rgba(217, 119, 6, 0.35);
   transform: translateY(-1px);
 }
 
@@ -845,14 +863,14 @@ body {
 .auth-link {
   background: transparent;
   border: none;
-  color: #E50914;
+  color: #D97706;
   font-weight: 600;
   cursor: pointer;
   transition: color 200ms;
 }
 
 .auth-link:hover {
-  color: #FF3B3B;
+  color: #F59E0B;
   text-decoration: underline;
 }
 
@@ -885,7 +903,7 @@ body {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #E50914;
+  background: #D97706;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -941,7 +959,7 @@ body {
 }
 
 .user-menu-item.danger:hover {
-  background: rgba(229, 9, 20, 0.12);
+  background: rgba(217, 119, 6, 0.12);
   color: #FCA5A5;
 }
 
@@ -972,9 +990,9 @@ body {
 }
 
 .login-btn:hover {
-  background: rgba(229, 9, 20, 0.12);
-  border-color: #E50914;
-  color: #FF3B3B;
+  background: rgba(217, 119, 6, 0.12);
+  border-color: #D97706;
+  color: #F59E0B;
 }
 
 /* ─── Light Mode Styles — Editorial Cinema Daylight System ───────────────── */
@@ -984,20 +1002,20 @@ body {
 }
 
 /* Headings in light mode — Deep obsidian typography */
-.light h1:not([class~="bg-[#E50914]"] *, [class*="bg-red-"] *, .keep-white, .keep-white *),
-.light h2:not([class~="bg-[#E50914]"] *, [class*="bg-red-"] *, .keep-white, .keep-white *),
-.light h3:not([class~="bg-[#E50914]"] *, [class*="bg-red-"] *, .keep-white, .keep-white *),
-.light h4:not([class~="bg-[#E50914]"] *, [class*="bg-red-"] *, .keep-white, .keep-white *),
-.light h5:not([class~="bg-[#E50914]"] *, [class*="bg-red-"] *, .keep-white, .keep-white *),
-.light h6:not([class~="bg-[#E50914]"] *, [class*="bg-red-"] *, .keep-white, .keep-white *) {
+.light h1:not([class~="bg-[#D97706]"] *, [class*="bg-red-"] *, .keep-white, .keep-white *),
+.light h2:not([class~="bg-[#D97706]"] *, [class*="bg-red-"] *, .keep-white, .keep-white *),
+.light h3:not([class~="bg-[#D97706]"] *, [class*="bg-red-"] *, .keep-white, .keep-white *),
+.light h4:not([class~="bg-[#D97706]"] *, [class*="bg-red-"] *, .keep-white, .keep-white *),
+.light h5:not([class~="bg-[#D97706]"] *, [class*="bg-red-"] *, .keep-white, .keep-white *),
+.light h6:not([class~="bg-[#D97706]"] *, [class*="bg-red-"] *, .keep-white, .keep-white *) {
   color: #0F172A !important;
 }
 
 /* Primary text in light mode */
 .light .text-white:not(
-  button[class~="bg-[#E50914]"], button[class~="bg-[#E50914]"] *,
-  a[class~="bg-[#E50914]"], a[class~="bg-[#E50914]"] *,
-  button[class*="bg-[#FF3B3B]"], button[class*="bg-[#FF3B3B]"] *,
+  button[class~="bg-[#D97706]"], button[class~="bg-[#D97706]"] *,
+  a[class~="bg-[#D97706]"], a[class~="bg-[#D97706]"] *,
+  button[class*="bg-[#F59E0B]"], button[class*="bg-[#F59E0B]"] *,
   button[class*="bg-red-"], button[class*="bg-red-"] *,
   button[class*="bg-emerald-600"], button[class*="bg-emerald-600"] *,
   .bg-emerald-600, .bg-emerald-600 *,
@@ -1006,9 +1024,9 @@ body {
 .light .text-\[\#F5F5F5\],
 .light .text-\[\#f5f5f5\],
 .light [class*="text-[#F5F5F5]" i]:not(
-  button[class~="bg-[#E50914]"], button[class~="bg-[#E50914]"] *,
-  a[class~="bg-[#E50914]"], a[class~="bg-[#E50914]"] *,
-  button[class*="bg-[#FF3B3B]"], button[class*="bg-[#FF3B3B]"] *,
+  button[class~="bg-[#D97706]"], button[class~="bg-[#D97706]"] *,
+  a[class~="bg-[#D97706]"], a[class~="bg-[#D97706]"] *,
+  button[class*="bg-[#F59E0B]"], button[class*="bg-[#F59E0B]"] *,
   button[class*="bg-red-"], button[class*="bg-red-"] *,
   button[class*="bg-emerald-600"], button[class*="bg-emerald-600"] *,
   .bg-emerald-600, .bg-emerald-600 *,
@@ -1017,27 +1035,27 @@ body {
   color: #0F172A !important;
 }
 
-.light .text-stone-100:not([class~="bg-[#E50914]"] *, .keep-white *),
-.light .text-stone-200:not([class~="bg-[#E50914]"] *, .keep-white *),
-.light .text-zinc-100:not([class~="bg-[#E50914]"] *, .keep-white *),
-.light .text-zinc-200:not([class~="bg-[#E50914]"] *, .keep-white *) {
+.light .text-stone-100:not([class~="bg-[#D97706]"] *, .keep-white *),
+.light .text-stone-200:not([class~="bg-[#D97706]"] *, .keep-white *),
+.light .text-zinc-100:not([class~="bg-[#D97706]"] *, .keep-white *),
+.light .text-zinc-200:not([class~="bg-[#D97706]"] *, .keep-white *) {
   color: #0F172A !important;
 }
 
-.light .text-stone-300:not([class~="bg-[#E50914]"] *, .keep-white *),
-.light .text-zinc-300:not([class~="bg-[#E50914]"] *, .keep-white *) {
+.light .text-stone-300:not([class~="bg-[#D97706]"] *, .keep-white *),
+.light .text-zinc-300:not([class~="bg-[#D97706]"] *, .keep-white *) {
   color: #334155 !important;
 }
 
 /* Secondary & muted text in light mode — Crisp slate-500 */
-.light .text-stone-400:not([class~="bg-[#E50914]"] *, .keep-white *),
-.light .text-zinc-400:not([class~="bg-[#E50914]"] *, .keep-white *),
+.light .text-stone-400:not([class~="bg-[#D97706]"] *, .keep-white *),
+.light .text-zinc-400:not([class~="bg-[#D97706]"] *, .keep-white *),
 .light .text-\[\#A1A1AA\],
 .light .text-\[\#a1a1aa\],
 .light [class*="text-[#A1A1AA]" i]:not(
-  button[class~="bg-[#E50914]"], button[class~="bg-[#E50914]"] *,
-  a[class~="bg-[#E50914]"], a[class~="bg-[#E50914]"] *,
-  button[class*="bg-[#FF3B3B]"], button[class*="bg-[#FF3B3B]"] *,
+  button[class~="bg-[#D97706]"], button[class~="bg-[#D97706]"] *,
+  a[class~="bg-[#D97706]"], a[class~="bg-[#D97706]"] *,
+  button[class*="bg-[#F59E0B]"], button[class*="bg-[#F59E0B]"] *,
   button[class*="bg-red-"], button[class*="bg-red-"] *,
   button[class*="bg-emerald-600"], button[class*="bg-emerald-600"] *,
   .bg-emerald-600, .bg-emerald-600 *,
@@ -1069,8 +1087,8 @@ body {
   color: #FFFFFF !important;
 }
 
-.light .text-stone-500:not([class~="bg-[#E50914]"] *, .keep-white *),
-.light .text-zinc-500:not([class~="bg-[#E50914]"] *, .keep-white *) {
+.light .text-stone-500:not([class~="bg-[#D97706]"] *, .keep-white *),
+.light .text-zinc-500:not([class~="bg-[#D97706]"] *, .keep-white *) {
   color: #94A3B8 !important;
 }
 
@@ -1093,17 +1111,17 @@ body {
 /* Hover text rules in light mode */
 .light [class*="hover:text-[#F5F5F5]" i]:hover,
 .light [class*="hover:text-white"]:hover:not(
-  [class~="bg-[#E50914]"], [class~="bg-[#E50914]"] *,
-  [class*="bg-[#FF3B3B]"], [class*="bg-[#FF3B3B]"] *,
+  [class~="bg-[#D97706]"], [class~="bg-[#D97706]"] *,
+  [class*="bg-[#F59E0B]"], [class*="bg-[#F59E0B]"] *,
   [class*="bg-red-"], [class*="bg-red-"] *,
   [class*="bg-emerald-"], [class*="bg-emerald-"] *
 ),
 .light [class*="group-hover:text-white"]:hover:not(
-  [class~="bg-[#E50914]"], [class~="bg-[#E50914]"] *,
+  [class~="bg-[#D97706]"], [class~="bg-[#D97706]"] *,
   [class*="bg-red-"], [class*="bg-red-"] *
 ),
 .light .group:hover .group-hover\:text-white:not(
-  [class~="bg-[#E50914]"], [class~="bg-[#E50914]"] *,
+  [class~="bg-[#D97706]"], [class~="bg-[#D97706]"] *,
   [class*="bg-red-"], [class*="bg-red-"] *
 ),
 .light .group\/poster:hover .group-hover\/poster\:text-white,
@@ -1133,7 +1151,7 @@ body {
 .light .bg-zinc-800,
 .light .bg-\[\#15151C\],
 .light .bg-\[\#15151c\],
-.light [class*="bg-[#15151C]" i]:not([class~="bg-[#E50914]"] *, [class*="bg-red-"] *),
+.light [class*="bg-[#15151C]" i]:not([class~="bg-[#D97706]"] *, [class*="bg-red-"] *),
 .light .bg-\[\#181820\],
 .light [class*="bg-[#181820]" i],
 .light .bg-\[\#121217\],
@@ -1176,7 +1194,7 @@ body {
 /* Secondary toolbars, sub-panels, search inputs & progress tracks */
 .light .bg-\[\#0B0B0F\],
 .light .bg-\[\#0b0b0f\],
-.light [class*="bg-[#0B0B0F]" i]:not([class~="bg-[#E50914]"] *, [class*="bg-red-"] *),
+.light [class*="bg-[#0B0B0F]" i]:not([class~="bg-[#D97706]"] *, [class*="bg-red-"] *),
 .light [class*="bg-black/40"],
 .light [class*="bg-black/50"],
 .light [class*="bg-black/60"] {
@@ -1345,25 +1363,25 @@ body {
 }
 
 /* Active red accent buttons ALWAYS keep bright white text and vibrant red background */
-.light [class~="bg-[#E50914]"],
-.light button[class~="bg-[#E50914]"],
-.light a[class~="bg-[#E50914]"],
-.light [class~="bg-[#E50914]"] *,
-.light button[class~="bg-[#E50914]"] *,
-.light a[class~="bg-[#E50914]"] * {
+.light [class~="bg-[#D97706]"],
+.light button[class~="bg-[#D97706]"],
+.light a[class~="bg-[#D97706]"],
+.light [class~="bg-[#D97706]"] *,
+.light button[class~="bg-[#D97706]"] *,
+.light a[class~="bg-[#D97706]"] * {
   color: #FFFFFF !important;
 }
 
-.light [class~="bg-[#E50914]"],
-.light button[class~="bg-[#E50914]"],
-.light a[class~="bg-[#E50914]"] {
-  background-color: #E50914 !important;
+.light [class~="bg-[#D97706]"],
+.light button[class~="bg-[#D97706]"],
+.light a[class~="bg-[#D97706]"] {
+  background-color: #D97706 !important;
 }
 
-.light [class~="bg-[#E50914]"]:hover,
-.light button[class~="bg-[#E50914]"]:hover,
-.light a[class~="bg-[#E50914]"]:hover {
-  background-color: #FF3B3B !important;
+.light [class~="bg-[#D97706]"]:hover,
+.light button[class~="bg-[#D97706]"]:hover,
+.light a[class~="bg-[#D97706]"]:hover {
+  background-color: #F59E0B !important;
 }
 
 /* User Menu & Popovers in Light Mode */
@@ -1393,8 +1411,8 @@ body {
 }
 
 .light .theme-segmented-container button[aria-pressed="true"] {
-  background-color: #E50914 !important;
-  border-color: #E50914 !important;
+  background-color: #D97706 !important;
+  border-color: #D97706 !important;
   color: #FFFFFF !important;
 }
 
@@ -1408,9 +1426,9 @@ body {
 }
 
 .light .login-btn:hover {
-  background: rgba(229, 9, 20, 0.08) !important;
-  border-color: #E50914 !important;
-  color: #E50914 !important;
+  background: rgba(217, 119, 6, 0.08) !important;
+  border-color: #D97706 !important;
+  color: #D97706 !important;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1443,8 +1461,8 @@ body {
 }
 
 .scope-btn-active-watching {
-  background: rgba(229, 9, 20, 0.15);
-  border-color: rgba(229, 9, 20, 0.5);
+  background: rgba(217, 119, 6, 0.15);
+  border-color: rgba(217, 119, 6, 0.5);
   color: #FCA5A5;
   font-weight: 700;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
@@ -1546,7 +1564,7 @@ body {
 
 .light .share-modal-card input:focus,
 .light .share-modal-card textarea:focus {
-  border-color: #E50914 !important;
+  border-color: #D97706 !important;
 }
 
 .light .scope-btn-inactive {

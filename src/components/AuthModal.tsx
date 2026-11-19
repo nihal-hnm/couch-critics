@@ -266,7 +266,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           <Link
             href="/login"
             onClick={onClose}
-            className="text-xs text-[#E50914] hover:text-[#FF3B3B] font-medium transition-colors"
+            className="text-xs text-[#D97706] hover:text-[#F59E0B] font-medium transition-colors"
           >
             Open Full Cinematic Sign-in Page &rarr;
           </Link>

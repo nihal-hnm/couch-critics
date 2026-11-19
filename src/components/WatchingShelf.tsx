@@ -249,7 +249,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
   if (uniqueEntries.length === 0) {
     return (
       <div className="text-center py-20">
-        <div className="inline-flex p-4 rounded-2xl bg-[#15151C] border border-[#292932] mb-4 text-[#E50914]">
+        <div className="inline-flex p-4 rounded-2xl bg-[#15151C] border border-[#292932] mb-4 text-[#D97706]">
           <Play className="w-10 h-10 fill-current" />
         </div>
         <h3 className="text-xl font-semibold text-white">
@@ -313,7 +313,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                       {/* Top Row: Media Type indicator + Floating Action Buttons */}
                       <div className="flex items-center justify-between gap-2 mb-1.5">
                         <span className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider flex items-center gap-1 font-mono">
-                          {isMovie ? <Film className="w-3 h-3 text-indigo-400" /> : <Tv className="w-3 h-3 text-purple-400" />}
+                          {isMovie ? <Film className="w-3 h-3 text-stone-300" /> : <Tv className="w-3 h-3 text-amber-400" />}
                           {isMovie ? "Movie" : "Series"}
                         </span>
 
@@ -349,7 +349,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                         )}
                         {entry.tmdb.runtime > 0 && (
                           <span className="flex items-center gap-1 text-white/60">
-                            <Clock className="w-3 h-3 text-[#E50914]" />
+                            <Clock className="w-3 h-3 text-[#D97706]" />
                             {isMovie ? `${entry.tmdb.runtime}m` : `~${entry.tmdb.runtime}m/ep`}
                           </span>
                         )}
@@ -382,8 +382,8 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                   <div
                     className={`h-full rounded-full transition-all duration-500 ${
                       !isMovie
-                        ? "bg-gradient-to-r from-[#E50914] to-[#B20710]"
-                        : "bg-gradient-to-r from-[#E50914] to-[#B20710]"
+                        ? "bg-gradient-to-r from-[#D97706] to-[#B45309]"
+                        : "bg-gradient-to-r from-[#D97706] to-[#B45309]"
                     }`}
                     style={{ width: `${Math.min(100, Math.max(3, sp.percent))}%` }}
                   />
@@ -443,7 +443,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                     </button>
                     <span
                       className={`text-xs font-bold min-w-[2.75rem] text-center font-mono ${
-                        !isMovie ? "text-emerald-400" : "text-[#E50914]"
+                        !isMovie ? "text-amber-400" : "text-[#D97706]"
                       }`}
                     >
                       {sp.percent}%
@@ -480,7 +480,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                     <button
                       type="button"
                       onClick={() => setCompletingId(entry.id)}
-                      className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-emerald-400 hover:text-white bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 transition-all flex items-center gap-1.5 cursor-pointer"
+                      className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-amber-400 hover:text-white bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 transition-all flex items-center gap-1.5 cursor-pointer"
                       title="Mark as completed / watched"
                     >
                       <CheckCircle2 className="w-3.5 h-3.5" />
@@ -496,7 +496,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                         className="text-xs text-zinc-400 hover:text-white flex items-center gap-1.5 transition-colors font-medium cursor-pointer px-2 py-1.5 rounded-lg hover:bg-white/5 border border-transparent hover:border-white/10"
                         title="Open Episode Guide & Checklist"
                       >
-                        <ListVideo className="w-3.5 h-3.5 text-[#E50914]" />
+                        <ListVideo className="w-3.5 h-3.5 text-[#D97706]" />
                         <span>Episodes</span>
                       </button>
                     )}
@@ -508,7 +508,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                       title="View full details"
                     >
                       <span>Details</span>
-                      <ChevronRight className="w-3.5 h-3.5 text-[#E50914]" />
+                      <ChevronRight className="w-3.5 h-3.5 text-[#D97706]" />
                     </button>
                   </div>
                 </div>
@@ -517,7 +517,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
               {/* ── Quick Complete Modal ───────────────────────── */}
               {completingId === entry.id && (
                 <div className="absolute inset-0 bg-[#0a0a0a] flex flex-col items-center justify-center p-6 z-10 animate-in fade-in duration-200">
-                  <CheckCircle2 className="w-8 h-8 text-emerald-400 mb-3" />
+                  <CheckCircle2 className="w-8 h-8 text-amber-400 mb-3" />
                   <p className="text-white font-semibold mb-4">
                     Rate &ldquo;{entry.tmdb.title}&rdquo;
                   </p>
@@ -543,7 +543,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                     placeholder="Quick thoughts (optional)..."
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    className="w-full max-w-xs bg-stone-900 border border-stone-700 rounded-xl p-3 text-sm text-white placeholder-stone-500 resize-none h-20 outline-none focus:border-[#E50914]/50 transition-colors"
+                    className="w-full max-w-xs bg-stone-900 border border-stone-700 rounded-xl p-3 text-sm text-white placeholder-stone-500 resize-none h-20 outline-none focus:border-[#D97706]/50 transition-colors"
                   />
 
                   <div className="flex gap-3 mt-4">
@@ -555,7 +555,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                     </button>
                     <button
                       onClick={() => handleMarkComplete(entry.id)}
-                      className="px-4 py-2 text-sm bg-emerald-600 text-white rounded-lg hover:bg-emerald-500 transition-colors"
+                      className="px-4 py-2 text-sm bg-[#D97706] text-white rounded-lg hover:bg-[#F59E0B] transition-colors"
                     >
                       Mark Complete
                     </button>

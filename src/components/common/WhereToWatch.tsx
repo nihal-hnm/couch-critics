@@ -144,12 +144,12 @@ export function WhereToWatch({
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
-            className="hover:text-[#FF3B3B] transition-colors flex items-center gap-1 group/jw"
+            className="hover:text-[#F59E0B] transition-colors flex items-center gap-1 group/jw"
             title="Search streaming availability on JustWatch"
             aria-label={`Search where to watch ${title} on JustWatch`}
           >
             <span className="text-[#A1A1AA] font-medium">Stream:</span>
-            <span className="text-[#E50914] group-hover/jw:underline">Check JustWatch ↗</span>
+            <span className="text-[#D97706] group-hover/jw:underline">Check JustWatch ↗</span>
           </a>
         </div>
       );
@@ -168,7 +168,7 @@ export function WhereToWatch({
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#15151C] hover:bg-stone-800 border border-[#292932] hover:border-[#E50914]/40 text-[11px] font-semibold text-[#F5F5F5] hover:text-white transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] shadow-sm cursor-pointer group/btn"
+              className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#15151C] hover:bg-stone-800 border border-[#292932] hover:border-[#D97706]/40 text-[11px] font-semibold text-[#F5F5F5] hover:text-white transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] shadow-sm cursor-pointer group/btn"
               title={`Watch ${title} on ${platform.name}`}
               aria-label={`Watch ${title} on ${platform.name}`}
             >
@@ -195,7 +195,7 @@ export function WhereToWatch({
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="text-[10px] text-[#E50914] hover:text-[#FF3B3B] font-medium hover:underline ml-0.5"
+              className="text-[10px] text-[#D97706] hover:text-[#F59E0B] font-medium hover:underline ml-0.5"
               title="More streaming options"
             >
               +{platforms.length - 3} more
@@ -215,7 +215,7 @@ export function WhereToWatch({
       {showHeading && (
         <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2">
-            <div className="w-1.5 h-3.5 rounded-full bg-[#E50914]" />
+            <div className="w-1.5 h-3.5 rounded-full bg-[#D97706]" />
             <h4 className="text-xs font-bold uppercase tracking-wider text-stone-300">
               Where to Watch
             </h4>
@@ -230,7 +230,7 @@ export function WhereToWatch({
       {/* Content Area */}
       {loading ? (
         <div className="flex items-center gap-2 py-3 text-xs text-stone-400 animate-pulse">
-          <Tv className="w-4 h-4 text-[#E50914]" />
+          <Tv className="w-4 h-4 text-[#D97706]" />
           <span>Checking streaming availability across OTT platforms...</span>
         </div>
       ) : hasPlatforms ? (
@@ -242,7 +242,7 @@ export function WhereToWatch({
                 href={platform.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.07] border border-[#292932] hover:border-[#E50914]/50 transition-all duration-200 group/item shadow-sm"
+                className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.07] border border-[#292932] hover:border-[#D97706]/50 transition-all duration-200 group/item shadow-sm"
               >
                 <img
                   src={platform.logo}
@@ -259,7 +259,7 @@ export function WhereToWatch({
                     {platform.category || "Stream"}
                   </span>
                 </div>
-                <ExternalLink className="w-3.5 h-3.5 text-stone-500 group-hover/item:text-[#E50914] shrink-0 transition-colors" />
+                <ExternalLink className="w-3.5 h-3.5 text-stone-500 group-hover/item:text-[#D97706] shrink-0 transition-colors" />
               </a>
             ))}
           </div>
@@ -284,9 +284,9 @@ export function WhereToWatch({
             href={justWatchUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#E50914]/15 hover:bg-[#E50914]/25 border border-[#E50914]/40 text-xs font-semibold text-white transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#D97706]/15 hover:bg-[#D97706]/25 border border-[#D97706]/40 text-xs font-semibold text-white transition-colors"
           >
-            <Search className="w-3.5 h-3.5 text-[#E50914]" />
+            <Search className="w-3.5 h-3.5 text-[#D97706]" />
             <span>Search on JustWatch</span>
           </a>
         </div>

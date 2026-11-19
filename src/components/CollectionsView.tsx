@@ -140,7 +140,7 @@ export function CollectionsView({ entries, onSelectEntry }: CollectionsViewProps
 
         <button
           onClick={() => setIsCreatingList(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#E50914] hover:bg-[#FF3B3B] text-white text-xs font-semibold shadow transition-all cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#D97706] hover:bg-[#F59E0B] text-white text-xs font-semibold shadow transition-all cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5" />
           <span>New Collection</span>
@@ -152,7 +152,7 @@ export function CollectionsView({ entries, onSelectEntry }: CollectionsViewProps
         <div className="p-4 sm:p-5 rounded-2xl bg-[#15151C] border border-[#292932] space-y-4 animate-in fade-in">
           <div className="flex items-center justify-between">
             <h4 className="text-sm font-bold text-white flex items-center gap-2">
-              <FolderPlus className="w-4 h-4 text-[#E50914]" />
+              <FolderPlus className="w-4 h-4 text-[#D97706]" />
               Create New Curated Collection
             </h4>
             <button
@@ -173,7 +173,7 @@ export function CollectionsView({ entries, onSelectEntry }: CollectionsViewProps
                 placeholder="e.g. A24 Favorites, 90s Cyberpunk, Comfort Series"
                 value={newListName}
                 onChange={(e) => setNewListName(e.target.value)}
-                className="w-full bg-[#0B0B0F] border border-[#292932] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-zinc-500 outline-none focus:border-[#E50914]"
+                className="w-full bg-[#0B0B0F] border border-[#292932] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-zinc-500 outline-none focus:border-[#D97706]"
               />
             </div>
             <div>
@@ -185,7 +185,7 @@ export function CollectionsView({ entries, onSelectEntry }: CollectionsViewProps
                 placeholder="Brief theme or description of this list..."
                 value={newListDesc}
                 onChange={(e) => setNewListDesc(e.target.value)}
-                className="w-full bg-[#0B0B0F] border border-[#292932] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-zinc-500 outline-none focus:border-[#E50914]"
+                className="w-full bg-[#0B0B0F] border border-[#292932] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-zinc-500 outline-none focus:border-[#D97706]"
               />
             </div>
           </div>
@@ -200,7 +200,7 @@ export function CollectionsView({ entries, onSelectEntry }: CollectionsViewProps
             <button
               onClick={handleCreateList}
               disabled={!newListName.trim()}
-              className="px-4 py-1.5 rounded-xl bg-[#E50914] hover:bg-[#FF3B3B] text-white text-xs font-semibold shadow disabled:opacity-50 cursor-pointer"
+              className="px-4 py-1.5 rounded-xl bg-[#D97706] hover:bg-[#F59E0B] text-white text-xs font-semibold shadow disabled:opacity-50 cursor-pointer"
             >
               Create List
             </button>
@@ -222,7 +222,7 @@ export function CollectionsView({ entries, onSelectEntry }: CollectionsViewProps
                 onClick={() => setSelectedListId(l.id)}
                 className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer group ${
                   selectedListId === l.id
-                    ? "bg-[#E50914]/15 border-[#E50914]/40 text-white"
+                    ? "bg-[#D97706]/15 border-[#D97706]/40 text-white"
                     : "bg-[#15151C] border-[#292932] text-[#A1A1AA] hover:text-white hover:border-[#3D3D4C]"
                 }`}
               >
@@ -290,7 +290,7 @@ export function CollectionsView({ entries, onSelectEntry }: CollectionsViewProps
                         onClick={() => handleToggleMovieInList(e.id)}
                         className={`p-2 rounded-xl border text-left text-xs transition-all flex items-center justify-between cursor-pointer ${
                           isIncluded
-                            ? "bg-[#E50914]/20 border-[#E50914] text-white"
+                            ? "bg-[#D97706]/20 border-[#D97706] text-white"
                             : "bg-[#15151C] border-[#292932] text-[#A1A1AA] hover:text-white"
                         }`}
                       >
@@ -330,7 +330,7 @@ export function CollectionsView({ entries, onSelectEntry }: CollectionsViewProps
                       )}
                     </div>
                     <div>
-                      <h4 className="text-xs font-semibold text-white truncate group-hover:text-[#E50914] transition-colors">
+                      <h4 className="text-xs font-semibold text-white truncate group-hover:text-[#D97706] transition-colors">
                         {entry.tmdb.title}
                       </h4>
                       <p className="text-[10px] text-[#A1A1AA] truncate mt-0.5">

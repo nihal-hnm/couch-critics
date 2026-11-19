@@ -34,7 +34,7 @@ export default function ThemeToggle({ variant = "button", className = "" }: Them
           onClick={() => setTheme("dark")}
           className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
             !isLight
-              ? "bg-[#E50914] text-[#F5F5F5] shadow-sm"
+              ? "bg-[#D97706] text-[#F5F5F5] shadow-sm"
               : "text-[#A1A1AA] hover:text-[#F5F5F5]"
           }`}
           aria-pressed={!isLight}
@@ -48,7 +48,7 @@ export default function ThemeToggle({ variant = "button", className = "" }: Them
           onClick={() => setTheme("light")}
           className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
             isLight
-              ? "bg-[#E50914] text-white shadow-sm"
+              ? "bg-[#D97706] text-white shadow-sm"
               : "text-[#A1A1AA] hover:text-[#F5F5F5]"
           }`}
           aria-pressed={isLight}
@@ -71,9 +71,9 @@ export default function ThemeToggle({ variant = "button", className = "" }: Them
       id="theme-toggle-button"
     >
       {isLight ? (
-        <Sun className="w-4 h-4 text-[#E50914] group-hover:rotate-45 transition-transform duration-300" />
+        <Sun className="w-4 h-4 text-[#D97706] group-hover:rotate-45 transition-transform duration-300" />
       ) : (
-        <Moon className="w-4 h-4 text-[#E50914] group-hover:-rotate-12 transition-transform duration-300" />
+        <Moon className="w-4 h-4 text-[#D97706] group-hover:-rotate-12 transition-transform duration-300" />
       )}
     </button>
   );

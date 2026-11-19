@@ -218,7 +218,7 @@ export default function WatchedShelf({
               className="w-full h-full object-cover"
               fallbackIconClassName="w-7 h-7 text-stone-500 mb-1"
             />
-            <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-[#E50914]/10 to-transparent opacity-0 group-hover/poster:opacity-100 transition-opacity duration-300 pointer-events-none" />
+            <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-[#D97706]/10 to-transparent opacity-0 group-hover/poster:opacity-100 transition-opacity duration-300 pointer-events-none" />
           </div>
 
           {/* Info */}
@@ -265,7 +265,7 @@ export default function WatchedShelf({
               ) : null}
             </div>
 
-            <h4 className="font-bold text-white text-sm sm:text-base line-clamp-2 leading-snug group-hover:text-[#E50914] transition-colors">
+            <h4 className="font-bold text-white text-sm sm:text-base line-clamp-2 leading-snug group-hover:text-[#D97706] transition-colors">
               {entry.tmdb.title}
             </h4>
 
@@ -348,14 +348,14 @@ export default function WatchedShelf({
             </button>
             <button
               onClick={() => moveToShelf(entry.id, "watching")}
-              className="p-1.5 rounded-lg text-stone-400 hover:text-[#E50914] hover:bg-[#E50914]/10 transition-all cursor-pointer"
+              className="p-1.5 rounded-lg text-stone-400 hover:text-[#D97706] hover:bg-[#D97706]/10 transition-all cursor-pointer"
               title="Watch again"
             >
               <Play className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => removeEntry(entry.id)}
-              className="p-1.5 rounded-lg text-stone-400 hover:text-[#FF3B3B] hover:bg-[#E50914]/10 transition-all cursor-pointer"
+              className="p-1.5 rounded-lg text-stone-400 hover:text-[#F59E0B] hover:bg-[#D97706]/10 transition-all cursor-pointer"
               title="Remove from journal"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -408,7 +408,7 @@ export default function WatchedShelf({
                 value={editNotes}
                 onChange={(e) => setEditNotes(e.target.value)}
                 placeholder="What stuck with you? What would you tell a friend?"
-                className="w-full mt-1 bg-[#0B0B0F] border border-[#292932] rounded-lg p-2.5 text-xs text-[#F5F5F5] placeholder-[#A1A1AA]/50 resize-none h-20 outline-none focus:border-[#E50914]/60"
+                className="w-full mt-1 bg-[#0B0B0F] border border-[#292932] rounded-lg p-2.5 text-xs text-[#F5F5F5] placeholder-[#A1A1AA]/50 resize-none h-20 outline-none focus:border-[#D97706]/60"
               />
             </div>
 
@@ -421,7 +421,7 @@ export default function WatchedShelf({
                 value={editTags}
                 onChange={(e) => setEditTags(e.target.value)}
                 placeholder="mind-bending, comfort-watch, masterpiece"
-                className="w-full mt-1 bg-[#0B0B0F] border border-[#292932] rounded-lg px-3 py-2 text-xs text-[#F5F5F5] placeholder-[#A1A1AA]/50 outline-none focus:border-[#E50914]/60"
+                className="w-full mt-1 bg-[#0B0B0F] border border-[#292932] rounded-lg px-3 py-2 text-xs text-[#F5F5F5] placeholder-[#A1A1AA]/50 outline-none focus:border-[#D97706]/60"
               />
             </div>
 
@@ -435,7 +435,7 @@ export default function WatchedShelf({
               </button>
               <button
                 onClick={() => saveEdit(entry.id, entry.review)}
-                className="flex items-center gap-1.5 text-xs bg-[#E50914] hover:bg-[#FF3B3B] text-white font-semibold px-3 py-1.5 rounded-lg transition-all shadow-md cursor-pointer"
+                className="flex items-center gap-1.5 text-xs bg-[#D97706] hover:bg-[#F59E0B] text-white font-semibold px-3 py-1.5 rounded-lg transition-all shadow-md cursor-pointer"
               >
                 <Save className="w-3.5 h-3.5" />
                 Save Review
@@ -475,7 +475,7 @@ export default function WatchedShelf({
                 onClick={() => setMediaFilter("all")}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
                   mediaFilter === "all"
-                    ? "bg-[#E50914] text-white shadow-sm font-semibold"
+                    ? "bg-[#D97706] text-white shadow-sm font-semibold"
                     : "text-[#A1A1AA] hover:text-white bg-white/5 hover:bg-white/10"
                 }`}
               >
@@ -489,7 +489,7 @@ export default function WatchedShelf({
                 onClick={() => setMediaFilter("movie")}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
                   mediaFilter === "movie"
-                    ? "bg-[#E50914] text-white shadow-sm font-semibold"
+                    ? "bg-[#D97706] text-white shadow-sm font-semibold"
                     : "text-[#A1A1AA] hover:text-white bg-white/5 hover:bg-white/10"
                 }`}
               >
@@ -504,7 +504,7 @@ export default function WatchedShelf({
                 onClick={() => setMediaFilter("tv")}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
                   mediaFilter === "tv"
-                    ? "bg-[#E50914] text-white shadow-sm font-semibold"
+                    ? "bg-[#D97706] text-white shadow-sm font-semibold"
                     : "text-[#A1A1AA] hover:text-white bg-white/5 hover:bg-white/10"
                 }`}
               >
@@ -526,7 +526,7 @@ export default function WatchedShelf({
                   onClick={() => setViewLayout("grouped")}
                   className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1 cursor-pointer ${
                     viewLayout === "grouped"
-                      ? "bg-[#E50914] text-white shadow-sm"
+                      ? "bg-[#D97706] text-white shadow-sm"
                       : "text-[#A1A1AA] hover:text-white"
                   }`}
                   title="Grouped: Separate Movies & TV Series sections"
@@ -538,7 +538,7 @@ export default function WatchedShelf({
                   onClick={() => setViewLayout("combined")}
                   className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1 cursor-pointer ${
                     viewLayout === "combined"
-                      ? "bg-[#E50914] text-white shadow-sm"
+                      ? "bg-[#D97706] text-white shadow-sm"
                       : "text-[#A1A1AA] hover:text-white"
                   }`}
                   title="Unified: Single timeline grid"
@@ -565,7 +565,7 @@ export default function WatchedShelf({
                   onClick={() => setSortBy(key)}
                   className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-all cursor-pointer ${
                     sortBy === key
-                      ? "bg-[#E50914] text-white shadow-sm"
+                      ? "bg-[#D97706] text-white shadow-sm"
                       : "text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5"
                   }`}
                 >
@@ -586,7 +586,7 @@ export default function WatchedShelf({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by title, director, or tag..."
-              className="w-full pl-9 pr-8 py-1.5 rounded-xl bg-black/40 border border-[#292932] text-xs text-[#F5F5F5] placeholder-[#A1A1AA]/50 focus:outline-none focus:border-[#E50914]/50"
+              className="w-full pl-9 pr-8 py-1.5 rounded-xl bg-black/40 border border-[#292932] text-xs text-[#F5F5F5] placeholder-[#A1A1AA]/50 focus:outline-none focus:border-[#D97706]/50"
             />
             {searchQuery && (
               <button
@@ -649,7 +649,7 @@ export default function WatchedShelf({
                   <div className="pt-3 text-center">
                     <button
                       onClick={() => setVisibleCount((prev) => prev + 32)}
-                      className="px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-[#F5F5F5] border border-[#292932] hover:border-[#E50914]/50 transition-all cursor-pointer shadow-sm"
+                      className="px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-[#F5F5F5] border border-[#292932] hover:border-[#D97706]/50 transition-all cursor-pointer shadow-sm"
                     >
                       Show More Movies ({sortedMovies.length - visibleCount} remaining)
                     </button>
@@ -686,7 +686,7 @@ export default function WatchedShelf({
                   <div className="pt-3 text-center">
                     <button
                       onClick={() => setVisibleCount((prev) => prev + 32)}
-                      className="px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-[#F5F5F5] border border-[#292932] hover:border-[#E50914]/50 transition-all cursor-pointer shadow-sm"
+                      className="px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-[#F5F5F5] border border-[#292932] hover:border-[#D97706]/50 transition-all cursor-pointer shadow-sm"
                     >
                       Show More TV Series ({sortedSeries.length - visibleCount} remaining)
                     </button>
@@ -712,7 +712,7 @@ export default function WatchedShelf({
                 <div className="pt-4 text-center">
                   <button
                     onClick={() => setVisibleCount((prev) => prev + 32)}
-                    className="px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-[#F5F5F5] border border-[#292932] hover:border-[#E50914]/50 transition-all cursor-pointer shadow-sm"
+                    className="px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-[#F5F5F5] border border-[#292932] hover:border-[#D97706]/50 transition-all cursor-pointer shadow-sm"
                   >
                     Show More Titles ({combinedEntries.length - visibleCount} remaining)
                   </button>
@@ -727,7 +727,7 @@ export default function WatchedShelf({
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="mt-3 text-xs text-[#E50914] hover:text-[#FF3B3B] font-semibold underline cursor-pointer"
+                  className="mt-3 text-xs text-[#D97706] hover:text-[#F59E0B] font-semibold underline cursor-pointer"
                 >
                   Clear search query
                 </button>

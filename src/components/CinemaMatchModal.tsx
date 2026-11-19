@@ -360,9 +360,9 @@ export function CinemaMatchModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* ── Modal Header ── */}
-        <div className="p-5 sm:p-6 border-b border-[#292932] bg-gradient-to-r from-red-500/10 via-amber-500/10 to-transparent flex items-center justify-between">
+        <div className="p-5 sm:p-6 border-b border-[#292932] bg-gradient-to-r from-amber-500/10 via-amber-600/10 to-transparent flex items-center justify-between">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#E50914] to-amber-500 flex items-center justify-center text-white shadow-lg shadow-red-950/40">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#D97706] to-amber-500 flex items-center justify-center text-white shadow-lg shadow-amber-950/40">
               <Users className="w-6 h-6" />
             </div>
             <div>
@@ -403,12 +403,12 @@ export function CinemaMatchModal({
                   value={inputUrl}
                   onChange={(e) => setInputUrl(e.target.value)}
                   placeholder="Paste friend's share link (couch-critics.vercel.app/share#d=...)"
-                  className="flex-1 bg-[#0B0B0F] border border-[#292932] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-[#A1A1AA]/50 focus:outline-none focus:border-[#E50914]"
+                  className="flex-1 bg-[#0B0B0F] border border-[#292932] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-[#A1A1AA]/50 focus:outline-none focus:border-[#D97706]"
                 />
                 <button
                   onClick={() => handleCompare(inputUrl)}
                   disabled={isDecoding || !inputUrl.trim()}
-                  className="px-4 py-2.5 rounded-xl bg-[#E50914] hover:bg-[#FF3B3B] disabled:opacity-50 text-white text-xs font-semibold shadow-md transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
+                  className="px-4 py-2.5 rounded-xl bg-[#D97706] hover:bg-[#F59E0B] disabled:opacity-50 text-white text-xs font-semibold shadow-md transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
                 >
                   {isDecoding ? "Matching..." : "Compare"}
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -435,8 +435,8 @@ export function CinemaMatchModal({
             {/* ── Match Results Top Banner ── */}
             <div className="p-5 sm:p-6 bg-[#0B0B0F] border-b border-[#292932] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/40 flex items-center justify-center shrink-0">
-                  <span className="text-2xl font-extrabold font-mono text-emerald-300">
+                <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/20 border border-amber-500/40 flex items-center justify-center shrink-0">
+                  <span className="text-2xl font-extrabold font-mono text-amber-300">
                     {matchResult.score}%
                   </span>
                 </div>
@@ -469,7 +469,7 @@ export function CinemaMatchModal({
                 onClick={() => setActiveTab("movieNight")}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer shrink-0 ${
                   activeTab === "movieNight"
-                    ? "bg-[#E50914] text-white shadow-sm"
+                    ? "bg-[#D97706] text-white shadow-sm"
                     : "text-[#A1A1AA] hover:text-white bg-white/5"
                 }`}
               >
@@ -481,7 +481,7 @@ export function CinemaMatchModal({
                 onClick={() => setActiveTab("bothLoved")}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer shrink-0 ${
                   activeTab === "bothLoved"
-                    ? "bg-[#E50914] text-white shadow-sm"
+                    ? "bg-[#D97706] text-white shadow-sm"
                     : "text-[#A1A1AA] hover:text-white bg-white/5"
                 }`}
               >
@@ -493,7 +493,7 @@ export function CinemaMatchModal({
                 onClick={() => setActiveTab("hotTakes")}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer shrink-0 ${
                   activeTab === "hotTakes"
-                    ? "bg-[#E50914] text-white shadow-sm"
+                    ? "bg-[#D97706] text-white shadow-sm"
                     : "text-[#A1A1AA] hover:text-white bg-white/5"
                 }`}
               >
@@ -541,7 +541,7 @@ export function CinemaMatchModal({
                           {!addedIds.has(entry.tmdb.tmdbId) ? (
                             <button
                               onClick={() => handleAddMovieNightPick(entry)}
-                              className="p-2 rounded-xl bg-[#E50914]/20 hover:bg-[#E50914] text-[#E50914] hover:text-white border border-[#E50914]/40 transition-all cursor-pointer shrink-0"
+                              className="p-2 rounded-xl bg-[#D97706]/20 hover:bg-[#D97706] text-[#D97706] hover:text-white border border-[#D97706]/40 transition-all cursor-pointer shrink-0"
                               title="Add to my backlog"
                             >
                               <Plus className="w-4 h-4" />

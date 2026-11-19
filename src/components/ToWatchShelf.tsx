@@ -6,7 +6,7 @@
  * Redesigned with the warm cinematic aesthetic:
  *  - Poster-forward grid with warm hover effects
  *  - Solid modern filter bar
- *  - Purple/gold "Pick for Tonight" roulette button
+ *  - Amber/gold "Pick for Tonight" roulette button
  *  - Warm gradient overlays on hover
  */
 
@@ -130,7 +130,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
               placeholder="Filter by title or genre..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-[#15151C] border border-[#292932] rounded-xl text-sm text-[#F5F5F5] placeholder-[#A1A1AA]/50 outline-none focus:border-[#E50914]/50 transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 bg-[#15151C] border border-[#292932] rounded-xl text-sm text-[#F5F5F5] placeholder-[#A1A1AA]/50 outline-none focus:border-[#D97706]/50 transition-colors"
               id="towatch-search"
             />
           </div>
@@ -140,7 +140,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm transition-all cursor-pointer ${
               showFilters
-                ? "bg-[#E50914]/15 text-[#E50914] border-[#E50914]/40 font-semibold"
+                ? "bg-[#D97706]/15 text-[#D97706] border-[#D97706]/40 font-semibold"
                 : "bg-[#15151C] border-[#292932] text-[#A1A1AA] hover:text-white hover:border-zinc-700"
             }`}
           >
@@ -152,7 +152,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
           <button
             onClick={pickRandom}
             disabled={filteredEntries.length === 0 || isSpinning}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#E50914] to-[#B81D24] hover:from-[#FF1E28] hover:to-[#E50914] text-white rounded-xl text-sm font-semibold transition-all shadow-md shadow-[#E50914]/25 hover:shadow-lg hover:shadow-[#E50914]/40 hover:scale-[1.02] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#D97706] to-[#B45309] hover:from-[#F59E0B] hover:to-[#D97706] text-white rounded-xl text-sm font-semibold transition-all shadow-md shadow-[#D97706]/25 hover:shadow-lg hover:shadow-[#D97706]/40 hover:scale-[1.02] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
             <Shuffle className={`w-4 h-4 text-white ${isSpinning ? "animate-spin" : ""}`} />
             <span>{isSpinning ? "Spinning..." : "Pick for Tonight"}</span>
@@ -224,7 +224,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
       {/* ── Picked Movie Spotlight ──────────────────────────── */}
       {pickedMovie && (
         <div className={`relative p-5 rounded-2xl border transition-all duration-300 bg-[#15151C] overflow-hidden animate-in zoom-in-95 ${
-          isSpinning ? "border-[#E50914] shadow-lg shadow-[#E50914]/20" : "border-amber-500/50 shadow-xl shadow-amber-500/10"
+          isSpinning ? "border-[#D97706] shadow-lg shadow-[#D97706]/20" : "border-amber-500/50 shadow-xl shadow-amber-500/10"
         }`}>
           {/* Ambient backdrop from the picked poster */}
           {pickedMovie.tmdb.posterUrl && (
@@ -295,7 +295,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
                       moveToShelf(pickedMovie.id, "watching");
                       setPickedMovie(null);
                     }}
-                    className="flex items-center gap-1.5 text-xs bg-[#E50914] hover:bg-[#FF3B3B] text-white px-3.5 py-2 rounded-lg transition-colors font-semibold shadow-md cursor-pointer"
+                    className="flex items-center gap-1.5 text-xs bg-[#D97706] hover:bg-[#F59E0B] text-white px-3.5 py-2 rounded-lg transition-colors font-semibold shadow-md cursor-pointer"
                   >
                     <Play className="w-3 h-3" />
                     Start Watching
@@ -357,7 +357,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
               <div className="flex gap-1.5 mt-2.5" onClick={(e) => e.stopPropagation()}>
                 <button
                   onClick={() => moveToShelf(entry.id, "watching")}
-                  className="flex-1 flex items-center justify-center gap-1 text-xs bg-[#E50914] hover:bg-[#FF3B3B] text-white py-1.5 rounded-lg transition-colors cursor-pointer"
+                  className="flex-1 flex items-center justify-center gap-1 text-xs bg-[#D97706] hover:bg-[#F59E0B] text-white py-1.5 rounded-lg transition-colors cursor-pointer"
                   title="Start watching"
                 >
                   <Play className="w-3 h-3" />
@@ -378,7 +378,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
                 </button>
                 <button
                   onClick={() => removeEntry(entry.id)}
-                  className="flex items-center justify-center text-xs bg-white/10 hover:bg-[#E50914] text-[#A1A1AA] hover:text-white py-1.5 px-2 rounded-lg transition-colors border border-[#292932] cursor-pointer"
+                  className="flex items-center justify-center text-xs bg-white/10 hover:bg-[#D97706] text-[#A1A1AA] hover:text-white py-1.5 px-2 rounded-lg transition-colors border border-[#292932] cursor-pointer"
                   title="Remove"
                 >
                   <Trash2 className="w-3 h-3" />
@@ -418,7 +418,7 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
               setGenreFilter("");
               setMaxRuntime(0);
             }}
-            className="mt-2 text-[#E50914] hover:text-[#FF3B3B] text-sm underline cursor-pointer"
+            className="mt-2 text-[#D97706] hover:text-[#F59E0B] text-sm underline cursor-pointer"
           >
             Clear all filters
           </button>

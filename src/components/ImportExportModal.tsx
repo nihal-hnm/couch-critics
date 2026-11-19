@@ -283,7 +283,7 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
         {/* ══ Header ══ */}
         <div className="p-4 sm:p-5 border-b border-[#292932] bg-[#0B0B0F] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#E50914]/15 border border-[#E50914]/30 flex items-center justify-center text-[#E50914]">
+            <div className="w-10 h-10 rounded-xl bg-[#D97706]/15 border border-[#D97706]/30 flex items-center justify-center text-[#D97706]">
               <Database className="w-5 h-5" />
             </div>
             <div>
@@ -309,7 +309,7 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
             onClick={() => setActiveTab("import-csv")}
             className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
               activeTab === "import-csv"
-                ? "bg-[#E50914] text-white shadow-sm"
+                ? "bg-[#D97706] text-white shadow-sm"
                 : "text-[#A1A1AA] hover:text-white hover:bg-white/5"
             }`}
           >
@@ -321,7 +321,7 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
             onClick={() => setActiveTab("export")}
             className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
               activeTab === "export"
-                ? "bg-[#E50914] text-white shadow-sm"
+                ? "bg-[#D97706] text-white shadow-sm"
                 : "text-[#A1A1AA] hover:text-white hover:bg-white/5"
             }`}
           >
@@ -333,7 +333,7 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
             onClick={() => setActiveTab("backup")}
             className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
               activeTab === "backup"
-                ? "bg-[#E50914] text-white shadow-sm"
+                ? "bg-[#D97706] text-white shadow-sm"
                 : "text-[#A1A1AA] hover:text-white hover:bg-white/5"
             }`}
           >
@@ -363,7 +363,7 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
               {/* Upload Dropzone */}
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-[#292932] hover:border-[#E50914]/50 rounded-2xl p-8 text-center cursor-pointer transition-colors bg-[#0B0B0F]/50 hover:bg-[#0B0B0F]"
+                className="border-2 border-dashed border-[#292932] hover:border-[#D97706]/50 rounded-2xl p-8 text-center cursor-pointer transition-colors bg-[#0B0B0F]/50 hover:bg-[#0B0B0F]"
               >
                 <input
                   type="file"
@@ -372,7 +372,7 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
                   onChange={handleFileUpload}
                   className="hidden"
                 />
-                <Upload className="w-8 h-8 text-[#E50914] mx-auto mb-3" />
+                <Upload className="w-8 h-8 text-[#D97706] mx-auto mb-3" />
                 <p className="text-sm font-semibold text-white">
                   {fileName ? fileName : "Click or drag & drop your CSV file here"}
                 </p>
@@ -415,7 +415,7 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
                         onClick={() => setImportMode("merge")}
                         className={`px-2.5 py-1 rounded-lg text-xs font-medium cursor-pointer border ${
                           importMode === "merge"
-                            ? "bg-[#E50914] text-white border-[#E50914]"
+                            ? "bg-[#D97706] text-white border-[#D97706]"
                             : "bg-[#0B0B0F] text-[#A1A1AA] border-[#292932]"
                         }`}
                       >
@@ -425,7 +425,7 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
                         onClick={() => setImportMode("replace")}
                         className={`px-2.5 py-1 rounded-lg text-xs font-medium cursor-pointer border ${
                           importMode === "replace"
-                            ? "bg-[#E50914] text-white border-[#E50914]"
+                            ? "bg-[#D97706] text-white border-[#D97706]"
                             : "bg-[#0B0B0F] text-[#A1A1AA] border-[#292932]"
                         }`}
                       >
@@ -466,7 +466,7 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
                   <button
                     onClick={handleExecuteImport}
                     disabled={isProcessing}
-                    className="w-full py-3 rounded-xl bg-[#E50914] hover:bg-[#FF3B3B] text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                    className="w-full py-3 rounded-xl bg-[#D97706] hover:bg-[#F59E0B] text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                   >
                     {isProcessing ? (
                       <>
@@ -503,7 +503,7 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
                 </div>
                 <button
                   onClick={handleExportLetterboxdCSV}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#E50914] hover:bg-[#FF3B3B] text-white text-xs font-bold transition-all shadow cursor-pointer"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#D97706] hover:bg-[#F59E0B] text-white text-xs font-bold transition-all shadow cursor-pointer"
                 >
                   <Download className="w-4 h-4" />
                   <span>Download CSV</span>
@@ -553,7 +553,7 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
                   </div>
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[#E50914] hover:bg-[#FF3B3B] text-white text-xs font-bold transition-all shadow cursor-pointer"
+                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[#D97706] hover:bg-[#F59E0B] text-white text-xs font-bold transition-all shadow cursor-pointer"
                   >
                     <Upload className="w-4 h-4" />
                     <span>Restore from JSON</span>

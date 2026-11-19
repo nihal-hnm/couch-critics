@@ -148,11 +148,11 @@ export default function SharePage() {
       <header className="share-header sticky top-0 z-40 w-full bg-white dark:bg-[#0B0B0F] border-b border-[#E2E8F0] dark:border-[#292932]/80 transition-colors">
         <div className="max-w-[1720px] mx-auto w-full px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2.5 group cursor-pointer">
-            <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 flex items-center justify-center shadow-sm ring-1 ring-slate-200 dark:ring-white/10 group-hover:ring-[#E50914]/50 transition-all">
+            <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 flex items-center justify-center shadow-sm ring-1 ring-slate-200 dark:ring-white/10 group-hover:ring-[#D97706]/50 transition-all">
               <img src="/icon.png" alt="Couch Critics" className="w-full h-full object-cover" />
             </div>
             <div>
-              <h1 className="text-xs sm:text-sm font-bold text-[#0F172A] dark:text-[#F5F5F5] tracking-wider uppercase font-mono group-hover:text-[#E50914] transition-colors leading-tight">
+              <h1 className="text-xs sm:text-sm font-bold text-[#0F172A] dark:text-[#F5F5F5] tracking-wider uppercase font-mono group-hover:text-[#D97706] transition-colors leading-tight">
                 COUCH CRITICS
               </h1>
               <p className="text-[10px] text-slate-500 dark:text-zinc-500 font-mono tracking-widest hidden sm:block">
@@ -165,7 +165,7 @@ export default function SharePage() {
             <ThemeToggle variant="button" />
             <Link
               href="/"
-              className="px-3.5 py-1.5 bg-[#E50914] hover:bg-[#FF3B3B] text-white rounded-xl text-xs font-semibold transition-all shadow-md flex items-center gap-1.5"
+              className="px-3.5 py-1.5 bg-[#D97706] hover:bg-[#F59E0B] text-white rounded-xl text-xs font-semibold transition-all shadow-md flex items-center gap-1.5"
             >
               <Compass className="w-3.5 h-3.5" />
               <span>Launch Your Journal</span>
@@ -180,7 +180,7 @@ export default function SharePage() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             {/* User Profile Info */}
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-amber-100 dark:bg-gradient-to-br dark:from-amber-500/20 dark:via-red-500/20 dark:to-purple-500/20 border border-amber-300 dark:border-amber-500/30 flex items-center justify-center text-2xl sm:text-3xl font-bold font-mono text-amber-800 dark:text-amber-300 shadow-md shrink-0">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-amber-100 dark:bg-gradient-to-br dark:from-amber-500/20 dark:to-amber-700/20 border border-amber-300 dark:border-amber-500/30 flex items-center justify-center text-2xl sm:text-3xl font-bold font-mono text-amber-800 dark:text-amber-300 shadow-md shrink-0">
                 {payload?.userName ? payload.userName.charAt(0).toUpperCase() : "C"}
               </div>
               <div>
@@ -510,7 +510,7 @@ export default function SharePage() {
                   {/* Info Box */}
                   <div className="p-3 flex-1 flex flex-col justify-between space-y-1.5 bg-white dark:bg-[#15151C]">
                     <div>
-                      <h4 className="card-title text-xs sm:text-sm font-bold text-[#0F172A] dark:text-white line-clamp-1 group-hover:text-[#E50914] transition-colors">
+                      <h4 className="card-title text-xs sm:text-sm font-bold text-[#0F172A] dark:text-white line-clamp-1 group-hover:text-[#D97706] transition-colors">
                         {entry.tmdb.title}
                       </h4>
                       {entry.tmdb.director && (
@@ -688,7 +688,7 @@ export default function SharePage() {
 
                 <Link
                   href="/"
-                  className="px-4 py-2 bg-[#E50914] hover:bg-[#FF3B3B] text-white rounded-xl text-xs font-semibold transition-all shadow-md"
+                  className="px-4 py-2 bg-[#D97706] hover:bg-[#F59E0B] text-white rounded-xl text-xs font-semibold transition-all shadow-md"
                 >
                   Track in My Journal
                 </Link>

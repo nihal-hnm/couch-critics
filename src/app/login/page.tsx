@@ -6,7 +6,7 @@
  *  - Main background: #0B0B0F
  *  - Cards & panels: #15151C
  *  - Subtle borders: #292932
- *  - Primary accent: #E50914 (hover #FF3B3B)
+ *  - Primary accent: #D97706 (hover #F59E0B)
  *  - Text: #F5F5F5 / #A1A1AA
  */
 
@@ -146,7 +146,7 @@ export default function LoginPage() {
         />
 
         {/* Restrained Atmospheric Cinema Glow */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-[#E50914]/[0.04] rounded-full blur-[160px] pointer-events-none" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-[#D97706]/[0.04] rounded-full blur-[160px] pointer-events-none" />
         <div className="absolute bottom-10 right-1/4 w-[500px] h-[350px] bg-[#15151C]/60 rounded-full blur-[120px] pointer-events-none" />
       </div>
 
@@ -158,7 +158,7 @@ export default function LoginPage() {
           className="flex items-center gap-3 group transition-transform active:scale-95"
           aria-label="Couch Critics Home"
         >
-          <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-[#E50914]/25 border border-white/10 shrink-0 bg-[#07070A] flex items-center justify-center group-hover:border-[#E50914]/40 group-hover:scale-105 transition-all">
+          <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-[#D97706]/25 border border-white/10 shrink-0 bg-[#07070A] flex items-center justify-center group-hover:border-[#D97706]/40 group-hover:scale-105 transition-all">
             <img src="/icon.png" alt="Couch Critics" className="w-full h-full object-cover" />
           </div>
           <div className="flex flex-col">
@@ -175,9 +175,9 @@ export default function LoginPage() {
         <div className="flex items-center gap-3">
           <Link
             href="/"
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-[#15151C] hover:bg-[#1f1f2a] text-[#A1A1AA] hover:text-[#F5F5F5] border border-[#292932] hover:border-[#E50914]/40 transition-all shadow-sm group"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-[#15151C] hover:bg-[#1f1f2a] text-[#A1A1AA] hover:text-[#F5F5F5] border border-[#292932] hover:border-[#D97706]/40 transition-all shadow-sm group"
           >
-            <ArrowLeft className="w-4 h-4 text-[#A1A1AA] group-hover:text-[#E50914] transition-colors" />
+            <ArrowLeft className="w-4 h-4 text-[#A1A1AA] group-hover:text-[#D97706] transition-colors" />
             <span>Return to Journal</span>
           </Link>
         </div>
@@ -189,7 +189,7 @@ export default function LoginPage() {
           {/* If already signed in */}
           {user ? (
             <div className="text-center space-y-6">
-              <div className="w-16 h-16 rounded-full bg-[#0B0B0F] border border-[#292932] flex items-center justify-center mx-auto text-[#E50914]">
+              <div className="w-16 h-16 rounded-full bg-[#0B0B0F] border border-[#292932] flex items-center justify-center mx-auto text-[#D97706]">
                 <UserCheck className="w-8 h-8" />
               </div>
               <div>
@@ -199,7 +199,7 @@ export default function LoginPage() {
               <div className="space-y-3 pt-2">
                 <Link
                   href="/"
-                  className="w-full py-3.5 px-4 rounded-xl bg-[#E50914] hover:bg-[#FF3B3B] text-white font-bold text-sm shadow-lg shadow-[#E50914]/25 flex items-center justify-center gap-2 transition-all cursor-pointer"
+                  className="w-full py-3.5 px-4 rounded-xl bg-[#D97706] hover:bg-[#F59E0B] text-white font-bold text-sm shadow-lg shadow-[#D97706]/25 flex items-center justify-center gap-2 transition-all cursor-pointer"
                 >
                   Open Your Journal
                 </Link>
@@ -252,7 +252,7 @@ export default function LoginPage() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Email Input Field */}
                 <div className="relative group">
-                  <div className="relative flex items-center bg-[#0B0B0F] border border-[#292932] rounded-xl focus-within:border-[#E50914] focus-within:ring-2 focus-within:ring-[#E50914]/20 transition-all">
+                  <div className="relative flex items-center bg-[#0B0B0F] border border-[#292932] rounded-xl focus-within:border-[#D97706] focus-within:ring-2 focus-within:ring-[#D97706]/20 transition-all">
                     <Mail className="w-4 h-4 text-[#A1A1AA] ml-3.5 shrink-0" />
                     <input
                       id={emailId}
@@ -269,7 +269,7 @@ export default function LoginPage() {
 
                 {/* Password Input Field */}
                 <div className="relative group">
-                  <div className="relative flex items-center bg-[#0B0B0F] border border-[#292932] rounded-xl focus-within:border-[#E50914] focus-within:ring-2 focus-within:ring-[#E50914]/20 transition-all">
+                  <div className="relative flex items-center bg-[#0B0B0F] border border-[#292932] rounded-xl focus-within:border-[#D97706] focus-within:ring-2 focus-within:ring-[#D97706]/20 transition-all">
                     <Lock className="w-4 h-4 text-[#A1A1AA] ml-3.5 shrink-0" />
                     <input
                       id={passwordId}
@@ -295,7 +295,7 @@ export default function LoginPage() {
                 {/* Confirm Password (Sign Up Mode) */}
                 {mode === "signup" && (
                   <div className="relative group animate-in slide-in-from-top-2 duration-200">
-                    <div className="relative flex items-center bg-[#0B0B0F] border border-[#292932] rounded-xl focus-within:border-[#E50914] focus-within:ring-2 focus-within:ring-[#E50914]/20 transition-all">
+                    <div className="relative flex items-center bg-[#0B0B0F] border border-[#292932] rounded-xl focus-within:border-[#D97706] focus-within:ring-2 focus-within:ring-[#D97706]/20 transition-all">
                       <Lock className="w-4 h-4 text-[#A1A1AA] ml-3.5 shrink-0" />
                       <input
                         id={confirmPasswordId}
@@ -315,7 +315,7 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full mt-3 py-3.5 px-4 rounded-xl bg-[#E50914] hover:bg-[#FF3B3B] active:scale-[0.99] text-white font-bold text-sm tracking-wide shadow-lg shadow-[#E50914]/25 hover:shadow-[#E50914]/40 transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60"
+                  className="w-full mt-3 py-3.5 px-4 rounded-xl bg-[#D97706] hover:bg-[#F59E0B] active:scale-[0.99] text-white font-bold text-sm tracking-wide shadow-lg shadow-[#D97706]/25 hover:shadow-[#D97706]/40 transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   {isSubmitting ? (
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -341,9 +341,9 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={handleGuestAccess}
-                className="w-full py-3 px-4 rounded-xl bg-[#0B0B0F] hover:bg-[#191924] border border-[#292932] hover:border-[#E50914]/40 text-[#A1A1AA] hover:text-[#F5F5F5] text-xs font-semibold transition-all cursor-pointer flex items-center justify-center gap-2 group"
+                className="w-full py-3 px-4 rounded-xl bg-[#0B0B0F] hover:bg-[#191924] border border-[#292932] hover:border-[#D97706]/40 text-[#A1A1AA] hover:text-[#F5F5F5] text-xs font-semibold transition-all cursor-pointer flex items-center justify-center gap-2 group"
               >
-                <Sparkles className="w-3.5 h-3.5 text-[#E50914] group-hover:scale-110 transition-transform" />
+                <Sparkles className="w-3.5 h-3.5 text-[#D97706] group-hover:scale-110 transition-transform" />
                 <span>Explore as Guest (Instant Access)</span>
               </button>
 
@@ -359,7 +359,7 @@ export default function LoginPage() {
                   <div
                     className={`w-4 h-4 rounded border transition-colors flex items-center justify-center ${
                       rememberMe
-                        ? "bg-[#E50914] border-[#E50914] text-white"
+                        ? "bg-[#D97706] border-[#D97706] text-white"
                         : "border-[#292932] bg-[#0B0B0F]"
                     }`}
                   >
@@ -389,7 +389,7 @@ export default function LoginPage() {
                         setError(null);
                         setSuccess(null);
                       }}
-                      className="text-[#F5F5F5] hover:text-[#FF3B3B] font-semibold transition-colors cursor-pointer hover:underline"
+                      className="text-[#F5F5F5] hover:text-[#F59E0B] font-semibold transition-colors cursor-pointer hover:underline"
                     >
                       Sign up now.
                     </button>
@@ -404,7 +404,7 @@ export default function LoginPage() {
                         setError(null);
                         setSuccess(null);
                       }}
-                      className="text-[#F5F5F5] hover:text-[#FF3B3B] font-semibold transition-colors cursor-pointer hover:underline"
+                      className="text-[#F5F5F5] hover:text-[#F59E0B] font-semibold transition-colors cursor-pointer hover:underline"
                     >
                       Sign in.
                     </button>
@@ -419,7 +419,7 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => setShowRecaptchaInfo(!showRecaptchaInfo)}
-                    className="text-[#E50914] hover:text-[#FF3B3B] hover:underline cursor-pointer"
+                    className="text-[#D97706] hover:text-[#F59E0B] hover:underline cursor-pointer"
                   >
                     Learn more.
                   </button>
@@ -444,7 +444,7 @@ export default function LoginPage() {
             Questions? Contact{" "}
             <a
               href="mailto:support@couchcritics.com"
-              className="text-[#F5F5F5] hover:text-[#FF3B3B] underline transition-colors"
+              className="text-[#F5F5F5] hover:text-[#F59E0B] underline transition-colors"
             >
               support@couchcritics.com
             </a>
@@ -480,7 +480,7 @@ export default function LoginPage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-[#292932]">
             {/* Language Selector */}
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#15151C] border border-[#292932] text-[#A1A1AA] text-xs">
-              <Globe className="w-3.5 h-3.5 text-[#E50914]" />
+              <Globe className="w-3.5 h-3.5 text-[#D97706]" />
               <span>English</span>
               <ChevronDown className="w-3 h-3 text-[#A1A1AA] ml-1" />
             </div>
@@ -496,8 +496,8 @@ export default function LoginPage() {
       {showHelpModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 animate-in fade-in">
           <div className="bg-[#15151C] border border-[#292932] rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center gap-2 text-[#E50914]">
-              <HelpCircle className="w-5 h-5 text-[#E50914]" />
+            <div className="flex items-center gap-2 text-[#D97706]">
+              <HelpCircle className="w-5 h-5 text-[#D97706]" />
               <h3 className="font-bold text-[#F5F5F5] text-base">Need Help?</h3>
             </div>
             <p className="text-xs text-[#A1A1AA] leading-relaxed">
@@ -510,7 +510,7 @@ export default function LoginPage() {
             </p>
             <button
               onClick={() => setShowHelpModal(false)}
-              className="w-full py-2.5 rounded-xl bg-[#E50914] hover:bg-[#FF3B3B] text-white font-semibold text-xs transition-colors cursor-pointer"
+              className="w-full py-2.5 rounded-xl bg-[#D97706] hover:bg-[#F59E0B] text-white font-semibold text-xs transition-colors cursor-pointer"
             >
               Got it
             </button>

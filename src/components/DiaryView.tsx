@@ -130,7 +130,7 @@ export function DiaryView({ entries, onSelectEntry }: DiaryViewProps) {
   if (watchedEntries.length === 0) {
     return (
       <div className="text-center py-20 bg-[#15151C] rounded-2xl border border-[#292932]">
-        <div className="w-16 h-16 mx-auto rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-4 text-[#E50914]">
+        <div className="w-16 h-16 mx-auto rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-4 text-[#D97706]">
           <BookOpen className="w-8 h-8" />
         </div>
         <h3 className="text-xl font-bold text-white mb-2">No Diary Entries Yet</h3>
@@ -147,7 +147,7 @@ export function DiaryView({ entries, onSelectEntry }: DiaryViewProps) {
       {/* ── Filter Bar ────────────────────────────────────────────── */}
       <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl bg-[#15151C] border border-[#292932]">
         <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-[#E50914]" />
+          <Calendar className="w-4 h-4 text-[#D97706]" />
           <span className="text-sm font-bold text-white">Film &amp; Series Watch Diary</span>
           <span className="text-xs text-[#A1A1AA] font-mono">
             ({watchedEntries.length} total entries)
@@ -161,7 +161,7 @@ export function DiaryView({ entries, onSelectEntry }: DiaryViewProps) {
               onClick={() => setMediaFilter("all")}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                 mediaFilter === "all"
-                  ? "bg-[#E50914] text-white shadow-sm"
+                  ? "bg-[#D97706] text-white shadow-sm"
                   : "text-[#A1A1AA] hover:text-white"
               }`}
             >
@@ -171,7 +171,7 @@ export function DiaryView({ entries, onSelectEntry }: DiaryViewProps) {
               onClick={() => setMediaFilter("movie")}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                 mediaFilter === "movie"
-                  ? "bg-[#E50914] text-white shadow-sm"
+                  ? "bg-[#D97706] text-white shadow-sm"
                   : "text-[#A1A1AA] hover:text-white"
               }`}
             >
@@ -181,7 +181,7 @@ export function DiaryView({ entries, onSelectEntry }: DiaryViewProps) {
               onClick={() => setMediaFilter("tv")}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                 mediaFilter === "tv"
-                  ? "bg-[#E50914] text-white shadow-sm"
+                  ? "bg-[#D97706] text-white shadow-sm"
                   : "text-[#A1A1AA] hover:text-white"
               }`}
             >
@@ -276,7 +276,7 @@ export function DiaryView({ entries, onSelectEntry }: DiaryViewProps) {
                     {/* Title & Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <h4 className="font-semibold text-white truncate text-sm sm:text-base group-hover:text-[#E50914] transition-colors">
+                        <h4 className="font-semibold text-white truncate text-sm sm:text-base group-hover:text-[#D97706] transition-colors">
                           {entry.tmdb.title}
                         </h4>
                         <span className="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase bg-white/5 border border-white/10 text-[#A1A1AA] shrink-0">

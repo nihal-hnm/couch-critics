@@ -180,12 +180,12 @@ export function FilmographyModal({
               />
             ) : (
               <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-stone-400 shrink-0">
-                <Clapperboard className="w-7 h-7 text-[#E50914]" />
+                <Clapperboard className="w-7 h-7 text-[#D97706]" />
               </div>
             )}
             <div>
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono tracking-widest uppercase bg-[#E50914]/15 border border-[#E50914]/30 text-[#E50914] font-semibold">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono tracking-widest uppercase bg-[#D97706]/15 border border-[#D97706]/30 text-[#D97706] font-semibold">
                   {data?.knownForDepartment || role}
                 </span>
                 <span className="text-xs text-[#A1A1AA] font-mono">Filmography Tracker</span>
@@ -250,7 +250,7 @@ export function FilmographyModal({
             <button
               onClick={() => setFilterType("all")}
               className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                filterType === "all" ? "bg-[#E50914] text-white shadow-sm" : "text-[#A1A1AA] hover:text-white"
+                filterType === "all" ? "bg-[#D97706] text-white shadow-sm" : "text-[#A1A1AA] hover:text-white"
               }`}
             >
               All Works ({data?.credits.length || 0})
@@ -258,7 +258,7 @@ export function FilmographyModal({
             <button
               onClick={() => setFilterType("movie")}
               className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                filterType === "movie" ? "bg-[#E50914] text-white shadow-sm" : "text-[#A1A1AA] hover:text-white"
+                filterType === "movie" ? "bg-[#D97706] text-white shadow-sm" : "text-[#A1A1AA] hover:text-white"
               }`}
             >
               Films
@@ -266,7 +266,7 @@ export function FilmographyModal({
             <button
               onClick={() => setFilterType("tv")}
               className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                filterType === "tv" ? "bg-[#E50914] text-white shadow-sm" : "text-[#A1A1AA] hover:text-white"
+                filterType === "tv" ? "bg-[#D97706] text-white shadow-sm" : "text-[#A1A1AA] hover:text-white"
               }`}
             >
               TV Shows
@@ -282,7 +282,7 @@ export function FilmographyModal({
         <div className="flex-1 overflow-y-auto p-5 sm:p-6 hide-scrollbar">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-10 h-10 border-2 border-[#E50914] border-t-transparent rounded-full animate-spin mb-3" />
+              <div className="w-10 h-10 border-2 border-[#D97706] border-t-transparent rounded-full animate-spin mb-3" />
               <p className="text-xs text-[#A1A1AA] font-mono">Loading filmography &amp; catalog...</p>
             </div>
           ) : filteredCredits.length === 0 ? (
@@ -379,7 +379,7 @@ export function FilmographyModal({
                             e.stopPropagation();
                             handleQuickAddToBacklog(credit);
                           }}
-                          className="mt-2 w-full py-1 px-2 rounded-lg bg-white/5 hover:bg-[#E50914] text-[#A1A1AA] hover:text-white border border-[#292932] hover:border-[#E50914] text-[10px] font-semibold transition-all flex items-center justify-center gap-1 cursor-pointer active:scale-95"
+                          className="mt-2 w-full py-1 px-2 rounded-lg bg-white/5 hover:bg-[#D97706] text-[#A1A1AA] hover:text-white border border-[#292932] hover:border-[#D97706] text-[10px] font-semibold transition-all flex items-center justify-center gap-1 cursor-pointer active:scale-95"
                           title="Add to To-Watch Shelf"
                         >
                           <Plus className="w-3 h-3" />

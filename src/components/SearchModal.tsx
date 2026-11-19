@@ -5,7 +5,7 @@
  *
  * Redesigned with the warm cinematic aesthetic:
  *  - Crisp solid modal with dark backdrop
- *  - Purple-tinted search bar with cinematic glow
+ *  - Warm amber-tinted search bar with cinematic glow
  *  - Warm hover effects on search results
  *  - Gold accent buttons for adding movies
  *  - Poster-forward result cards
@@ -236,7 +236,7 @@ export default function SearchModal({
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {isLoading && (
             <div className="flex items-center justify-center py-12 text-[#A1A1AA]">
-              <Loader2 className="w-6 h-6 animate-spin mr-2 text-[#E50914]" />
+              <Loader2 className="w-6 h-6 animate-spin mr-2 text-[#D97706]" />
               <span className="text-[#A1A1AA]">Searching TMDB...</span>
             </div>
           )}
@@ -313,7 +313,7 @@ export default function SearchModal({
                         <button
                           onClick={() => handleAddMovie(movie, "watching")}
                           disabled={addingId === movie.tmdbId}
-                          className="flex items-center gap-1 text-[11px] font-semibold bg-[#E50914] hover:bg-[#FF3B3B] text-white px-2.5 py-1.5 rounded-lg transition-all shadow-sm cursor-pointer disabled:opacity-50"
+                          className="flex items-center gap-1 text-[11px] font-semibold bg-[#D97706] hover:bg-[#F59E0B] text-white px-2.5 py-1.5 rounded-lg transition-all shadow-sm cursor-pointer disabled:opacity-50"
                           title="Add to Currently Watching"
                         >
                           {addingId === movie.tmdbId ? (
@@ -353,7 +353,7 @@ export default function SearchModal({
           {!isLoading && !error && results.length === 0 && query === "" && (
             <div className="text-center py-16 text-zinc-500">
               <div className="w-14 h-14 mx-auto rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-center mb-4 text-[#A1A1AA]/70">
-                <Sparkles className="w-7 h-7 text-[#E50914]" />
+                <Sparkles className="w-7 h-7 text-[#D97706]" />
               </div>
               <p className="text-lg font-medium text-[#F5F5F5]">Search for a movie or TV show</p>
               <p className="text-sm mt-1 text-[#A1A1AA]">

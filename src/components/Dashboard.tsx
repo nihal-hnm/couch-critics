@@ -327,8 +327,8 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0B0B0F]">
         <div className="flex flex-col items-center gap-3">
-          <div className="p-4 rounded-2xl bg-[#E50914]/15">
-            <FilmIcon className="w-8 h-8 text-[#E50914] animate-pulse" />
+          <div className="p-4 rounded-2xl bg-[#D97706]/15">
+            <FilmIcon className="w-8 h-8 text-[#D97706] animate-pulse" />
           </div>
           <p className="text-sm text-[#A1A1AA]">Loading your journal...</p>
         </div>
@@ -386,7 +386,7 @@ export default function Dashboard() {
               setShareScope("all");
               setIsShareModalOpen(true);
             }}
-            className="py-2.5 px-2 rounded-xl bg-gradient-to-r from-amber-500/15 via-red-500/10 to-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-semibold flex items-center justify-center gap-1.5 hover:bg-amber-500/25 transition-all shadow-sm cursor-pointer"
+            className="py-2.5 px-2 rounded-xl bg-gradient-to-r from-amber-500/15 via-amber-600/10 to-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-semibold flex items-center justify-center gap-1.5 hover:bg-amber-500/25 transition-all shadow-sm cursor-pointer"
           >
             <Share2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
             <span className="truncate">Share Shelves</span>
@@ -396,9 +396,9 @@ export default function Dashboard() {
               setIsBurgerMenuOpen(false);
               setIsCinemaMatchOpen(true);
             }}
-            className="py-2.5 px-2 rounded-xl bg-gradient-to-r from-indigo-500/15 via-purple-500/10 to-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-semibold flex items-center justify-center gap-1.5 hover:bg-indigo-500/25 transition-all shadow-sm cursor-pointer"
+            className="py-2.5 px-2 rounded-xl bg-gradient-to-r from-amber-500/15 via-amber-400/10 to-amber-500/15 border border-amber-500/30 text-amber-200 text-xs font-semibold flex items-center justify-center gap-1.5 hover:bg-amber-500/25 transition-all shadow-sm cursor-pointer"
           >
-            <Users className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+            <Users className="w-3.5 h-3.5 text-amber-400 shrink-0" />
             <span className="truncate">Cinema Match</span>
           </button>
         </div>
@@ -422,7 +422,7 @@ export default function Dashboard() {
               }`}
             >
               <div className="flex items-center gap-3">
-                <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-[#E50914]/15 border border-[#E50914]/30 text-[#E50914]">
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-[#D97706]/15 border border-[#D97706]/30 text-[#D97706]">
                   <Play className="w-3.5 h-3.5 fill-current" />
                 </div>
                 <span className="text-left font-medium">Currently Watching</span>
@@ -473,7 +473,7 @@ export default function Dashboard() {
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-amber-500/15 border border-amber-500/30 text-amber-400">
                     <Award className="w-3.5 h-3.5" />
                   </div>
                   <span>Watched Archive</span>
@@ -500,7 +500,7 @@ export default function Dashboard() {
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-indigo-500/15 border border-indigo-500/30 text-indigo-400">
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-white/[0.05] border border-white/10 text-stone-300">
                     <FilmIcon className="w-3.5 h-3.5" />
                   </div>
                   <span>All Movies</span>
@@ -522,7 +522,7 @@ export default function Dashboard() {
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-purple-500/15 border border-purple-500/30 text-purple-400">
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-amber-500/15 border border-amber-500/30 text-amber-400">
                     <Tv className="w-3.5 h-3.5" />
                   </div>
                   <span>All TV Series</span>
@@ -574,7 +574,7 @@ export default function Dashboard() {
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-cyan-500/15 border border-cyan-500/30 text-cyan-400">
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-amber-500/15 border border-amber-500/30 text-amber-400">
                     <BarChart3 className="w-3.5 h-3.5" />
                   </div>
                   <span>Watch Analytics</span>
@@ -596,7 +596,7 @@ export default function Dashboard() {
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-rose-500/15 border border-rose-500/30 text-rose-400">
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-amber-600/15 border border-amber-600/30 text-amber-400">
                     <Heart className="w-3.5 h-3.5 fill-current" />
                   </div>
                   <span>My Favorites</span>
@@ -618,7 +618,7 @@ export default function Dashboard() {
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-yellow-500/15 border border-yellow-500/30 text-yellow-400">
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-amber-500/15 border border-amber-500/30 text-amber-400">
                     <MapIcon className="w-3.5 h-3.5" />
                   </div>
                   <span>My Journey</span>
@@ -640,7 +640,7 @@ export default function Dashboard() {
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-amber-500/15 border border-amber-500/30 text-amber-400">
                     <BookOpen className="w-3.5 h-3.5" />
                   </div>
                   <span>Watch Diary</span>
@@ -662,7 +662,7 @@ export default function Dashboard() {
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-rose-500/15 border border-rose-500/30 text-rose-400">
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-amber-600/15 border border-amber-600/30 text-amber-400">
                     <Layers className="w-3.5 h-3.5" />
                   </div>
                   <span>Curated Collections</span>
@@ -677,7 +677,7 @@ export default function Dashboard() {
                 className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-zinc-300 hover:text-white hover:bg-white/[0.04] transition-all cursor-pointer group border border-transparent"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-[#E50914]/15 border border-[#E50914]/30 text-[#E50914]">
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-[#D97706]/15 border border-[#D97706]/30 text-[#D97706]">
                     <Database className="w-3.5 h-3.5" />
                   </div>
                   <span>Import / Export &amp; Backup</span>
@@ -690,7 +690,7 @@ export default function Dashboard() {
           <div>
             <div className="px-3 pb-2 text-[10px] font-bold text-stone-500 uppercase tracking-wider flex items-center justify-between">
               <span>Appearance</span>
-              <span className="text-[10px] font-medium text-[#E50914] uppercase">Theme</span>
+              <span className="text-[10px] font-medium text-[#D97706] uppercase">Theme</span>
             </div>
             <div className="px-1">
               <ThemeToggle variant="segmented" />
@@ -703,19 +703,17 @@ export default function Dashboard() {
           <div className="p-3.5 rounded-xl bg-[#15151C] border border-[#292932]">
             <div className="flex items-center justify-between text-xs mb-2">
               <span className="text-[#A1A1AA] flex items-center gap-1.5 font-medium">
-                <Clock className="w-3.5 h-3.5 text-cyan-400" />
+                <Clock className="w-3.5 h-3.5 text-amber-400" />
                 Overall Watch Time
               </span>
-              <span className="font-bold font-mono text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 rounded-md text-[11px]">
+              <span className="font-bold font-mono text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-md text-[11px]">
                 {formatDaysAndHours(stats.totalWatchTimeMins)}
               </span>
             </div>
             <div className="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#292932]/60">
-              <span className="flex items-center gap-1 text-indigo-300">
-                <FilmIcon className="w-3 h-3 text-indigo-400" /> Movies: {formatHours(stats.movieMinutes)}
+              <span className="flex items-center gap-1 text-stone-300"><FilmIcon className="w-3 h-3 text-stone-300" /> Movies: {formatHours(stats.movieMinutes)}
               </span>
-              <span className="flex items-center gap-1 text-purple-300">
-                <Tv className="w-3 h-3 text-purple-400" /> Series: {formatHours(stats.seriesMinutes)}
+              <span className="flex items-center gap-1 text-amber-300"><Tv className="w-3 h-3 text-amber-400" /> Series: {formatHours(stats.seriesMinutes)}
               </span>
             </div>
           </div>
@@ -724,14 +722,14 @@ export default function Dashboard() {
             user ? (
               <div className="flex items-center justify-between pt-1">
                 <div className="flex items-center gap-2 text-xs text-stone-300 truncate max-w-[170px]">
-                  <div className="w-6 h-6 rounded-full bg-[#E50914] text-white font-bold flex items-center justify-center text-[11px] shrink-0">
+                  <div className="w-6 h-6 rounded-full bg-[#D97706] text-white font-bold flex items-center justify-center text-[11px] shrink-0">
                     {userInitial}
                   </div>
                   <span className="truncate">{user.email}</span>
                 </div>
                 <button
                   onClick={handleSignOut}
-                  className="text-xs text-stone-500 hover:text-[#E50914] transition-colors flex items-center gap-1 cursor-pointer"
+                  className="text-xs text-stone-500 hover:text-[#D97706] transition-colors flex items-center gap-1 cursor-pointer"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                   Sign Out
@@ -741,7 +739,7 @@ export default function Dashboard() {
               <Link
                 href="/login"
                 onClick={() => setIsBurgerMenuOpen(false)}
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#E50914] hover:bg-[#FF3B3B] text-white text-xs font-semibold transition-all cursor-pointer shadow-md shadow-black/40"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#D97706] hover:bg-[#F59E0B] text-white text-xs font-semibold transition-all cursor-pointer shadow-md shadow-black/40"
               >
                 <LogIn className="w-3.5 h-3.5" />
                 Sign In / Register
@@ -780,7 +778,7 @@ export default function Dashboard() {
                 <img src="/icon.png" alt="Couch Critics" className="w-full h-full object-cover" />
               </div>
               <div className="hidden xs:block">
-                <h1 className="text-xs sm:text-sm font-bold text-[#F5F5F5] tracking-wider uppercase font-mono group-hover:text-[#E50914] transition-colors leading-tight">
+                <h1 className="text-xs sm:text-sm font-bold text-[#F5F5F5] tracking-wider uppercase font-mono group-hover:text-[#D97706] transition-colors leading-tight">
                   COUCH CRITICS
                 </h1>
                 <p className="text-[10px] font-mono tracking-widest uppercase leading-tight text-zinc-500">
@@ -804,7 +802,7 @@ export default function Dashboard() {
                   : "text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5 border border-transparent"
               }`}
             >
-              <Play className="w-3.5 h-3.5 fill-current text-[#E50914]" />
+              <Play className="w-3.5 h-3.5 fill-current text-[#D97706]" />
               <span>Watching</span>
               <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono ${
                 activeNav === "watching" ? "bg-white/15 text-white" : "bg-white/5 text-[#A1A1AA]"
@@ -840,7 +838,7 @@ export default function Dashboard() {
                   : "text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5 border border-transparent"
               }`}
             >
-              <Award className="w-3.5 h-3.5 text-emerald-400" />
+              <Award className="w-3.5 h-3.5 text-amber-400" />
               <span>Archive</span>
               <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono ${
                 activeNav === "watched" ? "bg-white/15 text-white" : "bg-white/5 text-[#A1A1AA]"
@@ -856,7 +854,7 @@ export default function Dashboard() {
               className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer text-[#A1A1AA] hover:text-white hover:bg-white/5 border border-transparent"
               title="Cinema Match — Check Taste Compatibility with Friends"
             >
-              <Users className="w-3.5 h-3.5 text-indigo-400" />
+              <Users className="w-3.5 h-3.5 text-amber-300" />
               <span>Cinema Match</span>
             </button>
 
@@ -869,7 +867,7 @@ export default function Dashboard() {
                   : "text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-white/5 border border-transparent"
               }`}
             >
-              <BarChart3 className="w-3.5 h-3.5 text-cyan-400" />
+              <BarChart3 className="w-3.5 h-3.5 text-stone-300" />
               <span>Analytics</span>
             </button>
 
@@ -921,7 +919,7 @@ export default function Dashboard() {
                     role="menuitem"
                   >
                     <div className="flex items-center gap-2">
-                      <FilmIcon className="w-3.5 h-3.5 text-indigo-400" />
+                      <FilmIcon className="w-3.5 h-3.5 text-stone-300" />
                       <span>All Movies</span>
                     </div>
                     <span className="font-mono text-[10px] text-zinc-500">{watchedMovies.length}</span>
@@ -940,7 +938,7 @@ export default function Dashboard() {
                     role="menuitem"
                   >
                     <div className="flex items-center gap-2">
-                      <Tv className="w-3.5 h-3.5 text-purple-400" />
+                      <Tv className="w-3.5 h-3.5 text-amber-400" />
                       <span>All TV Series</span>
                     </div>
                     <span className="font-mono text-[10px] text-zinc-500">{watchedSeries.length}</span>
@@ -980,7 +978,7 @@ export default function Dashboard() {
                     role="menuitem"
                   >
                     <div className="flex items-center gap-2">
-                      <Heart className="w-3.5 h-3.5 text-rose-400" />
+                      <Heart className="w-3.5 h-3.5 text-amber-500" />
                       <span>Favorites (8+)</span>
                     </div>
                     <span className="font-mono text-[10px] text-zinc-500">{favorites.length}</span>
@@ -1017,7 +1015,7 @@ export default function Dashboard() {
                     role="menuitem"
                   >
                     <div className="flex items-center gap-2">
-                      <BookOpen className="w-3.5 h-3.5 text-emerald-400" />
+                      <BookOpen className="w-3.5 h-3.5 text-stone-300" />
                       <span>Watch Diary</span>
                     </div>
                   </button>
@@ -1035,7 +1033,7 @@ export default function Dashboard() {
                     role="menuitem"
                   >
                     <div className="flex items-center gap-2">
-                      <Layers className="w-3.5 h-3.5 text-rose-400" />
+                      <Layers className="w-3.5 h-3.5 text-amber-400" />
                       <span>Collections</span>
                     </div>
                   </button>
@@ -1051,7 +1049,7 @@ export default function Dashboard() {
                     role="menuitem"
                   >
                     <div className="flex items-center gap-2">
-                      <Database className="w-3.5 h-3.5 text-[#E50914]" />
+                      <Database className="w-3.5 h-3.5 text-[#D97706]" />
                       <span>Import / Export &amp; Backup</span>
                     </div>
                   </button>
@@ -1066,11 +1064,11 @@ export default function Dashboard() {
             <button
               type="button"
               onClick={() => setIsSearchOpen(true)}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#15151C] hover:bg-[#1E1E26] border border-[#292932] hover:border-[#E50914]/50 text-[#A1A1AA] hover:text-[#F5F5F5] transition-all cursor-pointer shadow-sm group shrink-0"
+              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#15151C] hover:bg-[#1E1E26] border border-[#292932] hover:border-[#D97706]/50 text-[#A1A1AA] hover:text-[#F5F5F5] transition-all cursor-pointer shadow-sm group shrink-0"
               aria-label="Search and add movies or series"
               title="Search & Add Titles (⌘K)"
             >
-              <SearchIcon className="w-3.5 h-3.5 text-[#E50914] group-hover:scale-110 transition-transform" />
+              <SearchIcon className="w-3.5 h-3.5 text-[#D97706] group-hover:scale-110 transition-transform" />
               <span className="text-xs hidden sm:inline font-medium">Search &amp; Add...</span>
               <kbd className="hidden md:inline-flex items-center text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-zinc-400 group-hover:text-white">
                 ⌘K
@@ -1171,7 +1169,7 @@ export default function Dashboard() {
               <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
                 {/* Overall Watch Time */}
                 <div className="bg-[#15151C]/90 border border-[#292932] hover:border-zinc-700/80 rounded-xl px-4 py-2.5 flex items-center gap-3 transition-colors shadow-sm">
-                  <div className="p-2 rounded-lg bg-[#E50914]/10 text-[#E50914] border border-[#E50914]/20">
+                  <div className="p-2 rounded-lg bg-[#D97706]/10 text-[#D97706] border border-[#D97706]/20">
                     <Clock className="w-4 h-4" />
                   </div>
                   <div>
@@ -1184,7 +1182,7 @@ export default function Dashboard() {
 
                 {/* Series Time */}
                 <div className="bg-[#15151C]/90 border border-[#292932] hover:border-zinc-700/80 rounded-xl px-4 py-2.5 flex items-center gap-3 transition-colors shadow-sm">
-                  <div className="p-2 rounded-lg bg-[#E50914]/10 text-[#E50914] border border-[#E50914]/20">
+                  <div className="p-2 rounded-lg bg-[#D97706]/10 text-[#D97706] border border-[#D97706]/20">
                     <Tv className="w-4 h-4" />
                   </div>
                   <div>
@@ -1197,7 +1195,7 @@ export default function Dashboard() {
 
                 {/* Movie Time */}
                 <div className="bg-[#15151C]/90 border border-[#292932] hover:border-zinc-700/80 rounded-xl px-4 py-2.5 flex items-center gap-3 transition-colors shadow-sm">
-                  <div className="p-2 rounded-lg bg-[#E50914]/10 text-[#E50914] border border-[#E50914]/20">
+                  <div className="p-2 rounded-lg bg-[#D97706]/10 text-[#D97706] border border-[#D97706]/20">
                     <FilmIcon className="w-4 h-4" />
                   </div>
                   <div>
@@ -1220,7 +1218,7 @@ export default function Dashboard() {
                   onClick={() => setWatchingTypeFilter("all")}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                     watchingTypeFilter === "all"
-                      ? "bg-[#E50914] text-white shadow-sm"
+                      ? "bg-[#D97706] text-white shadow-sm"
                       : "text-zinc-400 hover:text-white"
                   }`}
                 >
@@ -1231,7 +1229,7 @@ export default function Dashboard() {
                   onClick={() => setWatchingTypeFilter("tv")}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                     watchingTypeFilter === "tv"
-                      ? "bg-[#E50914] text-white shadow-sm"
+                      ? "bg-[#D97706] text-white shadow-sm"
                       : "text-zinc-400 hover:text-white"
                   }`}
                 >
@@ -1242,7 +1240,7 @@ export default function Dashboard() {
                   onClick={() => setWatchingTypeFilter("movie")}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                     watchingTypeFilter === "movie"
-                      ? "bg-[#E50914] text-white shadow-sm"
+                      ? "bg-[#D97706] text-white shadow-sm"
                       : "text-zinc-400 hover:text-white"
                   }`}
                 >
@@ -1255,7 +1253,7 @@ export default function Dashboard() {
               {watchingGenres.length > 0 && (
                 <div className="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar">
                   <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider shrink-0 mr-1 flex items-center gap-1">
-                    <Tags className="w-3 h-3 text-[#E50914]" />
+                    <Tags className="w-3 h-3 text-[#D97706]" />
                     Genre:
                   </span>
                   <button
@@ -1298,7 +1296,7 @@ export default function Dashboard() {
               <WatchingShelf entries={filteredWatching} />
             ) : (
               <div className="bg-[#15151C] p-12 text-center rounded-2xl border border-[#292932]">
-                <div className="inline-flex p-4 rounded-2xl bg-[#15151C] border border-[#292932] mb-4 text-[#E50914]">
+                <div className="inline-flex p-4 rounded-2xl bg-[#15151C] border border-[#292932] mb-4 text-[#D97706]">
                   {watchingTypeFilter === "tv" ? <Tv className="w-8 h-8" /> : <FilmIcon className="w-8 h-8" />}
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">
@@ -1309,7 +1307,7 @@ export default function Dashboard() {
                 </p>
                 <button
                   onClick={() => setWatchingTypeFilter("all")}
-                  className="px-4 py-2 rounded-xl bg-[#E50914] hover:bg-[#FF3B3B] text-white text-xs font-semibold transition-all cursor-pointer shadow-sm"
+                  className="px-4 py-2 rounded-xl bg-[#D97706] hover:bg-[#F59E0B] text-white text-xs font-semibold transition-all cursor-pointer shadow-sm"
                 >
                   Show All ({watching.length})
                 </button>
@@ -1319,7 +1317,7 @@ export default function Dashboard() {
             /* Clean Empty State when zero titles are in Currently Watching */
             <div className="bg-[#15151C] p-8 sm:p-12 text-center rounded-2xl border border-[#292932] relative overflow-hidden my-4">
               <div className="relative z-10 max-w-md mx-auto">
-                <div className="inline-flex p-4 rounded-2xl bg-[#15151C] border border-[#292932] mb-4 animate-float text-[#E50914]">
+                <div className="inline-flex p-4 rounded-2xl bg-[#15151C] border border-[#292932] mb-4 animate-float text-[#D97706]">
                   <Play className="w-8 h-8 fill-current" />
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-2 text-glow">
@@ -1331,7 +1329,7 @@ export default function Dashboard() {
                 <div className="flex flex-wrap items-center justify-center gap-3">
                   <button
                     onClick={() => setIsSearchOpen(true)}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#E50914] hover:bg-[#FF3B3B] text-white rounded-xl text-sm font-semibold shadow-md shadow-black/40 transition-all hover:scale-[1.02] cursor-pointer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#D97706] hover:bg-[#F59E0B] text-white rounded-xl text-sm font-semibold shadow-md shadow-black/40 transition-all hover:scale-[1.02] cursor-pointer"
                   >
                     <Plus className="w-4 h-4" />
                     Add What You&apos;re Watching
@@ -1342,7 +1340,7 @@ export default function Dashboard() {
                       onClick={() => setActiveNav("toWatch")}
                       className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#15151C] hover:bg-[#1E1E26] text-[#F5F5F5] border border-[#292932] text-sm font-semibold transition-all cursor-pointer"
                     >
-                      <BookmarkPlus className="w-4 h-4 text-[#E50914]" />
+                      <BookmarkPlus className="w-4 h-4 text-[#D97706]" />
                       Browse Backlog ({toWatch.length})
                     </button>
                   )}
@@ -1382,7 +1380,7 @@ export default function Dashboard() {
             <WatchedShelf entries={watchedMovies} defaultMediaType="movie" hideMediaTypeFilter />
           ) : (
             <EmptySection
-              icon={<FilmIcon className="w-10 h-10 text-indigo-400/40" />}
+              icon={<FilmIcon className="w-10 h-10 text-stone-400/40" />}
               title="No watched movies yet"
               subtitle="Mark a movie as watched to add it to your movie archive."
               onAdd={() => setIsSearchOpen(true)}
@@ -1398,7 +1396,7 @@ export default function Dashboard() {
             <WatchedShelf entries={watchedSeries} defaultMediaType="tv" hideMediaTypeFilter />
           ) : (
             <EmptySection
-              icon={<Tv className="w-10 h-10 text-purple-400/40" />}
+              icon={<Tv className="w-10 h-10 text-amber-400/40" />}
               title="No completed TV series yet"
               subtitle="Mark a TV series as completed or watched to add it to your series archive."
               onAdd={() => setIsSearchOpen(true)}
@@ -1416,7 +1414,7 @@ export default function Dashboard() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2">
-                  <Tags className="w-4 h-4 text-orange-400" />
+                  <Tags className="w-4 h-4 text-amber-400" />
                   <span className="text-xs uppercase tracking-wider font-semibold text-[#A1A1AA] font-mono">
                     {selectedGenre === "all" ? "All Genres Combined" : `${selectedGenre} Overview`}
                   </span>
@@ -1428,22 +1426,22 @@ export default function Dashboard() {
 
               {/* Stats Grid: Overall in Days & Hours, Series in Hours, Movies in Hours */}
               <div className="grid grid-cols-3 gap-3 sm:gap-4">
-                <div className="p-3 rounded-xl bg-[#0B0B0F] border border-orange-500/20 shadow-sm">
-                  <p className="text-[10px] text-orange-400/90 font-medium uppercase tracking-wider">Overall Time</p>
+                <div className="p-3 rounded-xl bg-[#0B0B0F] border border-amber-500/20 shadow-sm">
+                  <p className="text-[10px] text-amber-400/90 font-medium uppercase tracking-wider">Overall Time</p>
                   <p className="text-sm sm:text-base font-bold text-white font-mono mt-0.5">
                     {formatDaysAndHours(selectedGenreStats.totalMins)}
                   </p>
                   <span className="text-[9px] text-[#A1A1AA]">days &amp; hours</span>
                 </div>
-                <div className="p-3 rounded-xl bg-[#0B0B0F] border border-purple-500/20 shadow-sm">
-                  <p className="text-[10px] text-purple-400/90 font-medium uppercase tracking-wider">Series Time</p>
+                <div className="p-3 rounded-xl bg-[#0B0B0F] border border-amber-500/20 shadow-sm">
+                  <p className="text-[10px] text-amber-400/90 font-medium uppercase tracking-wider">Series Time</p>
                   <p className="text-sm sm:text-base font-bold text-white font-mono mt-0.5">
                     {formatHours(selectedGenreStats.seriesMins)}
                   </p>
                   <span className="text-[9px] text-[#A1A1AA]">in hours</span>
                 </div>
-                <div className="p-3 rounded-xl bg-[#0B0B0F] border border-indigo-500/20 shadow-sm">
-                  <p className="text-[10px] text-indigo-400/90 font-medium uppercase tracking-wider">Movie Time</p>
+                <div className="p-3 rounded-xl bg-[#0B0B0F] border border-stone-700/40 shadow-sm">
+                  <p className="text-[10px] text-stone-300 font-medium uppercase tracking-wider">Movie Time</p>
                   <p className="text-sm sm:text-base font-bold text-white font-mono mt-0.5">
                     {formatHours(selectedGenreStats.movieMins)}
                   </p>
@@ -1521,7 +1519,7 @@ export default function Dashboard() {
                 onClick={() => setGenreShelfFilter("watching")}
                 className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer flex items-center gap-1 ${
                   genreShelfFilter === "watching"
-                    ? "bg-gradient-to-r from-[#E50914] to-[#C10711] text-white font-semibold shadow-sm border border-red-500/40"
+                    ? "bg-gradient-to-r from-[#D97706] to-[#B45309] text-white font-semibold shadow-sm border border-red-500/40"
                     : "text-[#A1A1AA] hover:text-[#F5F5F5]"
                 }`}
               >
@@ -1592,7 +1590,7 @@ export default function Dashboard() {
                 </button>
                 <button
                   onClick={() => setIsSearchOpen(true)}
-                  className="px-4 py-2 bg-[#E50914] hover:bg-[#FF3B3B] text-white text-xs font-medium rounded-xl transition-all shadow-md shadow-black/40 cursor-pointer"
+                  className="px-4 py-2 bg-[#D97706] hover:bg-[#F59E0B] text-white text-xs font-medium rounded-xl transition-all shadow-md shadow-black/40 cursor-pointer"
                 >
                   Add Title
                 </button>
@@ -1717,7 +1715,7 @@ export default function Dashboard() {
       {/* ── Floating Action Button (Mobile) ──────────────────────── */}
       <button
         onClick={() => setIsSearchOpen(true)}
-        className="fixed bottom-6 right-6 sm:hidden p-4 bg-[#E50914] hover:bg-[#FF3B3B] text-white rounded-2xl shadow-2xl shadow-black/60 transition-all z-30 cursor-pointer active:scale-95"
+        className="fixed bottom-6 right-6 sm:hidden p-4 bg-[#D97706] hover:bg-[#F59E0B] text-white rounded-2xl shadow-2xl shadow-black/60 transition-all z-30 cursor-pointer active:scale-95"
         aria-label="Add title"
       >
         <Plus className="w-6 h-6" />
@@ -1879,14 +1877,14 @@ function EmptySection({
 }) {
   return (
     <div className="text-center py-16">
-      <div className="inline-flex p-4 rounded-2xl bg-[#15151C] border border-[#292932] mb-4 text-[#E50914]">
+      <div className="inline-flex p-4 rounded-2xl bg-[#15151C] border border-[#292932] mb-4 text-[#D97706]">
         {icon}
       </div>
       <h3 className="text-xl font-semibold text-white">{title}</h3>
       <p className="text-[#A1A1AA] mt-2 text-sm max-w-sm mx-auto">{subtitle}</p>
       <button
         onClick={onAdd}
-        className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-[#E50914] hover:bg-[#FF3B3B] text-white text-sm rounded-xl transition-all shadow-md shadow-black/40 font-medium cursor-pointer"
+        className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-[#D97706] hover:bg-[#F59E0B] text-white text-sm rounded-xl transition-all shadow-md shadow-black/40 font-medium cursor-pointer"
       >
         <Plus className="w-4 h-4" />
         Add Title

@@ -232,7 +232,7 @@ export default function ShareModal({
     // 5. Four Key Metric Stat Cards
     const statCards = [
       { label: "WATCHED ARCHIVE", value: `${watched.length}`, color: "#10B981", sub: "Finished Titles" },
-      { label: "CURRENTLY WATCHING", value: `${watching.length}`, color: "#E50914", sub: "In Progress" },
+      { label: "CURRENTLY WATCHING", value: `${watching.length}`, color: "#D97706", sub: "In Progress" },
       { label: "TO WATCH BACKLOG", value: `${toWatch.length}`, color: "#F59E0B", sub: "Curated Queue" },
       { label: "CRITIC AVERAGE", value: avgRating > 0 ? `${avgRating} ★` : "—", color: "#F9B838", sub: "Overall Rating" },
     ];
@@ -295,7 +295,7 @@ export default function ShareModal({
 
       const isW = item.shelf === "watched";
       const isC = item.shelf === "watching";
-      ctx.fillStyle = isW ? "#10B981" : isC ? "#E50914" : "#F59E0B";
+      ctx.fillStyle = isW ? "#10B981" : isC ? "#D97706" : "#F59E0B";
       ctx.fillRect(ix, showcaseY, itemW, 3);
 
       ctx.fillStyle = "rgba(255, 255, 255, 0.1)";
@@ -570,7 +570,7 @@ export default function ShareModal({
                 : "format-pill-inactive"
             }`}
           >
-            <FileText className="w-3.5 h-3.5 text-indigo-500" />
+            <FileText className="w-3.5 h-3.5 text-stone-300" />
             <span>Markdown / Text</span>
           </button>
 
@@ -582,7 +582,7 @@ export default function ShareModal({
                 : "format-pill-inactive"
             }`}
           >
-            <Download className="w-3.5 h-3.5 text-cyan-500" />
+            <Download className="w-3.5 h-3.5 text-amber-400" />
             <span>Export Data</span>
           </button>
         </div>
@@ -612,7 +612,7 @@ export default function ShareModal({
                   <button
                     onClick={() => handleCopy(shareUrl, "link")}
                     disabled={isGeneratingLink || !shareUrl}
-                    className="px-3.5 py-2.5 bg-[#E50914] hover:bg-[#FF3B3B] text-white rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer shadow-md disabled:opacity-50 keep-white"
+                    className="px-3.5 py-2.5 bg-[#D97706] hover:bg-[#F59E0B] text-white rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer shadow-md disabled:opacity-50 keep-white"
                   >
                     {copiedType === "link" ? (
                       <>
@@ -663,7 +663,7 @@ export default function ShareModal({
                   onClick={handleNativeShare}
                   className="social-share-btn p-3 rounded-xl bg-[#0B0B0F] hover:bg-white/5 border border-[#292932] transition-all flex items-center justify-center gap-2 text-xs font-semibold cursor-pointer group"
                 >
-                  <Smartphone className="w-4 h-4 text-purple-500 group-hover:scale-110 transition-transform" />
+                  <Smartphone className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
                   <span>Native App Share</span>
                 </button>
               </div>
@@ -717,7 +717,7 @@ export default function ShareModal({
 
                   <button
                     onClick={handleDownloadCard}
-                    className="px-3 py-1.5 rounded-xl bg-[#E50914] hover:bg-[#FF3B3B] text-xs font-semibold text-white transition-all flex items-center gap-1.5 cursor-pointer shadow-md keep-white"
+                    className="px-3 py-1.5 rounded-xl bg-[#D97706] hover:bg-[#F59E0B] text-xs font-semibold text-white transition-all flex items-center gap-1.5 cursor-pointer shadow-md keep-white"
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>Download PNG</span>
@@ -772,7 +772,7 @@ export default function ShareModal({
                         : generatePlainTextShare(entries, scope, userName);
                     handleCopy(text, "text");
                   }}
-                  className="px-3 py-1.5 bg-[#E50914] hover:bg-[#FF3B3B] text-white rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer shadow-md keep-white"
+                  className="px-3 py-1.5 bg-[#D97706] hover:bg-[#F59E0B] text-white rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer shadow-md keep-white"
                 >
                   {copiedType === "text" ? (
                     <>
@@ -815,7 +815,7 @@ export default function ShareModal({
                 {/* JSON Card */}
                 <div className="p-4 rounded-xl bg-[#0B0B0F] border border-[#292932] flex flex-col justify-between space-y-3">
                   <div>
-                    <div className="w-9 h-9 rounded-lg bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-500 mb-2.5">
+                    <div className="w-9 h-9 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-2.5">
                       <FileCode className="w-5 h-5" />
                     </div>
                     <h4 className="text-sm font-bold">Full JSON Backup</h4>
@@ -830,7 +830,7 @@ export default function ShareModal({
                     }}
                     className="social-share-btn w-full py-2.5 rounded-xl bg-[#15151C] hover:bg-white/10 border border-[#292932] text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
                   >
-                    <Download className="w-3.5 h-3.5 text-cyan-500" />
+                    <Download className="w-3.5 h-3.5 text-amber-400" />
                     <span>Download JSON ({filteredEntries.length} items)</span>
                   </button>
                 </div>
