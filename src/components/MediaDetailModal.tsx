@@ -33,10 +33,11 @@ import {
   RotateCcw,
   Layers,
   Filter,
+  Loader2,
 } from "lucide-react";
-import type { MovieEntry, Shelf, UserReview, WatchProgress, EpisodeItem, TMDBSeasonData } from "@/lib/types";
+import type { MovieEntry, Shelf, UserReview, WatchProgress, EpisodeItem, TMDBSeasonData, CastMember } from "@/lib/types";
 import { useJournal } from "@/lib/journal-context";
-import { fetchSeasonEpisodes, getMovieDetails, buildWatchedEpisodes } from "@/lib/tmdb";
+import { fetchSeasonEpisodes, getMovieDetails, buildWatchedEpisodes, getMovieTrailer } from "@/lib/tmdb";
 import { getCachedTVSeasons } from "@/lib/tv-seasons-cache";
 import { MovieImage } from "./common/MovieImage";
 import { getOptimizedImageUrl } from "@/lib/image-utils";
@@ -90,6 +91,12 @@ export default function MediaDetailModal({
   const [tags, setTags] = useState<string[]>(entry?.review?.tags ?? []);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
+  // Trailer & Cast state
+  const [trailerKey, setTrailerKey] = useState<string | null>(entry?.tmdb?.trailerKey ?? null);
+  const [isPlayingTrailer, setIsPlayingTrailer] = useState(false);
+  const [isLoadingTrailer, setIsLoadingTrailer] = useState(false);
+  const [castMembers, setCastMembers] = useState<CastMember[]>(entry?.tmdb?.cast ?? []);
+
   // Synchronize state when entry changes
   useEffect(() => {
     if (entry) {
@@ -99,8 +106,43 @@ export default function MediaDetailModal({
       setActiveTab(entry.tmdb.mediaType === "tv" ? "episodes" : "overview");
       setSelectedSeasonFilter("all");
       setCollapsedSeasons({});
+      setTrailerKey(entry.tmdb.trailerKey ?? null);
+      setIsPlayingTrailer(false);
+      setCastMembers(entry.tmdb.cast ?? []);
+
+      // If cast or trailer missing from initial snapshot, load details in background
+      if ((!entry.tmdb.cast || entry.tmdb.cast.length === 0) || !entry.tmdb.trailerKey) {
+        getMovieDetails(entry.tmdb.tmdbId, entry.tmdb.mediaType)
+          .then((details) => {
+            if (details.trailerKey) setTrailerKey(details.trailerKey);
+            if (details.cast && details.cast.length > 0) setCastMembers(details.cast);
+          })
+          .catch(() => {});
+      }
     }
-  }, [entry?.id]);
+  }, [entry?.id, entry?.tmdb?.tmdbId]);
+
+  async function handlePlayTrailer() {
+    if (isPlayingTrailer) {
+      setIsPlayingTrailer(false);
+      return;
+    }
+    if (trailerKey) {
+      setIsPlayingTrailer(true);
+      return;
+    }
+    if (!entry) return;
+    setIsLoadingTrailer(true);
+    try {
+      const key = await getMovieTrailer(entry.tmdb.tmdbId, entry.tmdb.mediaType);
+      if (key) {
+        setTrailerKey(key);
+        setIsPlayingTrailer(true);
+      }
+    } finally {
+      setIsLoadingTrailer(false);
+    }
+  }
 
   // Load and cache episodes for ALL seasons of TV shows
   useEffect(() => {
@@ -637,6 +679,21 @@ export default function MediaDetailModal({
                     {entry.review.rating}/10
                   </span>
                 )}
+                {/* Watch Trailer Button */}
+                <button
+                  type="button"
+                  onClick={handlePlayTrailer}
+                  disabled={isLoadingTrailer}
+                  className="flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[#E50914] hover:bg-[#FF3B3B] text-white transition-all shadow cursor-pointer disabled:opacity-50"
+                  title="Watch Official YouTube Trailer"
+                >
+                  {isLoadingTrailer ? (
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                  ) : (
+                    <Play className="w-3 h-3 fill-current" />
+                  )}
+                  <span>{isPlayingTrailer ? "Hide Trailer" : "Trailer"}</span>
+                </button>
               </div>
               <h2 className="text-xl sm:text-3xl font-extrabold text-white truncate leading-tight drop-shadow-md">
                 {entry.tmdb.title}
@@ -650,6 +707,26 @@ export default function MediaDetailModal({
             </div>
           </div>
         </div>
+
+        {/* ── Official Cinema Trailer Embed Player ──────────────── */}
+        {isPlayingTrailer && trailerKey && (
+          <div className="relative aspect-video w-full bg-black border-b border-[#292932] shrink-0">
+            <iframe
+              src={`https://www.youtube-nocookie.com/embed/${trailerKey}?autoplay=1&rel=0`}
+              title={`${entry.tmdb.title} Official Trailer`}
+              className="w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+              allowFullScreen
+            />
+            <button
+              onClick={() => setIsPlayingTrailer(false)}
+              className="absolute top-3 right-3 p-1.5 rounded-lg bg-black/80 hover:bg-black text-white border border-white/20 text-xs font-semibold flex items-center gap-1 z-20 cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+              Close Trailer
+            </button>
+          </div>
+        )}
 
         {/* ── Shelf Controls & Navigation Bar ───────────────────── */}
         <div className="px-4 sm:px-6 py-3 border-b border-[#292932] bg-[#15151C] flex flex-wrap items-center justify-between gap-3 shrink-0">
@@ -1206,6 +1283,44 @@ export default function MediaDetailModal({
                 mediaType={entry.tmdb.mediaType}
                 variant="full"
               />
+
+              {/* Top Cast Gallery */}
+              {castMembers && castMembers.length > 0 && (
+                <div>
+                  <h4 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">
+                    Top Cast
+                  </h4>
+                  <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
+                    {castMembers.map((actor) => (
+                      <div
+                        key={actor.id}
+                        className="w-24 shrink-0 rounded-xl bg-[#0B0B0F] border border-[#292932] overflow-hidden p-2 text-center"
+                      >
+                        <div className="w-16 h-16 mx-auto rounded-full overflow-hidden bg-stone-900 border border-[#292932] mb-1.5 shadow-sm">
+                          {actor.profileUrl ? (
+                            <img
+                              src={actor.profileUrl}
+                              alt={actor.name}
+                              className="w-full h-full object-cover"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-stone-500 text-xs font-bold bg-[#15151C]">
+                              {actor.name.charAt(0)}
+                            </div>
+                          )}
+                        </div>
+                        <p className="text-[11px] font-semibold text-white truncate" title={actor.name}>
+                          {actor.name}
+                        </p>
+                        <p className="text-[10px] text-[#A1A1AA] truncate" title={actor.character}>
+                          {actor.character}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* If movie on watching shelf: progress slider */}
               {entry.shelf === "watching" && !isTV && (

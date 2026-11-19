@@ -106,7 +106,11 @@ interface TMDBMovieDetails {
   genres: { id: number; name: string }[];
   overview: string;
   credits?: {
+    cast?: { id: number; name: string; character: string; profile_path: string | null }[];
     crew: { job: string; name: string }[];
+  };
+  videos?: {
+    results: { id: string; key: string; name: string; site: string; type: string; official?: boolean }[];
   };
 }
 
@@ -321,7 +325,7 @@ export async function getMovieDetails(
 
   try {
     const data = await tmdbFetch<TMDBMovieDetails>(endpoint, {
-      append_to_response: "credits",
+      append_to_response: "credits,videos",
       language: "en-US",
     });
 
@@ -332,6 +336,24 @@ export async function getMovieDetails(
           person.job === "Creator" ||
           person.job === "Executive Producer"
       )?.name ?? "Unknown";
+
+    // Extract official trailer if available
+    const trailer =
+      data.videos?.results.find(
+        (v) =>
+          v.site === "YouTube" &&
+          (v.type === "Trailer" || v.type === "Teaser") &&
+          v.key
+      ) || data.videos?.results.find((v) => v.site === "YouTube" && v.key);
+    const trailerKey = trailer?.key || null;
+
+    // Extract top cast members
+    const cast = data.credits?.cast?.slice(0, 8).map((c) => ({
+      id: c.id,
+      name: c.name,
+      character: c.character || "Cast",
+      profileUrl: c.profile_path ? `${TMDB_IMAGE_BASE}${c.profile_path}` : null,
+    }));
 
     let runtime = 0;
     if (mediaType === "movie") {
@@ -393,6 +415,8 @@ export async function getMovieDetails(
       totalEpisodes,
       totalSeasons,
       seasons,
+      trailerKey,
+      cast,
     };
 
     movieDetailsCache.set(cacheKey, result);
@@ -594,6 +618,42 @@ export function buildWatchedEpisodes(currentEp: number, seasons?: TMDBSeasonData
     }
   }
   return codes;
+}
+
+/**
+ * Fetch official YouTube trailer key for a movie or TV show.
+ */
+export async function getMovieTrailer(
+  tmdbId: number,
+  mediaType: "movie" | "tv"
+): Promise<string | null> {
+  try {
+    const endpoint = `/${mediaType}/${tmdbId}/videos`;
+    const data = await tmdbFetch<{ results: { site: string; type: string; key: string }[] }>(endpoint);
+    const trailer =
+      data.results?.find((v) => v.site === "YouTube" && (v.type === "Trailer" || v.type === "Teaser") && v.key) ||
+      data.results?.find((v) => v.site === "YouTube" && v.key);
+    return trailer?.key || null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Fetch recommended movies/series based on a TMDB title.
+ */
+export async function getMovieRecommendations(
+  tmdbId: number,
+  mediaType: "movie" | "tv"
+): Promise<TMDBMovieData[]> {
+  try {
+    const endpoint = `/${mediaType}/${tmdbId}/recommendations`;
+    const data = await tmdbFetch<TMDBSearchResponse>(endpoint, { page: "1" });
+    if (!data.results || data.results.length === 0) return [];
+    return data.results.slice(0, 10).map((r) => transformSearchResult(r, mediaType));
+  } catch {
+    return [];
+  }
 }
 
 

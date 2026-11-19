@@ -42,6 +42,13 @@ export interface TMDBSeasonData {
   episodes?: EpisodeItem[];
 }
 
+export interface CastMember {
+  id: number;
+  name: string;
+  character: string;
+  profileUrl?: string | null;
+}
+
 export interface TMDBMovieData {
   /** TMDB's unique identifier — useful as a deduplication key */
   tmdbId: number;
@@ -68,6 +75,10 @@ export interface TMDBMovieData {
   totalSeasons?: number;
   /** Season information with episode counts */
   seasons?: TMDBSeasonData[];
+  /** Official YouTube trailer key (e.g. dQw4w9WgXcQ) */
+  trailerKey?: string | null;
+  /** Top cast members */
+  cast?: CastMember[];
 }
 
 // ─── User-Generated Data (personal review/progress) ─────────────────────────
@@ -172,4 +183,13 @@ export interface JournalStats {
   favoriteGenres: { genre: string; count: number }[];
   /** Entries per month for a potential chart */
   watchedPerMonth: { month: string; count: number }[];
+}
+
+export interface CustomList {
+  id: string;
+  name: string;
+  description?: string;
+  entryIds: string[];
+  createdAt: string;
+  updatedAt: string;
 }

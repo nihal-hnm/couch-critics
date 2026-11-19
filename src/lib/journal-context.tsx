@@ -352,6 +352,7 @@ interface JournalContextValue {
     posterUrl?: string | null
   ) => void;
   resetToDemoData: () => void;
+  importEntries: (imported: MovieEntry[], mode?: "merge" | "replace") => void;
 }
 
 const JournalContext = createContext<JournalContextValue | null>(null);
@@ -644,6 +645,24 @@ export function JournalProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "ENTRIES_LOADED", payload: starter });
   }, [user?.id]);
 
+  const importEntries = useCallback(
+    (imported: MovieEntry[], mode: "merge" | "replace" = "merge") => {
+      let nextEntries: MovieEntry[];
+      if (mode === "replace") {
+        nextEntries = imported;
+      } else {
+        const existingMap = new Map(state.entries.map((e) => [e.tmdb?.tmdbId || e.id, e]));
+        for (const item of imported) {
+          existingMap.set(item.tmdb?.tmdbId || item.id, item);
+        }
+        nextEntries = Array.from(existingMap.values());
+      }
+      dispatch({ type: "ENTRIES_LOADED", payload: nextEntries });
+      saveEntries(nextEntries, user?.id ?? null);
+    },
+    [state.entries, user?.id]
+  );
+
   return (
     <JournalContext.Provider
       value={{
@@ -656,6 +675,7 @@ export function JournalProvider({ children }: { children: ReactNode }) {
         updateReview,
         enrichEntrySeasons,
         resetToDemoData,
+        importEntries,
       }}
     >
       {children}

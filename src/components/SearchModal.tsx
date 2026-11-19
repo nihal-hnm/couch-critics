@@ -30,6 +30,8 @@ import {
   CircleAlert,
   Sparkles,
   BookmarkPlus,
+  Play,
+  CheckCircle2,
 } from "lucide-react";
 import type { TMDBMovieData, Shelf } from "@/lib/types";
 import { searchMovies, getMovieDetails, TMDBError } from "@/lib/tmdb";
@@ -301,60 +303,47 @@ export default function SearchModal({
                   </div>
 
                   {/* Add buttons */}
-                  <div className="flex flex-col gap-1.5 shrink-0">
+                  <div className="flex flex-col sm:flex-row items-end sm:items-center gap-1.5 shrink-0 self-center">
                     {isAlreadyAdded ? (
-                      <span className="text-xs text-[#F5C542] bg-white/5 px-2.5 py-1.5 rounded-lg border border-[#292932]">
-                        Added ✓
+                      <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-xl border border-emerald-500/20">
+                        In Journal ✓
                       </span>
                     ) : (
-                      <>
+                      <div className="flex flex-col sm:flex-row gap-1">
                         <button
-                          onClick={() => handleAddMovie(movie, defaultShelf)}
+                          onClick={() => handleAddMovie(movie, "watching")}
                           disabled={addingId === movie.tmdbId}
-                          className="flex items-center gap-1 text-xs bg-[#E50914] hover:bg-[#FF3B3B] text-white font-semibold px-2.5 py-1.5 rounded-lg transition-all shadow-md shadow-black/40 disabled:opacity-50 cursor-pointer"
+                          className="flex items-center gap-1 text-[11px] font-semibold bg-[#E50914] hover:bg-[#FF3B3B] text-white px-2.5 py-1.5 rounded-lg transition-all shadow-sm cursor-pointer disabled:opacity-50"
+                          title="Add to Currently Watching"
                         >
                           {addingId === movie.tmdbId ? (
                             <Loader2 className="w-3 h-3 animate-spin" />
                           ) : (
-                            <Plus className="w-3 h-3" />
+                            <Play className="w-3 h-3 fill-current" />
                           )}
-                          {defaultShelf === "watching"
-                            ? "Watching"
-                            : defaultShelf === "watched"
-                              ? "Watched"
-                              : "To Watch"}
+                          <span>Watching</span>
                         </button>
-                        {defaultShelf !== "toWatch" && (
-                          <button
-                            onClick={() => handleAddMovie(movie, "toWatch")}
-                            disabled={addingId === movie.tmdbId}
-                            className="text-xs text-[#A1A1AA] hover:text-white px-2.5 py-1 rounded-lg hover:bg-white/10 transition-all flex items-center gap-1 border border-transparent hover:border-[#292932] cursor-pointer"
-                          >
-                            <BookmarkPlus className="w-3 h-3 text-[#A1A1AA]" />
-                            + To Watch
-                          </button>
-                        )}
-                        {defaultShelf !== "watching" && (
-                          <button
-                            onClick={() => handleAddMovie(movie, "watching")}
-                            disabled={addingId === movie.tmdbId}
-                            className="text-xs text-[#A1A1AA] hover:text-white px-2.5 py-1 rounded-lg hover:bg-white/10 transition-all flex items-center gap-1 border border-transparent hover:border-[#292932] cursor-pointer"
-                          >
-                            <Plus className="w-3 h-3" />
-                            + Watching
-                          </button>
-                        )}
-                        {defaultShelf !== "watched" && (
-                          <button
-                            onClick={() => handleAddMovie(movie, "watched")}
-                            disabled={addingId === movie.tmdbId}
-                            className="text-xs text-[#A1A1AA] hover:text-white px-2.5 py-1 rounded-lg hover:bg-white/10 transition-all flex items-center gap-1 border border-transparent hover:border-[#292932] cursor-pointer"
-                          >
-                            <Plus className="w-3 h-3" />
-                            + Watched
-                          </button>
-                        )}
-                      </>
+
+                        <button
+                          onClick={() => handleAddMovie(movie, "toWatch")}
+                          disabled={addingId === movie.tmdbId}
+                          className="flex items-center gap-1 text-[11px] font-semibold bg-[#0B0B0F] hover:bg-white/10 text-amber-400 border border-amber-500/30 px-2.5 py-1.5 rounded-lg transition-all cursor-pointer disabled:opacity-50"
+                          title="Add to To Watch Backlog"
+                        >
+                          <BookmarkPlus className="w-3 h-3" />
+                          <span>To Watch</span>
+                        </button>
+
+                        <button
+                          onClick={() => handleAddMovie(movie, "watched")}
+                          disabled={addingId === movie.tmdbId}
+                          className="flex items-center gap-1 text-[11px] font-semibold bg-[#0B0B0F] hover:bg-white/10 text-emerald-400 border border-emerald-500/30 px-2.5 py-1.5 rounded-lg transition-all cursor-pointer disabled:opacity-50"
+                          title="Mark as Watched"
+                        >
+                          <CheckCircle2 className="w-3 h-3" />
+                          <span>Watched</span>
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>

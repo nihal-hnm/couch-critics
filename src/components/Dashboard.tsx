@@ -44,6 +44,9 @@ import {
   Tags,
   ArrowLeft,
   Share2,
+  BookOpen,
+  Database,
+  Layers,
 } from "lucide-react";
 import { useJournal } from "@/lib/journal-context";
 import { useAuth } from "@/lib/auth-context";
@@ -51,6 +54,9 @@ import type { MovieEntry } from "@/lib/types";
 import SearchModal from "@/components/SearchModal";
 import AuthModal from "@/components/AuthModal";
 import ShareModal from "@/components/ShareModal";
+import { ImportExportModal } from "@/components/ImportExportModal";
+import { DiaryView } from "@/components/DiaryView";
+import { CollectionsView } from "@/components/CollectionsView";
 import type { ShareScope } from "@/lib/share-utils";
 import WatchingShelf from "@/components/WatchingShelf";
 import ToWatchShelf from "@/components/ToWatchShelf";
@@ -69,7 +75,9 @@ export type NavKey =
   | "genres"
   | "stats"
   | "journey"
-  | "favorites";
+  | "favorites"
+  | "diary"
+  | "collections";
 
 import Link from "next/link";
 import { MovieImage } from "./common/MovieImage";
@@ -90,6 +98,7 @@ export default function Dashboard() {
   const [selectedDetailEntry, setSelectedDetailEntry] = useState<MovieEntry | null>(null);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [shareScope, setShareScope] = useState<ShareScope>("all");
+  const [isImportExportOpen, setIsImportExportOpen] = useState(false);
 
   const userMenuRef = useRef<HTMLDivElement>(null);
   const moreMenuRef = useRef<HTMLDivElement>(null);
@@ -569,6 +578,62 @@ export default function Dashboard() {
                   {journeyYears.length} {journeyYears.length === 1 ? "yr" : "yrs"}
                 </span>
               </button>
+
+              <button
+                onClick={() => {
+                  setActiveNav("diary");
+                  setIsBurgerMenuOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
+                  activeNav === "diary"
+                    ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
+                    : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
+                    <BookOpen className="w-3.5 h-3.5" />
+                  </div>
+                  <span>Watch Diary</span>
+                </div>
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-white/[0.06] border border-white/10 text-zinc-300">
+                  {watched.length}
+                </span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setActiveNav("collections");
+                  setIsBurgerMenuOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
+                  activeNav === "collections"
+                    ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
+                    : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-rose-500/15 border border-rose-500/30 text-rose-400">
+                    <Layers className="w-3.5 h-3.5" />
+                  </div>
+                  <span>Curated Collections</span>
+                </div>
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsImportExportOpen(true);
+                  setIsBurgerMenuOpen(false);
+                }}
+                className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-zinc-300 hover:text-white hover:bg-white/[0.04] transition-all cursor-pointer group border border-transparent"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-[#E50914]/15 border border-[#E50914]/30 text-[#E50914]">
+                    <Database className="w-3.5 h-3.5" />
+                  </div>
+                  <span>Import / Export &amp; Backup</span>
+                </div>
+              </button>
             </div>
           </div>
 
@@ -679,6 +744,8 @@ export default function Dashboard() {
                   {activeNav === "stats" && <span className="text-cyan-400">Watch Analytics</span>}
                   {activeNav === "journey" && <span className="text-yellow-400">My Journey</span>}
                   {activeNav === "favorites" && <span className="text-rose-400">Favorites</span>}
+                  {activeNav === "diary" && <span className="text-emerald-400">Watch Diary</span>}
+                  {activeNav === "collections" && <span className="text-rose-400">Curated Collections</span>}
                 </p>
               </div>
             </button>
@@ -884,6 +951,58 @@ export default function Dashboard() {
                     <div className="flex items-center gap-2">
                       <MapIcon className="w-3.5 h-3.5 text-yellow-400" />
                       <span>My Journey</span>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setActiveNav("diary");
+                      setIsMoreMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors cursor-pointer ${
+                      activeNav === "diary"
+                        ? "bg-white/10 text-white font-semibold"
+                        : "text-[#A1A1AA] hover:text-white hover:bg-white/5"
+                    }`}
+                    role="menuitem"
+                  >
+                    <div className="flex items-center gap-2">
+                      <BookOpen className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Watch Diary</span>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setActiveNav("collections");
+                      setIsMoreMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors cursor-pointer ${
+                      activeNav === "collections"
+                        ? "bg-white/10 text-white font-semibold"
+                        : "text-[#A1A1AA] hover:text-white hover:bg-white/5"
+                    }`}
+                    role="menuitem"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Layers className="w-3.5 h-3.5 text-rose-400" />
+                      <span>Collections</span>
+                    </div>
+                  </button>
+
+                  <div className="my-1 border-t border-[#292932]" />
+
+                  <button
+                    onClick={() => {
+                      setIsImportExportOpen(true);
+                      setIsMoreMenuOpen(false);
+                    }}
+                    className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs text-[#A1A1AA] hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+                    role="menuitem"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Database className="w-3.5 h-3.5 text-[#E50914]" />
+                      <span>Import / Export &amp; Backup</span>
                     </div>
                   </button>
                 </div>
@@ -1596,6 +1715,22 @@ export default function Dashboard() {
         </main>
       )}
 
+      {/* ── View 9: WATCH DIARY (Chronological Log) ──────────────── */}
+      {activeNav === "diary" && (
+        <DiaryView
+          entries={entries}
+          onSelectEntry={setSelectedDetailEntry}
+        />
+      )}
+
+      {/* ── View 10: CURATED COLLECTIONS ─────────────────────────── */}
+      {activeNav === "collections" && (
+        <CollectionsView
+          entries={entries}
+          onSelectEntry={setSelectedDetailEntry}
+        />
+      )}
+
       {/* ── Floating Action Button (Mobile) ──────────────────────── */}
       <button
         onClick={() => setIsSearchOpen(true)}
@@ -1643,6 +1778,12 @@ export default function Dashboard() {
         onClose={() => setIsShareModalOpen(false)}
         entries={entries}
         initialScope={shareScope}
+      />
+
+      {/* ── Import / Export Modal (Letterboxd & JSON Backup) ────── */}
+      <ImportExportModal
+        isOpen={isImportExportOpen}
+        onClose={() => setIsImportExportOpen(false)}
       />
     </div>
   );

@@ -43,6 +43,8 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
   const [maxRuntime, setMaxRuntime] = useState<number>(0);
   const [pickedMovie, setPickedMovie] = useState<MovieEntry | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [mediaTypeFilter, setMediaTypeFilter] = useState<"all" | "movie" | "tv">("all");
 
   const allGenres = useMemo(() => {
     const genres = new Set<string>();
@@ -66,14 +68,29 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
         maxRuntime === 0 ||
         (entry.tmdb.runtime > 0 && entry.tmdb.runtime <= maxRuntime);
 
-      return matchesSearch && matchesGenre && matchesRuntime;
+      const matchesType =
+        mediaTypeFilter === "all" || entry.tmdb.mediaType === mediaTypeFilter;
+
+      return matchesSearch && matchesGenre && matchesRuntime && matchesType;
     });
-  }, [entries, searchQuery, genreFilter, maxRuntime]);
+  }, [entries, searchQuery, genreFilter, maxRuntime, mediaTypeFilter]);
 
   function pickRandom() {
-    if (filteredEntries.length === 0) return;
-    const randomIndex = Math.floor(Math.random() * filteredEntries.length);
-    setPickedMovie(filteredEntries[randomIndex]);
+    if (filteredEntries.length === 0 || isSpinning) return;
+    setIsSpinning(true);
+
+    let count = 0;
+    const totalFlips = 12;
+    const interval = setInterval(() => {
+      count++;
+      const randIdx = Math.floor(Math.random() * filteredEntries.length);
+      setPickedMovie(filteredEntries[randIdx]);
+
+      if (count >= totalFlips) {
+        clearInterval(interval);
+        setIsSpinning(false);
+      }
+    }, 100);
   }
 
   if (entries.length === 0) {
@@ -127,17 +144,32 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
           {/* Pick for Tonight */}
           <button
             onClick={pickRandom}
-            disabled={filteredEntries.length === 0}
+            disabled={filteredEntries.length === 0 || isSpinning}
             className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#E50914] to-[#B81D24] hover:from-[#FF1E28] hover:to-[#E50914] text-white rounded-xl text-sm font-semibold transition-all shadow-md shadow-[#E50914]/25 hover:shadow-lg hover:shadow-[#E50914]/40 hover:scale-[1.02] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
-            <Shuffle className="w-4 h-4 text-white" />
-            Pick for Tonight
+            <Shuffle className={`w-4 h-4 text-white ${isSpinning ? "animate-spin" : ""}`} />
+            <span>{isSpinning ? "Spinning..." : "Pick for Tonight"}</span>
           </button>
         </div>
 
         {/* Expanded filters */}
         {showFilters && (
           <div className="flex flex-wrap gap-3 p-4 bg-[#15151C] rounded-2xl border border-[#292932] animate-in slide-in-from-bottom-4 duration-200">
+            <div className="space-y-1.5">
+              <label className="text-xs text-[#A1A1AA] uppercase tracking-wider">
+                Media Type
+              </label>
+              <select
+                value={mediaTypeFilter}
+                onChange={(e) => setMediaTypeFilter(e.target.value as "all" | "movie" | "tv")}
+                className="bg-[#0B0B0F] border border-[#292932] rounded-lg px-3 py-2 text-sm text-[#F5F5F5] outline-none focus:border-amber-500/50"
+              >
+                <option value="all">All Media</option>
+                <option value="movie">Movies Only</option>
+                <option value="tv">TV Series Only</option>
+              </select>
+            </div>
+
             <div className="space-y-1.5">
               <label className="text-xs text-[#A1A1AA] uppercase tracking-wider">
                 Genre
@@ -184,7 +216,9 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
 
       {/* ── Picked Movie Spotlight ──────────────────────────── */}
       {pickedMovie && (
-        <div className="relative p-5 rounded-2xl border border-amber-500/30 bg-[#15151C] overflow-hidden animate-in zoom-in-95 duration-300">
+        <div className={`relative p-5 rounded-2xl border transition-all duration-300 bg-[#15151C] overflow-hidden animate-in zoom-in-95 ${
+          isSpinning ? "border-[#E50914] shadow-lg shadow-[#E50914]/20" : "border-amber-500/50 shadow-xl shadow-amber-500/10"
+        }`}>
           {/* Ambient backdrop from the picked poster */}
           {pickedMovie.tmdb.posterUrl && (
             <div className="absolute inset-0">
@@ -207,8 +241,10 @@ export default function ToWatchShelf({ entries }: ToWatchShelfProps) {
             </button>
 
             <div className="flex items-center gap-2 mb-3 text-amber-400">
-              <Sparkles className="w-4 h-4 text-amber-400" />
-              <span className="text-sm font-semibold">Tonight&apos;s Pick</span>
+              <Sparkles className={`w-4 h-4 text-amber-400 ${isSpinning ? "animate-spin" : ""}`} />
+              <span className="text-sm font-semibold">
+                {isSpinning ? "Spinning the Roulette..." : "Tonight's Winning Pick!"}
+              </span>
             </div>
 
             <div className="flex gap-4">
