@@ -51,20 +51,32 @@ import {
 import { useJournal } from "@/lib/journal-context";
 import { useAuth } from "@/lib/auth-context";
 import type { MovieEntry } from "@/lib/types";
+import dynamic from "next/dynamic";
 import SearchModal from "@/components/SearchModal";
-import AuthModal from "@/components/AuthModal";
-import ShareModal from "@/components/ShareModal";
-import { ImportExportModal } from "@/components/ImportExportModal";
-import { DiaryView } from "@/components/DiaryView";
-import { CollectionsView } from "@/components/CollectionsView";
-import type { ShareScope } from "@/lib/share-utils";
 import WatchingShelf from "@/components/WatchingShelf";
-import ToWatchShelf from "@/components/ToWatchShelf";
-import WatchedShelf from "@/components/WatchedShelf";
-import AnalyticsDashboard from "@/components/AnalyticsDashboard";
-import MediaDetailModal from "@/components/MediaDetailModal";
 import ThemeToggle from "@/components/ThemeToggle";
 import { computeStats, formatDaysAndHours, formatHours } from "@/lib/stats";
+import type { ShareScope } from "@/lib/share-utils";
+
+// ── Code Splitting: Lazy-load non-initial views & heavy modals ─────────────
+const WatchedShelf = dynamic(() => import("@/components/WatchedShelf"), { ssr: false });
+const ToWatchShelf = dynamic(() => import("@/components/ToWatchShelf"), { ssr: false });
+const AnalyticsDashboard = dynamic(() => import("@/components/AnalyticsDashboard"), { ssr: false });
+const MediaDetailModal = dynamic(() => import("@/components/MediaDetailModal"), { ssr: false });
+const ShareModal = dynamic(() => import("@/components/ShareModal"), { ssr: false });
+const AuthModal = dynamic(() => import("@/components/AuthModal"), { ssr: false });
+const ImportExportModal = dynamic(
+  () => import("@/components/ImportExportModal").then((m) => m.ImportExportModal),
+  { ssr: false }
+);
+const DiaryView = dynamic(
+  () => import("@/components/DiaryView").then((m) => m.DiaryView),
+  { ssr: false }
+);
+const CollectionsView = dynamic(
+  () => import("@/components/CollectionsView").then((m) => m.CollectionsView),
+  { ssr: false }
+);
 
 export type NavKey =
   | "watching"

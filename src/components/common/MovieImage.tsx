@@ -2,33 +2,35 @@
 
 import React, { useState, useEffect } from "react";
 import { Film, Tv } from "lucide-react";
-import { getOptimizedImageUrl } from "@/lib/image-utils";
+import { getOptimizedImageUrl, getProxyImageUrl } from "@/lib/image-utils";
 import { searchMovies } from "@/lib/tmdb";
 
 interface MovieImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, "src"> {
   src?: string | null;
   alt: string;
   mediaType?: "movie" | "tv";
+  size?: "w185" | "w342" | "w500" | "original";
   fallbackIconClassName?: string;
   fallbackContainerClassName?: string;
   title?: string;
 }
 
 /**
- * Resilient Movie / TV Cover Image Component
+ * High-Performance Resilient Movie / TV Cover Image Component
  *
- * Features:
- *  - Primary loading via `/api/image-proxy` to bypass ISP / DNS censorship
- *  - Strips referrers to satisfy TMDB CDN policies
- *  - No crossOrigin attribute to prevent strict CORS rejection on CDN images
- *  - Auto-heals missing or broken covers by searching TMDB by title
- *  - Fallback to direct TMDB URL if proxy has issues
- *  - Graceful cinematic placeholder if image is missing or cannot be fetched
+ * Performance Features:
+ *  - Primary: Ultra-fast direct TMDB CDN loading with size optimization ('w342' for cards, ~3x lighter)
+ *  - Edge & Browser Caching: Loads directly from TMDB's edge without exhausting Next.js server connection limits
+ *  - Asynchronous Decoding & Native Lazy Loading: Minimizes main thread layout shifts and pauses
+ *  - Referrer-safe: Strips referrers to prevent CDN blocking
+ *  - Fallback: On-demand fallback to `/api/image-proxy` only if direct TMDB CDN fails (e.g., DNS-blocked ISPs)
+ *  - Auto-heals missing covers gracefully
  */
 export function MovieImage({
   src,
   alt,
   mediaType = "movie",
+  size = "w342",
   className = "",
   fallbackIconClassName = "w-10 h-10 text-stone-600",
   fallbackContainerClassName = "w-full h-full bg-gradient-to-br from-stone-900 to-stone-950 flex flex-col items-center justify-center p-3 text-center",
@@ -36,12 +38,12 @@ export function MovieImage({
   ...props
 }: MovieImageProps) {
   const [hasError, setHasError] = useState(false);
-  const [useDirectFallback, setUseDirectFallback] = useState(false);
+  const [useProxyFallback, setUseProxyFallback] = useState(false);
   const [autoHealedSrc, setAutoHealedSrc] = useState<string | null>(null);
 
   useEffect(() => {
     setHasError(false);
-    setUseDirectFallback(false);
+    setUseProxyFallback(false);
     setAutoHealedSrc(null);
   }, [src]);
 
@@ -61,7 +63,7 @@ export function MovieImage({
         if (matched?.posterUrl) {
           setAutoHealedSrc(matched.posterUrl);
           setHasError(false);
-          setUseDirectFallback(false);
+          setUseProxyFallback(false);
         }
       })
       .catch(() => {});
@@ -72,13 +74,8 @@ export function MovieImage({
   }, [src, title, mediaType, hasError, autoHealedSrc]);
 
   const rawActiveSrc = src || autoHealedSrc;
-  const initialUrl = getOptimizedImageUrl(rawActiveSrc);
-  const directUrl =
-    rawActiveSrc && rawActiveSrc.startsWith("/") && !rawActiveSrc.startsWith("data:")
-      ? rawActiveSrc.startsWith("/t/p/")
-        ? `https://image.tmdb.org${rawActiveSrc}`
-        : `https://image.tmdb.org/t/p/w500${rawActiveSrc}`
-      : rawActiveSrc;
+  const directCdnUrl = getOptimizedImageUrl(rawActiveSrc, size);
+  const proxyUrl = getProxyImageUrl(rawActiveSrc);
 
   if (!rawActiveSrc || hasError) {
     return (
@@ -97,7 +94,7 @@ export function MovieImage({
     );
   }
 
-  const currentSrc = useDirectFallback ? directUrl : initialUrl;
+  const currentSrc = useProxyFallback ? proxyUrl : directCdnUrl;
 
   return (
     <img
@@ -105,14 +102,15 @@ export function MovieImage({
       src={currentSrc || undefined}
       alt={alt}
       loading={props.loading || "lazy"}
+      decoding="async"
       referrerPolicy="no-referrer"
       className={className}
       onError={() => {
-        if (!useDirectFallback && currentSrc !== directUrl) {
-          // If proxy failed, try direct TMDB CDN with no-referrer
-          setUseDirectFallback(true);
+        if (!useProxyFallback && proxyUrl && currentSrc !== proxyUrl) {
+          // If direct CDN fails (e.g. ISP censorship), fall back to proxy
+          setUseProxyFallback(true);
         } else {
-          // Both failed, show stylish placeholder
+          // Both failed, render cinematic fallback placeholder
           setHasError(true);
         }
       }}

@@ -14,6 +14,15 @@ interface WhereToWatchProps {
   showHeading?: boolean;
 }
 
+// Global In-Memory and In-Flight Request Cache to prevent duplicate calls across cards
+const providersMemoryCache = new Map<string, TitleWatchInfo>();
+const pendingRequests = new Map<string, Promise<TitleWatchInfo>>();
+
+function getCacheKey(tmdbId?: number | null, title?: string, mediaType?: "movie" | "tv"): string {
+  if (tmdbId) return `wtw-${mediaType || "movie"}-${tmdbId}`;
+  return `wtw-${mediaType || "movie"}-${(title || "").toLowerCase().trim()}`;
+}
+
 export function WhereToWatch({
   tmdbId,
   title,
@@ -22,19 +31,46 @@ export function WhereToWatch({
   className = "",
   showHeading = true,
 }: WhereToWatchProps) {
-  // Check local verified registry first for instant, zero-latency rendering
-  const initialData = useMemo(() => {
+  const cacheKey = useMemo(() => getCacheKey(tmdbId, title, mediaType), [tmdbId, title, mediaType]);
+
+  // Check verified curated registry first (0ms, zero network)
+  const verifiedData = useMemo(() => {
     return getVerifiedWatchInfo(tmdbId, title, mediaType);
   }, [tmdbId, title, mediaType]);
 
-  const [watchInfo, setWatchInfo] = useState<TitleWatchInfo | null>(initialData);
-  const [loading, setLoading] = useState<boolean>(!initialData);
+  // Check memory / session cache
+  const cachedData = useMemo(() => {
+    if (verifiedData) return verifiedData;
+    if (providersMemoryCache.has(cacheKey)) {
+      return providersMemoryCache.get(cacheKey)!;
+    }
+    if (typeof window !== "undefined") {
+      try {
+        const item = sessionStorage.getItem(`couch-${cacheKey}`);
+        if (item) {
+          const parsed = JSON.parse(item) as TitleWatchInfo;
+          providersMemoryCache.set(cacheKey, parsed);
+          return parsed;
+        }
+      } catch {}
+    }
+    return null;
+  }, [verifiedData, cacheKey]);
+
+  const [watchInfo, setWatchInfo] = useState<TitleWatchInfo | null>(cachedData);
+  const [loading, setLoading] = useState<boolean>(!cachedData && variant === "full");
 
   useEffect(() => {
-    // If we already have verified data, use it immediately
-    const verified = getVerifiedWatchInfo(tmdbId, title, mediaType);
-    if (verified) {
-      setWatchInfo(verified);
+    if (cachedData) {
+      setWatchInfo(cachedData);
+      setLoading(false);
+      return;
+    }
+
+    // Performance optimization: on compact shelf cards (200+ items), do NOT blast 200 API calls!
+    // Compact cards use the direct JustWatch search link unless cached.
+    // Full variant (inside MediaDetailModal) performs the live provider lookup on-demand.
+    if (variant === "compact") {
       setLoading(false);
       return;
     }
@@ -48,21 +84,23 @@ export function WhereToWatch({
     });
     if (tmdbId) queryParams.set("tmdbId", String(tmdbId));
 
-    fetch(`/api/watch-providers?${queryParams.toString()}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to load providers");
-        return res.json();
-      })
-      .then((data: TitleWatchInfo) => {
-        if (isMounted) {
-          setWatchInfo(data);
-          setLoading(false);
-        }
-      })
-      .catch((err) => {
-        console.warn("Could not fetch watch providers:", err);
-        if (isMounted) {
-          setWatchInfo({
+    // Deduplicate in-flight requests
+    let fetchPromise = pendingRequests.get(cacheKey);
+    if (!fetchPromise) {
+      fetchPromise = fetch(`/api/watch-providers?${queryParams.toString()}`)
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to load providers");
+          return res.json();
+        })
+        .then((data: TitleWatchInfo) => {
+          providersMemoryCache.set(cacheKey, data);
+          try {
+            sessionStorage.setItem(`couch-${cacheKey}`, JSON.stringify(data));
+          } catch {}
+          return data;
+        })
+        .catch((err) => {
+          const fallback: TitleWatchInfo = {
             tmdbId: tmdbId ?? undefined,
             title,
             type: mediaType === "tv" ? "series" : "movie",
@@ -70,38 +108,34 @@ export function WhereToWatch({
             justWatchUrl: getJustWatchSearchUrl(title),
             region: "IN",
             isVerified: false,
-          });
-          setLoading(false);
-        }
-      });
+          };
+          providersMemoryCache.set(cacheKey, fallback);
+          return fallback;
+        })
+        .finally(() => {
+          pendingRequests.delete(cacheKey);
+        });
+      pendingRequests.set(cacheKey, fetchPromise);
+    }
+
+    fetchPromise.then((data) => {
+      if (isMounted) {
+        setWatchInfo(data);
+        setLoading(false);
+      }
+    });
 
     return () => {
       isMounted = false;
     };
-  }, [tmdbId, title, mediaType]);
+  }, [cachedData, cacheKey, mediaType, title, tmdbId, variant]);
 
   const platforms = watchInfo?.platforms || [];
   const hasPlatforms = platforms.length > 0;
   const justWatchUrl = watchInfo?.justWatchUrl || getJustWatchSearchUrl(title);
 
-  // If title has a single platform or verified primary option
-  const primaryPlatform = watchInfo?.primaryPlatform
-    ? platforms.find((p) => p.name.toLowerCase() === watchInfo.primaryPlatform?.toLowerCase()) || platforms[0]
-    : platforms.length === 1
-    ? platforms[0]
-    : null;
-
   // ── Compact variant for movie & TV cards ─────────────────────────────────
   if (variant === "compact") {
-    if (loading) {
-      return (
-        <div className={`flex items-center gap-1.5 text-[11px] text-stone-500 ${className}`}>
-          <Tv className="w-3 h-3 text-stone-600 animate-pulse" />
-          <span>Checking availability...</span>
-        </div>
-      );
-    }
-
     if (!hasPlatforms) {
       return (
         <div className={`flex items-center gap-1.5 text-[11px] text-stone-500 ${className}`}>
@@ -142,6 +176,7 @@ export function WhereToWatch({
                 src={platform.logo}
                 alt={platform.name}
                 loading="lazy"
+                decoding="async"
                 className="w-3.5 h-3.5 object-contain rounded shrink-0"
               />
               <span className="font-semibold text-[#F5F5F5] group-hover/btn:text-white transition-colors">
@@ -200,98 +235,64 @@ export function WhereToWatch({
         </div>
       ) : hasPlatforms ? (
         <div className="space-y-3">
-          {/* OTT Platform Buttons Grid */}
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
             {platforms.map((platform) => (
               <a
                 key={platform.name}
                 href={platform.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#0B0B0F] hover:bg-stone-800/90 border border-[#292932] hover:border-[#E50914]/40 text-xs font-medium text-stone-200 hover:text-white transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] shadow-sm cursor-pointer group"
-                aria-label={`Watch ${title} on ${platform.name}`}
-                title={`Open ${title} on ${platform.name} (Opens in new tab)`}
+                className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.07] border border-[#292932] hover:border-[#E50914]/50 transition-all duration-200 group/item shadow-sm"
               >
                 <img
                   src={platform.logo}
                   alt={platform.name}
                   loading="lazy"
-                  className="w-4 h-4 object-contain rounded shrink-0 transition-transform group-hover:scale-105"
+                  decoding="async"
+                  className="w-7 h-7 object-contain rounded-lg shrink-0"
                 />
-                <span className="group-hover:text-white transition-colors font-medium">
-                  {platform.name}
-                </span>
-                {platform.category && platform.category !== "subscription" && (
-                  <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-stone-800/90 text-stone-400 font-mono border border-stone-700/50">
-                    {platform.category}
+                <div className="min-w-0 flex-1">
+                  <span className="block text-xs font-bold text-[#F5F5F5] group-hover/item:text-white truncate">
+                    {platform.name}
                   </span>
-                )}
-                <ExternalLink className="w-3 h-3 text-stone-500 group-hover:text-[#E50914] transition-colors ml-0.5" />
+                  <span className="block text-[10px] text-stone-400 font-mono capitalize">
+                    {platform.category || "Stream"}
+                  </span>
+                </div>
+                <ExternalLink className="w-3.5 h-3.5 text-stone-500 group-hover/item:text-[#E50914] shrink-0 transition-colors" />
               </a>
             ))}
-
-            {/* Optional Watch Now Button when primary platform is available */}
-            {primaryPlatform && (
-              <a
-                href={primaryPlatform.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#E50914] hover:bg-[#FF3B3B] text-white text-xs font-semibold shadow-md shadow-black/40 transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] cursor-pointer"
-                aria-label={`Watch ${title} now on ${primaryPlatform.name}`}
-                title={`Watch now on ${primaryPlatform.name}`}
-              >
-                <Play className="w-3 h-3 fill-white" />
-                <span>Watch Now</span>
-              </a>
-            )}
           </div>
-
-          {/* Subtext info */}
-          <p className="text-[11px] text-stone-400 flex items-center gap-1">
-            <span>Direct streaming links verified for India.</span>
+          <div className="pt-1 flex items-center justify-between text-[11px] text-stone-500">
+            <span>Data powered by JustWatch / TMDB</span>
             <a
               href={justWatchUrl}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="text-[#E50914] hover:text-[#FF3B3B] hover:underline inline-flex items-center gap-0.5 ml-1"
+              className="hover:text-stone-300 underline"
             >
-              <span>View all options on JustWatch</span>
-              <ExternalLink className="w-2.5 h-2.5" />
+              Verify on JustWatch ↗
             </a>
-          </p>
+          </div>
         </div>
       ) : (
-        /* Fallback: When no verified streaming platforms are available */
-        <div className="py-2 space-y-2">
+        <div className="p-4 rounded-xl bg-white/[0.02] border border-[#292932] text-center space-y-2">
           <p className="text-xs text-stone-400">
-            Streaming availability unavailable on major Indian OTT subscriptions currently.
+            No direct OTT subscription stream found in this region.
           </p>
-          <div className="flex flex-wrap items-center gap-2 pt-1">
-            <a
-              href={justWatchUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-stone-900 hover:bg-stone-800 border border-stone-800 hover:border-yellow-500/40 text-xs font-medium text-stone-300 hover:text-white transition-all duration-200 hover:scale-[1.02] shadow-sm cursor-pointer group"
-              aria-label={`Check streaming availability for ${title} on JustWatch`}
-            >
-              <img
-                src="/images/ott/justwatch.svg"
-                alt="JustWatch"
-                loading="lazy"
-                className="w-4 h-4 object-contain rounded shrink-0"
-              />
-              <span className="group-hover:text-yellow-200 transition-colors">
-                Check JustWatch India
-              </span>
-              <Search className="w-3 h-3 text-stone-500 group-hover:text-yellow-400 transition-colors ml-0.5" />
-            </a>
-          </div>
+          <a
+            href={justWatchUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#E50914]/15 hover:bg-[#E50914]/25 border border-[#E50914]/40 text-xs font-semibold text-white transition-colors"
+          >
+            <Search className="w-3.5 h-3.5 text-[#E50914]" />
+            <span>Search on JustWatch</span>
+          </a>
         </div>
       )}
     </div>
   );
 }
+
+export default WhereToWatch;

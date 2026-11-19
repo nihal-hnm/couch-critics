@@ -65,6 +65,7 @@ export default function WatchedShelf({
   const [mediaFilter, setMediaFilter] = useState<"all" | "movie" | "tv">(defaultMediaType);
   const [sortBy, setSortBy] = useState<SortOption>("recent");
   const [viewLayout, setViewLayout] = useState<ViewLayout>("grouped");
+  const [visibleCount, setVisibleCount] = useState(32);
 
   function startEditing(entry: MovieEntry) {
     setEditingId(entry.id);
@@ -628,9 +629,21 @@ export default function WatchedShelf({
             </div>
 
             {sortedMovies.length > 0 ? (
-              <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
-                {sortedMovies.map((entry, idx) => renderCard(entry, idx))}
-              </div>
+              <>
+                <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
+                  {sortedMovies.slice(0, visibleCount).map((entry, idx) => renderCard(entry, idx))}
+                </div>
+                {sortedMovies.length > visibleCount && (
+                  <div className="pt-3 text-center">
+                    <button
+                      onClick={() => setVisibleCount((prev) => prev + 32)}
+                      className="px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-[#F5F5F5] border border-[#292932] hover:border-[#E50914]/50 transition-all cursor-pointer shadow-sm"
+                    >
+                      Show More Movies ({sortedMovies.length - visibleCount} remaining)
+                    </button>
+                  </div>
+                )}
+              </>
             ) : (
               <div className="p-6 text-center bg-[#15151C] rounded-xl border border-[#292932] text-[#A1A1AA] text-xs">
                 {searchQuery ? "No movies matched your search." : "No watched movies yet."}
@@ -653,9 +666,21 @@ export default function WatchedShelf({
             </div>
 
             {sortedSeries.length > 0 ? (
-              <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
-                {sortedSeries.map((entry, idx) => renderCard(entry, idx))}
-              </div>
+              <>
+                <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
+                  {sortedSeries.slice(0, visibleCount).map((entry, idx) => renderCard(entry, idx))}
+                </div>
+                {sortedSeries.length > visibleCount && (
+                  <div className="pt-3 text-center">
+                    <button
+                      onClick={() => setVisibleCount((prev) => prev + 32)}
+                      className="px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-[#F5F5F5] border border-[#292932] hover:border-[#E50914]/50 transition-all cursor-pointer shadow-sm"
+                    >
+                      Show More TV Series ({sortedSeries.length - visibleCount} remaining)
+                    </button>
+                  </div>
+                )}
+              </>
             ) : (
               <div className="p-6 text-center bg-[#15151C] rounded-xl border border-[#292932] text-[#A1A1AA] text-xs">
                 {searchQuery ? "No TV series matched your search." : "No completed TV series yet."}
@@ -667,9 +692,21 @@ export default function WatchedShelf({
         /* Mode B: Filtered or Combined Single Grid */
         <div>
           {combinedEntries.length > 0 ? (
-            <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
-              {combinedEntries.map((entry, idx) => renderCard(entry, idx))}
-            </div>
+            <>
+              <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
+                {combinedEntries.slice(0, visibleCount).map((entry, idx) => renderCard(entry, idx))}
+              </div>
+              {combinedEntries.length > visibleCount && (
+                <div className="pt-4 text-center">
+                  <button
+                    onClick={() => setVisibleCount((prev) => prev + 32)}
+                    className="px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-[#F5F5F5] border border-[#292932] hover:border-[#E50914]/50 transition-all cursor-pointer shadow-sm"
+                  >
+                    Show More Titles ({combinedEntries.length - visibleCount} remaining)
+                  </button>
+                </div>
+              )}
+            </>
           ) : (
             <div className="p-12 text-center bg-[#15151C] rounded-2xl border border-[#292932]">
               <p className="text-[#A1A1AA] text-sm">

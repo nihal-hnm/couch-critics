@@ -437,17 +437,22 @@ export function JournalProvider({ children }: { children: ReactNode }) {
   }, [isAuthenticated, authLoading, user?.id]);
 
   /**
-   * Persist changes to the appropriate user-scoped cache.
+   * Persist changes to the appropriate user-scoped cache with debouncing
+   * to avoid continuous main-thread JSON serialization on rapid updates.
    */
   useEffect(() => {
-    if (state.isLoaded) {
+    if (!state.isLoaded) return;
+    const timer = setTimeout(() => {
       saveEntries(state.entries, user?.id ?? null);
-    }
+    }, 400);
+
+    return () => clearTimeout(timer);
   }, [state.entries, state.isLoaded, user?.id]);
 
   /**
    * Background media & poster enrichment:
-   * Restores posters for any entries missing posterUrl and enriches TV shows with full seasons.
+   * Throttled and delayed so initial page boot & first render are lightning-fast.
+   * Only enriches up to 2 items at a time after initial paint is complete.
    */
   useEffect(() => {
     if (!state.isLoaded || state.entries.length === 0) return;
@@ -462,27 +467,32 @@ export function JournalProvider({ children }: { children: ReactNode }) {
     if (unEnriched.length === 0) return;
 
     let cancelled = false;
-    unEnriched.forEach((entry) => {
-      getMovieDetails(entry.tmdb.tmdbId, entry.tmdb.mediaType)
-        .then((details) => {
-          if (cancelled) return;
-          dispatch({
-            type: "ENTRY_ENRICHED",
-            payload: {
-              id: entry.id,
-              seasons: details.seasons,
-              totalSeasons: details.totalSeasons || details.seasons?.length,
-              backdropUrl: details.backdropUrl || entry.tmdb.backdropUrl,
-              posterUrl: details.posterUrl || entry.tmdb.posterUrl,
-              totalEpisodes: details.totalEpisodes || entry.tmdb.totalEpisodes,
-            },
-          });
-        })
-        .catch(() => {});
-    });
+    const batch = unEnriched.slice(0, 2);
+
+    const timer = setTimeout(() => {
+      batch.forEach((entry) => {
+        getMovieDetails(entry.tmdb.tmdbId, entry.tmdb.mediaType)
+          .then((details) => {
+            if (cancelled) return;
+            dispatch({
+              type: "ENTRY_ENRICHED",
+              payload: {
+                id: entry.id,
+                seasons: details.seasons,
+                totalSeasons: details.totalSeasons || details.seasons?.length,
+                backdropUrl: details.backdropUrl || entry.tmdb.backdropUrl,
+                posterUrl: details.posterUrl || entry.tmdb.posterUrl,
+                totalEpisodes: details.totalEpisodes || entry.tmdb.totalEpisodes,
+              },
+            });
+          })
+          .catch(() => {});
+      });
+    }, 1500);
 
     return () => {
       cancelled = true;
+      clearTimeout(timer);
     };
   }, [state.isLoaded, state.entries.length]);
 
