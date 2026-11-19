@@ -31,7 +31,6 @@ import MediaDetailModal from "./MediaDetailModal";
 import { MovieImage } from "./common/MovieImage";
 import { getOptimizedImageUrl } from "@/lib/image-utils";
 import { WhereToWatch } from "./common/WhereToWatch";
-import { getTVReleaseRadar, type TVReleaseRadarInfo } from "@/lib/tmdb";
 
 interface WatchingShelfProps {
   entries: MovieEntry[];
@@ -132,20 +131,6 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
   const [rating, setRating] = useState(7);
   const [notes, setNotes] = useState("");
   const [selectedEntry, setSelectedEntry] = useState<MovieEntry | null>(null);
-  const [radarMap, setRadarMap] = useState<Record<number, TVReleaseRadarInfo | null>>({});
-
-  useEffect(() => {
-    const tvEntries = entries.filter((e) => e.tmdb.mediaType === "tv" && e.tmdb.tmdbId);
-    if (tvEntries.length === 0) return;
-
-    tvEntries.forEach((e) => {
-      getTVReleaseRadar(e.tmdb.tmdbId).then((info) => {
-        if (info) {
-          setRadarMap((prev) => ({ ...prev, [e.tmdb.tmdbId]: info }));
-        }
-      });
-    });
-  }, [entries]);
 
   function handleProgressChange(entry: MovieEntry, delta: number) {
     const current = entry.progress?.minutesWatched ?? 0;
@@ -327,21 +312,12 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                     <div>
                       {/* Top Row: Badge + Floating Action Buttons */}
                       <div className="flex items-center justify-between gap-2 mb-2">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#E50914]/12 border border-[#E50914]/25 shrink-0">
-                            <div className="w-1.5 h-1.5 rounded-full bg-[#E50914] animate-pulse" />
-                            <span className="text-[10px] font-semibold text-[#E50914] uppercase tracking-wider flex items-center gap-1 whitespace-nowrap">
-                              {isMovie ? <Film className="w-2.5 h-2.5" /> : <Tv className="w-2.5 h-2.5" />}
-                              In Progress
-                            </span>
-                          </div>
-
-                          {!isMovie && radarMap[entry.tmdb.tmdbId]?.nextEpisode && (
-                            <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[10px] font-mono font-semibold shrink-0">
-                              <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
-                              Next S{radarMap[entry.tmdb.tmdbId]?.nextEpisode?.seasonNumber}E{radarMap[entry.tmdb.tmdbId]?.nextEpisode?.episodeNumber}: {radarMap[entry.tmdb.tmdbId]?.nextEpisode?.airDate}
-                            </span>
-                          )}
+                        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#E50914]/12 border border-[#E50914]/25 shrink-0">
+                          <div className="w-1.5 h-1.5 rounded-full bg-[#E50914] animate-pulse" />
+                          <span className="text-[10px] font-semibold text-[#E50914] uppercase tracking-wider flex items-center gap-1 whitespace-nowrap">
+                            {isMovie ? <Film className="w-2.5 h-2.5" /> : <Tv className="w-2.5 h-2.5" />}
+                            In Progress
+                          </span>
                         </div>
 
                         {/* Top quick action: Remove only (uncluttered) */}
