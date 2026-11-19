@@ -40,11 +40,13 @@ export function MovieImage({
   const [hasError, setHasError] = useState(false);
   const [useProxyFallback, setUseProxyFallback] = useState(false);
   const [autoHealedSrc, setAutoHealedSrc] = useState<string | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     setHasError(false);
     setUseProxyFallback(false);
     setAutoHealedSrc(null);
+    setIsLoaded(false);
   }, [src]);
 
   // Auto-heal missing or broken poster URLs via TMDB title search
@@ -97,24 +99,31 @@ export function MovieImage({
   const currentSrc = useProxyFallback ? proxyUrl : directCdnUrl;
 
   return (
-    <img
-      {...props}
-      src={currentSrc || undefined}
-      alt={alt}
-      loading={props.loading || "lazy"}
-      decoding="async"
-      referrerPolicy="no-referrer"
-      className={className}
-      onError={() => {
-        if (!useProxyFallback && proxyUrl && currentSrc !== proxyUrl) {
-          // If direct CDN fails (e.g. ISP censorship), fall back to proxy
-          setUseProxyFallback(true);
-        } else {
-          // Both failed, render cinematic fallback placeholder
-          setHasError(true);
-        }
-      }}
-    />
+    <div className="relative w-full h-full overflow-hidden bg-stone-900">
+      {/* Subtle Shimmer Skeleton while loading */}
+      {!isLoaded && !hasError && (
+        <div className="absolute inset-0 bg-gradient-to-r from-stone-900 via-stone-800 to-stone-900 animate-pulse" />
+      )}
+      <img
+        {...props}
+        src={currentSrc || undefined}
+        alt={alt}
+        loading={props.loading || "lazy"}
+        decoding="async"
+        referrerPolicy="no-referrer"
+        onLoad={() => setIsLoaded(true)}
+        className={`${className} transition-opacity duration-300 ${isLoaded ? "opacity-100" : "opacity-0"}`}
+        onError={() => {
+          if (!useProxyFallback && proxyUrl && currentSrc !== proxyUrl) {
+            // If direct CDN fails (e.g. ISP censorship), fall back to proxy
+            setUseProxyFallback(true);
+          } else {
+            // Both failed, render cinematic fallback placeholder
+            setHasError(true);
+          }
+        }}
+      />
+    </div>
   );
 }
 

@@ -109,8 +109,6 @@
 :root {
   --color-background: #0B0B0F;
   --color-foreground: #F5F5F5;
-  --glass-bg: #15151C;
-  --glass-border: #292932;
   --card-hover-bg: #1A1A24;
   --card-hover-border: #3A3A48;
   --drawer-bg: #15151C;
@@ -141,8 +139,6 @@
   --color-warm-surface: #F8FAFC;
   --color-warm-border: #E2E8F0;
   --color-warm-hover: #F1F5F9;
-  --glass-bg: #FFFFFF;
-  --glass-border: #E2E8F0;
   --card-hover-bg: #FFFFFF;
   --card-hover-border: #CBD5E1;
   --drawer-bg: #FFFFFF;
@@ -225,38 +221,6 @@ body {
   transition: background-color 200ms ease, color 200ms ease;
 }
 
-/* ─── Solid Modern Cinema Card ────────────────────────────────────────────── */
-.glass-card {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 1rem;
-  transition: background 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
-}
-
-.glass-card-hover:hover {
-  background: var(--card-hover-bg);
-  border-color: var(--card-hover-border);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-}
-
-/* ─── Solid Surface Card Utility ─────────────────────────────────────────── */
-.liquid-glass-card {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-  border-radius: 1.25rem;
-  transition: all 250ms cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.liquid-glass-card:hover {
-  border-color: var(--card-hover-border);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
-}
-
-.glass-specular {
-  display: none !important;
-}
-
 @keyframes progress-shimmer {
   0% { transform: translateX(-100%); }
   100% { transform: translateX(200%); }
@@ -276,12 +240,6 @@ body {
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
   animation: progress-shimmer 2.5s infinite;
-}
-
-/* Solid headers / sticky elements */
-.glass-heavy {
-  background: #0B0B0F;
-  border-bottom: 1px solid var(--glass-border);
 }
 
 .hero-overlay-bottom {
@@ -1339,31 +1297,6 @@ body {
 .light input::placeholder,
 .light textarea::placeholder {
   color: #94A3B8 !important;
-}
-
-/* Liquid Glass Cards in Light Mode */
-.light .liquid-glass-card {
-  background: #FFFFFF !important;
-  border-color: #E2E8F0 !important;
-  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05) !important;
-}
-
-.light .liquid-glass-card h2,
-.light .liquid-glass-card h3,
-.light .liquid-glass-card h4 {
-  color: #0F172A !important;
-}
-
-.light .liquid-glass-card .text-\[\#A1A1AA\],
-.light .liquid-glass-card .text-white\/70,
-.light .liquid-glass-card .text-white\/60,
-.light .liquid-glass-card .text-white\/40 {
-  color: #64748B !important;
-}
-
-.light .liquid-glass-card .text-white,
-.light .liquid-glass-card .text-\[\#F5F5F5\] {
-  color: #0F172A !important;
 }
 
 .light .poster-card-info {

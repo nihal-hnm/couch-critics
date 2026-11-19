@@ -129,10 +129,32 @@ export default function Dashboard() {
         setIsBurgerMenuOpen(false);
         setIsUserMenuOpen(false);
         setIsMoreMenuOpen(false);
+        return;
       }
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setIsSearchOpen(true);
+        return;
+      }
+
+      // Single-key navigation shortcuts (when not focused in inputs)
+      const target = e.target as HTMLElement | null;
+      const isInput =
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.isContentEditable);
+
+      if (!isInput && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        if (e.key === "1") {
+          setActiveNav("watching");
+        } else if (e.key === "2") {
+          setActiveNav("toWatch");
+        } else if (e.key === "3") {
+          setActiveNav("watched");
+        } else if (e.key === "4") {
+          setActiveNav("diary");
+        }
       }
     }
     document.addEventListener("mousedown", handleClickOutside);

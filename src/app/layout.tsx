@@ -50,6 +50,7 @@ export const metadata: Metadata = {
     shortcut: "/icon.png",
     apple: "/apple-icon.png",
   },
+  manifest: "/manifest.json",
   referrer: "no-referrer",
 };
 
@@ -62,6 +63,9 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} antialiased`} suppressHydrationWarning>
       <head>
         <meta name="referrer" content="no-referrer" />
+        <meta name="theme-color" content="#0B0B0F" />
+        <link rel="preconnect" href="https://image.tmdb.org" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://image.tmdb.org" />
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem('couch_critics_theme')||'dark';document.documentElement.setAttribute('data-theme',t);if(t==='light'){document.documentElement.classList.add('light');document.documentElement.classList.remove('dark');}else{document.documentElement.classList.add('dark');document.documentElement.classList.remove('light');}}catch(e){}})()`,
