@@ -701,7 +701,7 @@ export default function MediaDetailModal({
                   <span>{isPlayingTrailer ? "Hide Trailer" : "Trailer"}</span>
                 </button>
               </div>
-              <h2 className="text-xl sm:text-3xl font-extrabold text-white truncate leading-tight drop-shadow-md">
+              <h2 className="text-xl sm:text-2xl font-semibold text-white truncate leading-tight">
                 {entry.tmdb.title}
               </h2>
               {entry.tmdb.director && (
@@ -848,8 +848,8 @@ export default function MediaDetailModal({
               <div className="p-4 sm:p-5 rounded-2xl bg-[#0B0B0F] border border-[#292932] flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg shadow-black/40">
                 <div>
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-[#D97706]" />
-                    <h4 className="text-base font-bold text-white tracking-tight">
+                    <ListVideo className="w-4 h-4 text-stone-400" />
+                    <h4 className="text-base font-semibold text-white">
                       All Seasons &amp; Episodes Tracker
                     </h4>
                     <span className="text-[11px] font-semibold uppercase px-2 py-0.5 rounded-md bg-white/5 text-[#A1A1AA] border border-[#292932]">
@@ -862,18 +862,18 @@ export default function MediaDetailModal({
                 </div>
                 <div className="flex items-center gap-5 shrink-0">
                   <div className="text-right">
-                    <p className="text-xl font-black text-amber-400">
+                    <p className="text-lg font-semibold text-stone-200 tabular-nums">
                       {watchedEpisodeCodes.size} <span className="text-stone-400 text-sm font-normal">/ {displayTotalEpisodes}</span>
                     </p>
-                    <p className="text-[10px] text-stone-400 uppercase tracking-wider font-semibold">
+                    <p className="text-xs text-stone-400">
                       Episodes Watched
                     </p>
                   </div>
                   <div className="text-right pl-4 border-l border-stone-800">
-                    <p className="text-xl font-black text-white">
+                    <p className="text-lg font-semibold text-stone-200 tabular-nums">
                       {Math.round(((watchedEpisodeCodes.size * (entry.tmdb.runtime || 45)) / 60) * 10) / 10}h
                     </p>
-                    <p className="text-[10px] text-stone-400 uppercase tracking-wider font-semibold">
+                    <p className="text-xs text-stone-400">
                       Series Watch Time
                     </p>
                   </div>
@@ -901,7 +901,7 @@ export default function MediaDetailModal({
                 </div>
                 <div className="w-full bg-[#15151C] rounded-lg h-2.5 overflow-hidden border border-[#292932]">
                   <div
-                    className="h-full bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 transition-all duration-300 shadow-[0_0_8px_rgba(217,119,6,0.25)] rounded-md"
+                    className="h-full bg-[#D97706] transition-[width] duration-200 rounded-md"
                     style={{
                       width: `${Math.min(100, Math.round((watchedEpisodeCodes.size / (displayTotalEpisodes || 1)) * 100))}%`,
                     }}
@@ -1123,7 +1123,7 @@ export default function MediaDetailModal({
                         {/* Season Mini Progress Bar */}
                         <div className="w-full bg-[#15151C] h-2 overflow-hidden border-y border-[#292932]">
                           <div
-                            className="h-full bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 transition-all duration-300 shadow-[0_0_8px_rgba(217,119,6,0.25)]"
+                            className="h-full bg-[#D97706] transition-[width] duration-200"
                             style={{ width: `${seasonPercent}%` }}
                           />
                         </div>
@@ -1422,7 +1422,7 @@ export default function MediaDetailModal({
                           onMouseEnter={() => setHoverRating(starVal)}
                           onMouseLeave={() => setHoverRating(0)}
                           onClick={() => setRating(starVal)}
-                          className="p-1 focus:outline-none transition-transform hover:scale-125 cursor-pointer"
+                          className="p-1 focus:outline-none transition-transform  cursor-pointer"
                         >
                           <Star
                             className={`w-5 h-5 sm:w-6 sm:h-6 transition-colors ${
@@ -1513,7 +1513,7 @@ export default function MediaDetailModal({
                 {saveSuccess && (
                   <span className="text-xs text-amber-400 font-medium flex items-center gap-1 animate-in fade-in">
                     <Check className="w-4 h-4" />
-                    Review saved successfully!
+                    Review saved
                   </span>
                 )}
               </div>

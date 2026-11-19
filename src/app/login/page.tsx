@@ -146,7 +146,7 @@ export default function LoginPage() {
         />
 
         {/* Restrained Atmospheric Cinema Glow */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-[#D97706]/[0.04] rounded-full blur-[160px] pointer-events-none" />
+        
         <div className="absolute bottom-10 right-1/4 w-[500px] h-[350px] bg-[#15151C]/60 rounded-full blur-[120px] pointer-events-none" />
       </div>
 
@@ -158,7 +158,7 @@ export default function LoginPage() {
           className="flex items-center gap-3 group transition-transform active:scale-95"
           aria-label="Couch Critics Home"
         >
-          <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-[#D97706]/25 border border-white/10 shrink-0 bg-[#07070A] flex items-center justify-center group-hover:border-[#D97706]/40 group-hover:scale-105 transition-all">
+          <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-[#D97706]/25 border border-white/10 shrink-0 bg-[#07070A] flex items-center justify-center group-hover:border-[#D97706]/40  transition-all">
             <img src="/icon.png" alt="Couch Critics" className="w-full h-full object-cover" />
           </div>
           <div className="flex flex-col">
@@ -343,7 +343,7 @@ export default function LoginPage() {
                 onClick={handleGuestAccess}
                 className="w-full py-3 px-4 rounded-xl bg-[#0B0B0F] hover:bg-[#191924] border border-[#292932] hover:border-[#D97706]/40 text-[#A1A1AA] hover:text-[#F5F5F5] text-xs font-semibold transition-all cursor-pointer flex items-center justify-center gap-2 group"
               >
-                <Sparkles className="w-3.5 h-3.5 text-[#D97706] group-hover:scale-110 transition-transform" />
+                <UserCheck className="w-3.5 h-3.5 text-stone-400" />
                 <span>Explore as Guest (Instant Access)</span>
               </button>
 

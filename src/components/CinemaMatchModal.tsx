@@ -362,16 +362,14 @@ export function CinemaMatchModal({
         {/* ── Modal Header ── */}
         <div className="p-5 sm:p-6 border-b border-[#292932] bg-gradient-to-r from-amber-500/10 via-amber-600/10 to-transparent flex items-center justify-between">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#D97706] to-amber-500 flex items-center justify-center text-white shadow-lg shadow-amber-950/40">
-              <Users className="w-6 h-6" />
-            </div>
+            <div className="w-10 h-10 rounded-lg bg-white/[0.06] border border-white/10 flex items-center justify-center text-stone-200"><Users className="w-5 h-5" /></div>
             <div>
               <div className="flex items-center gap-2">
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-mono tracking-widest uppercase bg-amber-500/15 border border-amber-500/30 text-amber-300 font-semibold">
-                  Friends Taste Matcher
+                  Taste compatibility
                 </span>
               </div>
-              <h3 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white mt-0.5">
+              <h3 className="text-xl font-semibold text-white mt-0.5">
                 Cinema Compatibility
               </h3>
             </div>
@@ -389,10 +387,10 @@ export function CinemaMatchModal({
         {!matchResult ? (
           <div className="p-6 sm:p-8 space-y-6 flex-1 flex flex-col justify-center">
             <div className="text-center max-w-md mx-auto space-y-2">
-              <Sparkles className="w-10 h-10 text-amber-400 mx-auto" />
-              <h4 className="text-lg font-bold text-white">Compare Journals with a Friend</h4>
+              <Users className="w-8 h-8 text-stone-400 mx-auto" />
+              <h4 className="text-lg font-bold text-white">Compare taste with a friend</h4>
               <p className="text-xs text-[#A1A1AA] leading-relaxed">
-                Paste your friend&apos;s Couch Critics public share link to find your compatibility score, movies you both love, and pick what to watch tonight!
+                Compare watch history, ratings, and common titles with a friend's public journal.
               </p>
             </div>
 
@@ -402,7 +400,7 @@ export function CinemaMatchModal({
                   type="text"
                   value={inputUrl}
                   onChange={(e) => setInputUrl(e.target.value)}
-                  placeholder="Paste friend's share link (couch-critics.vercel.app/share#d=...)"
+                  placeholder="Paste public share link..."
                   className="flex-1 bg-[#0B0B0F] border border-[#292932] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-[#A1A1AA]/50 focus:outline-none focus:border-[#D97706]"
                 />
                 <button
@@ -425,7 +423,7 @@ export function CinemaMatchModal({
                   onClick={handleLoadDemo}
                   className="ml-2 text-[11px] text-amber-400 hover:text-amber-300 font-semibold underline cursor-pointer"
                 >
-                  ⚡ Try with Demo Friend (Alex)
+                  Try with sample friend (Alex)
                 </button>
               </div>
             </div>
@@ -435,18 +433,18 @@ export function CinemaMatchModal({
             {/* ── Match Results Top Banner ── */}
             <div className="p-5 sm:p-6 bg-[#0B0B0F] border-b border-[#292932] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/20 border border-amber-500/40 flex items-center justify-center shrink-0">
-                  <span className="text-2xl font-extrabold font-mono text-amber-300">
+                <div className="relative w-16 h-16 rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-center shrink-0">
+                  <span className="text-2xl font-semibold font-mono text-stone-100 tabular-nums">
                     {matchResult.score}%
                   </span>
                 </div>
                 <div>
                   <h4 className="text-base sm:text-lg font-bold text-white">
                     {matchResult.score >= 85
-                      ? "Cinephile Soulmates! 🎉"
+                      ? "High taste match"
                       : matchResult.score >= 70
-                        ? "Great Taste Alignment 🎬"
-                        : "Different Perspectives 🍿"}
+                        ? "Strong overlap"
+                        : "Varied tastes"}
                   </h4>
                   <p className="text-xs text-[#A1A1AA] mt-0.5">
                     Compatibility with <strong className="text-white">{matchResult.friendName}</strong>

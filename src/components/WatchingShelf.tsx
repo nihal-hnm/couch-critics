@@ -312,7 +312,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                     <div>
                       {/* Top Row: Media Type indicator + Floating Action Buttons */}
                       <div className="flex items-center justify-between gap-2 mb-1.5">
-                        <span className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider flex items-center gap-1 font-mono">
+                        <span className="text-xs font-medium text-stone-400 flex items-center gap-1.5">
                           {isMovie ? <Film className="w-3 h-3 text-stone-300" /> : <Tv className="w-3 h-3 text-amber-400" />}
                           {isMovie ? "Movie" : "Series"}
                         </span>
@@ -333,7 +333,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                       </div>
 
                       {/* Title: Consistent min-height for clean alignment across 1-line and 2-line titles */}
-                      <h3 className="text-base sm:text-lg font-bold text-white leading-snug line-clamp-2 tracking-tight group-hover:text-white transition-colors min-h-[2.75rem] flex items-start">
+                      <h3 className="text-base font-semibold text-[#EDEDED] leading-snug line-clamp-2 group-hover:text-white transition-colors min-h-[2.75rem] flex items-start">
                         {entry.tmdb.title}
                       </h3>
 
@@ -349,7 +349,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                         )}
                         {entry.tmdb.runtime > 0 && (
                           <span className="flex items-center gap-1 text-white/60">
-                            <Clock className="w-3 h-3 text-[#D97706]" />
+                            <Clock className="w-3.5 h-3.5 text-stone-400" />
                             {isMovie ? `${entry.tmdb.runtime}m` : `~${entry.tmdb.runtime}m/ep`}
                           </span>
                         )}
@@ -380,10 +380,10 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                 {/* Progress bar */}
                 <div className="w-full bg-[#0B0B0F] border border-white/10 rounded-full h-1.5 overflow-hidden">
                   <div
-                    className={`h-full rounded-full transition-all duration-500 ${
+                    className={`h-full rounded-full transition-[width] duration-200 ${
                       !isMovie
-                        ? "bg-gradient-to-r from-[#D97706] to-[#B45309]"
-                        : "bg-gradient-to-r from-[#D97706] to-[#B45309]"
+                        ? "bg-[#D97706]"
+                        : "bg-[#D97706]"
                     }`}
                     style={{ width: `${Math.min(100, Math.max(3, sp.percent))}%` }}
                   />
@@ -469,7 +469,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                     <button
                       type="button"
                       onClick={() => handleMoveToBacklog(entry)}
-                      className="px-2.5 py-1.5 rounded-lg text-xs font-medium text-zinc-300 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 transition-all flex items-center gap-1.5 cursor-pointer"
+                      className="px-2.5 py-1.5 rounded-lg text-xs font-medium text-zinc-300 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 transition-colors flex items-center gap-1.5 cursor-pointer"
                       title="Move to To-Watch shelf (Backlog)"
                     >
                       <BookmarkPlus className="w-3.5 h-3.5 text-amber-400" />
@@ -480,7 +480,7 @@ export default function WatchingShelf({ entries }: WatchingShelfProps) {
                     <button
                       type="button"
                       onClick={() => setCompletingId(entry.id)}
-                      className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-amber-400 hover:text-white bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 transition-all flex items-center gap-1.5 cursor-pointer"
+                      className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-amber-400 hover:text-white bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 transition-colors flex items-center gap-1.5 cursor-pointer"
                       title="Mark as completed / watched"
                     >
                       <CheckCircle2 className="w-3.5 h-3.5" />

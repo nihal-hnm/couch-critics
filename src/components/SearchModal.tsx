@@ -353,7 +353,7 @@ export default function SearchModal({
           {!isLoading && !error && results.length === 0 && query === "" && (
             <div className="text-center py-16 text-zinc-500">
               <div className="w-14 h-14 mx-auto rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-center mb-4 text-[#A1A1AA]/70">
-                <Sparkles className="w-7 h-7 text-[#D97706]" />
+                <Film className="w-7 h-7 text-stone-500" />
               </div>
               <p className="text-lg font-medium text-[#F5F5F5]">Search for a movie or TV show</p>
               <p className="text-sm mt-1 text-[#A1A1AA]">

@@ -1,21 +1,21 @@
 /**
  * =============================================================================
- * Main Dashboard — Currently Watching Focus with Burger Bar Menu Drawer
+ * Overview — Currently watching Focus with Burger Bar Menu Drawer
  * =============================================================================
  *
  * Features:
- *  - Main View: Exclusively focused on Currently Watching shows & movies
+ *  - Main View: Exclusively focused on Currently watching shows & movies
  *    with interactive episode-wise checklists, progress steppers, and filter chips.
  *  - Burger Bar (Slide-out Drawer): Houses the rest of the app:
- *    • To Watch (Backlog)
- *    • Watched Archive & Reviews
- *    • All Movies catalog
- *    • All TV Series catalog
- *    • Watch Analytics & Stats
+ *    • To watch
+ *    • Watched & Reviews
+ *    • Movies catalog
+ *    • TV series catalog
+ *    • Analytics & Stats
  *    • Favorites (8+ Rated)
- *    • My Journey (Yearly Timeline)
+ *    • Journey (Yearly Timeline)
  *    • User profile / Authentication & Total runtime statistics
- *  - Seamless navigation with quick "Back to Currently Watching" return banner
+ *  - Seamless navigation with quick "Back to Currently watching" return banner
  */
 
 "use client";
@@ -328,7 +328,7 @@ export default function Dashboard() {
       <div className="min-h-screen flex items-center justify-center bg-[#0B0B0F]">
         <div className="flex flex-col items-center gap-3">
           <div className="p-4 rounded-2xl bg-[#D97706]/15">
-            <FilmIcon className="w-8 h-8 text-[#D97706] animate-pulse" />
+            <FilmIcon className="w-8 h-8 text-[#D97706] " />
           </div>
           <p className="text-sm text-[#A1A1AA]">Loading your journal...</p>
         </div>
@@ -361,10 +361,10 @@ export default function Dashboard() {
               <img src="/icon.png" alt="Couch Critics" className="w-full h-full object-cover" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white font-mono uppercase tracking-wider">
-                COUCH CRITICS
+              <h2 className="text-base font-semibold text-[#EDEDED]">
+                Couch Critics
               </h2>
-              <p className="text-[10px] text-[#A1A1AA] tracking-widest uppercase">
+              <p className="text-xs text-stone-400">
                 Navigation Menu
               </p>
             </div>
@@ -405,27 +405,25 @@ export default function Dashboard() {
 
         {/* Drawer Nav Items */}
         <div className="flex-1 overflow-y-auto p-4 space-y-6 hide-scrollbar">
-          {/* Main Focus: Currently Watching */}
+          {/* Main Focus: Currently watching */}
           <div>
-            <div className="px-3 pb-2 text-[10px] font-bold text-stone-500 uppercase tracking-wider">
-              Main Dashboard
+            <div className="px-3 pb-1 text-xs font-medium text-stone-400">
+              Overview
             </div>
             <button
               onClick={() => {
                 setActiveNav("watching");
                 setIsBurgerMenuOpen(false);
               }}
-              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer group ${
                 activeNav === "watching"
                   ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
                   : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
               }`}
             >
               <div className="flex items-center gap-3">
-                <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-[#D97706]/15 border border-[#D97706]/30 text-[#D97706]">
-                  <Play className="w-3.5 h-3.5 fill-current" />
-                </div>
-                <span className="text-left font-medium">Currently Watching</span>
+                <Play className="w-4 h-4 text-amber-400 fill-current shrink-0" />
+                <span className="text-left font-medium">Currently watching</span>
               </div>
               <span className="px-2 py-0.5 rounded-md text-xs font-mono bg-white/[0.06] border border-white/10 text-zinc-300">
                 {watching.length}
@@ -435,8 +433,8 @@ export default function Dashboard() {
 
           {/* Shelves & Catalogs */}
           <div>
-            <div className="px-3 pb-2 text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
-              Your Library &amp; Shelves
+            <div className="px-3 pb-1 text-xs font-medium text-stone-400">
+              Library
             </div>
             <div className="space-y-1">
               <button
@@ -444,17 +442,15 @@ export default function Dashboard() {
                   setActiveNav("toWatch");
                   setIsBurgerMenuOpen(false);
                 }}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer group ${
                   activeNav === "toWatch"
                     ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
                     : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-amber-500/15 border border-amber-500/30 text-amber-400">
-                    <BookmarkPlus className="w-3.5 h-3.5" />
-                  </div>
-                  <span>To Watch (Backlog)</span>
+                  <BookmarkPlus className="w-4 h-4 text-stone-400 group-hover:text-stone-200 shrink-0" />
+                  <span>To watch</span>
                 </div>
                 <span className="px-2 py-0.5 rounded-md text-xs font-mono bg-white/[0.06] border border-white/10 text-zinc-300">
                   {toWatch.length}
@@ -466,17 +462,15 @@ export default function Dashboard() {
                   setActiveNav("watched");
                   setIsBurgerMenuOpen(false);
                 }}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer group ${
                   activeNav === "watched"
                     ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
                     : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-amber-500/15 border border-amber-500/30 text-amber-400">
-                    <Award className="w-3.5 h-3.5" />
-                  </div>
-                  <span>Watched Archive</span>
+                  <Award className="w-4 h-4 text-stone-400 group-hover:text-stone-200 shrink-0" />
+                  <span>Watched</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-white/[0.04] text-zinc-400 border border-white/10" title="Movies & Shows breakdown">
@@ -493,17 +487,15 @@ export default function Dashboard() {
                   setActiveNav("movies");
                   setIsBurgerMenuOpen(false);
                 }}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer group ${
                   activeNav === "movies"
                     ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
                     : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-white/[0.05] border border-white/10 text-stone-300">
-                    <FilmIcon className="w-3.5 h-3.5" />
-                  </div>
-                  <span>All Movies</span>
+                  <FilmIcon className="w-4 h-4 text-stone-400 group-hover:text-stone-200 shrink-0" />
+                  <span>Movies</span>
                 </div>
                 <span className="px-2 py-0.5 rounded-md text-xs font-mono bg-white/[0.06] border border-white/10 text-zinc-300">
                   {watchedMovies.length}
@@ -515,17 +507,15 @@ export default function Dashboard() {
                   setActiveNav("series");
                   setIsBurgerMenuOpen(false);
                 }}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer group ${
                   activeNav === "series"
                     ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
                     : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-amber-500/15 border border-amber-500/30 text-amber-400">
-                    <Tv className="w-3.5 h-3.5" />
-                  </div>
-                  <span>All TV Series</span>
+                  <Tv className="w-4 h-4 text-stone-400 group-hover:text-stone-200 shrink-0" />
+                  <span>TV series</span>
                 </div>
                 <span className="px-2 py-0.5 rounded-md text-xs font-mono bg-white/[0.06] border border-white/10 text-zinc-300">
                   {watchedSeries.length}
@@ -537,17 +527,15 @@ export default function Dashboard() {
                   setActiveNav("genres");
                   setIsBurgerMenuOpen(false);
                 }}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer group ${
                   activeNav === "genres"
                     ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
                     : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-orange-500/15 border border-orange-500/30 text-orange-400">
-                    <Tags className="w-3.5 h-3.5" />
-                  </div>
-                  <span>Browse by Genre</span>
+                  <Tags className="w-4 h-4 text-stone-400 group-hover:text-stone-200 shrink-0" />
+                  <span>Genres</span>
                 </div>
                 <span className="px-2 py-0.5 rounded-md text-xs font-mono bg-white/[0.06] border border-white/10 text-zinc-300">
                   {allGenres.length}
@@ -558,8 +546,8 @@ export default function Dashboard() {
 
           {/* Insights & Discovery */}
           <div>
-            <div className="px-3 pb-2 text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
-              Insights &amp; Memories
+            <div className="px-3 pb-1 text-xs font-medium text-stone-400">
+              Archive
             </div>
             <div className="space-y-1">
               <button
@@ -567,17 +555,15 @@ export default function Dashboard() {
                   setActiveNav("stats");
                   setIsBurgerMenuOpen(false);
                 }}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer group ${
                   activeNav === "stats"
                     ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
                     : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-amber-500/15 border border-amber-500/30 text-amber-400">
-                    <BarChart3 className="w-3.5 h-3.5" />
-                  </div>
-                  <span>Watch Analytics</span>
+                  <BarChart3 className="w-4 h-4 text-stone-400 group-hover:text-stone-200 shrink-0" />
+                  <span>Analytics</span>
                 </div>
                 <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-white/[0.06] border border-white/10 text-zinc-300">
                   {stats.totalWatchTimeMins > 0 ? formatDaysAndHours(stats.totalWatchTimeMins) : "0d 0h"}
@@ -589,17 +575,15 @@ export default function Dashboard() {
                   setActiveNav("favorites");
                   setIsBurgerMenuOpen(false);
                 }}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer group ${
                   activeNav === "favorites"
                     ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
                     : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-amber-600/15 border border-amber-600/30 text-amber-400">
-                    <Heart className="w-3.5 h-3.5 fill-current" />
-                  </div>
-                  <span>My Favorites</span>
+                  <Heart className="w-4 h-4 text-stone-400 group-hover:text-stone-200 shrink-0" />
+                  <span>Favorites</span>
                 </div>
                 <span className="px-2 py-0.5 rounded-md text-xs font-mono bg-white/[0.06] border border-white/10 text-zinc-300">
                   {favorites.length}
@@ -611,17 +595,15 @@ export default function Dashboard() {
                   setActiveNav("journey");
                   setIsBurgerMenuOpen(false);
                 }}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer group ${
                   activeNav === "journey"
                     ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
                     : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-amber-500/15 border border-amber-500/30 text-amber-400">
-                    <MapIcon className="w-3.5 h-3.5" />
-                  </div>
-                  <span>My Journey</span>
+                  <MapIcon className="w-4 h-4 text-stone-400 group-hover:text-stone-200 shrink-0" />
+                  <span>Journey</span>
                 </div>
                 <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-white/[0.06] border border-white/10 text-zinc-300">
                   {journeyYears.length} {journeyYears.length === 1 ? "yr" : "yrs"}
@@ -633,17 +615,15 @@ export default function Dashboard() {
                   setActiveNav("diary");
                   setIsBurgerMenuOpen(false);
                 }}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer group ${
                   activeNav === "diary"
                     ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
                     : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-amber-500/15 border border-amber-500/30 text-amber-400">
-                    <BookOpen className="w-3.5 h-3.5" />
-                  </div>
-                  <span>Watch Diary</span>
+                  <BookOpen className="w-4 h-4 text-stone-400 group-hover:text-stone-200 shrink-0" />
+                  <span>Diary</span>
                 </div>
                 <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-white/[0.06] border border-white/10 text-zinc-300">
                   {watched.length}
@@ -655,17 +635,15 @@ export default function Dashboard() {
                   setActiveNav("collections");
                   setIsBurgerMenuOpen(false);
                 }}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer group ${
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer group ${
                   activeNav === "collections"
                     ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
                     : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-amber-600/15 border border-amber-600/30 text-amber-400">
-                    <Layers className="w-3.5 h-3.5" />
-                  </div>
-                  <span>Curated Collections</span>
+                  <Layers className="w-4 h-4 text-stone-400 group-hover:text-stone-200 shrink-0" />
+                  <span>Collections</span>
                 </div>
               </button>
 
@@ -674,13 +652,11 @@ export default function Dashboard() {
                   setIsImportExportOpen(true);
                   setIsBurgerMenuOpen(false);
                 }}
-                className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-zinc-300 hover:text-white hover:bg-white/[0.04] transition-all cursor-pointer group border border-transparent"
+                className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-zinc-300 hover:text-white hover:bg-white/[0.04] transition-colors cursor-pointer group border border-transparent"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-[#D97706]/15 border border-[#D97706]/30 text-[#D97706]">
-                    <Database className="w-3.5 h-3.5" />
-                  </div>
-                  <span>Import / Export &amp; Backup</span>
+                  <Database className="w-4 h-4 text-stone-400 group-hover:text-stone-200 shrink-0" />
+                  <span>Import &amp; export</span>
                 </div>
               </button>
             </div>
@@ -688,7 +664,7 @@ export default function Dashboard() {
 
           {/* Theme / Appearance Toggle */}
           <div>
-            <div className="px-3 pb-2 text-[10px] font-bold text-stone-500 uppercase tracking-wider flex items-center justify-between">
+            <div className="px-3 pb-1 text-xs font-medium text-stone-400 flex items-center justify-between">
               <span>Appearance</span>
               <span className="text-[10px] font-medium text-[#D97706] uppercase">Theme</span>
             </div>
@@ -739,7 +715,7 @@ export default function Dashboard() {
               <Link
                 href="/login"
                 onClick={() => setIsBurgerMenuOpen(false)}
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#D97706] hover:bg-[#F59E0B] text-white text-xs font-semibold transition-all cursor-pointer shadow-md shadow-black/40"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#D97706] hover:bg-[#F59E0B] text-white text-xs font-semibold transition-colors cursor-pointer shadow-md shadow-black/40"
               >
                 <LogIn className="w-3.5 h-3.5" />
                 Sign In / Register
@@ -778,10 +754,10 @@ export default function Dashboard() {
                 <img src="/icon.png" alt="Couch Critics" className="w-full h-full object-cover" />
               </div>
               <div className="hidden xs:block">
-                <h1 className="text-xs sm:text-sm font-bold text-[#F5F5F5] tracking-wider uppercase font-mono group-hover:text-[#D97706] transition-colors leading-tight">
-                  COUCH CRITICS
+                <h1 className="text-sm font-semibold text-[#EDEDED] group-hover:text-amber-400 transition-colors leading-tight">
+                  Couch Critics
                 </h1>
-                <p className="text-[10px] font-mono tracking-widest uppercase leading-tight text-zinc-500">
+                <p className="text-[11px] text-stone-400 leading-tight">
                   Cinema Journal
                 </p>
               </div>
@@ -920,7 +896,7 @@ export default function Dashboard() {
                   >
                     <div className="flex items-center gap-2">
                       <FilmIcon className="w-3.5 h-3.5 text-stone-300" />
-                      <span>All Movies</span>
+                      <span>Movies</span>
                     </div>
                     <span className="font-mono text-[10px] text-zinc-500">{watchedMovies.length}</span>
                   </button>
@@ -939,7 +915,7 @@ export default function Dashboard() {
                   >
                     <div className="flex items-center gap-2">
                       <Tv className="w-3.5 h-3.5 text-amber-400" />
-                      <span>All TV Series</span>
+                      <span>TV series</span>
                     </div>
                     <span className="font-mono text-[10px] text-zinc-500">{watchedSeries.length}</span>
                   </button>
@@ -958,7 +934,7 @@ export default function Dashboard() {
                   >
                     <div className="flex items-center gap-2">
                       <Tags className="w-3.5 h-3.5 text-orange-400" />
-                      <span>Browse by Genre</span>
+                      <span>Genres</span>
                     </div>
                     <span className="font-mono text-[10px] text-zinc-500">{allGenres.length}</span>
                   </button>
@@ -998,7 +974,7 @@ export default function Dashboard() {
                   >
                     <div className="flex items-center gap-2">
                       <MapIcon className="w-3.5 h-3.5 text-yellow-400" />
-                      <span>My Journey</span>
+                      <span>Journey</span>
                     </div>
                   </button>
 
@@ -1016,7 +992,7 @@ export default function Dashboard() {
                   >
                     <div className="flex items-center gap-2">
                       <BookOpen className="w-3.5 h-3.5 text-stone-300" />
-                      <span>Watch Diary</span>
+                      <span>Diary</span>
                     </div>
                   </button>
 
@@ -1050,7 +1026,7 @@ export default function Dashboard() {
                   >
                     <div className="flex items-center gap-2">
                       <Database className="w-3.5 h-3.5 text-[#D97706]" />
-                      <span>Import / Export &amp; Backup</span>
+                      <span>Import &amp; export</span>
                     </div>
                   </button>
                 </div>
@@ -1064,12 +1040,12 @@ export default function Dashboard() {
             <button
               type="button"
               onClick={() => setIsSearchOpen(true)}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#15151C] hover:bg-[#1E1E26] border border-[#292932] hover:border-[#D97706]/50 text-[#A1A1AA] hover:text-[#F5F5F5] transition-all cursor-pointer shadow-sm group shrink-0"
+              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#15151C] hover:bg-[#1E1E26] border border-[#292932] hover:border-[#D97706]/50 text-[#A1A1AA] hover:text-[#F5F5F5] transition-colors cursor-pointer shadow-sm group shrink-0"
               aria-label="Search and add movies or series"
               title="Search & Add Titles (⌘K)"
             >
               <SearchIcon className="w-3.5 h-3.5 text-[#D97706] group-hover:scale-110 transition-transform" />
-              <span className="text-xs hidden sm:inline font-medium">Search &amp; Add...</span>
+              <span className="text-xs hidden sm:inline font-medium">Search titles...</span>
               <kbd className="hidden md:inline-flex items-center text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-zinc-400 group-hover:text-white">
                 ⌘K
               </kbd>
@@ -1090,7 +1066,7 @@ export default function Dashboard() {
                 setShareScope(initialScope);
                 setIsShareModalOpen(true);
               }}
-              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl bg-[#15151C] hover:bg-[#1E1E26] border border-[#292932] hover:border-amber-500/40 text-[#A1A1AA] hover:text-[#F5F5F5] transition-all cursor-pointer shadow-sm group shrink-0"
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl bg-[#15151C] hover:bg-[#1E1E26] border border-[#292932] hover:border-amber-500/40 text-[#A1A1AA] hover:text-[#F5F5F5] transition-colors cursor-pointer shadow-sm group shrink-0"
               title="Share your Journal (Watched, Watching, To Watch)"
               aria-label="Share journal"
             >
@@ -1156,8 +1132,8 @@ export default function Dashboard() {
                   {watching.length} {watching.length === 1 ? "title" : "titles"} in progress
                 </span>
               </div>
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-                Currently Watching
+              <h1 className="text-2xl sm:text-3xl font-semibold text-[#EDEDED]">
+                Currently watching
               </h1>
               <p className="text-zinc-400 text-xs sm:text-sm mt-1.5 max-w-lg leading-relaxed">
                 Active series and feature films in progress. Track episode checklists, log runtimes, and resume playback.
@@ -1169,54 +1145,48 @@ export default function Dashboard() {
               <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
                 {/* Overall Watch Time */}
                 <div className="bg-[#15151C]/90 border border-[#292932] hover:border-zinc-700/80 rounded-xl px-4 py-2.5 flex items-center gap-3 transition-colors shadow-sm">
-                  <div className="p-2 rounded-lg bg-[#D97706]/10 text-[#D97706] border border-[#D97706]/20">
-                    <Clock className="w-4 h-4" />
-                  </div>
+                  
                   <div>
                     <div className="text-xs font-bold font-mono text-[#F5F5F5] tracking-tight">
                       {formatDaysAndHours(stats.totalWatchTimeMins)}
                     </div>
-                    <div className="text-[10px] font-medium uppercase tracking-wider text-zinc-400">Total Watch Time</div>
+                    <div className="text-xs text-stone-400">Total watch time</div>
                   </div>
                 </div>
 
                 {/* Series Time */}
                 <div className="bg-[#15151C]/90 border border-[#292932] hover:border-zinc-700/80 rounded-xl px-4 py-2.5 flex items-center gap-3 transition-colors shadow-sm">
-                  <div className="p-2 rounded-lg bg-[#D97706]/10 text-[#D97706] border border-[#D97706]/20">
-                    <Tv className="w-4 h-4" />
-                  </div>
+                  
                   <div>
                     <div className="text-xs font-bold font-mono text-[#F5F5F5] tracking-tight">
                       {formatHours(stats.seriesMinutes)}
                     </div>
-                    <div className="text-[10px] font-medium uppercase tracking-wider text-zinc-400">Series Time</div>
+                    <div className="text-xs text-stone-400">Series</div>
                   </div>
                 </div>
 
                 {/* Movie Time */}
                 <div className="bg-[#15151C]/90 border border-[#292932] hover:border-zinc-700/80 rounded-xl px-4 py-2.5 flex items-center gap-3 transition-colors shadow-sm">
-                  <div className="p-2 rounded-lg bg-[#D97706]/10 text-[#D97706] border border-[#D97706]/20">
-                    <FilmIcon className="w-4 h-4" />
-                  </div>
+                  
                   <div>
                     <div className="text-xs font-bold font-mono text-[#F5F5F5] tracking-tight">
                       {formatHours(stats.movieMinutes)}
                     </div>
-                    <div className="text-[10px] font-medium uppercase tracking-wider text-zinc-400">Movie Time</div>
+                    <div className="text-xs text-stone-400">Movies</div>
                   </div>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Unified Filter Toolbar for Currently Watching */}
+          {/* Unified Filter Toolbar for Currently watching */}
           {watching.length > 0 && (
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4">
               {/* Type Segmented Control */}
               <div className="inline-flex p-1 rounded-xl bg-[#15151C] border border-[#292932]">
                 <button
                   onClick={() => setWatchingTypeFilter("all")}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5 ${
                     watchingTypeFilter === "all"
                       ? "bg-[#D97706] text-white shadow-sm"
                       : "text-zinc-400 hover:text-white"
@@ -1227,7 +1197,7 @@ export default function Dashboard() {
                 </button>
                 <button
                   onClick={() => setWatchingTypeFilter("tv")}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5 ${
                     watchingTypeFilter === "tv"
                       ? "bg-[#D97706] text-white shadow-sm"
                       : "text-zinc-400 hover:text-white"
@@ -1238,7 +1208,7 @@ export default function Dashboard() {
                 </button>
                 <button
                   onClick={() => setWatchingTypeFilter("movie")}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5 ${
                     watchingTypeFilter === "movie"
                       ? "bg-[#D97706] text-white shadow-sm"
                       : "text-zinc-400 hover:text-white"
@@ -1307,20 +1277,20 @@ export default function Dashboard() {
                 </p>
                 <button
                   onClick={() => setWatchingTypeFilter("all")}
-                  className="px-4 py-2 rounded-xl bg-[#D97706] hover:bg-[#F59E0B] text-white text-xs font-semibold transition-all cursor-pointer shadow-sm"
+                  className="px-4 py-2 rounded-xl bg-[#D97706] hover:bg-[#F59E0B] text-white text-xs font-semibold transition-colors cursor-pointer shadow-sm"
                 >
                   Show All ({watching.length})
                 </button>
               </div>
             )
           ) : (
-            /* Clean Empty State when zero titles are in Currently Watching */
+            /* Clean Empty State when zero titles are in Currently watching */
             <div className="bg-[#15151C] p-8 sm:p-12 text-center rounded-2xl border border-[#292932] relative overflow-hidden my-4">
               <div className="relative z-10 max-w-md mx-auto">
-                <div className="inline-flex p-4 rounded-2xl bg-[#15151C] border border-[#292932] mb-4 animate-float text-[#D97706]">
+                <div className="inline-flex p-4 rounded-2xl bg-[#15151C] border border-[#292932] mb-4  text-[#D97706]">
                   <Play className="w-8 h-8 fill-current" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-2 text-glow">
+                <h3 className="text-2xl font-bold text-white mb-2 ">
                   No Shows or Movies In Progress
                 </h3>
                 <p className="text-[#A1A1AA] text-sm leading-relaxed mb-6">
@@ -1329,7 +1299,7 @@ export default function Dashboard() {
                 <div className="flex flex-wrap items-center justify-center gap-3">
                   <button
                     onClick={() => setIsSearchOpen(true)}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#D97706] hover:bg-[#F59E0B] text-white rounded-xl text-sm font-semibold shadow-md shadow-black/40 transition-all hover:scale-[1.02] cursor-pointer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#D97706] hover:bg-[#F59E0B] text-white rounded-xl text-sm font-semibold shadow-md shadow-black/40 transition-all  cursor-pointer"
                   >
                     <Plus className="w-4 h-4" />
                     Add What You&apos;re Watching
@@ -1338,7 +1308,7 @@ export default function Dashboard() {
                   {toWatch.length > 0 && (
                     <button
                       onClick={() => setActiveNav("toWatch")}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#15151C] hover:bg-[#1E1E26] text-[#F5F5F5] border border-[#292932] text-sm font-semibold transition-all cursor-pointer"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#15151C] hover:bg-[#1E1E26] text-[#F5F5F5] border border-[#292932] text-sm font-semibold transition-colors cursor-pointer"
                     >
                       <BookmarkPlus className="w-4 h-4 text-[#D97706]" />
                       Browse Backlog ({toWatch.length})
@@ -1347,7 +1317,7 @@ export default function Dashboard() {
 
                   <button
                     onClick={() => setIsBurgerMenuOpen(true)}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-[#A1A1AA] hover:text-white text-sm font-medium transition-all cursor-pointer"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-[#A1A1AA] hover:text-white text-sm font-medium transition-colors cursor-pointer"
                   >
                     <Menu className="w-4 h-4 text-[#A1A1AA]" />
                     Open Menu
@@ -1471,7 +1441,7 @@ export default function Dashboard() {
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setSelectedGenre("all")}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5 ${
                   selectedGenre === "all"
                     ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-950/40 border border-orange-400/50 scale-105"
                     : "bg-[#15151C] text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-[#1E1E26] border border-[#292932]"
@@ -1487,7 +1457,7 @@ export default function Dashboard() {
                 <button
                   key={genre}
                   onClick={() => setSelectedGenre(genre)}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5 ${
                     selectedGenre === genre
                       ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-950/40 border border-orange-400/50 scale-105"
                       : "bg-[#15151C] text-[#A1A1AA] hover:text-[#F5F5F5] hover:bg-[#1E1E26] border border-[#292932]"
@@ -1507,7 +1477,7 @@ export default function Dashboard() {
             <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-[#15151C] border border-[#292932]">
               <button
                 onClick={() => setGenreShelfFilter("all")}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                   genreShelfFilter === "all"
                     ? "bg-[#292932] text-white font-semibold shadow-sm border border-white/10"
                     : "text-[#A1A1AA] hover:text-[#F5F5F5]"
@@ -1517,7 +1487,7 @@ export default function Dashboard() {
               </button>
               <button
                 onClick={() => setGenreShelfFilter("watching")}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer flex items-center gap-1 ${
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer flex items-center gap-1 ${
                   genreShelfFilter === "watching"
                     ? "bg-gradient-to-r from-[#D97706] to-[#B45309] text-white font-semibold shadow-sm border border-red-500/40"
                     : "text-[#A1A1AA] hover:text-[#F5F5F5]"
@@ -1528,7 +1498,7 @@ export default function Dashboard() {
               </button>
               <button
                 onClick={() => setGenreShelfFilter("toWatch")}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer flex items-center gap-1 ${
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer flex items-center gap-1 ${
                   genreShelfFilter === "toWatch"
                     ? "bg-gradient-to-r from-amber-600 to-amber-700 text-white font-semibold shadow-sm border border-amber-400/40"
                     : "text-[#A1A1AA] hover:text-[#F5F5F5]"
@@ -1539,7 +1509,7 @@ export default function Dashboard() {
               </button>
               <button
                 onClick={() => setGenreShelfFilter("watched")}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer flex items-center gap-1 ${
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer flex items-center gap-1 ${
                   genreShelfFilter === "watched"
                     ? "bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-semibold shadow-sm border border-emerald-400/40"
                     : "text-[#A1A1AA] hover:text-[#F5F5F5]"
@@ -1615,7 +1585,7 @@ export default function Dashboard() {
               <div className="p-1.5 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-yellow-400">
                 <MapIcon className="w-4 h-4" />
               </div>
-              <h2 className="text-base font-bold text-white tracking-tight">My Journey</h2>
+              <h2 className="text-base font-bold text-white tracking-tight">Journey</h2>
             </div>
             <span className="text-xs font-mono text-zinc-400">
               {journeyYears.length} {journeyYears.length === 1 ? "year" : "years"}

@@ -617,7 +617,7 @@ export default function ShareModal({
                     {copiedType === "link" ? (
                       <>
                         <Check className="w-4 h-4 text-emerald-300" />
-                        <span>Copied!</span>
+                        <span>Copied</span>
                       </>
                     ) : (
                       <>
@@ -637,7 +637,7 @@ export default function ShareModal({
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
                 <a
                   href={`https://wa.me/?text=${encodeURIComponent(
-                    `🍿 Check out ${userName}'s Cinema Journal on Couch Critics!\n${shareUrl}`
+                    `Check out ${userName}'s Cinema Journal on Couch Critics!\n${shareUrl}`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -649,13 +649,13 @@ export default function ShareModal({
 
                 <a
                   href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                    `🍿 My cinema & TV journal on @CouchCritics: ${watched.length} watched, ${watching.length} watching, ${toWatch.length} to watch!\n${shareUrl}`
+                    `My cinema & TV journal on @CouchCritics: ${watched.length} watched, ${watching.length} watching, ${toWatch.length} to watch!\n${shareUrl}`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="social-share-btn p-3 rounded-xl bg-[#0B0B0F] hover:bg-white/5 border border-[#292932] transition-all flex items-center justify-center gap-2 text-xs font-semibold cursor-pointer group"
                 >
-                  <Sparkles className="w-4 h-4 text-sky-500 group-hover:scale-110 transition-transform" />
+                  <Share2 className="w-4 h-4 text-stone-400" />
                   <span>Post to X / Twitter</span>
                 </a>
 
@@ -705,7 +705,7 @@ export default function ShareModal({
                     {copiedType === "card-image" ? (
                       <>
                         <Check className="w-3.5 h-3.5 text-emerald-500" />
-                        <span>Copied!</span>
+                        <span>Copied</span>
                       </>
                     ) : (
                       <>
@@ -777,7 +777,7 @@ export default function ShareModal({
                   {copiedType === "text" ? (
                     <>
                       <Check className="w-3.5 h-3.5 text-emerald-300" />
-                      <span>Copied!</span>
+                      <span>Copied</span>
                     </>
                   ) : (
                     <>

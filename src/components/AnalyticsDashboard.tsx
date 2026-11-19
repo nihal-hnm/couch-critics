@@ -241,10 +241,10 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
                   <Clapperboard className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="text-xs uppercase tracking-wider text-stone-300 font-medium">
+                  <p className="text-xs text-xs text-stone-400">
                     Movie Minutes
                   </p>
-                  <p className="text-2xl font-bold text-white">
+                  <p className="text-2xl font-semibold text-white tabular-nums">
                     {analytics.movieWatchTimeMins.toLocaleString()} <span className="text-sm font-normal text-stone-400">min</span>
                   </p>
                   <p className="text-xs text-stone-400 mt-0.5">
@@ -261,10 +261,10 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
                   <Tv className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="text-xs uppercase tracking-wider text-amber-400 font-medium">
+                  <p className="text-xs text-xs text-stone-400">
                     Series Minutes
                   </p>
-                  <p className="text-2xl font-bold text-white">
+                  <p className="text-2xl font-semibold text-white tabular-nums">
                     {analytics.seriesWatchTimeMins.toLocaleString()} <span className="text-sm font-normal text-stone-400">min</span>
                   </p>
                   <p className="text-xs text-stone-400 mt-0.5">
@@ -359,7 +359,7 @@ export default function AnalyticsDashboard({ entries }: AnalyticsDashboardProps)
                         </div>
                         <div className="w-full bg-[#0B0B0F] rounded-md h-2 overflow-hidden border border-[#292932]">
                           <div
-                            className="h-full bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 rounded-sm shadow-[0_0_8px_rgba(217,119,6,0.3)]"
+                            className="h-full bg-[#D97706] rounded-sm"
                             style={{ width: `${show.percentComplete}%` }}
                           />
                         </div>
@@ -639,7 +639,7 @@ function StatCard({
             {label}
           </span>
         </div>
-        <p className="text-2xl font-bold text-white">{value}</p>
+        <p className="text-2xl font-semibold text-white tabular-nums">{value}</p>
         <p className="text-xs text-[#A1A1AA] mt-1">{detail}</p>
       </div>
     </div>
@@ -747,8 +747,8 @@ function AnalyticsEmptyState() {
   return (
     <div className="text-center py-20" id="analytics-empty">
       <div className="relative inline-block">
-        <Flame className="w-16 h-16 mx-auto text-[#A1A1AA]/30 mb-4 animate-float" />
-        <div className="absolute inset-0 w-16 h-16 mx-auto rounded-full bg-[#D97706]/5 blur-xl" />
+        <Flame className="w-16 h-16 mx-auto text-[#A1A1AA]/30 mb-4 " />
+        
       </div>
       <h3 className="text-xl font-semibold text-[#F5F5F5]">
         No analytics yet

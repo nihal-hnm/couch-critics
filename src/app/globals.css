@@ -145,7 +145,7 @@
       transparent 65%,
       rgba(11, 11, 15, 0.25) 82%,
       rgba(11, 11, 15, 0.9) 100%);
-  --cursor-ambient-glow: radial-gradient(circle at center, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.03) 25%, rgba(255, 255, 255, 0.012) 50%, rgba(255, 255, 255, 0.003) 70%, transparent 85%);
+  --cursor-ambient-glow: none;
   color-scheme: dark;
 }
 
@@ -153,7 +153,7 @@
 .light {
   --color-background: #F8F9FA;
   --color-foreground: #0F172A;
-  --cursor-ambient-glow: radial-gradient(circle at center, rgba(0, 0, 0, 0.022) 0%, rgba(0, 0, 0, 0.014) 25%, rgba(0, 0, 0, 0.005) 50%, transparent 75%);
+  --cursor-ambient-glow: none;
   --color-warm-surface: #F8FAFC;
   --color-warm-border: #E2E8F0;
   --color-warm-hover: #F1F5F9;
@@ -249,16 +249,7 @@ body {
   overflow: hidden;
 }
 
-.progress-shimmer-bar::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  animation: progress-shimmer 2.5s infinite;
-}
+.progress-shimmer-bar::after { display: none; }
 
 .hero-overlay-bottom {
   background: var(--hero-overlay-bottom);
@@ -400,17 +391,15 @@ body {
   overflow: hidden;
   border: 1px solid #292932;
   background: #15151C;
-  transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 400ms ease,
-    border-color 300ms ease;
+  transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1), border-color 150ms ease, box-shadow 150ms ease;
   scroll-snap-align: start;
   cursor: pointer;
 }
 
 .poster-card:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
-  border-color: #3D3D4C;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.16);
 }
 
 .poster-card-image {
@@ -561,7 +550,7 @@ body {
 
 .animate-in {
   animation-duration: 300ms;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   animation-fill-mode: both;
 }
 
@@ -581,17 +570,13 @@ body {
   animation-name: zoom-in;
 }
 
-.animate-float {
-  animation: float 4s ease-in-out infinite;
-}
+.animate-float { animation: none; }
 
-.animate-glow {
-  animation: glow-pulse 3s ease-in-out infinite;
-}
+.animate-glow { animation: none; }
 
 /* Staggered entrance for grid items */
 .stagger-item {
-  animation: slide-up 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: slide-up 400ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 /* ─── Scrollbar Styling ───────────────────────────────────────────────────── */
@@ -628,14 +613,11 @@ body {
 /* ─── Custom Utilities ────────────────────────────────────────────────────── */
 
 /* Subtle cinema text glow */
-.text-glow {
-  text-shadow: 0 0 20px rgba(217, 119, 6, 0.25);
-}
+.text-glow { text-shadow: none; }
 
 /* Poster card hover lift */
 .poster-lift {
-  transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 400ms ease;
+  transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1), border-color 150ms ease, box-shadow 150ms ease;
 }
 
 .poster-lift:hover {
@@ -660,7 +642,7 @@ body {
 }
 
 .auth-modal-dialog[open] {
-  animation: auth-modal-in 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: auth-modal-in 300ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @keyframes auth-modal-in {
@@ -1416,9 +1398,7 @@ body {
   color: #FFFFFF !important;
 }
 
-.light .text-glow {
-  text-shadow: none !important;
-}
+.light .text-glow { text-shadow: none; }
 
 .light .login-btn {
   color: #0F172A !important;
