@@ -48,6 +48,7 @@ import {
   Layers,
   Users,
   Sparkles,
+  User,
 } from "lucide-react";
 import { useJournal } from "@/lib/journal-context";
 import { useAuth } from "@/lib/auth-context";
@@ -78,6 +79,10 @@ const CollectionsView = dynamic(
   () => import("@/components/CollectionsView").then((m) => m.CollectionsView),
   { ssr: false }
 );
+const ProfileView = dynamic(
+  () => import("@/components/ProfileView").then((m) => m.ProfileView),
+  { ssr: false }
+);
 const CinemaMatchModal = dynamic(() => import("@/components/CinemaMatchModal"), {
   ssr: false,
 });
@@ -93,7 +98,8 @@ export type NavKey =
   | "journey"
   | "favorites"
   | "diary"
-  | "collections";
+  | "collections"
+  | "profile";
 
 import Link from "next/link";
 import { MovieImage } from "./common/MovieImage";
@@ -649,6 +655,23 @@ export default function Dashboard() {
 
               <button
                 onClick={() => {
+                  setActiveNav("profile");
+                  setIsBurgerMenuOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer group ${
+                  activeNav === "profile"
+                    ? "bg-white/10 text-white border border-white/15 font-semibold shadow-sm"
+                    : "text-zinc-300 hover:text-white hover:bg-white/[0.04] border border-transparent"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <User className="w-4 h-4 text-amber-400 group-hover:text-amber-300 shrink-0" />
+                  <span>Profile &amp; Taste</span>
+                </div>
+              </button>
+
+              <button
+                onClick={() => {
                   setIsImportExportOpen(true);
                   setIsBurgerMenuOpen(false);
                 }}
@@ -697,12 +720,19 @@ export default function Dashboard() {
           {!authLoading && (
             user ? (
               <div className="flex items-center justify-between pt-1">
-                <div className="flex items-center gap-2 text-xs text-stone-300 truncate max-w-[170px]">
-                  <div className="w-6 h-6 rounded-full bg-[#D97706] text-white font-bold flex items-center justify-center text-[11px] shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveNav("profile");
+                    setIsBurgerMenuOpen(false);
+                  }}
+                  className="flex items-center gap-2 text-xs text-stone-300 hover:text-white truncate max-w-[170px] text-left cursor-pointer group"
+                >
+                  <div className="w-6 h-6 rounded-full bg-[#D97706] text-white font-bold flex items-center justify-center text-[11px] shrink-0 group-hover:ring-2 ring-amber-400/40">
                     {userInitial}
                   </div>
-                  <span className="truncate">{user.email}</span>
-                </div>
+                  <span className="truncate group-hover:underline">{user.email}</span>
+                </button>
                 <button
                   onClick={handleSignOut}
                   className="text-xs text-stone-500 hover:text-[#D97706] transition-colors flex items-center gap-1 cursor-pointer"
@@ -712,14 +742,27 @@ export default function Dashboard() {
                 </button>
               </div>
             ) : (
-              <Link
-                href="/login"
-                onClick={() => setIsBurgerMenuOpen(false)}
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#D97706] hover:bg-[#F59E0B] text-white text-xs font-semibold transition-colors cursor-pointer shadow-md shadow-black/40"
-              >
-                <LogIn className="w-3.5 h-3.5" />
-                Sign In / Register
-              </Link>
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveNav("profile");
+                    setIsBurgerMenuOpen(false);
+                  }}
+                  className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-stone-300 text-xs font-semibold transition-colors cursor-pointer"
+                >
+                  <User className="w-3.5 h-3.5 text-amber-400" />
+                  Guest Profile &amp; Stats
+                </button>
+                <Link
+                  href="/login"
+                  onClick={() => setIsBurgerMenuOpen(false)}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#D97706] hover:bg-[#F59E0B] text-white text-xs font-semibold transition-colors cursor-pointer shadow-md shadow-black/40"
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  Sign In / Register
+                </Link>
+              </div>
             )
           )}
         </div>
@@ -1014,6 +1057,24 @@ export default function Dashboard() {
                     </div>
                   </button>
 
+                  <button
+                    onClick={() => {
+                      setActiveNav("profile");
+                      setIsMoreMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors cursor-pointer ${
+                      activeNav === "profile"
+                        ? "bg-white/10 text-white font-semibold"
+                        : "text-[#A1A1AA] hover:text-white hover:bg-white/5"
+                    }`}
+                    role="menuitem"
+                  >
+                    <div className="flex items-center gap-2">
+                      <User className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Profile &amp; Taste</span>
+                    </div>
+                  </button>
+
                   <div className="my-1 border-t border-[#292932]" />
 
                   <button
@@ -1094,6 +1155,17 @@ export default function Dashboard() {
                     <div className="user-menu-dropdown">
                       <div className="user-menu-email">{user.email}</div>
                       <button
+                        onClick={() => {
+                          setActiveNav("profile");
+                          setIsUserMenuOpen(false);
+                        }}
+                        className="user-menu-item cursor-pointer"
+                        id="profile-menu-button"
+                      >
+                        <User className="w-4 h-4 text-amber-400" />
+                        My Profile
+                      </button>
+                      <button
                         onClick={handleSignOut}
                         className="user-menu-item danger cursor-pointer"
                         id="sign-out-button"
@@ -1105,14 +1177,29 @@ export default function Dashboard() {
                   )}
                 </div>
               ) : (
-                <Link
-                  href="/login"
-                  className="login-btn cursor-pointer"
-                  id="login-button"
-                >
-                  <LogIn className="w-4 h-4" />
-                  <span className="hidden sm:inline">Sign In</span>
-                </Link>
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setActiveNav("profile")}
+                    className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer border ${
+                      activeNav === "profile"
+                        ? "bg-white/10 text-white border-white/20"
+                        : "bg-[#15151C] hover:bg-[#1E1E26] border-[#292932] text-[#A1A1AA] hover:text-[#F5F5F5]"
+                    }`}
+                    title="View Profile & Taste Ledger"
+                  >
+                    <User className="w-3.5 h-3.5 text-amber-400" />
+                    <span className="hidden sm:inline">Profile</span>
+                  </button>
+                  <Link
+                    href="/login"
+                    className="login-btn cursor-pointer"
+                    id="login-button"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    <span className="hidden sm:inline">Sign In</span>
+                  </Link>
+                </div>
               )
             )}
           </div>
@@ -1679,6 +1766,15 @@ export default function Dashboard() {
         <CollectionsView
           entries={entries}
           onSelectEntry={setSelectedDetailEntry}
+        />
+      )}
+
+      {/* ── View 11: USER PROFILE & PERSONAL CINEMA LEDGER ─────────── */}
+      {activeNav === "profile" && (
+        <ProfileView
+          entries={entries}
+          onSelectEntry={setSelectedDetailEntry}
+          onOpenSearch={() => setIsSearchOpen(true)}
         />
       )}
 
